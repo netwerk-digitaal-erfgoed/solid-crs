@@ -1,0 +1,60 @@
+= Scope
+:description: A description of the scope used in the NDE erfgoedinstellingen project.
+:sectanchors:
+:url-repo: 
+:page-tags: NDE-erfgoedinstellingen
+:imagesdir: ../images
+
+== Definities
+
+[options="header",]
+|===
+|Term                       | Definition
+|`Gebruiker`                | Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
+|`Collectiebeheersysteem`   | Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
+|`Beheerder`                | `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
+|`Bezoeker`                 | `Gebruiker` die de publieke website van NDE bezoekt.
+|`Pod`                      | Container waarin data van een kleine ergfoedinstelling is opgeslaan.
+|`Erfgoedobject`            | Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
+|`Digitaal object`          | Digitale representatie van een `erfgoedobject`.
+|`Objectbeschrijving`       | Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
+|`Term`                     | Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
+|`Digita Connect`           | Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
+|===
+
+== Assumpties
+
+ * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
+ * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en  begraafplaatsen worden verstaan.
+ * Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
+
+== Functionele vereisten
+
+.Onboarding
+ * Als `beheerder` wil ik een WebID en pod kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
+ * Als `beheerder` wil ik toegang geven tot mijn pod aan het `collectiebeheersysteem`.
+
+.Presentatie
+ * Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
+ * Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
+ * Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
+
+.Beheer
+ * Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
+ * Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
+ * Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
+ * Als `beheerder` wil ik collecties en objecten importeren en exporteren.
+ * Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
+ * Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
+
+== Niet-functionele vereisten
+
+ * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
+ * De software artefacten zullen worden getest op een gelimiteerd aantal moderen web browsers zoals Chrome en Firefox.
+ * De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
+
+== Out-of-scope
+
+ * Het hosten van pods voor erfgoedinstellingen.
+ * Het verbeteren of doorontwikkelen van een Solid-opslagserver of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
+ * Technische aansluiting op andere NDE-voorzieningen zoals het Termennetwerk en de registerfunctie.
