@@ -1,8 +1,8 @@
 = Scope
-:description: A description of the scope used in the Actueel Inkomen PoC project.
+:description: A description of the scope used in the NDE erfgoedinstellingen project.
 :sectanchors:
-:url-repo: https://github.com/digita-ai/aiv-actueel-inkomen
-:page-tags: aiv-actueel-inkomen 
+:url-repo: 
+:page-tags: NDE-erfgoedinstellingen
 :imagesdir: ../images
 
 == Definitions
@@ -11,51 +11,53 @@
 |===
 |Term                       | Definition
 |`Gebruiker`                | Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
-|`Collectiebeheersysteem`   | 
-|`Beheerder`                | `Gebruiker` die de `Pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
+|`Collectiebeheersysteem`   | MOET WORDEN GEDEFINIEERD: omvat dit enkel beheer? Onboarding en beheer? of Onboarding, beheer en presentatie?
+|`Beheerder`                | `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
 |`Bezoeker`                 | `Gebruiker` die de publieke website van NDE bezoekt.
 |`Pod`                      | Container waarin data van een kleine ergfoedinstelling is opgeslaan.
-|`Digitaal object`          | Digitale representatie van een erfgoedobject.
-|`Digita Connect`           | Middleware application to easily read from- and write to pods.
+|`Erfgoedobject`            | Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
+|`Digitaal object`          | Digitale representatie van een `erfgoedobject`.
+|`Objectbeschrijving`       | Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
+|`Term`                     | Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
+|`Digita Connect`           | Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
 
 |===
 
 == Assumptions
 
-* Het collectiebeheersysteem is een ‘minimum viable product’ (MVP).
-* Het collectiebeheersysteem is bestemd voor ‘behapbare collecties’​.
-* Het collectiebeheersysteem heeft beperkte rollen en rechten voor gebruikers​.
-* Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​.
-* Het collectiebeheersysteem legt beperkte, vaststaande informatie vast​.
-* Het collectiebeheersysteem is Nederlandstalig​, evt de user interface in Eng, Fr.
-* Het collectiebeheersysteem publiceert erfgoedinformatie als Linked Data​.
-* Het collectiebeheersysteem publiceert erfgoedinformatie via een publiekswebsite​. 
-
+* De pods zijn reeds aangemaakt.
+* Bezoekers moeten niet inloggen met WebID om de collecties te raadplegen. Enkel `beheerders` en dus niet `gebruikers` zitten in het beheersysteem.
+* Digita connect is geen open source software.
+* De beheerder is de actor die instaat voor het beheren van collecties en objecten, er kunnen meerdere beheerders per instelling worden toegevoegd.
+* Elke instelling heeft één pod. 
+* Elke instelling heeft één of meerdere collecties, verzameld in de pod. 
+* Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
+* Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
+* De scope van het collectiebeheersysteem is beperkt.
 
 
 == Functional requirements
 
 [arabic]
 . Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
-. Als `bezoeker` wil ik per instelling de collectie kunnen bekijken.
-. Als `beheerder` wil ik een account aanmaken in het `collectiebeheersysteem` (onboarding).
-. Als `beheerder` wil ik een collectie aanmaken in het `collectiebeheersysteem`.
-. Als `beheerder` wil ik nieuwe items toevoegen aan de pod van mijn instelling.
-. Als 
+. Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
+. Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
+. Als `beheerder` wil ik een WebID/account kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem` (onboarding).
+. Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
+. Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
+. Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
+. Als `beheerder` wil ik collecties en objecten importeren en exporteren.
+. Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
+. Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
 
-
-As a `citizen`, I want to log in at Flemish Government.
-. As a `citizen`, I want to create a dossier that contains my application for a social contribution.
-. As `automatic advice`, I want to get a list of employments of a citizen.
-. As `automatic advice`, I want to register the citizen at Digita Connect.
-. As `automatic advice`, I want to requests the payslips for a citizen for a specific time period from Digita Connect.
-. As `Digita Connect`, I want to request the payslips for a citizen for a specific time period from the citizen's pod.
-. As a `citizen`, I want to get advice on my dossier that contains my application for a social contribution.
-. As a `citizen`, I want to grant access to my `pod` by authenticating so that I can re-use my salary information of the past month.
 
 == Non-functional requirements
 
 [arabic]
+. De software artefacten zullen worden getest op een gelimiteerd aantal moderen web browsers zoals Chrome en Firefox.
+.
+
+
 . The demo environment will be described as a Docker Compose file.
 . The performance of the software artefacts needs to be adequate for a
 good user experience, but does not need to work at scale.
@@ -70,5 +72,6 @@ browsers, such as Chrome and Firefox.
 == Out of scope
 
 [arabic]
+. Hosting
 . Het verbeteren of doorontwikkelen van een Solid-opslagserver of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
 . Technische aansluiting op andere NDE-voorzieningen zoals het Termennetwerk en de registerfunctie.
