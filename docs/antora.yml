@@ -1,0 +1,5 @@
+name: nde-erfgoedinstellingen
+title: Solid voor kleine erfgoedinstellingen
+version: master
+nav:
+- modules/ROOT/nav.adoc
