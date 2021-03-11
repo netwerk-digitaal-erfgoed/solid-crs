@@ -38,36 +38,30 @@
 
 == Functional requirements
 
-[arabic]
-. Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
-. Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
-. Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
-. Als `beheerder` wil ik een WebID/account kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem` (onboarding).
-. Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
-. Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
-. Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
-. Als `beheerder` wil ik collecties en objecten importeren en exporteren.
-. Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
-. Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
+. Fase 1: Onboarding
+* Als `beheerder` wil ik een WebID/account kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
+
+. Fase 2: Beheer
+* Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
+* Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
+* Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
+* Als `beheerder` wil ik collecties en objecten importeren en exporteren.
+* Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
+* Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
+
+.Fase 3: Presentatie
+* Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
+* Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
+* Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
 
 
 == Non-functional requirements
 
 [arabic]
+. De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
 . De software artefacten zullen worden getest op een gelimiteerd aantal moderen web browsers zoals Chrome en Firefox.
-.
+. De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
 
-
-. The demo environment will be described as a Docker Compose file.
-. The performance of the software artefacts needs to be adequate for a
-good user experience, but does not need to work at scale.
-. The quality of the software artefacts needs to be adequate for testing
-purposes, but does not need to be of production quality.
-. The software artefacts will be built by using technologies of Digita’s
-choice, and may include proprietary software development kits.
-. The software artefacts will be tested on a limited set of modern web
-browsers, such as Chrome and Firefox.
-. The software artefacts will be designed for a single resolution.
 
 == Out of scope
 
