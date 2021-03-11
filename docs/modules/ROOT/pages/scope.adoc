@@ -11,7 +11,7 @@
 |===
 |Term                       | Definition
 |`Gebruiker`                | Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
-|`Collectiebeheersysteem`   | MOET WORDEN GEDEFINIEERD: omvat dit enkel beheer? Onboarding en beheer? of Onboarding, beheer en presentatie?
+|`Collectiebeheersysteem`   | Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
 |`Beheerder`                | `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
 |`Bezoeker`                 | `Gebruiker` die de publieke website van NDE bezoekt.
 |`Pod`                      | Container waarin data van een kleine ergfoedinstelling is opgeslaan.
