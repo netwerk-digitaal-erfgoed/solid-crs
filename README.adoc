@@ -1,3 +1,6 @@
 = Solid voor kleine erfgoedinstellingen
 ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 ifdef::env-github,env-browser[:relfileprefix: docs/modules/ROOT/pages/]
+
+* xref:scope.adoc[Scope]
+* xref:architecture.adoc[Architecture]
