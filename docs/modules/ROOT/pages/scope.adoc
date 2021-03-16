@@ -47,7 +47,6 @@
  * Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
  * Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
 
-
 == Niet-functionele vereisten
 
  * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
