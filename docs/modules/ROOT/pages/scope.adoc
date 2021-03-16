@@ -5,7 +5,7 @@
 :page-tags: NDE-erfgoedinstellingen
 :imagesdir: ../images
 
-== Definitions
+== Definities
 
 [options="header",]
 |===
@@ -20,52 +20,42 @@
 |`Objectbeschrijving`       | Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
 |`Term`                     | Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
 |`Digita Connect`           | Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
-
 |===
 
-== Assumptions
+== Assumpties
 
-* De pods zijn reeds aangemaakt.
-* Bezoekers moeten niet inloggen met WebID om de collecties te raadplegen. Enkel `beheerders` en dus niet `gebruikers` zitten in het beheersysteem.
-* Digita connect is geen open source software.
-* De beheerder is de actor die instaat voor het beheren van collecties en objecten, er kunnen meerdere beheerders per instelling worden toegevoegd.
-* Elke instelling heeft één pod. 
-* Elke instelling heeft één of meerdere collecties, verzameld in de pod. 
-* Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
-* Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
-* De scope van het collectiebeheersysteem is beperkt.
+ * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
+ * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en  begraafplaatsen worden verstaan.
+ * Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
 
+== Functionele vereisten
 
-== Functional requirements
+.Onboarding
+ * Als `beheerder` wil ik een WebID en pod kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
+ * Als `beheerder` wil ik toegang geven tot mijn pod aan het `collectiebeheersysteem`.
 
-. Fase 1: Onboarding
-* Als `beheerder` wil ik een WebID/account kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
+.Presentatie
+ * Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
+ * Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
+ * Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
 
-. Fase 2: Beheer
-* Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
-* Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
-* Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
-* Als `beheerder` wil ik collecties en objecten importeren en exporteren.
-* Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
-* Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
-
-.Fase 3: Presentatie
-* Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
-* Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
-* Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
+.Beheer
+ * Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
+ * Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
+ * Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
+ * Als `beheerder` wil ik collecties en objecten importeren en exporteren.
+ * Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
+ * Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
 
 
-== Non-functional requirements
+== Niet-functionele vereisten
 
-[arabic]
-. De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
-. De software artefacten zullen worden getest op een gelimiteerd aantal moderne web browsers zoals Chrome en Firefox.
-. De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
+ * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
+ * De software artefacten zullen worden getest op een gelimiteerd aantal moderne web browsers zoals Chrome en Firefox.
+ * De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
 
+== Out-of-scope
 
-== Out of scope
-
-[arabic]
-. Hosting
-. Het verbeteren of doorontwikkelen van een Solid-opslagserver of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
-. Technische aansluiting op andere NDE-voorzieningen zoals het Termennetwerk en de registerfunctie.
+ * Het hosten van pods voor erfgoedinstellingen.
+ * Het verbeteren of doorontwikkelen van een Solid-opslagserver of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
+ * Technische aansluiting op andere NDE-voorzieningen zoals het Termennetwerk en de registerfunctie.
