@@ -50,7 +50,7 @@
 == Niet-functionele vereisten
 
  * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
- * De software artefacten zullen worden getest op een gelimiteerd aantal moderen web browsers zoals Chrome en Firefox.
+ * De software artefacten zullen worden getest op een gelimiteerd aantal moderne web browsers zoals Chrome en Firefox.
  * De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
 
 == Out-of-scope
