@@ -4,16 +4,18 @@
 :url-repo: 
 :page-tags: NDE-erfgoedinstellingen
 :imagesdir: ../images
+:sectnums:
 
 *Solid voor kleine erfgoedinstellingen:*
 Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website. Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers.
 
-Voor dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: A en B. Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een MVP te komen dat de kleine erfgoedinstellingen kunnen gebruiken.
+Om dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: A en B. 
+Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een MVP te komen dat de kleine erfgoedinstellingen kunnen gebruiken.
 Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen(netwerk) en presentatie. Beheer wordt hierbij nogmaals opgedeeld in beheer van collecties en beheer van objecten.
 
 
 == Definities
-
+[horizontal]
 `Gebruiker`:: Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
 `Collectiebeheersysteem`:: Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
 `Beheerder`:: `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
@@ -26,19 +28,16 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 `Digita Connect`:: Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
 
 == Assumpties
-
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
  * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
- * Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
+ * Een term kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
 
 == Functionele vereisten
-
+:sectnums!:
 === FASE A 
-
-* Onboarding
+==== Onboarding
  Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. De pod van de instelling moet gelinkt worden aan het collectiebeheersysteem.
- In volgende tabel zijn de vereiste functies te zien, met de overeenkomstige code uit het (door NDE opgestelde) document 'applicatiefuncties'.
-
+ In volgende tabel zijn de vereiste functies te zien, met de overeenkomstige code uit het (door NDE opgestelde) document 'applicatiefuncties'. 
 [options=header]
 |===
 |Functie |Code 
@@ -50,9 +49,8 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 |Pod van de instelling linken aan collectiebeheersysteem | - 
 |===
 
-*Beheer collectie
+==== Beheer collectie
 Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
-
 [options=header]
 |===
 |Functie |Code 
@@ -64,9 +62,8 @@ Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
 |Verwijderen van collectie |C6
 |===
 
-*Beheer objecten
+==== Beheer objecten
 Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toegevoegd aan een collectie.
-
 [options=header]
 |===
 |Functie |Code 
@@ -80,10 +77,8 @@ Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toege
 
 
 === FASE B
-
-*Onboarding
+==== Onboarding
 Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van een medebeheerder kunnen beheerrechten gespecifieerd worden.
-
 [options=header]
 |===
 |Functie |Code 
@@ -93,9 +88,8 @@ Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van
 |===
 
 
-*Beheer objecten
+==== Beheer objecten
 Beheerders kunnen digitale objecten imprteren/exporteren en opmerkingen plaatsen bij een object.
-
 [options=header]
 |===
 |Functie |Code 
@@ -104,9 +98,8 @@ Beheerders kunnen digitale objecten imprteren/exporteren en opmerkingen plaatsen
 |Opmerkingen plaatsen bij object |O7
 |===
 
-*Termen
+==== Termen
 Beheerders kunnen termen toewijzen aan objecten en collecties.
-
 [options=header]
 |===
 |Functie |Code 
@@ -119,9 +112,8 @@ Beheerders kunnen termen toewijzen aan objecten en collecties.
 |Exporteren van termen |T7
 |===
 
-*Presentatie
+==== Presentatie
 Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per instelling. 
-
 [options=header]
 |===
 |Functie |Code 
@@ -135,7 +127,7 @@ Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per instelling.
 |Reageren op object |P8
 |===
 
-
+:sectnums:
 == Niet-functionele vereisten
 
  * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
