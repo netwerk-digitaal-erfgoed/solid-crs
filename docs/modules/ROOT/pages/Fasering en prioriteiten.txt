@@ -7,7 +7,7 @@
 :sectnums:
 
 == Onboarding
-Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. Eventueel kunnen ze medebeheerders toevoegen.
+Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. Eventueel kunnen ze medebeheerders toevoegen. Bij het toevoegen en bewerken van een medebeheerder kunnen beheerrechten gespecifieerd worden.
 
 [options=header]
 |===
