@@ -14,7 +14,6 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 
 == Definities
 
-[horizontal]
 `Gebruiker`:: Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
 `Collectiebeheersysteem`:: Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
 `Beheerder`:: `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
