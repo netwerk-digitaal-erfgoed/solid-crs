@@ -36,7 +36,7 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 
 === FASE A 
 
-.Onboarding
+* Onboarding
  Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. De pod van de instelling moet gelinkt worden aan het collectiebeheersysteem.
  In volgende tabel zijn de vereiste functies te zien, met de overeenkomstige code uit het (door NDE opgestelde) document 'applicatiefuncties'.
 
@@ -51,7 +51,7 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 |Pod van de instelling linken aan collectiebeheersysteem | - 
 |===
 
-.Beheer collectie
+*Beheer collectie
 Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
 
 [options=header]
@@ -65,7 +65,7 @@ Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
 |Verwijderen van collectie |C6
 |===
 
-.Beheer objecten
+*Beheer objecten
 Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toegevoegd aan een collectie.
 
 [options=header]
@@ -82,7 +82,7 @@ Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toege
 
 === FASE B
 
-.Onboarding
+*Onboarding
 Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van een medebeheerder kunnen beheerrechten gespecifieerd worden.
 
 [options=header]
@@ -94,7 +94,7 @@ Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van
 |===
 
 
-.Beheer objecten
+*Beheer objecten
 Beheerders kunnen digitale objecten imprteren/exporteren en opmerkingen plaatsen bij een object.
 
 [options=header]
@@ -105,7 +105,7 @@ Beheerders kunnen digitale objecten imprteren/exporteren en opmerkingen plaatsen
 |Opmerkingen plaatsen bij object |O7
 |===
 
-.Termen
+*Termen
 Beheerders kunnen termen toewijzen aan objecten en collecties.
 
 [options=header]
@@ -120,7 +120,7 @@ Beheerders kunnen termen toewijzen aan objecten en collecties.
 |Exporteren van termen |T7
 |===
 
-.Presentatie
+*Presentatie
 Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per instelling. 
 
 [options=header]
