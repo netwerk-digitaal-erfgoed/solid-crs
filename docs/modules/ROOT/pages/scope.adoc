@@ -1,51 +1,141 @@
-= Scope
+= Scope 
 :description: A description of the scope used in the NDE erfgoedinstellingen project.
 :sectanchors:
 :url-repo: 
 :page-tags: NDE-erfgoedinstellingen
 :imagesdir: ../images
 
+*Solid voor kleine erfgoedinstellingen:*
+Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website. Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers.
+
+Voor dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: A en B. Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een MVP te komen dat de kleine erfgoedinstellingen kunnen gebruiken.
+Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen(netwerk) en presentatie. Beheer wordt hierbij nogmaals opgedeeld in beheer van collecties en beheer van objecten.
+
+
 == Definities
 
-[options="header",]
-|===
-|Term                       | Definition
-|`Gebruiker`                | Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
-|`Collectiebeheersysteem`   | Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
-|`Beheerder`                | `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
-|`Bezoeker`                 | `Gebruiker` die de publieke website van NDE bezoekt.
-|`Pod`                      | Container waarin data van een kleine ergfoedinstelling is opgeslaan.
-|`Erfgoedobject`            | Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
-|`Digitaal object`          | Digitale representatie van een `erfgoedobject`.
-|`Objectbeschrijving`       | Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
-|`Term`                     | Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
-|`Digita Connect`           | Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
-|===
+[horizontal]
+`Gebruiker`:: Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
+`Collectiebeheersysteem`:: Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
+`Beheerder`:: `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
+`Bezoeker`:: `Gebruiker` die de publieke website van NDE bezoekt.
+`Pod`:: Container waarin data van een kleine ergfoedinstelling is opgeslaan.
+`Erfgoedobject`:: Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
+`Digitaal object`:: Digitale representatie van een `erfgoedobject`.
+`Objectbeschrijving`:: Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
+`Term`:: Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
+`Digita Connect`:: Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
 
 == Assumpties
 
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
- * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en  begraafplaatsen worden verstaan.
+ * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
  * Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
 
 == Functionele vereisten
 
+=== FASE A 
+
 .Onboarding
- * Als `beheerder` wil ik een WebID en pod kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
- * Als `beheerder` wil ik toegang geven tot mijn pod aan het `collectiebeheersysteem`.
+ Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. De pod van de instelling moet gelinkt worden aan het collectiebeheersysteem.
+ In volgende tabel zijn de vereiste functies te zien, met de overeenkomstige code uit het (door NDE opgestelde) document 'applicatiefuncties'.
+
+[options=header]
+|===
+|Functie |Code 
+|Account aanmaken |G3
+|Inloggen |G1
+|Uitloggen |G2
+|Bewerken van organisatie |G4
+|Verwijderen van organisatie |G5
+|Pod van de instelling linken aan collectiebeheersysteem | - 
+
+
+.Beheer collectie
+Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
+
+[options=header]
+|===
+|Functie |Code 
+|Zoeken en vinden van collectie |C1
+|Toevoegen van nieuwe collectie |C2
+|Bekijken van collectie |C3
+|Bewerken van collectie |C4
+|Publiceren van collectie |C5
+|Verwijderen van collectie |C6
+|===
+
+.Beheer objecten
+Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toegevoegd aan een collectie.
+
+[options=header]
+|===
+|Functie |Code 
+|Toevoegen van nieuw object |O2
+|Bekijken van object |O4
+|Bewerken van object |O6
+|Publiceren van object |O8
+|Verwijderen van object |O9
+|Wijs objecten toe aan collectie | -
+
+
+
+=== FASE B
+
+.Onboarding
+Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van een medebeheerder kunnen beheerrechten gespecifieerd worden.
+
+[options=header]
+|===
+|Functie |Code 
+|Toevoegen van medebeheerder |G7
+|Bekijken van medebeheerder |G8
+|Bewerken van medebeheerder |G9
+|===
+
+
+.Beheer objecten
+Beheerders kunnen digitale objecten imprteren/exporteren en opmerkingen plaatsen bij een object.
+
+[options=header]
+|===
+|Functie |Code 
+|Importeren van objecten |O10
+|Exporteren van objecten |O11
+|Opmerkingen plaatsen bij object |O7
+|===
+
+.Termen
+Beheerders kunnen termen toewijzen aan objecten en collecties.
+
+[options=header]
+|===
+|Functie |Code 
+|Browsen van termen |T1
+|Toevoegen van nieuwe term |T2
+|Bekijken van term |T3
+|Bewerken van term |T4
+|Publiceren van term |T5
+|Verwijderen van term |T6
+|Exporteren van termen |T7
+|===
 
 .Presentatie
- * Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
- * Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
- * Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
+Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per instelling. 
 
-.Beheer
- * Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
- * Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
- * Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
- * Als `beheerder` wil ik collecties en objecten importeren en exporteren.
- * Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
- * Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
+[options=header]
+|===
+|Functie |Code 
+|Browsen van objecten |P1
+|Bekijken van object |P2
+|Delen van object via socials |P3
+|Bekijken van beeldmateriaal van object |P4
+|In- en uitzoomen van beeldmateriaal |P5
+|Downloaden van 'high-res'-versie van beeldmateriaal |P6
+|Melden van fout in metadatering van object |P7
+|Reageren op object |P8
+|===
+
 
 == Niet-functionele vereisten
 
