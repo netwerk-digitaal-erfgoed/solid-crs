@@ -10,7 +10,7 @@
 Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website. Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers.
 
 Om dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: A en B. 
-Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een MVP te komen dat de kleine erfgoedinstellingen kunnen gebruiken.
+Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een Proof of Concept te komen die de kleine erfgoedinstellingen kunnen gebruiken.
 Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen(netwerk) en presentatie. Beheer wordt hierbij nogmaals opgedeeld in beheer van collecties en beheer van objecten.
 
 
@@ -34,7 +34,7 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 
 == Functionele vereisten
 :sectnums!:
-=== FASE A 
+=== FASE A: Proof of Concept
 ==== Onboarding
  Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account maken voor hun instelling en kunnen deze info bewerken. De pod van de instelling moet gelinkt worden aan het collectiebeheersysteem.
  In volgende tabel zijn de vereiste functies te zien, met de overeenkomstige code uit het (door NDE opgestelde) document 'applicatiefuncties'. 
@@ -76,7 +76,7 @@ Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toege
 |===
 
 
-=== FASE B
+=== FASE B: Minimum Viable Product
 ==== Onboarding
 Beheerders kunnen nu medebeheerders toevoegen. Bij het toevoegen en bewerken van een medebeheerder kunnen beheerrechten gespecifieerd worden.
 [options=header]
