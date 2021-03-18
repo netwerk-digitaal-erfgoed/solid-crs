@@ -54,7 +54,7 @@ Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem.
 [options=header]
 |===
 |Functie |Code 
-|Zoeken en vinden van collectie |C1
+|Browsen van collectie |C1
 |Toevoegen van nieuwe collectie |C2
 |Bekijken van collectie |C3
 |Bewerken van collectie |C4
