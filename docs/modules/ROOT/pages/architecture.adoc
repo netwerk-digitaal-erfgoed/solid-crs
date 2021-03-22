@@ -4,4 +4,4 @@
 :url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
 :imagesdir: ../images
 
-image::architecture.svg[Architecture]
+image::architecture-now.svg[Architecture]
