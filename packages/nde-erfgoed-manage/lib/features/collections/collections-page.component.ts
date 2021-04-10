@@ -3,15 +3,15 @@ import type { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 
 /**
- * A component which shows the details of a single collection.
+ * A component which shows an summary of multiple collections.
  */
-export default class CollectionComponent extends LitElement implements Component {
+export class CollectionsPageComponent extends LitElement implements Component {
 
   /**
-   * The collection which will be rendered by the component.
+   * The collections which will be summarized by the component.
    */
-  @property({type: Object})
-  private collection: Collection = null;
+  @property({type: Array})
+  private collections: Collection[] = null;
 
   /**
    * The styles associated with the component.
@@ -37,7 +37,7 @@ export default class CollectionComponent extends LitElement implements Component
     return myFetch(entry)
       .then((response) => response.text())
       .then(() => {
-        this.collection = {name: 'Test'};
+        this.collections = [];
       });
 
   }
@@ -49,11 +49,9 @@ export default class CollectionComponent extends LitElement implements Component
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <div class="collection">
-      <div>${this.collection ? this.collection.name : 'Unknown'}</div>
-      <button>Save</button>
-    </div>
+    <link href="./dist/styles.css" rel="stylesheet">
+    Header
+    <nde-collections collections='${JSON.stringify(this.collections)}'></nde-collections>
   `;
   }
 }

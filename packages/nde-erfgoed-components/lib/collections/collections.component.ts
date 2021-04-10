@@ -49,7 +49,7 @@ export default class CollectionsComponent extends LitElement implements Componen
    */
   render() {
     return html`
-    <link href="./dist/styles.css" rel="stylesheet">
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collections">
     ${this.collections.map((collection) => html`<nde-collection collection='${JSON.stringify(collection)}'></nde-collection>`)}
     </div>

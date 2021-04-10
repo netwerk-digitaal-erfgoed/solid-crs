@@ -4,14 +4,14 @@
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "start:watch": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist --bundle",
-    "build": "rm -rf ./dist && tsc --noEmit && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist --minify",
-    "build:dev": "rm -rf ./dist && tsc --noEmit && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist",
+    "start:watch": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist/bundles --bundle",
+    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles --minify",
+    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",

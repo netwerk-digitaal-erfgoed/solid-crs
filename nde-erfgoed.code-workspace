@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "manage",
+      "path": "packages/nde-erfgoed-manage"
+    },
+    {
       "name": "components",
       "path": "packages/nde-erfgoed-components"
     },
