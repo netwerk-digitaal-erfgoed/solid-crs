@@ -6,7 +6,7 @@
     },
     {
       "name": "components",
-      "path": "packages/nde-erfgoedinstellingen-components"
+      "path": "packages/nde-erfgoed-components"
     },
   ],
   "settings": {

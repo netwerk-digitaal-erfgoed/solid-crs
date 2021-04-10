@@ -2,7 +2,7 @@
 :description: A description of the scope used in the NDE erfgoedinstellingen project.
 :sectanchors:
 :url-repo: 
-:page-tags: NDE-erfgoedinstellingen
+:page-tags: nde-erfgoed
 :imagesdir: ../images
 
 == Definities

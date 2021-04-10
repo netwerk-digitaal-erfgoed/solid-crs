@@ -1,5 +1,5 @@
 {
-  "name": "@digita-ai/nde-erfgoedinstellingen-components",
+  "name": "@digita-ai/nde-erfgoed-components",
   "version": "0.3.4",
   "description": "Collection of Semantic Components",
   "author": "Wouter Termont <wouter.termont@digita.ai>",
@@ -38,10 +38,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digita-ai/nde-erfgoedinstellingen.git",
-    "directory": "packages/nde-erfgoedinstellingen-components"
+    "url": "git+https://github.com/digita-ai/nde-erfgoed.git",
+    "directory": "packages/nde-erfgoed-components"
   },
   "bugs": {
-    "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"
+    "url": "https://github.com/digita-ai/nde-erfgoed/issues"
   }
 }
