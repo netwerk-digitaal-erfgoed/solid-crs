@@ -1,0 +1,277 @@
+/* In VSCode settings:
+    - set "eslint.format.enable" to true and "editor.defaultFormatter" to "dbaeumer.vscode-eslint"
+    - add "source.fixAll.eslint" as true in "editor.codeActionsOnSave"
+*/
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "ignorePatterns": ["node_modules", "dist", "*.conf.js", "*.config.js"],
+  "rules": {
+    "eol-last": ["error", "always"], // fixes end of file newline (replaces editorconfig's "insert_final_newline")
+    "linebreak-style": ["error", "unix"], // fixes line breaks (replaces prettier's "endOfLine" and editorconfig's "end_of_line")
+    "no-trailing-spaces": "error", // fixes trailing whitespace (replaces editorconfig's "trim_trailing_whitespace")
+    "object-curly-spacing": ["error", "always"], // fixes spacing in braces (replaces prettier's "bracketSpacing")
+    "quotes": [ // fixes quotes (replaces prettier's "singleQuote" and editorconfig's "quote_type")
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "indent": [ // fixes indentation (replaces prettier's "useTabs" and "tabWidth", and editorconfig's "indent_style" and "indent_size")
+      "error",
+      2,
+      {} // we might add some more precise options
+    ],
+    "max-len": ["error", { // enforces max line length (replaces prettier's "printWidth" and editorconfig's "max_line_length")
+      "code": 180,
+      "tabWidth": 2,
+      "ignoreUrls": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreRegExpLiterals": true,
+      "ignoreTrailingComments": true,
+      "ignoreComments": true
+    }]
+  },
+  "overrides": [
+    /*
+    {
+      "files": ["*.md", "*.adoc"],
+      "rules": {
+        "max-len": "off",
+        "no-trailing-spaces": "off"
+      }
+    },
+    */
+    {
+      "files": ["*.ts", "*.js"],
+      "plugins": [
+        "@typescript-eslint/eslint-plugin",
+        "eslint-plugin-jsdoc",
+        "eslint-plugin-import",
+        "eslint-plugin-prefer-arrow"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        //"plugin:@typescript-eslint/recommended-requiring-type-checking", // throws a lot of errors in legacy code
+        //"plugin:jsdoc/recommended", // throws a lot of warnings in legacy code
+        "plugin:import/warnings",
+        //"plugin:import/errors", // throws some errors in legacy code
+        "plugin:import/typescript"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "tsconfig.*.json"
+        ],
+        "sourceType": "module"
+      },
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true,
+            "project": [
+              "tsconfig.json",
+              "tsconfig.*.json"
+            ]
+          }
+        }
+      },
+      "rules": {
+
+        /* * * * * * * *
+        * ESLint rules
+        */
+
+        /* Turned-off recommendations */
+
+        "indent": "off", // turns off rec. in favor of TS plugin
+        "semi": "off", // turned off in favor of TS plugin
+        "dot-notation": "off", // turned off in favor of TS plugin
+        "no-shadow": "off", // turned off in favor of TS plugin
+        "no-use-before-define": "off", // turned off in favor of TS plugin
+        "quotes": "off", // turned off in favor of TS plugin
+        "no-unused-expressions": "off", // turned off in favor of TS plugin
+        "comma-dangle": "off", // turned off in favor of TS plugin
+        "comma-spacing": "off", // turned off in favor of TS plugin
+        "object-curly-spacing": "off", // turned off in favor of TS plugin
+        "sort-imports": "off", // turned of in favor of imports plugin
+
+        /* Softened recommendations */
+
+        "no-useless-escape": "warn", // softens req.
+
+        /* Fixable errors */
+
+        "arrow-body-style": ["error", "as-needed"], // fixes unnecessary arrow function braces
+        "brace-style": ["error", "1tbs"], // fixes block brace placement // SUGGESTION: { "allowSingleLine": true }
+        "curly": ["error"], // fixes single statement block braces // SUGGESTION: 'multi' or 'multi-line' with 'consistent'
+        "eqeqeq": ["error", "smart"], // fixes equality checks
+        "no-multiple-empty-lines": ["error", { "max": 1 } ], // fixes multiple empty lines
+        "no-undef-init": "error", // fixes explicit undefined inits (do we really want this ?)
+        "no-var": "error", // fixes use of var
+        "prefer-const": "error", // fixes unreassigned let's
+        "spaced-comment": ["error", "always", { "markers": ["/"] }], // fixes spaces around comments
+        "space-in-parens": ["error", "never"], // fixes spaces in parentheses
+        "arrow-parens": ["error", "always"], // fixes parentheses around single arrow function argument (replaces prettier's "arrowParens")
+        "new-parens": ["error", "always"], // fixes parentheses for constructor call
+        "object-shorthand": ["error", "always"], // fixes use of object shorthand
+        "one-var": ["error", "never"], // fixes use of single variable declarations
+        "array-bracket-spacing": ["error", "always"], // fixes spaces in array brackets
+        "object-curly-newline": ["error", { "consistent": true }], // fixes consistent newlines in brackets
+        "function-call-argument-newline": ["error", "consistent"], // fixes consistent newlines in function calls
+        "function-paren-newline": ["error", "consistent"], // fixes consistent newlines in parameter lists
+        "array-bracket-newline": ["error", "consistent"], // fixes consistent newlines in array brackets
+        "array-element-newline": ["error", "consistent"], // fixes consistent newlines between array elements
+
+        /* Enforced best practices */
+
+        "guard-for-in": "error", // enforces property check in for-in loops
+        "radix": "error", // enforces radix in parseInt()
+
+        /* Disallowed bad practices */
+
+        "no-bitwise": "error", // disallows bitwise operators
+        "no-caller": "error", // disallows deprecated properties
+        "no-console": "error", // disallow console prints (check legacy exceptions !)
+        "no-eval": "error", // disallow the use of eval()
+        "no-new-wrappers": "error", // disallows primitive wrappers
+        "no-throw-literal": "error", // disallow literal throws
+
+        /* Suggestions (possibly throwing a lot of legacy sins) */
+
+        "id-match": "off", // we might want to add naming convention regex ?
+        "id-denylist": "off", // we might want to add some unwanted generic names ?
+        "no-underscore-dangle": "off", // we might disallow underscores ?
+        "no-invalid-this": "off", // we might turn this on when class properties become supported ?
+        "max-classes-per-file": ["off", 1], // we might want to enforce this ?
+
+        /* * * * * * * * * * * *
+        * Prefer-arrow plugin
+        */
+
+        /* Fixable errors */
+
+        "prefer-arrow/prefer-arrow-functions": "error", // fixes arrow functions
+
+        /* * * * * * * * * * * * * *
+        * Typescript plugin rules
+        */
+
+        /* Fixable errors */
+
+        "@typescript-eslint/comma-dangle": ["error", { // fixes trailing comma's (replaces prettier's "trailingComma")
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "always-multiline", // would make this never: trailing comma's make reading complex function calls hard
+          "enums": "always-multiline",
+          "generics": "always-multiline",
+          "tuples": "always-multiline"
+        }],
+        "@typescript-eslint/array-type": ["error", { "default": "array" }], // fixes array notation
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"], // fixes interface keyword
+        "@typescript-eslint/dot-notation": ["error"], // fixes unnecessary bracket notation (complains)
+        "@typescript-eslint/member-delimiter-style": "error", // fixes interface member semicolon delimiter
+        "@typescript-eslint/prefer-function-type": "error", // fixes interfaces with call signatures
+        "@typescript-eslint/semi": ["error", "always"], // fixes end of statement semicolon (replaces prettier's "semi")
+        "@typescript-eslint/type-annotation-spacing": "error", // fixes spacing of type signatures
+        "@typescript-eslint/comma-spacing": ["error"], // fixes spaces around comma's
+        // "@typescript-eslint/object-curly-spacing": ["error", "always"], // fixes spacing in braces (replaces prettier's "bracketSpacing")
+        "@typescript-eslint/quotes": [ // fixes quotes (replaces prettier's "singleQuote" and editorconfig's "quote_type")
+          "error",
+          "single",
+          {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true
+          }
+        ],
+        "@typescript-eslint/indent": [ // fixes indentation (replaces prettier's "useTabs" and "tabWidth", and editorconfig's "indent_style" and "indent_size")
+          "error",
+          2,
+          {} // we might add some more precise options
+        ],
+
+        /* Enforced best practices */
+
+        "@typescript-eslint/consistent-type-assertions": "error", // enforces type casting style (could be stronger)
+        "@typescript-eslint/explicit-member-accessibility": [ // enforces accessibility modifiers
+            "error",
+            {
+                "accessibility": "explicit", // we might enforce this stronger, even if legacy throws a lot of errors
+                "overrides": {
+                  "accessors": "no-public",
+                  "constructors": "no-public",
+                  "methods": "no-public",
+                  "properties": "off",
+                  "parameterProperties": "no-public"
+                }
+            }
+        ],
+        "@typescript-eslint/unified-signatures": "error", // enforces reduction of overloads
+        "@typescript-eslint/prefer-for-of": "error", // enforces for-of loops where possible
+
+        /* Disallowed bad practices */
+
+        "@typescript-eslint/ban-types": "error", // disallows dangerous type names
+        "@typescript-eslint/no-empty-function": "error", // disallows empty functions
+        "@typescript-eslint/no-shadow": [ // disallow shadowing outer variables with inner ones
+          "error",
+          {
+            "builtinGlobals": false, // should probably be true, but throws a lot of legacy errors
+            "hoist": "all",
+            "ignoreTypeValueShadow": false,
+            "ignoreFunctionTypeParameterNameValueShadow": false
+          }
+        ],
+        "@typescript-eslint/no-use-before-define": "error", // disallows using not-yet-defined names
+        "@typescript-eslint/no-unused-expressions": [ // disallows unused expressions
+          "error",
+          {
+            "allowTernary": true // do we want this ?
+          }
+        ],
+
+        /* Suggestions (possibly throwing a lot of legacy sins) */
+
+        "@typescript-eslint/no-unused-vars": "off", // we might turn these warnings on, even if legacy throws a lot of them
+        "@typescript-eslint/no-explicit-any": "off", // we might turn these warnings on, even if legacy throws a lot of them
+        "@typescript-eslint/explicit-module-boundary-types": "off", // we might turn these warnings on, even if legacy throws a lot of them
+        "@typescript-eslint/member-ordering": "off", // we might devise a standard ordering for class members ?
+        "@typescript-eslint/naming-convention": "off", // we might devise standard naming conventions with this powerful rule ?
+
+        /* * * * * * * *
+        * Imports plugin
+        */
+
+        "import/order": "error", // we might fine-tune this
+
+        /* * * * * * * *
+        * JSDoc plugin
+        */
+
+        /* Enforced best practices */
+
+        "jsdoc/check-alignment": "error", // enforces consistent alignment (also in req.)
+        "jsdoc/check-indentation": ["error", { "excludeTags": ["example", "description"] }], // enforces consistent indentation
+        "jsdoc/newline-after-description": "error" // enforces consistent padding (also in req.)
+
+      }
+
+    }
+
+  ]
+
+}

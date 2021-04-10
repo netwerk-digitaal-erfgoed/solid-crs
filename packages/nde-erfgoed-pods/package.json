@@ -1,0 +1,13 @@
+{
+  "name": "@digita-ai/nde-erfgoed-pods",
+  "version": "0.2.16",
+  "description": "Pods for the demo environment of the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "",
+  "scripts": {
+    "start": "community-solid-server -c config/config-file.json --rootFilePath /tmp/css -p 3001"
+  },
+  "dependencies": {
+    "@solid/community-server": "0.8.1"
+  }
+}

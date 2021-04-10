@@ -1,0 +1,7 @@
+button {
+  background-color: var(--colors-primary-normal);
+  color: var(--colors-background-light);
+  border: none;
+  padding: var(--gap-small);
+  text-transform: uppercase;
+}

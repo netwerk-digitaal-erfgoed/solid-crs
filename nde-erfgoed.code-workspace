@@ -1,0 +1,37 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": "."
+    },
+    {
+      "name": "components",
+      "path": "packages/nde-erfgoed-components"
+    },
+    {
+      "name": "core",
+      "path": "packages/nde-erfgoed-core"
+    },
+    {
+      "name": "theme",
+      "path": "packages/nde-erfgoed-theme"
+    },
+    {
+      "name": "pods",
+      "path": "packages/nde-erfgoed-pods"
+    },
+  ],
+  "settings": {
+    "eslint.format.enable": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "humao.rest-client"
+    ]
+  }
+}

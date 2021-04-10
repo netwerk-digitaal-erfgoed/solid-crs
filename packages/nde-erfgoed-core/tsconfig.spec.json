@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["jest"],
+    "declaration": false,
+    "inlineSources": false,
+  },
+  "include": ["lib"],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
