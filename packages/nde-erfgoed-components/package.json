@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/nde-erfgoed-components",
-  "version": "0.3.4",
+  "version": "0.0.1",
   "description": "Collection of Semantic Components",
   "author": "Wouter Termont <wouter.termont@digita.ai>",
   "main": "./dist/index.js",
@@ -9,14 +9,16 @@
     "dist"
   ],
   "scripts": {
-    "start:dev": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist --bundle",
+    "start:watch": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist --bundle",
     "build": "rm -rf ./dist && tsc --noEmit && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist --minify",
+    "build:dev": "rm -rf ./dist && tsc --noEmit && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest",
     "test:ci": "npm run test -- --runInBand"
   },
   "dependencies": {
+    "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
     "lit-element": "^2.4.0"
   },

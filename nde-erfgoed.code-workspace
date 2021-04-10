@@ -8,6 +8,10 @@
       "name": "components",
       "path": "packages/nde-erfgoed-components"
     },
+    {
+      "name": "theme",
+      "path": "packages/nde-erfgoed-theme"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,

@@ -28,8 +28,10 @@ export default class CollectionComponent extends LitElement implements Component
 
   render() {
     return html`
+    <link href="./dist/styles.css" rel="stylesheet">
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
+      <button>Save</button>
     </div>
   `;
   }

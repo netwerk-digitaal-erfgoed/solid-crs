@@ -1,0 +1,22 @@
+:root {
+  /**
+        Primary colors
+    */
+  --colors-primary-light: #0a3dfa;
+  --colors-primary-normal: #0a3dfa;
+  --colors-primary-dark: #0a3dfa;
+
+  /**
+        Foreground colors
+    */
+  --colors-foreground-light: #172a59;
+  --colors-foreground-normal: #172a59;
+  --colors-foreground-dark: #000;
+
+  /**
+        Background colors
+    */
+  --colors-background-light: #fff;
+  --colors-background-normal: #e8e9ee;
+  --colors-background-dark: #e8e9ee;
+}

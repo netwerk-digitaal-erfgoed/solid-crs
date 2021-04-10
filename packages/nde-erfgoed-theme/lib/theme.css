@@ -1,0 +1,10 @@
+/**
+    Common styles
+*/
+@import './common/colors.css';
+@import './common/measures.css';
+
+/**
+Element styles
+*/
+@import './elements/buttons.css';

@@ -1,11 +1,12 @@
+@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/theme.css';
+
 html {
-  background-color: #ddd;
+  background-color: var(--colors-background-normal);
   padding: 0;
   margin: 0;
 }
 body {
   max-width: 1200px;
-  background-color: #eee;
+  background-color: #fff;
   margin: 0 auto;
-  box-shadow: 8px 0 10px -4px rgba(100, 100, 100, 0.3), -8px 0 8px -4px rgba(100, 100, 100, 0.3);
 }
