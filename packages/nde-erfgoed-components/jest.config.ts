@@ -1,20 +1,6 @@
-module.exports = {
-  // testTimeout: 300000,
-  // // moduleFileExtensions: [ 'js', 'ts' ],
-  // rootDir: 'lib',
-  // // testMatch: ['**/+(*.)+(spec).+(ts)'],
-  // // transform: {
-  // //   '^.+\\.(t|j)s$': 'ts-jest',
-  // // },
-  // preset: 'ts-jest',
-  // globals: {
-  //   'ts-jest': {
-  //     babelConfig: false,
-  //     tsconfig: '<rootDir>/../tsconfig.spec.json',
-  //   },
-  // },
+import type {Config} from '@jest/types';
 
-
+const config: Config.InitialOptions = {
   preset: 'ts-jest/presets/js-with-ts',
   testEnvironment: 'jest-environment-jsdom-sixteen',
   setupFiles: ['<rootDir>/tests/setup.ts'],
@@ -31,3 +17,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

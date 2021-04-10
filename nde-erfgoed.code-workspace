@@ -9,6 +9,10 @@
       "path": "packages/nde-erfgoed-components"
     },
     {
+      "name": "core",
+      "path": "packages/nde-erfgoed-core"
+    },
+    {
       "name": "theme",
       "path": "packages/nde-erfgoed-theme"
     },

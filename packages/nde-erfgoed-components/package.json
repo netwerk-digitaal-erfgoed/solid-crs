@@ -14,10 +14,11 @@
     "build:dev": "rm -rf ./dist && tsc --noEmit && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "test:ci": "npm run test -- --runInBand"
   },
   "dependencies": {
+    "@digita-ai/nde-erfgoed-core": "0.0.1",
     "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
     "lit-element": "^2.4.0"
@@ -32,7 +33,7 @@
     "jest": "26.6.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "ts-jest": "26.5.4",
-    "ts-node": "8.0.2",
+    "ts-node": "9.1.1",
     "typescript": "^4.1.3"
   },
   "publishConfig": {
