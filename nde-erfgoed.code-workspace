@@ -16,6 +16,10 @@
       "name": "theme",
       "path": "packages/nde-erfgoed-theme"
     },
+    {
+      "name": "pods",
+      "path": "packages/nde-erfgoed-pods"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,

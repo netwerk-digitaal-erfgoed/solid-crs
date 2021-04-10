@@ -1,8 +1,8 @@
 {
   "name": "@digita-ai/nde-erfgoed-core",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Core logic of the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,10 +34,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digita-ai/nde-erfgoed.git",
+    "url": "git+https://github.com/digita-ai/nde-erfgoedinstellingen.git",
     "directory": "packages/nde-erfgoed-core"
   },
   "bugs": {
-    "url": "https://github.com/digita-ai/nde-erfgoed/issues"
+    "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"
   }
 }
