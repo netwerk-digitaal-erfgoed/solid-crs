@@ -5,7 +5,7 @@ import { Collection } from '@digita-ai/nde-erfgoed-core';
 /**
  * A component which shows an summary of multiple collections.
  */
-export default class CollectionsComponent extends LitElement implements Component {
+export class CollectionsComponent extends LitElement implements Component {
 
   /**
    * The collections which will be summarized by the component.
@@ -56,3 +56,5 @@ export default class CollectionsComponent extends LitElement implements Componen
   `;
   }
 }
+
+export default CollectionsComponent;

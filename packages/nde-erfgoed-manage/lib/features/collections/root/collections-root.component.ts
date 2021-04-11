@@ -1,17 +1,26 @@
 import { LitElement, css, html, property } from 'lit-element';
-import type { Component } from '@digita-ai/semcom-core';
+import { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { select, dispatch } from '../../../app.store';
+import { getAllCollections } from '../collections.slice';
 
 /**
- * A component which shows an summary of multiple collections.
+ * The root page of the collections feature.
  */
-export class CollectionsPageComponent extends LitElement implements Component {
+export class CollectionsRootComponent extends LitElement implements Component {
 
   /**
    * The collections which will be summarized by the component.
    */
   @property({type: Array})
-  private collections: Collection[] = null;
+  private collections: Collection[] = [];
+
+  constructor() {
+    super();
+
+    select<Collection[]>((state) => state.collections.collections).subscribe((collections) => this.collections = collections);
+    dispatch(getAllCollections());
+  }
 
   /**
    * The styles associated with the component.
@@ -49,7 +58,7 @@ export class CollectionsPageComponent extends LitElement implements Component {
    */
   render() {
     return html`
-    <link href="./dist/styles.css" rel="stylesheet">
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
     Header
     <nde-collections collections='${JSON.stringify(this.collections)}'></nde-collections>
   `;
