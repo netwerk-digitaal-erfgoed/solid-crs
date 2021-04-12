@@ -2,7 +2,9 @@ import { LitElement, css, html, property } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { tap } from 'rxjs/operators';
-import { collectionsService, collectionsState } from '../collection.machine';
+import { from } from 'rxjs';
+import {Interpreter, AnyEventObject} from 'xstate';
+import { CollectionsContext } from '../collections.context';
 
 /**
  * The root page of the collections feature.
@@ -15,13 +17,28 @@ export class CollectionsRootComponent extends LitElement implements Component {
   @property({type: Array})
   private collections: Collection[] = [];
 
+  /**
+   * The collections which will be summarized by the component.
+   */
+  @property({type: Object})
+  public collectionsService: Interpreter<CollectionsContext, any, AnyEventObject, {
+    value: any;
+    context: CollectionsContext;
+  }> = null;
+
   constructor() {
     super();
 
-    collectionsState
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    from(this.collectionsService)
+      .pipe(tap((state) => console.log('collections', state)))
       .subscribe((state) => this.collections = state.context?.collections ? state.context?.collections : []);
-    collectionsService.start();
-    collectionsService.send('LOAD');
+    this.collectionsService.start();
+    this.collectionsService.send('LOAD');
   }
 
   /**
@@ -54,7 +71,7 @@ export class CollectionsRootComponent extends LitElement implements Component {
   }
 
   logout() {
-    collectionsService.send('LOGOUT');
+    this.collectionsService.send('LOGOUT');
   }
 
   /**

@@ -1,6 +1,8 @@
 import { LitElement, css, html, property } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
+import { tap } from 'rxjs/operators';
 import { appService, appState } from './app.machine';
+import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 
 /**
  * The root page of the application.
@@ -10,11 +12,20 @@ export class AppRootComponent extends LitElement implements Component {
   @property({type: String})
   private state: string = null;
 
+  @property({type: Object})
+  private collectionsService: Interpreter<CollectionsContext, any, AnyEventObject, {
+    value: any;
+    context: CollectionsContext;
+  }> = null;
+
   constructor() {
     super();
 
+    console.log('children', appService.children);
+    this.collectionsService = appService.children.get('collections');
     appState
-      .subscribe((state) => this.state = state.value);
+      .pipe(tap((state) => console.log('app', state)))
+      .subscribe((state) => this.state = 'collections');
     appService.start();
   }
 
@@ -40,6 +51,15 @@ export class AppRootComponent extends LitElement implements Component {
     return null;
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+
+    const collectionsRoot = document.createElement('nde-collections-root') as CollectionsRootComponent;
+    collectionsRoot.collectionsService = this.collectionsService;
+
+    this.appendChild(collectionsRoot);
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -49,7 +69,9 @@ export class AppRootComponent extends LitElement implements Component {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     Header
-    ${this.state === 'collections' ? html`<nde-collections-root></nde-collections>` : 'Logged out'}
+    <div id="container"></div>
   `;
   }
+
+  // ${this.state === 'collections' ? html`<nde-collections-root collectionsService=></nde-collections-root>` : 'Logged out'}
 }
