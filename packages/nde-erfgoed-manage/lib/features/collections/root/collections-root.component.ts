@@ -1,8 +1,8 @@
 import { LitElement, css, html, property } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { select, dispatch } from '../../../app.store';
-import { getAllCollections } from '../collections.slice';
+import { tap } from 'rxjs/operators';
+import { collectionsService, collectionsState } from '../collection.machine';
 
 /**
  * The root page of the collections feature.
@@ -18,8 +18,10 @@ export class CollectionsRootComponent extends LitElement implements Component {
   constructor() {
     super();
 
-    select<Collection[]>((state) => state.collections.collections).subscribe((collections) => this.collections = collections);
-    dispatch(getAllCollections());
+    collectionsState
+      .subscribe((state) => this.collections = state.context?.collections ? state.context?.collections : []);
+    collectionsService.start();
+    collectionsService.send('LOAD');
   }
 
   /**
@@ -51,6 +53,10 @@ export class CollectionsRootComponent extends LitElement implements Component {
 
   }
 
+  logout() {
+    collectionsService.send('LOGOUT');
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -59,8 +65,8 @@ export class CollectionsRootComponent extends LitElement implements Component {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    Header
     <nde-collections collections='${JSON.stringify(this.collections)}'></nde-collections>
+    <button @click="${this.logout}">Logout</button>
   `;
   }
 }
