@@ -3,7 +3,7 @@ import { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { tap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import {Interpreter, AnyEventObject} from 'xstate';
+import {Interpreter, AnyEventObject, SpawnedActorRef, State} from 'xstate';
 import { CollectionsContext } from '../collections.context';
 
 /**
@@ -21,10 +21,7 @@ export class CollectionsRootComponent extends LitElement implements Component {
    * The collections which will be summarized by the component.
    */
   @property({type: Object})
-  public collectionsService: Interpreter<CollectionsContext, any, AnyEventObject, {
-    value: any;
-    context: CollectionsContext;
-  }> = null;
+  public actor: SpawnedActorRef<any, State<CollectionsContext>>;
 
   constructor() {
     super();
@@ -34,11 +31,11 @@ export class CollectionsRootComponent extends LitElement implements Component {
   connectedCallback() {
     super.connectedCallback();
 
-    from(this.collectionsService)
-      .pipe(tap((state) => console.log('collections', state)))
-      .subscribe((state) => this.collections = state.context?.collections ? state.context?.collections : []);
-    this.collectionsService.start();
-    this.collectionsService.send('LOAD');
+    this.actor.subscribe((state) => {
+      // eslint-disable-next-line no-console
+      console.log('CollectionState change:', state);
+      this.collections = state.context.collections;
+    });
   }
 
   /**
@@ -70,8 +67,8 @@ export class CollectionsRootComponent extends LitElement implements Component {
 
   }
 
-  logout() {
-    this.collectionsService.send('LOGOUT');
+  sendEvent(event: string) {
+    return () => this.actor.send(event);
   }
 
   /**
@@ -83,7 +80,8 @@ export class CollectionsRootComponent extends LitElement implements Component {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <nde-collections collections='${JSON.stringify(this.collections)}'></nde-collections>
-    <button @click="${this.logout}">Logout</button>
+    <button @click="${this.sendEvent('TEST')}">Test</button>
+    <button @click="${this.sendEvent('LOGOUT')}">Logout</button>
   `;
   }
 }

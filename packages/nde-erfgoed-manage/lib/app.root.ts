@@ -1,7 +1,7 @@
-import { LitElement, css, html, property } from 'lit-element';
+import { LitElement, css, html, property, PropertyValues } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
-import { tap } from 'rxjs/operators';
-import { appService, appState } from './app.machine';
+import { interpret } from 'xstate';
+import { appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 
 /**
@@ -9,24 +9,14 @@ import { CollectionsRootComponent } from './features/collections/root/collection
  */
 export class AppRootComponent extends LitElement implements Component {
 
-  @property({type: String})
-  private state: string = null;
-
-  @property({type: Object})
-  private collectionsService: Interpreter<CollectionsContext, any, AnyEventObject, {
-    value: any;
-    context: CollectionsContext;
-  }> = null;
+  private appService = interpret(appMachine);
 
   constructor() {
     super();
-
-    console.log('children', appService.children);
-    this.collectionsService = appService.children.get('collections');
-    appState
-      .pipe(tap((state) => console.log('app', state)))
-      .subscribe((state) => this.state = 'collections');
-    appService.start();
+    this.appService.start().onTransition((state) => {
+      // eslint-disable-next-line no-console
+      console.log('AppState change', state);
+    });
   }
 
   /**
@@ -51,13 +41,14 @@ export class AppRootComponent extends LitElement implements Component {
     return null;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
+  firstUpdated(changed: PropertyValues) {
+    super.firstUpdated(changed);
 
-    const collectionsRoot = document.createElement('nde-collections-root') as CollectionsRootComponent;
-    collectionsRoot.collectionsService = this.collectionsService;
-
-    this.appendChild(collectionsRoot);
+    if (this.appService.state.value === 'collections') {
+      const collectionsRoot = document.createElement('nde-collections-root') as CollectionsRootComponent;
+      collectionsRoot.actor = this.appService.children.get('collections');
+      this.shadowRoot.appendChild(collectionsRoot);
+    }
   }
 
   /**
@@ -68,10 +59,8 @@ export class AppRootComponent extends LitElement implements Component {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    Header
-    <div id="container"></div>
+    <h1>Header</h1>
   `;
   }
 
-  // ${this.state === 'collections' ? html`<nde-collections-root collectionsService=></nde-collections-root>` : 'Logged out'}
 }

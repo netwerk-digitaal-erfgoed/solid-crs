@@ -1,6 +1,4 @@
-import { from } from 'rxjs';
-import {  map } from 'rxjs/operators';
-import { AnyEventObject, assign, interpret, Machine, MachineConfig, MachineOptions } from 'xstate';
+import { AnyEventObject, assign, Machine, MachineConfig, MachineOptions } from 'xstate';
 import { Collection, MemoryStore, Store} from '@digita-ai/nde-erfgoed-core';
 import { CollectionsContext } from './collections.context';
 
@@ -26,20 +24,20 @@ export const collectionsStates: MachineConfig<CollectionsContext, any, AnyEventO
       on: {
         LOAD: 'loading',
         LOGOUT: 'logout',
+        TEST: {
+          actions: [
+            'addTestCollection',
+          ],
+        },
       },
     },
     loading: {
       invoke: {
-        src: (context, event) =>
-          collections.all().pipe(
-            map((loadedCollections) => ({ type: 'LOADED', loadedCollections })),
-          ),
-        onDone: 'loaded',
-      },
-      on: {
-        LOADED: {actions:[
-          assign({ collections: (context, event) => event.loadedCollections }),
-        ]},
+        src: 'loadCollectionsService',
+        onDone: {
+          actions: [ 'storeLoadedCollections' ],
+          target: 'loaded',
+        },
       },
     },
     loaded: {
@@ -54,14 +52,16 @@ export const collectionsStates: MachineConfig<CollectionsContext, any, AnyEventO
 };
 
 export const collectionsOptions: Partial<MachineOptions<CollectionsContext, AnyEventObject>> = {
-//   actions: {
-//     // action implementations
-//     activate: (context, event) => {
-//       console.log('activating...');
-//     },
-//   },
+  actions: {
+    addTestCollection: assign({ collections: (context, event) => [
+      ...context.collections,
+      { name: `Test Collection ${context.collections.length + 1}` } as Collection,
+    ] }),
+    storeLoadedCollections: assign({ collections: (context, event) => event.loadedCollections }),
+  },
+  services: {
+    loadCollectionsService: (context, event) => collections.all().toPromise(),
+  },
 };
 
 export const collectionsMachine = Machine(collectionsStates, collectionsOptions);
-export const collectionsService = interpret(collectionsMachine);
-export const collectionsState = from(collectionsService);

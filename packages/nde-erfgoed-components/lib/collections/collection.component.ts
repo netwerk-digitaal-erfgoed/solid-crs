@@ -52,7 +52,7 @@ export class CollectionComponent extends LitElement implements Component {
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
-      <button>Save</button>
+      <!--<button>Save</button>-->
     </div>
   `;
   }
