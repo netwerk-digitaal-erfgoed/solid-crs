@@ -1,7 +1,7 @@
 import { LitElement, css, html, property, PropertyValues } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
 import { interpret } from 'xstate';
-import { appMachine } from './app.machine';
+import { appMachine, appStates } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 
 /**
@@ -11,11 +11,18 @@ export class AppRootComponent extends LitElement implements Component {
 
   private appService = interpret(appMachine);
 
+  @property({type: String})
+  private state: string = null;
+
   constructor() {
     super();
     this.appService.start().onTransition((state) => {
       // eslint-disable-next-line no-console
       console.log('AppState change', state);
+    });
+
+    this.appService.subscribe((state) => {
+      this.state = state.value as string;
     });
   }
 
@@ -41,14 +48,9 @@ export class AppRootComponent extends LitElement implements Component {
     return null;
   }
 
-  firstUpdated(changed: PropertyValues) {
-    super.firstUpdated(changed);
-
-    if (this.appService.state.value === 'collections') {
-      const collectionsRoot = document.createElement('nde-collections-root') as CollectionsRootComponent;
-      collectionsRoot.actor = this.appService.children.get('collections');
-      this.shadowRoot.appendChild(collectionsRoot);
-    }
+  updated(changed: PropertyValues) {
+    super.updated(changed);
+    this.shadowRoot.querySelectorAll('nde-collections-root').forEach((component: CollectionsRootComponent) => component.actor = this.appService.children.get('collections'));
   }
 
   /**
@@ -60,6 +62,7 @@ export class AppRootComponent extends LitElement implements Component {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>Header</h1>
+    ${ this.state === 'collections' ? html`<nde-collections-root></nde-collections-root>` : html`` }
   `;
   }
 

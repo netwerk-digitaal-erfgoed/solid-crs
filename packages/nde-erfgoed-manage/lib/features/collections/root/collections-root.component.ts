@@ -1,15 +1,16 @@
-import { LitElement, css, html, property } from 'lit-element';
+import { LitElement, css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Component } from '@digita-ai/semcom-core';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import {Interpreter, AnyEventObject, SpawnedActorRef, State} from 'xstate';
+import { RxLitElement } from 'rx-lit';
 import { CollectionsContext } from '../collections.context';
 
 /**
  * The root page of the collections feature.
  */
-export class CollectionsRootComponent extends LitElement implements Component {
+export class CollectionsRootComponent extends RxLitElement implements Component {
 
   /**
    * The collections which will be summarized by the component.
@@ -20,22 +21,20 @@ export class CollectionsRootComponent extends LitElement implements Component {
   /**
    * The collections which will be summarized by the component.
    */
-  @property({type: Object})
+  @internalProperty()
   public actor: SpawnedActorRef<any, State<CollectionsContext>>;
 
-  constructor() {
-    super();
-
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-
-    this.actor.subscribe((state) => {
+  firstUpdated(changed: PropertyValues) {
+    // this.subscribe('streamValues', stream$);
+    from(this.actor).pipe(
+      tap((state) => {
+        this.collections = state.context.collections;
+      }),
+    ).subscribe((state) => {
       // eslint-disable-next-line no-console
       console.log('CollectionState change:', state);
-      this.collections = state.context.collections;
     });
+
   }
 
   /**
