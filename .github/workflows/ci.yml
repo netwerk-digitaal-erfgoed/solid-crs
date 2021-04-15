@@ -6,6 +6,7 @@ on:
       - release
       - release/*
       - feature/*
+      - docs/*
       - fix/*
       - develop
       - master

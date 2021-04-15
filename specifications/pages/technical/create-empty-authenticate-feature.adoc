@@ -1,0 +1,54 @@
+= Technical Documentation: Set up authenticate feature
+
+== Author(s)
+
+* Stijn Taelemans
+
+== References
+
+* https://www.wrike.com/open.htm?id=674718417[Wrike task]
+* Branch: `feat/599439372-set-up-authenticate-feature`
+* Project:
+https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-auth]
+
+== Introduction
+
+=== Overview
+
+This document is about the setup of the authentication feature.
+
+=== Out of scope
+
+Any visual components or implementations of services for the authentication feature are to be made at a later time.
+
+=== Assumptions
+
+The initial project setup is complete.
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Authentication Feature
+
+TODO create directories and files
+
+
+===== Machine
+
+todo describe machine
+
+
+===== Context
+
+todo describe context
+
+
+===== Actions
+
+todo describe actions
+
+
+===== Components
+
+todo root component
