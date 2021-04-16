@@ -1,36 +1,69 @@
-import { LitElement, css, html, property, PropertyValues, internalProperty } from 'lit-element';
-import { Component } from '@digita-ai/semcom-core';
+/* eslint-disable no-console */
+import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { map, tap } from 'rxjs/operators';
-import { from } from 'rxjs';
-import {Interpreter, AnyEventObject, SpawnedActorRef, State} from 'xstate';
+import { from, of } from 'rxjs';
+import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { CollectionsContext } from '../collections.context';
+import { CollectionsEvent, CollectionsEvents } from '../collections.events';
+import { CollectionsStates } from '../collections.states';
 
 /**
  * The root page of the collections feature.
  */
-export class CollectionsRootComponent extends RxLitElement implements Component {
+export class CollectionsRootComponent extends RxLitElement {
 
   /**
-   * The collections which will be summarized by the component.
-   */
-  @property({type: Array})
-  collections: Collection[] = [];
-
-  /**
-   * The collections which will be summarized by the component.
+   * The actor controlling this component.
    */
   @internalProperty()
-  public actor: SpawnedActorRef<any, State<CollectionsContext>>;
+  public actor: SpawnedActorRef<CollectionsEvent, State<CollectionsContext>>;
 
+  /**
+   * The state of this component.
+   */
+  @internalProperty()
+  state?: State<CollectionsContext>;
+
+  /**
+   * The collections which will be summarized by the component.
+   */
+  @property({ type: Array })
+  collections?: Collection[];
+
+  /**
+   * Hook called on first update after connection to the DOM.
+   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   */
   firstUpdated(changed: PropertyValues) {
-    this.subscribe('collections', from(this.actor).pipe(map((state) => state.context.collections)));
-    from(this.actor).subscribe((state) => {
-      // eslint-disable-next-line no-console
-      console.log('CollectionState change:', state);
-    });
+    super.firstUpdated(changed);
 
+    this.subscribe('state', from(this.actor).pipe(
+      tap((state) => console.log('CollectionState change:', state)),
+    ));
+
+    this.subscribe('collections', from(this.actor).pipe(
+      map((state) => state.context.collections),
+    ));
+
+  }
+
+  /**
+   * Renders the component as HTML.
+   *
+   * @returns The rendered HTML of the component.
+   */
+  render() {
+    const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
+    return html`
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <nde-collections collections='${ this.collections ? JSON.stringify(this.collections) : JSON.stringify([])}'></nde-collections>
+    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
+    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
+    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOGOUT)}" ?disabled="${loading}">Logout</button>
+    <div></div>
+  `;
   }
 
   /**
@@ -44,39 +77,4 @@ export class CollectionsRootComponent extends RxLitElement implements Component 
     ];
   }
 
-  /**
-   * Loads data associated with the component.
-   *
-   * @param entry The resource which will be loaded by the component.
-   * @param customFetch A custom fetch function provided by the host application.
-   * @returns A promise when the data has been loaded.
-   */
-  data (entry: string, customFetch?: (input: RequestInfo, init?: RequestInit) => Promise<Response>): Promise<void> {
-    const myFetch = customFetch ? customFetch : fetch;
-
-    return myFetch(entry)
-      .then((response) => response.text())
-      .then(() => {
-        this.collections = [];
-      });
-
-  }
-
-  sendEvent(event: string) {
-    return () => this.actor.send(event);
-  }
-
-  /**
-   * Renders the component as HTML.
-   *
-   * @returns The rendered HTML of the component.
-   */
-  render() {
-    return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <nde-collections collections='${JSON.stringify(this.collections)}'></nde-collections>
-    <button @click="${this.sendEvent('TEST')}">Test</button>
-    <button @click="${this.sendEvent('LOGOUT')}">Logout</button>
-  `;
-  }
 }

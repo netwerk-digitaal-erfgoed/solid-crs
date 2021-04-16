@@ -30,7 +30,11 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
-    }
+    },
+    "cSpell.words": [
+      "semcom",
+      "xstate"
+    ]
   },
   "extensions": {
     "recommendations": [

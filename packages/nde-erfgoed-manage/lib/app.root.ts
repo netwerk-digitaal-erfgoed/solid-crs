@@ -1,56 +1,61 @@
-import { LitElement, css, html, property, PropertyValues } from 'lit-element';
-import { Component } from '@digita-ai/semcom-core';
-import { interpret } from 'xstate';
-import { appMachine, appStates } from './app.machine';
+/* eslint-disable no-console */
+import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
+import { interpret, State } from 'xstate';
+import { RxLitElement } from 'rx-lit';
+import { from } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { AppActors, appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
+import { AppStates } from './app.states';
+import { AppContext } from './app.context';
 
 /**
  * The root page of the application.
  */
-export class AppRootComponent extends LitElement implements Component {
+export class AppRootComponent extends RxLitElement {
 
-  private appService = interpret(appMachine);
-
-  @property({type: String})
-  private state: string = null;
-
+  /**
+   * The constructor of the application root component,
+   * which starts the root machine actor.
+   */
   constructor() {
     super();
-    this.appService.start().onTransition((state) => {
-      // eslint-disable-next-line no-console
-      console.log('AppState change', state);
-    });
-
-    this.appService.subscribe((state) => {
-      this.state = state.value as string;
-    });
+    this.actor.start();
   }
 
   /**
-   * The styles associated with the component.
+   * The actor controlling this component.
+   * Since this is the application root component,
+   * this is an interpreted machine given an initial context.
    */
-  static get styles() {
-    return [
-      css`
-        .collection { }
-      `,
-    ];
+  @internalProperty()
+  actor = interpret(appMachine.withContext({}));
+
+  /**
+   * The state of this component.
+   */
+  @internalProperty()
+  state: State<AppContext>;
+
+  /**
+   * Hook called after first update after connection to the DOM.
+   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   */
+  firstUpdated(changed: PropertyValues) {
+    super.firstUpdated(changed);
+
+    this.subscribe('state', from(this.actor).pipe(
+      tap((state) => console.log('AppState change', state)),
+    ));
   }
 
   /**
-   * Loads data associated with the component.
-   *
-   * @param entry The resource which will be loaded by the component.
-   * @param customFetch A custom fetch function provided by the host application.
-   * @returns A promise when the data has been loaded.
+   * Hook called after every update.
+   * It passes child actors to the rendered child components.
    */
-  data (entry: string, customFetch?: (input: RequestInfo, init?: RequestInit) => Promise<Response>): Promise<void> {
-    return null;
-  }
-
   updated(changed: PropertyValues) {
     super.updated(changed);
-    this.shadowRoot.querySelectorAll('nde-collections-root').forEach((component: CollectionsRootComponent) => component.actor = this.appService.children.get('collections'));
+    this.shadowRoot.querySelectorAll('nde-collections-root').forEach((component: CollectionsRootComponent) => component.actor = this.actor.children.get(AppActors.COLLECTIONS_MACHINE));
   }
 
   /**
@@ -62,8 +67,19 @@ export class AppRootComponent extends LitElement implements Component {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>Header</h1>
-    ${ this.state === 'collections' ? html`<nde-collections-root></nde-collections-root>` : html`` }
+    ${ this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root></nde-collections-root>` : html`` }
   `;
+  }
+
+  /**
+   * The styles associated with the component.
+   */
+  static get styles() {
+    return [
+      css`
+        .collection { }
+      `,
+    ];
   }
 
 }

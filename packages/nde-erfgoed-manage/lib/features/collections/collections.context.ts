@@ -1,11 +1,13 @@
-import {Collection} from '@digita-ai/nde-erfgoed-core';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
 
 /**
- * Represents the state of the collections feature.
+ * The context of a collections feature.
  */
 export interface CollectionsContext {
+
   /**
-   * The collections belonging to this organization.
+   * The list of collections available to the feature.
    */
-  collections: Collection[];
+  collections?: Collection[];
+
 }
