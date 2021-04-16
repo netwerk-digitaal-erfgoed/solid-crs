@@ -4,14 +4,13 @@
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
-  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist --minify",
-    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist",
+    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist/bundles --minify",
+    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist/bundles",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",
@@ -39,5 +38,8 @@
   },
   "bugs": {
     "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"
+  },
+  "dependencies": {
+    "rxjs": "^6.6.7"
   }
 }

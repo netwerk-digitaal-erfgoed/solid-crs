@@ -5,7 +5,7 @@ import { Collection } from '@digita-ai/nde-erfgoed-core';
 /**
  * A component which shows an summary of multiple collections.
  */
-export default class CollectionsComponent extends LitElement implements Component {
+export class CollectionsComponent extends LitElement implements Component {
 
   /**
    * The collections which will be summarized by the component.
@@ -49,10 +49,12 @@ export default class CollectionsComponent extends LitElement implements Componen
    */
   render() {
     return html`
-    <link href="./dist/styles.css" rel="stylesheet">
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collections">
     ${this.collections.map((collection) => html`<nde-collection collection='${JSON.stringify(collection)}'></nde-collection>`)}
     </div>
   `;
   }
 }
+
+export default CollectionsComponent;

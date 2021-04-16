@@ -5,7 +5,7 @@ import { Collection } from '@digita-ai/nde-erfgoed-core';
 /**
  * A component which shows the details of a single collection.
  */
-export default class CollectionComponent extends LitElement implements Component {
+export class CollectionComponent extends LitElement implements Component {
 
   /**
    * The collection which will be rendered by the component.
@@ -37,7 +37,7 @@ export default class CollectionComponent extends LitElement implements Component
     return myFetch(entry)
       .then((response) => response.text())
       .then(() => {
-        this.collection = {name: 'Test'};
+        this.collection = {uri:'test', name: 'Test'};
       });
 
   }
@@ -49,11 +49,13 @@ export default class CollectionComponent extends LitElement implements Component
    */
   render() {
     return html`
-    <link href="./dist/styles.css" rel="stylesheet">
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
-      <button>Save</button>
+      <!--<button>Save</button>-->
     </div>
   `;
   }
 }
+
+export default CollectionComponent;
