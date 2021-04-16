@@ -9,13 +9,13 @@
 * https://www.wrike.com/open.htm?id=674718417[Wrike task]
 * Branch: `feat/599439372-set-up-authenticate-feature`
 * Project:
-https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-auth]
+https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
 
 == Introduction
 
 === Overview
 
-This document is about the setup of the authentication feature.
+This document is about the setup of the authentication feature. Heritage institutions should be able to authenticate to the heritage management application with their WebIDs. 
 
 === Out of scope
 
@@ -31,24 +31,51 @@ The initial project setup is complete.
 
 ==== Authentication Feature
 
-TODO create directories and files
+Under 'lib/features', create new 'authenticate' directory. In here, create the following files:
 
+* authenticate.machine.ts
+* authenticate.context.ts
+* authenticate.actions.ts
+* authenticate.events.ts
 
-===== Machine
+==== Machine
+
+Create in 'lib/features/authenticate/authenticate.machine.ts'
 
 todo describe machine
 
 
-===== Context
+==== Context
 
-todo describe context
+Create in 'lib/features/authenticate/authenticate.context.ts'
 
-
-===== Actions
-
-todo describe actions
+todo
 
 
-===== Components
+==== Actions and Events
 
-todo root component
+Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
+
+Create following events in 'lib/features/authenticate/authenticate.events.ts'
+
+todo describe actions, events
+
+
+==== Components
+
+===== AuthenticationRootComponent
+
+The finished component should look like this:
+
+image::authenticate-root.svg[AuthenticationRootComponent]
+
+Generate under 'lib/features/authenticate/root/authenticate-root.component.ts'
+
+Set up an empty Web Component for now. This component will be fleshed out when the other authentication-related components are made.
+
+
+==== Configuring the App Machine
+
+The Authenticate Machine should be registered in the App Machine.
+
+todo finish this
