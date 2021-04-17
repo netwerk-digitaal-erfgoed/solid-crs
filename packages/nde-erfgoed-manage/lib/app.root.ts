@@ -4,6 +4,7 @@ import { interpret, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ConsoleLogger, Logger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { AppActors, appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 import { AppStates } from './app.states';
@@ -13,6 +14,8 @@ import { AppContext } from './app.context';
  * The root page of the application.
  */
 export class AppRootComponent extends RxLitElement {
+
+  private logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
   /**
    * The constructor of the application root component,
@@ -45,7 +48,7 @@ export class AppRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => console.log('AppState change', state)),
+      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', state)),
     ));
   }
 
