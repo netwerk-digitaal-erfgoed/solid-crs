@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Collection, ConsoleLogger, Logger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { map, tap } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { SpawnedActorRef, State} from 'xstate';
@@ -13,6 +12,8 @@ import { CollectionsStates } from '../collections.states';
  * The root page of the collections feature.
  */
 export class CollectionsRootComponent extends RxLitElement {
+
+  private logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
   /**
    * The actor controlling this component.
@@ -40,7 +41,7 @@ export class CollectionsRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => console.log('CollectionState change:', state)),
+      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
     ));
 
     this.subscribe('collections', from(this.actor).pipe(
