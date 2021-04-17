@@ -1,12 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - '*'
-
-    tags:
-      - '*'
+on: push
 
 env:
   NPM_TOKEN: ${{secrets.GA_TOKEN}}
