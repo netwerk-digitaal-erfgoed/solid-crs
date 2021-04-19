@@ -47,7 +47,12 @@ Create under 'lib/common/services/solid.service.ts'.
 This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.
 
 For now, implement only the `login()` function.  
-`login(webId: string): void` should throw error messages according to the https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[test plan].
+`login(webId: string): void` should throw error messages according to the https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[test plan]. 
+
+Test URL validity with `new URL()`. Fetch the WebID. The response should `oidcRegistration` triple should be present on the profile of the given `webId`. The value of this triple should be checked as well. It should return a JSON object at '/.well-known/openid-configuration', which should contain a `solid_oidc_supported` key.
+
+If no error is thrown, the Inrupt SDK's `login()` function should be called, which redirects the user to the OIDC provider's authentication page.
+
 
 ==== Components
 
@@ -112,7 +117,7 @@ Example from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id
   <nde-button slot="button" disabled="true">
     <i class="fas fa-angle-right" slot="icon-right"></i>
   </nde-button> <!-- A "button" slot is set, so it should be displayed. It is disabled, so the button turns grey --> 
-  <p slot="validation-error">WebID is invalid: OIDC issuer not set</p> <!-- This should be set programatically, based on context.error -->
+  <p slot="validation-error">WebID is invalid: OIDC registration not set</p> <!-- This should be set programatically, based on context.error -->
 </nde-search-box>
 ----
 
@@ -168,10 +173,10 @@ The following translations are to be written in the 'nl-BE.json' file. No other 
 | `nde.features.authenticate.error.invalid-webid.no-profile`
 | Er werd geen actieve profielpagina gevonden voor deze WebID.
 
-| `nde.features.authenticate.error.invalid-webid.no-oidc-issuer`
+| `nde.features.authenticate.error.invalid-webid.no-oidc-registration`
 | De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ.
 
-| `nde.features.authenticate.error.invalid-webid.invalid-oidc-issuer`
+| `nde.features.authenticate.error.invalid-webid.invalid-oidc-registration`
 | De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ.
 
 | `nde.features.authenticate.pages.login.title`
