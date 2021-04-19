@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <title>Netwerk Digitaal Erfgoed</title>
   <base href="/">
-  <link href="dist/styles.css" rel="stylesheet">
+  <link href="dist/bundles/styles.css" rel="stylesheet">
 </head>
 <body>
 
   <!-- just a placeholder for serving in develop -->
 
-  <script type="module" src="dist/demo.js"></script>
+  <script type="module" src="dist/bundles/demo.js"></script>
 
   <p>Collection Component</p>
-  <nde-collection collection='{"name": "Foo"}'></nde-collection>
+  <nde-collection collection='{"uri": "test", "name": "Foo"}'></nde-collection>
 
   <p>Collections Component</p>
-  <nde-collections collections='[{"name": "Foo"}, {"name": "Bar"}]'></nde-collection>
+  <nde-collections collections='[{"uri": "test", "name": "Foo"}, {"uri": "test", "name": "Bar"}]'></nde-collections>
 
 </body>
 </html>
