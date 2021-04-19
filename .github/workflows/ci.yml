@@ -1,17 +1,6 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - release
-      - release/*
-      - feature/*
-      - fix/*
-      - develop
-      - master
-
-    tags:
-      - '*'
+on: push
 
 env:
   NPM_TOKEN: ${{secrets.GA_TOKEN}}
