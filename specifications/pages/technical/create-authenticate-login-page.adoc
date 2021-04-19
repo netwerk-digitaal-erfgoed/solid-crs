@@ -55,7 +55,7 @@ For now, implement only the `login()` function.
 
 The finished component should look like this:
 
-image::button.svg[AuthenticateLoginPageComponent]
+image::../../assets/authenticate-login-page/button.svg[ButtonComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/button/button.component.ts', with tag `<nde-button>`
 
@@ -83,7 +83,7 @@ Example usage of a button with both icons set:
 
 The finished component should look like this:
 
-image::notification.svg[AuthenticateLoginPageComponent]
+image::../../assets/authenticate-login-page/notification.svg[NotificationComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/notification.component.ts' with tag `<nde-notification>`
 
@@ -96,7 +96,7 @@ The changes needed to add notification objects to the state should not be implem
 
 The finished component should look like this:
 
-image::search-box.svg[SearchBoxComponent]
+image::../../assets/authenticate-login-page/search-box.svg[SearchBoxComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/search-box.component.ts' with tag `<nde-search-box>`
 
@@ -138,7 +138,7 @@ Example usage:
 
 The finished component should look like this:
 
-image::authenticate-login-page.svg[AuthenticateLoginPageComponent]
+image::../../assets/authenticate-login-page/authenticate-login-page.svg[AuthenticateLoginPageComponent]
 
 Generate under 'lib/features/authenticate/pages/authenticate-login-page.component.ts' with tag `<nde-authenticate-login-page>`
 
