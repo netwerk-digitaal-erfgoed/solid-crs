@@ -5,7 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'jest-environment-jsdom-sixteen',
   setupFiles: ['<rootDir>/tests/setup.ts'],
   testMatch: ['**/+(*.)+(spec).+(ts)'],
-  transformIgnorePatterns: ['node_modules/(?!(lit-element|lit-html)/)'],
+  transformIgnorePatterns: ['node_modules/(?!(lit-element|lit-html|rx-lit)/)'],
   moduleNameMapper: {
     '~(.*)': '<rootDir>/lib/$1',
   },

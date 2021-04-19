@@ -1,7 +1,7 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
-import { Collection, ConsoleLogger, Logger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { map, tap } from 'rxjs/operators';
-import { from, of } from 'rxjs';
+import { from } from 'rxjs';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { CollectionsContext } from '../collections.context';
@@ -13,12 +13,22 @@ import { CollectionsStates } from '../collections.states';
  */
 export class CollectionsRootComponent extends RxLitElement {
 
-  private logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
+  /**
+   * The component's logger.
+   */
+  @property({type: Logger})
+  public logger: Logger;
+
+  /**
+   * The component's translator.
+   */
+  @property({type: Translator})
+  public translator: Translator;
 
   /**
    * The actor controlling this component.
    */
-  @internalProperty()
+  @property({type: Object})
   public actor: SpawnedActorRef<CollectionsEvent, State<CollectionsContext>>;
 
   /**
@@ -59,7 +69,8 @@ export class CollectionsRootComponent extends RxLitElement {
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <nde-collections collections='${ this.collections ? JSON.stringify(this.collections) : JSON.stringify([])}'></nde-collections>
+    <p>${this.translator.translate('nde.collections.root.title')}</p>
+    <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOGOUT)}" ?disabled="${loading}">Logout</button>
