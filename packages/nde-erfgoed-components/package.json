@@ -21,7 +21,8 @@
     "@digita-ai/nde-erfgoed-core": "0.0.1",
     "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
-    "lit-element": "^2.4.0"
+    "lit-element": "2.4.0",
+    "rx-lit": "1.0.1"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
