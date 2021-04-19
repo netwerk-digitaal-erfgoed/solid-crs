@@ -1,27 +1,32 @@
 {
-  "name": "@digita-ai/nde-erfgoed-components",
+  "name": "@digita-ai/nde-erfgoed-manage",
   "version": "0.0.1",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "start:watch": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist/bundles --bundle",
-    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles --minify",
-    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles",
+    "start:watch": "rm -rf ./dist && esbuild lib/app.ts lib/styles.css --servedir=./ --outdir=dist/bundles --bundle",
+    "build": "rm -rf ./dist && tsc && esbuild lib/app.ts lib/styles.css --bundle --outdir=dist/bundles --minify",
+    "build:dev": "rm -rf ./dist && tsc && esbuild lib/app.ts lib/styles.css --bundle --outdir=dist/bundles",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",
     "test:ci": "npm run test -- --runInBand"
   },
   "dependencies": {
+    "@digita-ai/nde-erfgoed-components": "0.0.1",
     "@digita-ai/nde-erfgoed-core": "0.0.1",
     "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
-    "lit-element": "^2.4.0"
+    "lit-element": "^2.4.0",
+    "rx-lit": "^1.0.1",
+    "rxjs": "^6.6.7",
+    "xstate": "^4.17.1",
+    "xstate-codegen": "0.1.0-next.8"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
@@ -42,7 +47,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/digita-ai/nde-erfgoedinstellingen.git",
-    "directory": "packages/nde-erfgoed-components"
+    "directory": "packages/nde-erfgoed-manage"
   },
   "bugs": {
     "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"

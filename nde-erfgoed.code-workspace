@@ -5,6 +5,10 @@
       "path": "."
     },
     {
+      "name": "manage",
+      "path": "packages/nde-erfgoed-manage"
+    },
+    {
       "name": "components",
       "path": "packages/nde-erfgoed-components"
     },
@@ -26,7 +30,11 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
-    }
+    },
+    "cSpell.words": [
+      "semcom",
+      "xstate"
+    ]
   },
   "extensions": {
     "recommendations": [
