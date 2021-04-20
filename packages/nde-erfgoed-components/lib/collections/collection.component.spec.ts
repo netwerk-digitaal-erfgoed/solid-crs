@@ -1,4 +1,4 @@
-import CollectionComponent from './collection.component';
+import {CollectionComponent} from './collection.component';
 
 describe('CollectionComponent', () => {
   const component = new CollectionComponent();

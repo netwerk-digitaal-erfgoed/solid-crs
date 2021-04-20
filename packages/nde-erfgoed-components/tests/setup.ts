@@ -1,5 +1,5 @@
-import CollectionComponent from '../lib/collections/collection.component';
-import CollectionsComponent from '../lib/collections/collections.component';
+import {CollectionComponent} from '../lib/collections/collection.component';
+import {CollectionsComponent} from '../lib/collections/collections.component';
 
 /**
  * Register tags for components.
