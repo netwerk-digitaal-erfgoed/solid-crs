@@ -19,4 +19,11 @@
   --colors-background-light: #fff;
   --colors-background-normal: #e8e9ee;
   --colors-background-dark: #e8e9ee;
+
+  /**
+        Status colors
+    */
+  --colors-status-success: #a0dc78;
+  --colors-status-warning: #fcd228;
+  --colors-status-danger: #be2c00;
 }
