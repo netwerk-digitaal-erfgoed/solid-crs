@@ -37,7 +37,6 @@ All components and services are to be made in the '@digita-ai/nde-erfgoed-manage
 
 === Suggested or proposed solution
 
-
 ==== Services
 
 ===== SolidService
@@ -90,9 +89,9 @@ The finished component should look like this:
 
 image::../../assets/authenticate-login-page/notification.svg[NotificationComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/notification.component.ts' with tag `<nde-notification>`
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/notification.component.ts' with tag `<nde-notification>`.
 
-
+Clicking a notification should dispatch the `DISMISS_NOTIFICATION` event.
 
 The changes needed to add notification objects to the state should not be implemented yet.
 
@@ -159,7 +158,7 @@ The notification visible in the Figma mockup will be implemented later.
 
 ==== Translations
 
-The following translations are to be written in the 'nl-BE.json' file. No other languages should be supported.
+The following translations are to be written in the 'nl-NL.json' file. No other languages should be supported.
 
 [options="header"]
 
