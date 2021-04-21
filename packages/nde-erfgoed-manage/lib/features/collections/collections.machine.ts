@@ -1,10 +1,10 @@
 import { createMachine, MachineConfig, sendParent } from 'xstate';
+import { AppEvents } from '../../app.events';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvent, CollectionsEvents } from './collections.events';
 import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
 import { addCollections, addTestCollection, replaceCollections } from './collections.actions';
 import { loadCollectionsService } from './collections.services';
-import { AppEvents } from 'lib/app.events';
 
 /**
  * Actor references for this machine config.
