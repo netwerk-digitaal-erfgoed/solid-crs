@@ -1,7 +1,7 @@
 import { ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { assign } from 'xstate';
 import { AppContext } from './app.context';
-import { AddAlertEvent } from './app.events';
+import { AddAlertEvent, DismissAlertEvent } from './app.events';
 
 /**
  * Actions for the alerts component.
@@ -18,6 +18,20 @@ export const addAlert = assign<AppContext, AddAlertEvent>({
     return [
       ...context.alerts ? context.alerts.filter((alert) => alert.message !== event.alert.message) : [],
       event.alert,
+    ];
+  },
+});
+
+/**
+ * Actions which dismisses an alert in the machine's context, if it doesn't already exist.
+ */
+export const dismissAlert = assign<AppContext, DismissAlertEvent>({
+  alerts: (context, event) => {
+    if (!event || !event.alert) {
+      throw new ArgumentError('Argument event && event.alert should be set.', event || !event.alert);
+    }
+    return [
+      ...context.alerts ? context.alerts.filter((alert) => alert.message !== event.alert.message) : [],
     ];
   },
 });

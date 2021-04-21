@@ -10,6 +10,7 @@ import { CollectionsRootComponent } from './features/collections/root/collection
 import { AppStates } from './app.states';
 import { AppContext } from './app.context';
 import nlBe from './i8n/nl-BE.json';
+import { AppEvents } from './app.events';
 
 /**
  * The root page of the application.
@@ -75,7 +76,7 @@ export class AppRootComponent extends RxLitElement {
       throw new ArgumentError('Argument event.detail should be set.', event.detail);
     }
 
-    this.alerts = this.alerts?.filter((alert) => alert.message !== event.detail.message);
+    this.actor.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
   }
 
   /**

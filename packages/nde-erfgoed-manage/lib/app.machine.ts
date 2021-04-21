@@ -1,6 +1,6 @@
 import { createMachine, MachineConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
-import { addAlert } from './app.actions';
+import { addAlert, dismissAlert } from './app.actions';
 import { AppContext } from './app.context';
 import { AppEvent, AppEvents } from './app.events';
 import { AppSchema, AppState, AppStates } from './app.states';
@@ -32,6 +32,9 @@ export const appState: MachineConfig<AppContext, AppSchema, AppEvent> = {
   on: {
     [AppEvents.ADD_ALERT]: {
       actions: addAlert,
+    },
+    [AppEvents.DISMISS_ALERT]: {
+      actions: dismissAlert,
     },
   },
   states: {
