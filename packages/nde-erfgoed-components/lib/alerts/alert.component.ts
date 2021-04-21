@@ -1,5 +1,8 @@
-import { css, html, LitElement, property } from 'lit-element';
+import { css, html, LitElement, property, svg } from 'lit-element';
 import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+// import Bell from '@digita-ai/nde-erfgoed-theme/dist/icons/Bell';
+import {Bell, Dismiss} from '@digita-ai/nde-erfgoed-theme';
+import {unsafeSVG} from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
 /**
@@ -32,8 +35,12 @@ export class AlertComponent extends LitElement {
     return [
       css`
         .alert {
-          padding: var(--gap-normal);
+          padding: var(--gap-normal) var(--gap-small);
           display: flex;
+          align-items: center;
+        }
+        .alert div {
+          margin: 0 var(--gap-small);
         }
         .alert.success {
           background-color: var(--colors-status-success);
@@ -43,6 +50,18 @@ export class AlertComponent extends LitElement {
         }
         .alert.danger {
           background-color: var(--colors-status-danger);
+          color: var(--colors-foreground-inverse);
+        }
+        .alert .icon {
+          height: 25px;
+        }
+        .alert .icon svg {
+          max-height: 25px;
+          max-width: 25px;
+        }
+        .alert .dismiss svg {
+          max-height: 10px;
+          max-width: 10px;
         }
         .alert .message {
           flex: 1 0;
@@ -60,9 +79,9 @@ export class AlertComponent extends LitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="alert ${this.alert?.type}">
-      <div class="icon"></div>
+      <div class="icon">${unsafeSVG(Bell)}</div>
       <div class="message">${this.alert?.message}</div>
-      <div class="dismiss">x</div>
+      <div class="dismiss">${unsafeSVG(Dismiss)}</div>
     </div>
   `;
   }

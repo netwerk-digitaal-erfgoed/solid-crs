@@ -9,6 +9,7 @@
   /**
         Foreground colors
     */
+  --colors-foreground-inverse: #fff;
   --colors-foreground-light: #172a59;
   --colors-foreground-normal: #172a59;
   --colors-foreground-dark: #000;
