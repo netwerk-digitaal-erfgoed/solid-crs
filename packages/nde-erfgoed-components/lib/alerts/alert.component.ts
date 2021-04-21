@@ -52,6 +52,9 @@ export class AlertComponent extends LitElement {
           background-color: var(--colors-status-danger);
           color: var(--colors-foreground-inverse);
         }
+        .alert.danger svg {
+          fill: var(--colors-foreground-inverse);
+        }
         .alert .icon {
           height: 25px;
         }

@@ -9,3 +9,7 @@ body {
   font-family: 'Poppins', sans-serif;
   font-size: var(--font-size-normal);
 }
+
+svg {
+  fill: var(--colors-foreground-normal);
+}
