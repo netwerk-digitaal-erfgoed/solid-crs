@@ -46,7 +46,7 @@ describe('AlertComponent', () => {
     expect(message).toBe('bar');
   });
 
-  it('should not print message when translator is set and translation is found', async () => {
+  it('should not print message when translator is set but translation is not found', async () => {
     component.alert = {
       type: 'success',
       message: 'foo',
