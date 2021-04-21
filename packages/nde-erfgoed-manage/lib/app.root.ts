@@ -49,7 +49,9 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor = interpret(appMachine.withContext({}));
+  actor = interpret(appMachine.withContext({
+    alerts: [],
+  }));
 
   /**
    * The state of this component.

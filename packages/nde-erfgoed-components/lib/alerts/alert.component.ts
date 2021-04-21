@@ -94,7 +94,7 @@ export class AlertComponent extends LitElement {
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="alert ${this.alert?.type}">
       <div class="icon">${unsafeSVG(Bell)}</div>
-      <div class="message">${this.alert?.message}</div>
+      <div class="message">${this.translator?.translate(this.alert?.message)}</div>
       <div class="dismiss" @click="${this.dismiss}">${unsafeSVG(Dismiss)}</div>
     </div>
   `;

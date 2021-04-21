@@ -5,6 +5,11 @@
         "value": "App"
     },
     {
+        "key": "nde.collections.alerts.created-collection",
+        "locale": "nl-BE",
+        "value": "Collectie aangemaakt"
+    },
+    {
         "key": "nde.collections.root.title",
         "locale": "nl-BE",
         "value": "Collecties"
