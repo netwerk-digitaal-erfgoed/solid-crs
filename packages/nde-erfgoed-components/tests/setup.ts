@@ -1,6 +1,6 @@
-import {CollectionComponent} from '../lib/collections/collection.component';
-import {CollectionsComponent} from '../lib/collections/collections.component';
-import {AlertComponent} from '../lib/alerts/alert.component';
+import { CollectionComponent } from '../lib/collections/collection.component';
+import { CollectionsComponent } from '../lib/collections/collections.component';
+import { AlertComponent } from '../lib/alerts/alert.component';
 
 /**
  * Register tags for components.
