@@ -2,7 +2,8 @@ import { css, html, property, PropertyValues, internalProperty } from 'lit-eleme
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { AppActors, appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
@@ -14,6 +15,12 @@ import nlBe from './i8n/nl-BE.json';
  * The root page of the application.
  */
 export class AppRootComponent extends RxLitElement {
+
+  /**
+   * The component's alerts.
+   */
+  @property({type: Array})
+  public alerts: Alert[] = [ {type: 'success', message: 'Lorem ipsum sid amet.', ttl: 1} ];
 
   /**
    * The component's logger.
@@ -51,6 +58,25 @@ export class AppRootComponent extends RxLitElement {
   state: State<AppContext>;
 
   /**
+   * Dismisses an alert when a dismiss event is fired by the AlertComponent.
+   *
+   * @param event The event fired when dismissing an alert.
+   */
+  dismiss(event: CustomEvent<Alert>) {
+    this.logger.debug(AppRootComponent.name, 'Dismiss', event);
+
+    if (!event) {
+      throw new ArgumentError('Argument event should be set.', event);
+    }
+
+    if (!event.detail) {
+      throw new ArgumentError('Argument event.detail should be set.', event.detail);
+    }
+
+    this.alerts = this.alerts?.filter((alert) => alert.message !== event.detail.message);
+  }
+
+  /**
    * Hook called after first update after connection to the DOM.
    * It subscribes to the actor, logs state changes, and pipes state to the properties.
    */
@@ -71,6 +97,7 @@ export class AppRootComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
+    ${this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`)}
     ${ this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html`` }
     `;
   }

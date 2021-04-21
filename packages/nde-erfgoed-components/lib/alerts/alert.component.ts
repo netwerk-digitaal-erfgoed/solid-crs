@@ -1,5 +1,5 @@
 import { css, html, LitElement, property, svg } from 'lit-element';
-import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 // import Bell from '@digita-ai/nde-erfgoed-theme/dist/icons/Bell';
 import {Bell, Dismiss} from '@digita-ai/nde-erfgoed-theme';
 import {unsafeSVG} from 'lit-html/directives/unsafe-svg';
@@ -74,6 +74,17 @@ export class AlertComponent extends LitElement {
   }
 
   /**
+   * Dispatches an event to dismiss the alert.
+   */
+  dismiss() {
+    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
+    if (!this.alert) {
+      throw new ArgumentError('Argument this.alert should be set.', this.alert);
+    }
+    this.dispatchEvent(new CustomEvent<Alert>('dismiss', {detail:this.alert}));
+  }
+
+  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
@@ -84,7 +95,7 @@ export class AlertComponent extends LitElement {
     <div class="alert ${this.alert?.type}">
       <div class="icon">${unsafeSVG(Bell)}</div>
       <div class="message">${this.alert?.message}</div>
-      <div class="dismiss">${unsafeSVG(Dismiss)}</div>
+      <div class="dismiss" @click="${this.dismiss}">${unsafeSVG(Dismiss)}</div>
     </div>
   `;
   }
