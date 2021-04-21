@@ -16,7 +16,7 @@ export const addAlert = assign<AppContext, AddAlertEvent>({
       throw new ArgumentError('Argument event && event.alert should be set.', event || !event.alert);
     }
     return [
-      ...context.alerts ?context.alerts.filter((alert) => alert.message !== event.alert.message) : [],
+      ...context.alerts ? context.alerts.filter((alert) => alert.message !== event.alert.message) : [],
       event.alert,
     ];
   },
