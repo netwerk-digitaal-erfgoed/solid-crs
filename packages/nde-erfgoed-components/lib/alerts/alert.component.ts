@@ -62,6 +62,9 @@ export class AlertComponent extends LitElement {
           max-height: 25px;
           max-width: 25px;
         }
+        .alert .dismiss {
+          cursor: pointer;
+        }
         .alert .dismiss svg {
           max-height: 10px;
           max-width: 10px;
