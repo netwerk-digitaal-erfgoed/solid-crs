@@ -26,7 +26,7 @@ export class AlertComponent extends LitElement {
    * The collection which will be rendered by the component.
    */
   @property({type: Object})
-  private alert: Alert;
+  public alert: Alert;
 
   /**
    * The styles associated with the component.
@@ -92,7 +92,7 @@ export class AlertComponent extends LitElement {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <div class="alert ${this.alert?.type}">
+    <div class="alert ${this.alert && this.alert.type ? this.alert.type : 'warning'}">
       <div class="icon">${unsafeSVG(Bell)}</div>
       <div class="message">${this.translator?this.translator.translate(this.alert?.message):this.alert?.message}</div>
       <div class="dismiss" @click="${this.dismiss}">${unsafeSVG(Dismiss)}</div>
