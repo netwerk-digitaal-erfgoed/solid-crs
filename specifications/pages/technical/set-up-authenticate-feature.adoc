@@ -1,0 +1,139 @@
+= Technical Documentation: Set up authenticate feature
+
+== Author(s)
+
+* Stijn Taelemans
+
+== References
+
+* https://www.wrike.com/open.htm?id=674718417[Wrike task]
+* Branch: `feat/599439372-set-up-authenticate-feature`
+* Project:
+https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+
+== Introduction
+
+=== Overview
+
+This document is about the setup of the authentication feature. Heritage institutions should be able to authenticate to the heritage management application with their WebIDs. 
+
+=== Out of scope
+
+Any visual components or implementations of services for the authentication feature are to be made at a later time.
+
+=== Assumptions
+
+The initial project setup is complete.
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Authentication Feature
+
+Under 'lib/features', create new 'authenticate' directory. In here, create the following files:
+
+* authenticate.machine.ts
+* authenticate.context.ts
+* authenticate.actions.ts
+* authenticate.events.ts
+
+==== AuthenticateMachine
+
+Create in 'lib/features/authenticate/authenticate.machine.ts'
+
+See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation] and the http://url[`AuthenticateMachine` state chart]
+
+The `AuthenticateMachine` has three possible states: 
+
+* `unauthorized` (initial)
+* `authorizing`
+* `authorized`
+
+The `unauthorized` state is the initial state of the machine. From here, it can transition to the `authorizing` state when the `LOGIN` event is called. The machine should be in the `authorizing` state from the moment the button is clicked. The app should transition to `authorized` using the `LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `LOGIN_SUCCESS`, we reach the `authorized` state. From this state, the machine can go back to the `unauthorized` state when a `LOGOUT` action is fired.
+
+
+==== AuthenticateContext
+
+Create in 'lib/features/authenticate/authenticate.context.ts'
+
+The context of the `AuthenticateMachine` is relatively simple. It contains the session info returned by the Inrupt authentication client.
+
+[source, js]
+----
+{
+  sessionInfo: ISessionInfo,
+}
+----
+
+
+==== Actions and Events
+
+Create following events in 'lib/features/authenticate/authenticate.events.ts'
+
+Take a look at https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.events.ts[collections.events.ts] and https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.actions.ts[collections.actions.ts].
+.
+
+[options="header"]
+
+|======================================
+
+| Event 	| Payload
+
+| `LOGIN`
+| `webId: string`
+
+| `LOGIN_SUCCESS`
+| `sessionInfo: ISessionInfo`
+
+| `LOGIN_ERROR`
+| `msg: string`
+
+| `LOGOUT`
+| No payload
+
+|======================================
+
+
+Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
+
+[options="header"]
+
+|======================================
+
+| Action 	| Description
+
+| `login(webId: string)`
+| Should call the `SolidService.login(webId: string)` function.
+
+| `onSuccess(sessionInfo: ISessionInfo)`
+| Should set `context.sessionInfo` to `sessionInfo`.
+
+| `onError(msg: string)`
+| Should dispatch the app's `HANDLE_ERROR` event.
+
+| `logout()`
+| Should call the `SolidService.logout()` function and remove any `context.sessionInfo`.
+
+|======================================
+
+
+
+==== Components
+
+===== AuthenticationRootComponent
+
+The finished component should look like this:
+
+image::authenticate-root.svg[AuthenticationRootComponent]
+
+Generate under 'lib/features/authenticate/root/authenticate-root.component.ts'
+
+Set up an empty Web Component for now. This component will be fleshed out when the other authentication-related components are made.
+
+
+==== Configuring the App Machine
+
+The Authenticate Machine should be registered in the App Machine.
+
+todo finish this
