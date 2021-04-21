@@ -1,4 +1,5 @@
 import { ArgumentError, MemoryTranslator } from '@digita-ai/nde-erfgoed-core';
+import { Alert } from './alert';
 import {AlertComponent} from './alert.component';
 
 describe('AlertComponent', () => {
@@ -61,44 +62,16 @@ describe('AlertComponent', () => {
     expect(message.trim()).toBe('');
   });
 
-  it('should be assigned the appropriate class when success', async () => {
+  it.each([ 'success', 'warning', 'danger' ])('should be assigned the appropriate class when %s', async (type: 'success' | 'warning' | 'danger') => {
     component.alert = {
-      type: 'success',
+      type,
       message: 'Foo',
     };
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.alert.success');
-
-    expect(alert).toBeTruthy();
-  });
-
-  it('should be assigned the appropriate class when warning', async () => {
-    component.alert = {
-      type: 'warning',
-      message: 'Foo',
-    };
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.alert.warning');
-
-    expect(alert).toBeTruthy();
-  });
-
-  it('should be assigned the appropriate class when danger', async () => {
-    component.alert = {
-      type: 'danger',
-      message: 'Foo',
-    };
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.alert.danger');
+    const alert = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector(`.alert.${type}`);
 
     expect(alert).toBeTruthy();
   });
@@ -118,14 +91,12 @@ describe('AlertComponent', () => {
   });
 
   it('should call dismiss when dismiss is clicked', async () => {
-    const mock = jest.fn();
-
     component.alert = {
-      type: null,
+      type: 'success',
       message: 'Foo',
     };
 
-    component.dismiss = mock;
+    component.dismiss = jest.fn();
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -133,18 +104,16 @@ describe('AlertComponent', () => {
     const dismiss = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
     dismiss.click();
 
-    expect(mock.mock.calls.length).toEqual(1);
+    expect(component.dismiss).toHaveBeenCalledTimes(1);
   });
 
   it('should dispatch event when dismiss is clicked', async () => {
-    const mock = jest.fn();
-
     component.alert = {
-      type: null,
+      type: 'success',
       message: 'Foo',
     };
 
-    component.dispatchEvent = mock;
+    component.dispatchEvent = jest.fn();
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -152,7 +121,8 @@ describe('AlertComponent', () => {
     const dismiss = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.dismiss') as HTMLElement;
     dismiss.click();
 
-    expect(mock.mock.calls.length).toEqual(1);
+    expect(component.dispatchEvent).toHaveBeenCalledTimes(1);
+    expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent<Alert>('dismiss', { detail: component.alert }));
   });
 
   it('should throw error when dismiss is clicked when no alert is set', async () => {
@@ -161,6 +131,6 @@ describe('AlertComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect(()=>component.dismiss()).toThrow(ArgumentError);
+    expect(() => component.dismiss()).toThrow(ArgumentError);
   });
 });

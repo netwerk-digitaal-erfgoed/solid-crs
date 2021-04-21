@@ -90,12 +90,15 @@ export class AlertComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+    const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
+    const type = this.alert && this.alert.type ? this.alert.type : 'warning';
+
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <div class="alert ${this.alert && this.alert.type ? this.alert.type : 'warning'}">
-      <div class="icon">${unsafeSVG(Bell)}</div>
-      <div class="message">${this.translator?this.translator.translate(this.alert?.message):this.alert?.message}</div>
-      <div class="dismiss" @click="${this.dismiss}">${unsafeSVG(Dismiss)}</div>
+    <div class="alert ${ type }">
+      <div class="icon">${ unsafeSVG(Bell) }</div>
+      <div class="message">${ message }</div>
+      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Dismiss) }</div>
     </div>
   `;
   }
