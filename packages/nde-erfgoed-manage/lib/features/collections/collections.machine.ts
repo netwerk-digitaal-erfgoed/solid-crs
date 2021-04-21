@@ -1,9 +1,10 @@
-import { createMachine, MachineConfig } from 'xstate';
+import { createMachine, MachineConfig, sendParent } from 'xstate';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvent, CollectionsEvents } from './collections.events';
 import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
 import { addCollections, addTestCollection, replaceCollections } from './collections.actions';
 import { loadCollectionsService } from './collections.services';
+import { AppEvents } from 'lib/app.events';
 
 /**
  * Actor references for this machine config.
@@ -26,7 +27,13 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
       actions: addCollections,
     },
     [CollectionsEvents.CLICKED_ADD]: {
-      actions: addTestCollection,
+      actions: [
+        addTestCollection,
+        sendParent((context, event) => ({
+          alert: {type: 'success', message: 'Added collection.', ttl: 1},
+          type: AppEvents.ADD_ALERT,
+        })),
+      ],
     },
     [CollectionsEvents.CLICKED_LOGOUT]: CollectionsStates.LOGOUT,
   },

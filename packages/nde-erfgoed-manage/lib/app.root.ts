@@ -1,7 +1,7 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
@@ -20,7 +20,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's alerts.
    */
   @property({type: Array})
-  public alerts: Alert[] = [ {type: 'success', message: 'Lorem ipsum sid amet.', ttl: 1} ];
+  public alerts: Alert[];
 
   /**
    * The component's logger.
@@ -85,6 +85,13 @@ export class AppRootComponent extends RxLitElement {
 
     this.subscribe('state', from(this.actor).pipe(
       tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', state)),
+    ));
+
+    /**
+     * Subscribes property alerts to changes in the app context.
+     */
+    this.subscribe('alerts', from(this.actor).pipe(
+      map((state) => state.context.alerts),
     ));
   }
 

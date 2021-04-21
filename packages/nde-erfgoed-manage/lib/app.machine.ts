@@ -1,5 +1,6 @@
 import { createMachine, MachineConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
+import { addAlert } from './app.actions';
 import { AppContext } from './app.context';
 import { AppEvent, AppEvents } from './app.events';
 import { AppSchema, AppState, AppStates } from './app.states';
@@ -28,6 +29,11 @@ export enum AppActors {
 export const appState: MachineConfig<AppContext, AppSchema, AppEvent> = {
   id: AppActors.APP_MACHINE,
   initial: AppStates.COLLECTIONS,
+  on: {
+    [AppEvents.ADD_ALERT]: {
+      actions: addAlert,
+    },
+  },
   states: {
     [AppStates.AUTHENTICATE]: {
       entry: log('AppMachine entered state "authenticate"', 'AppMachine'),
