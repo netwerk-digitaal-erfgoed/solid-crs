@@ -47,11 +47,11 @@ Create `AuthenticateStates`, `AuthenticateState` and `AuthenticateSchema` in 'li
 
 See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation].
 
-The `AuthenticateMachine` has three possible states: 
+The `authenticateMachine` has three possible states: 
 
-* `UNAUTHENTICATED` (initial)
-* `AUTHENTICATING`
-* `AUTHENTICATED`
+* `AuthenticateState.UNAUTHENTICATED` (initial)
+* `AuthenticateState.AUTHENTICATING`
+* `AuthenticateState.AUTHENTICATED`
 
 image::../../assets/authenticate/authenticate-machine-state-chart.svg[AuthenticateMachine State Chart]
 
@@ -136,4 +136,4 @@ Set up an empty Web Component for now. This component will be fleshed out when t
 
 ==== Configuring the App Machine
 
-The Authenticate Machine should be configured in the `AppMachine` as a https://xstate.js.org/docs/guides/parallel.html#parallel-state-nodes[parallel state node].
+The `authenticateMachine` should be configured in the `AppMachine` as a https://xstate.js.org/docs/guides/parallel.html#parallel-state-nodes[parallel state node].
