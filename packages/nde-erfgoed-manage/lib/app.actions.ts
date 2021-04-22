@@ -10,16 +10,16 @@ import { AddAlertEvent, AppEvents, DismissAlertEvent } from './app.events';
 /**
  * Action which sends an error event.
  */
-export const error = send({ type: AppEvents.ERROR });
+export const error = (err: Error | string) => send({ type: AppEvents.ERROR, data: { error: err } });
 
 /**
  * Action which adds an alert to the machine's context, if it doesn't already exist.
  */
 export const addAlert = choose<AppContext, AddAlertEvent>([
   {
-    cond: (context, event) => (!event || !event.alert) ? true : false,
+    cond: (context, event) => !event.alert,
     actions: [
-      error,
+      error('Alert should be set when adding alert'),
     ],
   },
   {
@@ -41,7 +41,7 @@ export const dismissAlert = choose<AppContext, DismissAlertEvent>([
   {
     cond: (context, event) => (!event || !event.alert) ? true : false,
     actions: [
-      error,
+      error('Alert should be set when dismissing alert'),
     ],
   },
   {

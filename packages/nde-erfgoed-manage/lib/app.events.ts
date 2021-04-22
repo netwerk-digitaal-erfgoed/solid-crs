@@ -39,7 +39,7 @@ export interface DismissAlertEvent extends EventObject { type: AppEvents.DISMISS
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface ErrorEvent extends EventObject { type: AppEvents.ERROR; data?: { event?: EventObject } }
+export interface ErrorEvent extends EventObject { type: AppEvents.ERROR; data?: { error?: Error | string } }
 
 /**
  * Union type of the event interfaces for the collection component.
