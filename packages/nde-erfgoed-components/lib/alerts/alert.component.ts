@@ -64,10 +64,11 @@ export class AlertComponent extends LitElement {
         }
         .alert .dismiss {
           cursor: pointer;
+          padding: 0px var(--gap-small);
         }
         .alert .dismiss svg {
-          max-height: 10px;
-          max-width: 10px;
+          max-height: var(--gap-small);
+          max-width: var(--gap-small);
         }
         .alert .message {
           flex: 1 0;
