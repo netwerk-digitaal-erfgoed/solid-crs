@@ -1,5 +1,5 @@
 import { createMachine, MachineConfig } from 'xstate';
-import { log } from 'xstate/lib/actions';
+import { log, send } from 'xstate/lib/actions';
 import { addAlert, dismissAlert } from './app.actions';
 import { AppContext } from './app.context';
 import { AppEvent, AppEvents } from './app.events';
@@ -35,6 +35,15 @@ export const appState: MachineConfig<AppContext, AppSchema, AppEvent> = {
     },
     [AppEvents.DISMISS_ALERT]: {
       actions: dismissAlert,
+    },
+    [AppEvents.ERROR]: {
+      actions: [
+        log((context, event) => 'An error occurred'),
+        send((context, event) => ({
+          alert: { type: 'danger', message: 'nde.root.alerts.error' },
+          type: AppEvents.ADD_ALERT,
+        })),
+      ],
     },
   },
   states: {

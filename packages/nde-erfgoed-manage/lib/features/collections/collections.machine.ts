@@ -30,7 +30,7 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
       actions: [
         addTestCollection,
         sendParent((context, event) => ({
-          alert: {type: 'success', message: 'nde.collections.alerts.created-collection'},
+          alert: { type: 'success', message: 'nde.collections.alerts.created-collection' },
           type: AppEvents.ADD_ALERT,
         })),
       ],

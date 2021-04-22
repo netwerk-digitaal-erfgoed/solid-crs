@@ -5,6 +5,11 @@
         "value": "App"
     },
     {
+        "key": "nde.root.alerts.error",
+        "locale": "nl-BE",
+        "value": "Er ging iets fout"
+    },
+    {
         "key": "nde.collections.alerts.created-collection",
         "locale": "nl-BE",
         "value": "Collectie aangemaakt"
