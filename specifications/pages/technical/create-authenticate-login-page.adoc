@@ -10,8 +10,8 @@
 * https://www.wrike.com/open.htm?id=675145293[Wrike task]
 * https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[Test plan]
 * Branch: `feat/675145293-create-authentication-login-page`
-* Projects:
-** https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage, nde-erfgoed-components]
+* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage, nde-erfgoed-components]
+
 
 == Introduction
 
@@ -21,9 +21,7 @@ This document is about the the authentication login page. Heritage institutions 
 
 === Out of scope
 
-The callback page, which follows the identity provider's login page, is to be made at a later time. 
-
-The notification system should not be implemented yet.
+Routing for the application should not be considered for this feature. This will be implemented for the whole app later.
 
 
 === Assumptions
@@ -39,18 +37,21 @@ All components and services are to be made in the '@digita-ai/nde-erfgoed-manage
 
 ==== Services
 
+
 ===== SolidService
 
 Create in '@digita-ai/nde-erfgoed-core' package under 'lib/solid/solid.service.ts'.
 
-This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.
+This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.  Take a look at the https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/#enable-session-restore[authentication in a browser environment example].
 
-For now, implement only the `login()` function.  
-`login(webId: string): void` should throw error messages according to the https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[test plan]. 
+For now, implement the `login()`, `logout()` and `validateWebId()` functions. 
 
+`login(webId: string): Observable<void>` should first validate the webId. When successful, the Inrupt SDK's `login()` function should be called, which redirects the user to the OIDC provider's authentication page.
+
+The `logout(): Observable<void>` function should call the `session.logout()` function on the user's current session (`getDefaultSession()`).
+
+`validateWebId(webId: string): Observable<boolean>` will be used for validating the input field of the `AuthenticateLoginPageComponent`.  
 Test URL validity with `new URL()`. Fetch the WebID. The response should `oidcRegistration` triple should be present on the profile of the given `webId`. The value of this triple should be checked as well. It should return a JSON object at '/.well-known/openid-configuration', which should contain a `solid_oidc_supported` key.
-
-If no error is thrown, the Inrupt SDK's `login()` function should be called, which redirects the user to the OIDC provider's authentication page.
 
 
 ==== Components
@@ -58,6 +59,7 @@ If no error is thrown, the Inrupt SDK's `login()` function should be called, whi
 All new components should be exported in 'lib/index.ts'.
 
 In 'nde-erfgoed-manage', register their HTML tags in app.ts. 
+
 
 ===== ButtonComponent 
 
@@ -87,58 +89,28 @@ Example usage of a button with both icons set:
 ----
 
 
-===== NotificationComponent
+===== InputFieldComponent
 
 The finished component should look like this:
 
-image::../../assets/authenticate-login-page/notification.svg[NotificationComponent]
+image::../../assets/authenticate-login-page/input-field.svg[SearchBoxComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/notification.component.ts' with tag `<nde-notification>`.
-
-Clicking a notification should dispatch the `DISMISS_NOTIFICATION` event.
-
-The changes needed to add notification objects to the state should not be implemented yet.
-
-
-===== SearchBoxComponent
-
-The finished component should look like this:
-
-image::../../assets/authenticate-login-page/search-box.svg[SearchBoxComponent]
-
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/search-box.component.ts' with tag `<nde-search-box>`
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/input-field.component.ts' with tag `<nde-input-field>`
 
 Use LitElement's https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots] for displaying the title and (validation error) message, the logo inside the right-side button, as well as the icon inside the input field. When no icon was set for the button, the button should not be shown.  
 The placeholder text should be able to be set through an HTML attribute (like a regular input field).  
 
-Example from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=322%3A2091[Figma's `AuthenticateLoginPageComponent`]:
+Example resembling https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=322%3A2091[Figma's `AuthenticateLoginPageComponent`]:
 
 [source, html]
 ----
-<nde-search-box placeholder="Lorem ipsum">
-  <p slot="title">Enter your name</p>
+<nde-input-field placeholder="Lorem ipsum">
+  <p slot="input-label">Enter your name</p>
   <nde-button slot="button" disabled="true">
     <i class="fas fa-angle-right" slot="icon-right"></i>
   </nde-button> <!-- A "button" slot is set, so it should be displayed. It is disabled, so the button turns grey --> 
-  <p slot="validation-error">WebID is invalid: OIDC registration not set</p> <!-- This should be set programatically, based on context.error -->
-</nde-search-box>
-----
-
-
-===== ProgressComponent
-
-The finished component can be seen in https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=322%3A2091[the Figma mockup of the `AuthenticateLoginPageComponent`], at the top.
-
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/loading-bar.component.ts' with tag `<nde-progress>`.
-
-Take a look at https://material.io/components/progress-indicators[material.io's progress indicators].  
-This component should be a linear, indeterminate progress indicator. When enabled, it should not move the whole page down, but rather be displayed over everything. (use z-index)
-
-Example usage: 
-
-[source, html]
-----
-<nde-progress enabled="true"></nde-progress>
+  <p slot="validation-message">WebID is invalid: OIDC registration not set</p> <!-- This should be set programatically, based on context.error -->
+</nde-input-field>
 ----
 
 
@@ -152,19 +124,19 @@ Generate under 'lib/features/authenticate/pages/authenticate-login-page.componen
 
 The page consists two main elements: 
 
-* The header which contains both the NDE logo and a title
-* The WebID input field which, in this case, is a <nde-search-box>
+* The header which contains both the NDE logo and a title.
+* The WebID input field with a button to its right. Use the previously mentioned <nde-input-field> and <nde-button>.
 
 When a valid WebID is entered and the button is clicked (or the 'Enter' key is pressed), the `LOGIN` event should be fired.
 
-While the WebID is being validated, the `ProgressComponent` should be displayed at the top of the page.
+While the WebID is being validated, the `ProgressComponent` should be displayed at the top of the page. Validation of the entered WebID should start when the input field was not changed for 250ms. 
 
-The notification visible in the Figma mockup will be implemented later.
+The alert visible in the Figma mockup will be implemented later.
 
 
 ==== Translations
 
-The following translations are to be written in the 'nl-NL.json' file. No other languages should be supported.
+The following translations are to be written in the 'nl-NL.json' file. No other languages should be supported. A file named 'nl-BE.json' already exists in the project, rename it and extend with the following:
 
 [options="header"]
 
