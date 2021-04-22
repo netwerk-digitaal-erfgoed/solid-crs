@@ -45,13 +45,15 @@ Create `authenticateMachine`, `AuthenticateActors` in 'lib/features/authenticate
 
 Create `AuthenticateStates`, `AuthenticateState` and `AuthenticateSchema` in 'lib/features/authenticate/authenticate.states.ts'.
 
-See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation] and the http://url[`AuthenticateMachine` state chart].
+See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation].
 
 The `AuthenticateMachine` has three possible states: 
 
 * `UNAUTHENTICATED` (initial)
 * `AUTHENTICATING`
 * `AUTHENTICATED`
+
+image::../../assets/authenticate/authenticate-machine-state-chart.svg[AuthenticateMachine State Chart]
 
 The `UNAUTHENTICATED` state is the initial state of the machine. From here, it can transition to the `AUTHENTICATING` state when the `CLICKED_LOGIN` event is called. The machine should be in the `AUTHENTICATING` state from the moment the button is clicked. The app should transition to `AUTHENTICATED` using the `LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `LOGIN_SUCCESS`, we reach the `AUTHENTICATED` state. From this state, the machine can go back to the `UNAUTHENTICATED` state when a `CLICKED_LOGOUT` action is fired.
 
@@ -62,7 +64,7 @@ Take a look at the existing `CollectionsState(s)`, `CollectionsSchema`, `Collect
 
 Create in 'lib/features/authenticate/authenticate.context.ts'
 
-The context of the `AuthenticateMachine` is relatively simple. It contains the session info returned by the Inrupt authentication client.
+The context of the `AuthenticateMachine` is relatively simple. It contains the session info returned by the Inrupt authentication client. The session info can be used to retrieve the user's WebID or session ID.
 
 [source, js]
 ----
@@ -115,7 +117,7 @@ Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
 | Should set `context.sessionInfo` to `sessionInfo`.
 
 | `escalateError(msg: string)`
-| Should `escalate` an error to the App Machine.
+| Logs the error message to console. (placeholder, this should be implemented by https://github.com/digita-ai/nde-erfgoedinstellingen/issues/24[#24])
 
 | `logout()`
 | Should call the `SolidService.logout()` function and remove any `context.sessionInfo`.
