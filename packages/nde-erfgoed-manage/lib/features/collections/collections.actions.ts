@@ -1,9 +1,9 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { assign, EventObject, send, sendParent } from 'xstate';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { AppEvents } from '../../app.events';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvents, LoadedCollectionsEvent } from './collections.events';
-import { AppEvents } from 'lib/app.events';
 
 /**
  * Actions for the collections component.
