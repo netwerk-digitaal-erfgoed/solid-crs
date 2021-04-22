@@ -65,7 +65,7 @@ In 'nde-erfgoed-manage', register their HTML tags in app.ts.
 
 The finished component should look like this:
 
-image::../../assets/authenticate-login-page/button.svg[ButtonComponent]
+image::../../assets/authenticate/button.svg[ButtonComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/button/button.component.ts', with tag `<nde-button>`
 
@@ -93,7 +93,7 @@ Example usage of a button with both icons set:
 
 The finished component should look like this:
 
-image::../../assets/authenticate-login-page/input-field.svg[SearchBoxComponent]
+image::../../assets/authenticate/input-field.svg[SearchBoxComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/input-field.component.ts' with tag `<nde-input-field>`
 
@@ -118,7 +118,7 @@ Example resembling https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?n
 
 The finished component should look like this:
 
-image::../../assets/authenticate-login-page/authenticate-login-page.svg[AuthenticateLoginPageComponent]
+image::../../assets/authenticate/authenticate-login-page.svg[AuthenticateLoginPageComponent]
 
 Generate under 'lib/features/authenticate/pages/authenticate-login-page.component.ts' with tag `<nde-authenticate-login-page>`
 
