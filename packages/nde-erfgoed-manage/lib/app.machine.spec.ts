@@ -1,12 +1,11 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
-import { ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppContext } from './app.context';
 import { AppEvent, AppEvents } from './app.events';
 import { appMachine } from './app.machine';
 import { AppSchema, AppState } from './app.states';
 
-describe('AlertComponent', () => {
+describe('AppMachine', () => {
   let machine: Interpreter<AppContext, AppSchema, AppEvent, AppState>;
 
   beforeEach(() => {
