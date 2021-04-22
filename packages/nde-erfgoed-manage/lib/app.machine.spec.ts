@@ -42,9 +42,16 @@ describe('AlertComponent', () => {
     expect(machine.state.context.alerts[0]).toEqual(alert);
   });
 
-  it('should throw error when sending addAlert without payload', () => {
+  it('should send error event when sending addAlert without payload', async (done) => {
     machine.start();
-    expect(() => machine.send(AppEvents.ADD_ALERT, {})).toThrow(ArgumentError);
+
+    machine.onEvent(((event) => {
+      if(event.type === AppEvents.ERROR) {
+        done();
+      }
+    }));
+
+    machine.send(AppEvents.ADD_ALERT, {});
   });
 
   it('should dismiss alert in context when sending dismissAlert', () => {
@@ -66,8 +73,27 @@ describe('AlertComponent', () => {
     expect(machine.state.context.alerts.length).toBe(0);
   });
 
-  it('should throw error when sending dismissAlert without payload', () => {
+  it('should send error event when sending dismissAlert without payload', async (done) => {
     machine.start();
-    expect(() => machine.send(AppEvents.DISMISS_ALERT, {})).toThrow(ArgumentError);
+
+    machine.onEvent(((event) => {
+      if(event.type === AppEvents.ERROR) {
+        done();
+      }
+    }));
+
+    machine.send(AppEvents.DISMISS_ALERT, {});
+  });
+
+  it('should send add alert event when error event is sent', async (done) => {
+    machine.start();
+
+    machine.onEvent(((event) => {
+      if(event.type === AppEvents.ADD_ALERT) {
+        done();
+      }
+    }));
+
+    machine.send(AppEvents.ERROR);
   });
 });
