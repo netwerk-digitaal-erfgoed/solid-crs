@@ -34,23 +34,28 @@ The initial project setup is complete.
 Under 'lib/features', create new 'authenticate' directory. In here, create the following files:
 
 * authenticate.machine.ts
+* authenticate.states.ts
 * authenticate.context.ts
 * authenticate.actions.ts
 * authenticate.events.ts
 
-==== AuthenticateMachine
+==== Authenticate Machine & States
 
-Create in 'lib/features/authenticate/authenticate.machine.ts'
+Create `authenticateMachine`, `AuthenticateActors` in 'lib/features/authenticate/authenticate.machine.ts'.
 
-See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation] and the http://url[`AuthenticateMachine` state chart]
+Create `AuthenticateStates`, `AuthenticateState` and `AuthenticateSchema` in 'lib/features/authenticate/authenticate.states.ts'.
+
+See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation] and the http://url[`AuthenticateMachine` state chart].
 
 The `AuthenticateMachine` has three possible states: 
 
-* `unauthorized` (initial)
-* `authorizing`
-* `authorized`
+* `UNAUTHENTICATED` (initial)
+* `AUTHENTICATING`
+* `AUTHENTICATED`
 
-The `unauthorized` state is the initial state of the machine. From here, it can transition to the `authorizing` state when the `LOGIN` event is called. The machine should be in the `authorizing` state from the moment the button is clicked. The app should transition to `authorized` using the `LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `LOGIN_SUCCESS`, we reach the `authorized` state. From this state, the machine can go back to the `unauthorized` state when a `LOGOUT` action is fired.
+The `UNAUTHENTICATED` state is the initial state of the machine. From here, it can transition to the `AUTHENTICATING` state when the `CLICKED_LOGIN` event is called. The machine should be in the `AUTHENTICATING` state from the moment the button is clicked. The app should transition to `AUTHENTICATED` using the `LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `LOGIN_SUCCESS`, we reach the `AUTHENTICATED` state. From this state, the machine can go back to the `UNAUTHENTICATED` state when a `CLICKED_LOGOUT` action is fired.
+
+Take a look at the existing `CollectionsState(s)`, `CollectionsSchema`, `CollectionsActors` ('lib/features/collections/collections.states.ts') and `collectionsMachine` ('lib/features/collections/collections.machine.ts') for inspiration on how to set up an XState machine.
 
 
 ==== AuthenticateContext
@@ -80,7 +85,7 @@ Take a look at https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop
 
 | Event 	| Payload
 
-| `LOGIN`
+| `CLICKED_LOGIN`
 | `webId: string`
 
 | `LOGIN_SUCCESS`
@@ -89,7 +94,7 @@ Take a look at https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop
 | `LOGIN_ERROR`
 | `msg: string`
 
-| `LOGOUT`
+| `CLICKED_LOGOUT`
 | No payload
 
 |======================================
@@ -106,11 +111,11 @@ Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
 | `login(webId: string)`
 | Should call the `SolidService.login(webId: string)` function.
 
-| `onSuccess(sessionInfo: ISessionInfo)`
+| `setSessionInfo(sessionInfo: ISessionInfo)`
 | Should set `context.sessionInfo` to `sessionInfo`.
 
-| `onError(msg: string)`
-| Should dispatch the app's `HANDLE_ERROR` event.
+| `escalateError(msg: string)`
+| Should `escalate` an error to the App Machine.
 
 | `logout()`
 | Should call the `SolidService.logout()` function and remove any `context.sessionInfo`.
@@ -118,22 +123,15 @@ Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
 |======================================
 
 
-
 ==== Components
 
-===== AuthenticationRootComponent
-
-The finished component should look like this:
-
-image::authenticate-root.svg[AuthenticationRootComponent]
+===== AuthenticateRootComponent
 
 Generate under 'lib/features/authenticate/root/authenticate-root.component.ts'
 
-Set up an empty Web Component for now. This component will be fleshed out when the other authentication-related components are made.
+Set up an empty Web Component for now. This component will be fleshed out when the other authentication-related components are made. Its purpose is to house the `AuthenticateLoginPageComponent`, to be made later.
 
 
 ==== Configuring the App Machine
 
-The Authenticate Machine should be registered in the App Machine.
-
-todo finish this
+The Authenticate Machine should be configured in the `AppMachine` as a https://xstate.js.org/docs/guides/parallel.html#parallel-state-nodes[parallel state node].
