@@ -75,7 +75,7 @@ These buttons consist of three parts:
 * The text content in the middle 
 * An icon on the right side 
 
-Make use of LitElement's https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots] for the icons. When no icon slot is present in the component's body, do not render it. The button should be checked for a `disabled` attribute. When present, use its boolean value to determine whether the button should be disabled or not. A disabled button should always be colored grey (#8990A9), enabled buttons, by default, are colored the 'Primary Light' blue. (#25438E)
+Make use of https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots], https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots[MDN] for the icons. When no icon slot is present in the component's body, do not render it. The button should be checked for a `disabled` attribute. When present, use its boolean value to determine whether the button should be disabled or not. A disabled button should always be colored grey (#8990A9), enabled buttons, by default, are colored the 'Primary Light' blue. (#25438E)
 
 Example usage of a button with both icons set:
 
