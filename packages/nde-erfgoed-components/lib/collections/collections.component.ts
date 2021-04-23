@@ -1,11 +1,24 @@
-import { LitElement, css, html, property } from 'lit-element';
+import { css, html, property } from 'lit-element';
 import type { Component } from '@digita-ai/semcom-core';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { RxLitElement } from 'rx-lit';
 
 /**
  * A component which shows an summary of multiple collections.
  */
-export class CollectionsComponent extends LitElement implements Component {
+export class CollectionsComponent extends RxLitElement implements Component {
+
+  /**
+   * The component's logger.
+   */
+  @property({type: Logger})
+  public logger: Logger;
+
+  /**
+   * The component's translator.
+   */
+  @property({type: Translator})
+  public translator: Translator;
 
   /**
    * The collections which will be summarized by the component.
@@ -51,7 +64,7 @@ export class CollectionsComponent extends LitElement implements Component {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collections">
-    ${this.collections.map((collection) => html`<nde-collection collection='${JSON.stringify(collection)}'></nde-collection>`)}
+    ${this.collections?.map((collection) => html`<nde-collection .collection='${collection}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection>`)}
     </div>
   `;
   }

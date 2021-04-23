@@ -1,11 +1,24 @@
-import { LitElement, css, html, property } from 'lit-element';
+import { css, html, property } from 'lit-element';
 import type { Component } from '@digita-ai/semcom-core';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { RxLitElement } from 'rx-lit';
 
 /**
  * A component which shows the details of a single collection.
  */
-export class CollectionComponent extends LitElement implements Component {
+export class CollectionComponent extends RxLitElement implements Component {
+
+  /**
+   * The component's logger.
+   */
+  @property({type: Logger})
+  public logger: Logger;
+
+  /**
+   * The component's translator.
+   */
+  @property({type: Translator})
+  public translator: Translator;
 
   /**
    * The collection which will be rendered by the component.
@@ -52,7 +65,6 @@ export class CollectionComponent extends LitElement implements Component {
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
-      <!--<button>Save</button>-->
     </div>
   `;
   }
