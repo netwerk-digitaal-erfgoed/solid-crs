@@ -1,21 +1,31 @@
-/* eslint-disable no-console */
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { interpret, State } from 'xstate';
-import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ConsoleLogger, Logger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { RxLitElement } from 'rx-lit';
 import { AppActors, appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 import { AppStates } from './app.states';
 import { AppContext } from './app.context';
+import nlBe from './i8n/nl-BE.json';
 
 /**
  * The root page of the application.
  */
 export class AppRootComponent extends RxLitElement {
 
-  private logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
+  /**
+   * The component's logger.
+   */
+  @property({type: Logger})
+  public logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
+
+  /**
+   * The component's translator.
+   */
+  @property({type: Translator})
+  public translator: Translator = new MemoryTranslator(nlBe, 'nl-BE');
 
   /**
    * The constructor of the application root component,
@@ -53,15 +63,6 @@ export class AppRootComponent extends RxLitElement {
   }
 
   /**
-   * Hook called after every update.
-   * It passes child actors to the rendered child components.
-   */
-  updated(changed: PropertyValues) {
-    super.updated(changed);
-    this.shadowRoot.querySelectorAll('nde-collections-root').forEach((component: CollectionsRootComponent) => component.actor = this.actor.children.get(AppActors.COLLECTIONS_MACHINE));
-  }
-
-  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
@@ -69,9 +70,9 @@ export class AppRootComponent extends RxLitElement {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <h1>Header</h1>
-    ${ this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root></nde-collections-root>` : html`` }
-  `;
+    <h1>${this.translator.translate('nde.app.root.title')}</h1>
+    ${ this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html`` }
+    `;
   }
 
   /**
