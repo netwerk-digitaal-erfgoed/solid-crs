@@ -44,13 +44,13 @@ Under 'lib/features', create new 'authenticate' directory. In here, create the f
 
 ==== Authenticate Machine & States
 
-Create `authenticateMachine`, `AuthenticateActors` in 'lib/features/authenticate/authenticate.machine.ts'.
+Create `authenticateConfig`, `AuthenticateActors` in 'lib/features/authenticate/authenticate.machine.ts'.
 
 Create `AuthenticateStates`, `AuthenticateState` and `AuthenticateSchema` in 'lib/features/authenticate/authenticate.states.ts'.
 
 See https://xstate.js.org/docs/guides/machines.html#configuration[XState Machines documentation].
 
-The `authenticateMachine` has three possible states: 
+The `authenticateConfig` has three possible states: 
 
 * `AuthenticateStates.UNAUTHENTICATED` (initial)
 * `AuthenticateStates.AUTHENTICATING`
@@ -116,13 +116,10 @@ Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
 | `deleteSessionInfo(sessionInfo: ISessionInfo)`
 | Should set `context.sessionInfo` to its initial value.
 
-| `escalateError(msg: string)`
-| Logs the error message to console. (placeholder, this should be implemented by https://github.com/digita-ai/nde-erfgoedinstellingen/issues/24[#24])
-
 |======================================
 
 
-==== Events
+==== Services
 
 Create following services in 'lib/features/authenticate/authenticate.services.ts'
 
@@ -146,11 +143,11 @@ Take a look at 'lib/features/collections/collections.services.ts' for inspiratio
 
 ===== AuthenticateRootComponent
 
-Generate under 'lib/features/authenticate/root/authenticate-root.component.ts'
+Generate under 'lib/features/authenticate/authenticate-root.component.ts'
 
 Set up an empty Web Component for now. This component will be fleshed out when the other authentication-related components are made. Its purpose is to house the `AuthenticateLoginPageComponent`, to be made later.
 
 
 ==== Configuring the App Machine
 
-The `authenticateMachine` should be configured in the `AppMachine` as a https://xstate.js.org/docs/guides/parallel.html#parallel-state-nodes[parallel state node].
+The `authenticateConfig` should be configured in the `appState` as a https://xstate.js.org/docs/guides/parallel.html#parallel-state-nodes[parallel state node]. 
