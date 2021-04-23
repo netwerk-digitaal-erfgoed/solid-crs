@@ -1,12 +1,11 @@
-import { css, html, property } from 'lit-element';
+import { css, html, property, LitElement } from 'lit-element';
 import type { Component } from '@digita-ai/semcom-core';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { RxLitElement } from 'rx-lit';
 
 /**
  * A component which shows an summary of multiple collections.
  */
-export class CollectionsComponent extends RxLitElement implements Component {
+export class CollectionsComponent extends LitElement implements Component {
 
   /**
    * The component's logger.

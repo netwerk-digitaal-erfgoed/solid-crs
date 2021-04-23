@@ -2,7 +2,7 @@ import { createMachine, MachineConfig } from 'xstate';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvent, CollectionsEvents } from './collections.events';
 import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
-import { addCollections, addTestCollection, replaceCollections } from './collections.actions';
+import { addCollections, addTestCollection, replaceCollections, addAlert } from './collections.actions';
 import { loadCollectionsService } from './collections.services';
 
 /**
@@ -26,7 +26,10 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
       actions: addCollections,
     },
     [CollectionsEvents.CLICKED_ADD]: {
-      actions: addTestCollection,
+      actions: [
+        addTestCollection,
+        addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
+      ],
     },
     [CollectionsEvents.CLICKED_LOGOUT]: CollectionsStates.LOGOUT,
   },
