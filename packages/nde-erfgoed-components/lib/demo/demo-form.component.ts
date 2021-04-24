@@ -3,7 +3,9 @@ import { Collection, ConsoleLogger, Logger, LoggerLevel, Translator } from '@dig
 import { interpret, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
+import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormContext, formMachine } from '../forms/form.machine';
 import { FormEvents } from '../forms/form.events';
 
@@ -65,13 +67,26 @@ export class DemoFormComponent extends RxLitElement {
   static get styles() {
     return [
       css`
-        .form-element {
-          display: flex;
-          flex-direction: column;
+        nde-form nde-form-element input {
+          color: var(--colors-foreground-normal);
+          padding: 0px;
+          border: none;
+          font-size: var(--font-size-small);
+          outline: none;
+          display: block;
+          width: 100%;
         }
-        .form-element .field {
-          display: flex;
-          flex-direction: row;
+        nde-form nde-form-element div[slot="icon"] svg {
+          max-height: var(--gap-normal);
+          max-width: var(--gap-normal);
+        }
+        nde-form nde-form-element div[slot="help"] {
+          font-size: var(--font-size-small);
+          color: var(--colors-foreground-light);
+        }
+        nde-form nde-form-element button[slot="action"] {
+          height: 44px;
+          background-color: var(--colors-primary-dark);
         }
       `,
     ];
@@ -88,17 +103,17 @@ export class DemoFormComponent extends RxLitElement {
     <nde-form .actor="${this.actor}">
       <nde-form-element>
         <label slot="label" for="example">URI</label>
-        <span slot="icon">x</span>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.uri}" @change="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, uri: e.target.value})})}" />
-        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">Go</button>
-        <span slot="help">This isn't helpful</span>
+        <div slot="icon">${ unsafeSVG(Search) }</div>
+        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.uri}" @input="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, uri: e.target.value})})}" />
+        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">${ unsafeSVG(Login) }</button>
+        <div slot="help">This isn't helpful</div>
       </nde-form-element>
       <nde-form-element>
         <label slot="label" for="example">Name</label>
-        <span slot="icon">x</span>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.name}" @change="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, name: e.target.value})})}" />
-        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">Go</button>
-        <span slot="help">This isn't helpful</span>
+        <div slot="icon">${ unsafeSVG(Search) }</div>
+        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.name}" @input="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, name: e.target.value})})}" />
+        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">${ unsafeSVG(Login) }</button>
+        <div slot="help">This isn't helpful</div>
       </nde-form-element>
     </nde-form>
   `;

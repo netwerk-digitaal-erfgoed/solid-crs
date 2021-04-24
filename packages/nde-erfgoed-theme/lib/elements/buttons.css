@@ -1,7 +1,12 @@
 button {
   background-color: var(--colors-primary-normal);
-  color: var(--colors-background-light);
+  color: var(--colors-foreground-inverse);
   border: none;
   padding: var(--gap-small);
   text-transform: uppercase;
+}
+
+button svg {
+  fill: var(--colors-foreground-inverse);
+  max-height: 100%;
 }

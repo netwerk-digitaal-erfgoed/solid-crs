@@ -37,10 +37,31 @@ export class FormElementComponent extends LitElement {
         .form-element {
           display: flex;
           flex-direction: column;
+          align-items: stretch;
         }
-        .form-element .field {
+        .form-element .content {
           display: flex;
           flex-direction: row;
+          align-items: stretch;
+        }
+        .form-element .content .field {
+          display: flex;
+          flex-direction: row;
+          border: var(--border-normal) solid var(--colors-foreground-normal);
+          padding: var(--gap-small) var(--gap-normal);
+          height: 20px;
+          align-items: center;
+          flex: 1 0;
+        }
+        .form-element .label {
+          font-weight: var(--font-weight-bold);
+        }
+        .form-element .content .field .input {
+          flex: 1 0;
+        }
+        .form-element .content .field .icon {
+          max-height: var(--gap-normal);
+          max-width: var(--gap-normal);
         }
       `,
     ];
@@ -58,12 +79,14 @@ export class FormElementComponent extends LitElement {
       <div class="label">
         <slot name="label"></slot>
       </div>
-      <div class="field">
-        <div class="input">
-          <slot name="input"></slot>
-        </div>
-        <div class="icon">
-          <slot name="icon"></slot>
+      <div class="content">
+        <div class="field">
+          <div class="input">
+            <slot name="input"></slot>
+          </div>
+          <div class="icon">
+            <slot name="icon"></slot>
+          </div>
         </div>
         <div class="action">
           <slot name="action"></slot>

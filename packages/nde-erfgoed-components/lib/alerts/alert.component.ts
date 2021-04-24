@@ -1,8 +1,7 @@
-import { css, html, LitElement, property, svg } from 'lit-element';
+import { css, html, LitElement, property } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-// import Bell from '@digita-ai/nde-erfgoed-theme/dist/icons/Bell';
-import {Bell, Dismiss} from '@digita-ai/nde-erfgoed-theme';
-import {unsafeSVG} from 'lit-html/directives/unsafe-svg';
+import { Bell, Dismiss } from '@digita-ai/nde-erfgoed-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
 /**

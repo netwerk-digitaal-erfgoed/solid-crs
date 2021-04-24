@@ -1,9 +1,7 @@
 import { css, html, internalProperty, property } from 'lit-element';
 import { ConsoleLogger, Logger, LoggerLevel, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, SpawnedActorRef, State } from 'xstate';
+import { interpret, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Event } from '../state/event';
-import { FormEvents } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 /**
@@ -71,7 +69,6 @@ export class FormComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="form">
-      Lorem
       <form>
         <slot></slot>
       </form>

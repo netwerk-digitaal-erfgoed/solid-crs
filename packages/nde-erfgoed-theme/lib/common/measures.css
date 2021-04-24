@@ -1,5 +1,10 @@
 :root {
   /**
+    Border sizes
+  */
+  --border-normal: 2px;
+
+  /**
         Gap sizes
     */
   --gap-small: 10px;
