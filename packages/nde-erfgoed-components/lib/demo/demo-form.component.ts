@@ -3,10 +3,10 @@ import { Collection, ConsoleLogger, Logger, LoggerLevel, Translator } from '@dig
 import { interpret, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { FormContext, formMachine } from '../forms/form.machine';
+import { FormContext, formMachine, FormStates } from '../forms/form.machine';
 import { FormEvents } from '../forms/form.events';
 
 /**
@@ -32,6 +32,7 @@ export class DemoFormComponent extends RxLitElement {
   @property({type: Object})
   public actor = interpret(formMachine.withContext({
     data: { uri: '', name: 'Test' },
+    original: { uri: '', name: 'Test' },
   }));
 
   /**
@@ -39,6 +40,9 @@ export class DemoFormComponent extends RxLitElement {
    */
   @internalProperty()
   state?: State<FormContext<Collection>>;
+
+  @internalProperty()
+  enableSubmit = false;
 
   /**
    * The constructor of the application root component,
@@ -59,6 +63,10 @@ export class DemoFormComponent extends RxLitElement {
     this.subscribe('state', from(this.actor).pipe(
       tap((state) => this.logger.debug(DemoFormComponent.name, 'CollectionState change:', state)),
     ));
+
+    this.subscribe('enableSubmit', from(this.actor).pipe(
+      map((state) => state.value[FormStates.CLEANLINESS] === FormStates.DIRTY && state.value[FormStates.VALIDATION] === FormStates.VALID),
+    ));
   }
 
   /**
@@ -67,6 +75,18 @@ export class DemoFormComponent extends RxLitElement {
   static get styles() {
     return [
       css`
+        nde-form {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        nde-form nde-form-element {
+          margin-bottom: var(--gap-large);
+          display: block;
+        }
+        nde-form nde-form-element:last-child {
+          margin-bottom: 0px;
+        }
         nde-form nde-form-element input {
           color: var(--colors-foreground-normal);
           padding: 0px;
@@ -87,6 +107,14 @@ export class DemoFormComponent extends RxLitElement {
         nde-form nde-form-element button[slot="action"] {
           height: 44px;
           background-color: var(--colors-primary-dark);
+        }
+        button {
+          border: var(--border-normal) solid var(--colors-primary-normal);
+        }
+        button:disabled {
+          border: var(--border-normal) solid var(--colors-background-normal);
+          background-color: var(--colors-background-light);
+          color: var(--colors-foreground-light);
         }
       `,
     ];
@@ -116,6 +144,11 @@ export class DemoFormComponent extends RxLitElement {
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
     </nde-form>
+    
+    <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">Submit</button>
+    ${this.state?.value[FormStates.CLEANLINESS]}
+    ${this.state?.value[FormStates.VALIDATION]}
+    ${this.enableSubmit}
   `;
   }
 }

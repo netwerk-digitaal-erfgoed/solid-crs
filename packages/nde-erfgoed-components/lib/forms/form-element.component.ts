@@ -34,6 +34,9 @@ export class FormElementComponent extends LitElement {
   static get styles() {
     return [
       css`
+        :root {
+          display: block;
+        }
         .form-element {
           display: flex;
           flex-direction: column;
@@ -55,6 +58,7 @@ export class FormElementComponent extends LitElement {
         }
         .form-element .label {
           font-weight: var(--font-weight-bold);
+          margin-bottom: var(--gap-small);
         }
         .form-element .content .field .input {
           flex: 1 0;

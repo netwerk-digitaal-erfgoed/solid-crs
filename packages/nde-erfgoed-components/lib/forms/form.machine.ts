@@ -3,21 +3,25 @@ import { State } from '../state/state';
 import { Event } from '../state/event';
 import { Config } from '../state/config';
 import { FormEvents } from './form.events';
-import { doSomething, processUpdate } from './form.actions';
+import { update, validate } from './form.actions';
+import { FormValidationResult } from './form-validation-result';
 
 /**
  * The context of a collections feature.
  */
 export interface FormContext<TData> {
   data?: TData;
+  original?: TData;
+  validation?: FormValidationResult[];
 }
 
 /**
  * State references for the form component, with readable log format.
  */
 export enum FormStates {
-  CHANGES   = '[FormState: Changes]',
+  CLEANLINESS   = '[FormState: Cleanliness]',
   PRISTINE   = '[FormState: Pristine]',
+  CHECKING_CLEANLINESS = '[FormState: Checking cleanliness]',
   DIRTY      = '[FormState: Dirty]',
 
   SUBMISSION = '[FormState: Submission]',
@@ -25,13 +29,9 @@ export enum FormStates {
   SUBMITTING = '[FormState: Submitting]',
   SUBMITTED  = '[FormState: Submitted]',
 
-  ENABLEMENT   = '[FormState: Enablement]',
-  ENABLED   = '[FormState: Enabled]',
-  DISABLED   = '[FormState: Disabled]',
-
   VALIDATION = '[FormState: Validation]',
   NOT_VALIDATED = '[FormState: Not validated]',
-  VALIDATING = '[FormState: Validating]',
+  CHECKING_VALIDATION = '[FormState: Checking validation]',
   VALID      = '[FormState: Valid]',
   INVALID    = '[FormState: Invalid]',
 }
@@ -42,20 +42,37 @@ export enum FormStates {
 const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
   id: 'form',
   type: 'parallel',
-  on: {
-    [FormEvents.SELECTED_ELEMENT]: {
-      actions: [ doSomething ],
-    },
-    [FormEvents.UPDATED_ELEMENT]: {
-      actions: [ doSomething, processUpdate ],
-    },
-  },
   states: {
-    [FormStates.CHANGES]: {
+    [FormStates.CLEANLINESS]: {
       initial: FormStates.PRISTINE,
       states: {
-        [FormStates.PRISTINE]: { },
-        [FormStates.DIRTY]: { },
+        [FormStates.PRISTINE]: {
+          on: {
+            [FormEvents.UPDATED_ELEMENT]: {
+              target: FormStates.CHECKING_CLEANLINESS,
+            },
+          },
+          exit: [ update, validate ],
+        },
+        [FormStates.CHECKING_CLEANLINESS]: {
+          always: [
+            {
+              target: FormStates.PRISTINE,
+              cond: (context, event) => JSON.stringify(context.data) === JSON.stringify(context.original),
+            },
+            {
+              target: FormStates.DIRTY,
+            },
+          ],
+        },
+        [FormStates.DIRTY]: {
+          on: {
+            [FormEvents.UPDATED_ELEMENT]: {
+              target: FormStates.CHECKING_CLEANLINESS,
+            },
+          },
+          exit: [ update, validate ],
+        },
       },
     },
     [FormStates.SUBMISSION]: {
@@ -66,20 +83,44 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
         [FormStates.SUBMITTED]: { },
       },
     },
-    [FormStates.ENABLEMENT]: {
-      initial: FormStates.ENABLED,
-      states: {
-        [FormStates.ENABLED]: { },
-        [FormStates.DISABLED]: { },
-      },
-    },
     [FormStates.VALIDATION]: {
       initial: FormStates.NOT_VALIDATED,
       states: {
-        [FormStates.NOT_VALIDATED]: { },
-        [FormStates.VALIDATING]: { },
-        [FormStates.VALID]: { },
-        [FormStates.INVALID]: { },
+        [FormStates.NOT_VALIDATED]: {
+          on: {
+            [FormEvents.UPDATED_ELEMENT]: {
+              target: FormStates.CHECKING_VALIDATION,
+            },
+          },
+          exit: [ update, validate ],
+        },
+        [FormStates.CHECKING_VALIDATION]: {
+          always: [
+            {
+              target: FormStates.VALID,
+              cond: (context, event) => context.validation === null || context.validation.length === 0,
+            },
+            {
+              target: FormStates.INVALID,
+            },
+          ],
+        },
+        [FormStates.VALID]: {
+          on: {
+            [FormEvents.UPDATED_ELEMENT]: {
+              target: FormStates.CHECKING_VALIDATION,
+            },
+          },
+          exit: [ update, validate ],
+        },
+        [FormStates.INVALID]: {
+          on: {
+            [FormEvents.UPDATED_ELEMENT]: {
+              target: FormStates.CHECKING_VALIDATION,
+            },
+          },
+          exit: [ update, validate ],
+        },
       },
     },
   },
