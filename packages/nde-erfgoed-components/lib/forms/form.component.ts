@@ -1,8 +1,9 @@
 import { css, html, internalProperty, property } from 'lit-element';
 import { ConsoleLogger, Logger, LoggerLevel, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, State } from 'xstate';
+import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { FormContext, formMachine } from './form.machine';
+import { Event } from '../state/event';
+import { FormContext, FormEvents } from './form.machine';
 
 /**
  * A component which shows the details of a single collection.
@@ -25,22 +26,13 @@ export class FormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor = interpret(formMachine.withContext({}));
+  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<any>>>;
 
   /**
    * The state of this component.
    */
   @internalProperty()
   state?: State<FormContext<any>>;
-
-  /**
-   * The constructor of the application root component,
-   * which starts the root machine actor.
-   */
-  constructor() {
-    super();
-    this.actor.start();
-  }
 
   /**
    * The styles associated with the component.

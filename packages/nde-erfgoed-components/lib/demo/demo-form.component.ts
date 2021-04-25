@@ -9,6 +9,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormContext, formMachine, FormStates, FormEvents } from '../forms/form.machine';
 import { Event } from '../state/event';
 import { Schema } from '../state/schema';
+import { FormValidationResult } from 'lib/forms/form-validation-result';
 
 /**
  * A component which shows the details of a single collection.
@@ -31,11 +32,12 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor = interpret<FormContext<Collection>, any, Event<FormEvents>>
-  (formMachine.withContext({
-    data: { uri: '', name: 'Test' },
-    original: { uri: '', name: 'Test' },
-  }));
+  public actor = interpret<FormContext<Collection>, any, Event<FormEvents>>(
+    formMachine(this.validator).withContext({
+      data: { uri: '', name: 'Test' },
+      original: { uri: '', name: 'Test' },
+    }),
+  );
 
   /**
    * The state of this component.
@@ -53,6 +55,14 @@ export class DemoFormComponent extends RxLitElement {
   constructor() {
     super();
     this.actor.start();
+  }
+
+  validator(context: FormContext<Collection>, event: Event<FormEvents>): FormValidationResult[] {
+
+    return [
+      ...context.data && context.data.name ? [] : [ { field: 'name', message: 'Name is required' } ],
+      ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'URI is required.' } ],
+    ];
   }
 
   /**

@@ -1,7 +1,6 @@
 import { assign, createMachine } from 'xstate';
 import { State } from '../state/state';
 import { Event } from '../state/event';
-import { Config } from '../state/config';
 import { FormValidationResult } from './form-validation-result';
 
 /**
@@ -32,8 +31,8 @@ export const update = assign<FormContext<any>, FormUpdatedEvent>({
 /**
  * Validates the data in context.
  */
-export const validate = assign<FormContext<any>, Event<FormEvents>>({
-  validation: (context: FormContext<any>, event: Event<FormEvents>) => [ ...context?.data?.name ? [] : [ {message: 'test', field: 'name'} ] ],
+export const validate = (validator: FormValidator) => assign<FormContext<any>, Event<FormEvents>>({
+  validation: (context: FormContext<any>, event: Event<FormEvents>) => [ ...validator(context, event) ],
 });
 
 /**
@@ -66,10 +65,12 @@ export enum FormStates {
   INVALID    = '[FormState: Invalid]',
 }
 
+export type FormValidator = (context: FormContext<any>, event: Event<FormEvents>) => FormValidationResult[];
+
 /**
- * The machine config for the form component machine.
+ * The form component machine.
  */
-const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
+export const formMachine = (validator: FormValidator) => createMachine<FormContext<any>, Event<FormEvents>, State<FormStates, FormContext<any>>>({
   id: 'form',
   type: 'parallel',
   states: {
@@ -82,7 +83,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.CHECKING_CLEANLINESS,
             },
           },
-          exit: [ update, validate ],
+          exit: [ update, validate(validator) ],
         },
         [FormStates.CHECKING_CLEANLINESS]: {
           always: [
@@ -101,7 +102,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.CHECKING_CLEANLINESS,
             },
           },
-          exit: [ update, validate ],
+          exit: [ update, validate(validator) ],
         },
       },
     },
@@ -114,7 +115,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.SUBMITTING,
             },
           },
-          exit: [ validate ],
+          exit: [ validate(validator) ],
         },
         [FormStates.SUBMITTING]: {
           always: [
@@ -139,7 +140,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
-          exit: [ update, validate ],
+          exit: [ update, validate(validator) ],
         },
         [FormStates.CHECKING_VALIDATION]: {
           always: [
@@ -158,7 +159,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
-          exit: [ update, validate ],
+          exit: [ update, validate(validator) ],
         },
         [FormStates.INVALID]: {
           on: {
@@ -166,14 +167,9 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
-          exit: [ update, validate ],
+          exit: [ update, validate(validator) ],
         },
       },
     },
   },
-};
-
-/**
- * The form component machine.
- */
-export const formMachine = createMachine<FormContext<any>, Event<FormEvents>, State<FormStates, FormContext<any>>>(formConfig);
+});
