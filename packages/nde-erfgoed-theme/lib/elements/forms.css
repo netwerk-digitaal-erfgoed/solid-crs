@@ -1,0 +1,38 @@
+nde-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+nde-form nde-form-element {
+  margin-bottom: var(--gap-large);
+  display: block;
+}
+
+nde-form nde-form-element:last-child {
+  margin-bottom: 0;
+}
+
+nde-form nde-form-element input {
+  color: var(--colors-foreground-normal);
+  padding: 0;
+  border: none;
+  font-size: var(--font-size-small);
+  outline: none;
+  display: block;
+  width: 100%;
+}
+
+nde-form nde-form-element div[slot="icon"] svg {
+  max-height: var(--gap-normal);
+  max-width: var(--gap-normal);
+}
+
+nde-form nde-form-element div[slot="help"] {
+  font-size: var(--font-size-small);
+  color: var(--colors-foreground-light);
+}
+
+nde-form nde-form-element button[slot="action"] {
+  height: 44px;
+}

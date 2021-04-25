@@ -1,15 +1,19 @@
 import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
 import { Collection, ConsoleLogger, Logger, LoggerLevel, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, State } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormContext, formMachine, FormStates, FormEvents } from '../forms/form.machine';
 import { Event } from '../state/event';
-import { Schema } from '../state/schema';
 import { FormValidationResult } from 'lib/forms/form-validation-result';
+
+export const validator = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidationResult[] => [
+  ...context.data && context.data.name ? [] : [ { field: 'name', message: 'Name is required' } ],
+  ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'URI is required.' } ],
+];
 
 /**
  * A component which shows the details of a single collection.
@@ -32,18 +36,7 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor = interpret<FormContext<Collection>, any, Event<FormEvents>>(
-    formMachine(this.validator).withContext({
-      data: { uri: '', name: 'Test' },
-      original: { uri: '', name: 'Test' },
-    }),
-  );
-
-  /**
-   * The state of this component.
-   */
-  @internalProperty()
-  state?: State<FormContext<Collection>, Event<FormEvents>, Schema<FormContext<Collection>, FormStates>>;
+  public actor: Interpreter<FormContext<Collection>, any, Event<FormEvents>>;
 
   @internalProperty()
   enableSubmit = false;
@@ -54,15 +47,15 @@ export class DemoFormComponent extends RxLitElement {
    */
   constructor() {
     super();
+
+    this.actor = interpret<FormContext<Collection>, any, Event<FormEvents>>(
+      formMachine(validator).withContext({
+        data: { uri: '', name: 'Test' },
+        original: { uri: '', name: 'Test' },
+      }),
+    );
+
     this.actor.start();
-  }
-
-  validator(context: FormContext<Collection>, event: Event<FormEvents>): FormValidationResult[] {
-
-    return [
-      ...context.data && context.data.name ? [] : [ { field: 'name', message: 'Name is required' } ],
-      ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'URI is required.' } ],
-    ];
   }
 
   /**
@@ -71,10 +64,6 @@ export class DemoFormComponent extends RxLitElement {
    */
   firstUpdated(changed: PropertyValues) {
     super.firstUpdated(changed);
-
-    this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(DemoFormComponent.name, 'CollectionState change:', state)),
-    ));
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
       map((state) => state.value[FormStates.CLEANLINESS] === FormStates.DIRTY
@@ -89,38 +78,7 @@ export class DemoFormComponent extends RxLitElement {
   static get styles() {
     return [
       css`
-        nde-form {
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-        }
-        nde-form nde-form-element {
-          margin-bottom: var(--gap-large);
-          display: block;
-        }
-        nde-form nde-form-element:last-child {
-          margin-bottom: 0px;
-        }
-        nde-form nde-form-element input {
-          color: var(--colors-foreground-normal);
-          padding: 0px;
-          border: none;
-          font-size: var(--font-size-small);
-          outline: none;
-          display: block;
-          width: 100%;
-        }
-        nde-form nde-form-element div[slot="icon"] svg {
-          max-height: var(--gap-normal);
-          max-width: var(--gap-normal);
-        }
-        nde-form nde-form-element div[slot="help"] {
-          font-size: var(--font-size-small);
-          color: var(--colors-foreground-light);
-        }
-        nde-form nde-form-element button[slot="action"] {
-          height: 44px;
-        } 
+        
       `,
     ];
   }
@@ -150,11 +108,6 @@ export class DemoFormComponent extends RxLitElement {
 
       <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>
     </nde-form>
-    
-    ${this.state?.value[FormStates.CLEANLINESS]}
-    ${this.state?.value[FormStates.VALIDATION]}
-    ${this.state?.value[FormStates.SUBMISSION]}
-    ${this.enableSubmit}
   `;
   }
 }
