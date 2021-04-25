@@ -1,14 +1,17 @@
-import { css, html, LitElement, property } from 'lit-element';
+import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
 import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
+import { RxLitElement } from 'rx-lit';
+import { from } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Event } from '../state/event';
-import { FormEvents } from './form.events';
-import { FormContext } from './form.machine';
+import { FormContext, FormEvents } from './form.machine';
+import { FormValidationResult } from './form-validation-result';
 
 /**
  * A component which shows the details of a single collection.
  */
-export class FormElementComponent extends LitElement {
+export class FormElementComponent extends RxLitElement {
 
   /**
    * The component's logger.
@@ -21,6 +24,18 @@ export class FormElementComponent extends LitElement {
    */
   @property({type: Translator})
   public translator: Translator;
+
+  /**
+   * The element's form validation results.
+   */
+  @property({type: String})
+  public field: string;
+
+  /**
+   * The element's form validation results.
+   */
+  @internalProperty({type: Array})
+  public validationResults: FormValidationResult[];
 
   /**
    * The actor controlling this component.
@@ -67,8 +82,24 @@ export class FormElementComponent extends LitElement {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
         }
+        .form-element .results .result {
+          background-color: var(--colors-status-warning);
+          padding: var(--gap-tiny) var(--gap-normal);
+        }
       `,
     ];
+  }
+
+  /**
+   * Hook called on first update after connection to the DOM.
+   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   */
+  firstUpdated(changed: PropertyValues) {
+    super.firstUpdated(changed);
+
+    this.subscribe('validationResults', from(this.actor).pipe(
+      map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
+    ));
   }
 
   /**
@@ -96,8 +127,11 @@ export class FormElementComponent extends LitElement {
           <slot name="action"></slot>
         </div>
       </div>
-      <div class="help">
+      <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
         <slot name="help"></slot>
+      </div>
+      <div class="results" ?hidden="${!this.validationResults || this.validationResults.length === 0}">
+        ${this.validationResults?.map((result) => html`<div class="result">${result.message}</div>`)}
       </div>
     </div>
   `;

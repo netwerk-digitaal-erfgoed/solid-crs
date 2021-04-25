@@ -6,8 +6,9 @@ import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { FormContext, formMachine, FormStates } from '../forms/form.machine';
-import { FormEvents } from '../forms/form.events';
+import { FormContext, formMachine, FormStates, FormEvents } from '../forms/form.machine';
+import { Event } from '../state/event';
+import { Schema } from '../state/schema';
 
 /**
  * A component which shows the details of a single collection.
@@ -30,7 +31,8 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor = interpret(formMachine.withContext({
+  public actor = interpret<FormContext<Collection>, any, Event<FormEvents>>
+  (formMachine.withContext({
     data: { uri: '', name: 'Test' },
     original: { uri: '', name: 'Test' },
   }));
@@ -39,7 +41,7 @@ export class DemoFormComponent extends RxLitElement {
    * The state of this component.
    */
   @internalProperty()
-  state?: State<FormContext<Collection>>;
+  state?: State<FormContext<Collection>, Event<FormEvents>, Schema<FormContext<Collection>, FormStates>>;
 
   @internalProperty()
   enableSubmit = false;
@@ -122,23 +124,23 @@ export class DemoFormComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <nde-form .actor="${this.actor}">
-      <nde-form-element>
+      <nde-form-element .actor="${this.actor}" field="uri">
         <label slot="label" for="example">URI</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.uri}" @input="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, uri: e.target.value})})}" />
-        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">${ unsafeSVG(Login) }</button>
+        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.uri}" @input="${(e: InputEvent) => this.actor.send(FormEvents.FORM_UPDATED, {update: (data: any) => ({...data, uri: e.target.value})})}" />
+        <button slot="action">${ unsafeSVG(Login) }</button>
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
-      <nde-form-element>
+      <nde-form-element .actor="${this.actor}" field="name">
         <label slot="label" for="example">Name</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.name}" @input="${(e: InputEvent) => this.actor.send(FormEvents.UPDATED_ELEMENT, {update: (data: any) => ({...data, name: e.target.value})})}" />
-        <button slot="action" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">${ unsafeSVG(Login) }</button>
+        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.name}" @input="${(e: InputEvent) => this.actor.send(FormEvents.FORM_UPDATED, {update: (data: any) => ({...data, name: e.target.value})})}" />
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
+
+      <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>
     </nde-form>
     
-    <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.SUBMITTED)}">Save</button>
     ${this.state?.value[FormStates.CLEANLINESS]}
     ${this.state?.value[FormStates.VALIDATION]}
     ${this.state?.value[FormStates.SUBMISSION]}

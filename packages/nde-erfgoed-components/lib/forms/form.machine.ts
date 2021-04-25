@@ -1,10 +1,40 @@
-import { createMachine } from 'xstate';
+import { assign, createMachine } from 'xstate';
 import { State } from '../state/state';
 import { Event } from '../state/event';
 import { Config } from '../state/config';
-import { FormEvents } from './form.events';
-import { update, validate } from './form.actions';
 import { FormValidationResult } from './form-validation-result';
+
+/**
+ * Event references for the collection component, with readable log format.
+ */
+export enum FormEvents {
+  FORM_UPDATED = '[FormEvent: Updated element]',
+  FORM_SUBMITTED = '[FormEvent: Subitted]',
+}
+
+/**
+ * Event interfaces for the collection component, with their payloads.
+ */
+export interface FormUpdatedEvent extends Event<FormEvents> { type: FormEvents.FORM_UPDATED; update: (data: any) => any }
+export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents.FORM_SUBMITTED }
+
+/**
+ * Actions for the form component.
+ */
+
+/**
+ * Updates the data in context.
+ */
+export const update = assign<FormContext<any>, Event<FormEvents>>({
+  data: (context: FormContext<any>, event: Event<FormEvents>) => event.update(context.data),
+});
+
+/**
+ * Validates the data in context.
+ */
+export const validate = assign<FormContext<any>, Event<FormEvents>>({
+  validation: (context: FormContext<any>, event: Event<FormEvents>) => [ ...context?.data?.name ? [] : [ {message: 'test', field: 'name'} ] ],
+});
 
 /**
  * The context of a collections feature.
@@ -48,7 +78,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
       states: {
         [FormStates.PRISTINE]: {
           on: {
-            [FormEvents.UPDATED_ELEMENT]: {
+            [FormEvents.FORM_UPDATED]: {
               target: FormStates.CHECKING_CLEANLINESS,
             },
           },
@@ -67,7 +97,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
         },
         [FormStates.DIRTY]: {
           on: {
-            [FormEvents.UPDATED_ELEMENT]: {
+            [FormEvents.FORM_UPDATED]: {
               target: FormStates.CHECKING_CLEANLINESS,
             },
           },
@@ -80,7 +110,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
       states: {
         [FormStates.NOT_SUBMITTED]: {
           on: {
-            [FormEvents.SUBMITTED]: {
+            [FormEvents.FORM_SUBMITTED]: {
               target: FormStates.SUBMITTING,
             },
           },
@@ -105,7 +135,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
       states: {
         [FormStates.NOT_VALIDATED]: {
           on: {
-            [FormEvents.UPDATED_ELEMENT]: {
+            [FormEvents.FORM_UPDATED]: {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
@@ -124,7 +154,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
         },
         [FormStates.VALID]: {
           on: {
-            [FormEvents.UPDATED_ELEMENT]: {
+            [FormEvents.FORM_UPDATED]: {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
@@ -132,7 +162,7 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
         },
         [FormStates.INVALID]: {
           on: {
-            [FormEvents.UPDATED_ELEMENT]: {
+            [FormEvents.FORM_UPDATED]: {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
