@@ -65,7 +65,9 @@ export class DemoFormComponent extends RxLitElement {
     ));
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
-      map((state) => state.value[FormStates.CLEANLINESS] === FormStates.DIRTY && state.value[FormStates.VALIDATION] === FormStates.VALID),
+      map((state) => state.value[FormStates.CLEANLINESS] === FormStates.DIRTY
+      && state.value[FormStates.VALIDATION] === FormStates.VALID
+      && state.value[FormStates.SUBMISSION] === FormStates.NOT_SUBMITTED),
     ));
   }
 
@@ -106,16 +108,7 @@ export class DemoFormComponent extends RxLitElement {
         }
         nde-form nde-form-element button[slot="action"] {
           height: 44px;
-          background-color: var(--colors-primary-dark);
-        }
-        button {
-          border: var(--border-normal) solid var(--colors-primary-normal);
-        }
-        button:disabled {
-          border: var(--border-normal) solid var(--colors-background-normal);
-          background-color: var(--colors-background-light);
-          color: var(--colors-foreground-light);
-        }
+        } 
       `,
     ];
   }
@@ -145,9 +138,10 @@ export class DemoFormComponent extends RxLitElement {
       </nde-form-element>
     </nde-form>
     
-    <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.SELECTED_ELEMENT)}">Submit</button>
+    <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.SUBMITTED)}">Save</button>
     ${this.state?.value[FormStates.CLEANLINESS]}
     ${this.state?.value[FormStates.VALIDATION]}
+    ${this.state?.value[FormStates.SUBMISSION]}
     ${this.enableSubmit}
   `;
   }

@@ -78,8 +78,25 @@ const formConfig: Config<FormContext<any>, FormStates, FormEvents> = {
     [FormStates.SUBMISSION]: {
       initial: FormStates.NOT_SUBMITTED,
       states: {
-        [FormStates.NOT_SUBMITTED]: { },
-        [FormStates.SUBMITTING]: { },
+        [FormStates.NOT_SUBMITTED]: {
+          on: {
+            [FormEvents.SUBMITTED]: {
+              target: FormStates.SUBMITTING,
+            },
+          },
+          exit: [ validate ],
+        },
+        [FormStates.SUBMITTING]: {
+          always: [
+            {
+              target: FormStates.SUBMITTED,
+              cond: (context, event) => context.validation === null || context.validation.length === 0,
+            },
+            {
+              target: FormStates.NOT_SUBMITTED,
+            },
+          ],
+        },
         [FormStates.SUBMITTED]: { },
       },
     },

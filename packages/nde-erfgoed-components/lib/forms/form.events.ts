@@ -5,6 +5,7 @@ import { Event } from '../state/event';
  */
 export enum FormEvents {
   UPDATED_ELEMENT = '[FormEvent: Updated element]',
+  SUBMITTED = '[FormEvent: Subitted]',
   SELECTED_ELEMENT = '[FormEvent: Selected element]',
   DESELECTED_ELEMENT = '[FormEvent: Deselected element]',
 }
@@ -13,5 +14,6 @@ export enum FormEvents {
  * Event interfaces for the collection component, with their payloads.
  */
 export interface UpdatedElementEvent extends Event<FormEvents> { type: FormEvents.UPDATED_ELEMENT; update: (data: any) => any }
+export interface SubmittedEvent extends Event<FormEvents> { type: FormEvents.SUBMITTED }
 export interface SelectedElementEvent extends Event<FormEvents> { type: FormEvents.SELECTED_ELEMENT }
 export interface DeselectedElementEvent extends Event<FormEvents> { type: FormEvents.DESELECTED_ELEMENT }
