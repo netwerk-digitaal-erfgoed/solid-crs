@@ -15,7 +15,7 @@ export enum FormEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
-export interface FormUpdatedEvent extends Event<FormEvents> { type: FormEvents.FORM_UPDATED; update: (data: any) => any }
+export interface FormUpdatedEvent extends Event<FormEvents> { type: FormEvents.FORM_UPDATED; field: string; value: string }
 export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents.FORM_SUBMITTED }
 
 /**
@@ -25,8 +25,8 @@ export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents
 /**
  * Updates the data in context.
  */
-export const update = assign<FormContext<any>, Event<FormEvents>>({
-  data: (context: FormContext<any>, event: Event<FormEvents>) => event.update(context.data),
+export const update = assign<FormContext<any>, FormUpdatedEvent>({
+  data: (context: FormContext<any>, event: FormUpdatedEvent) => ({...context.data ? context.data : {}, [event.field]: event.value}),
 });
 
 /**

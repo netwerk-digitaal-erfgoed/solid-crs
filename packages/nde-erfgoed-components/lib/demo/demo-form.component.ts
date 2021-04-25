@@ -127,14 +127,14 @@ export class DemoFormComponent extends RxLitElement {
       <nde-form-element .actor="${this.actor}" field="uri">
         <label slot="label" for="example">URI</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.uri}" @input="${(e: InputEvent) => this.actor.send(FormEvents.FORM_UPDATED, {update: (data: any) => ({...data, uri: e.target.value})})}" />
+        <input type="text" slot="input" name="example" placeholder="Foo" />
         <button slot="action">${ unsafeSVG(Login) }</button>
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
       <nde-form-element .actor="${this.actor}" field="name">
         <label slot="label" for="example">Name</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <input type="text" slot="input" name="example" placeholder="Foo" .value="${this.state?.context?.data?.name}" @input="${(e: InputEvent) => this.actor.send(FormEvents.FORM_UPDATED, {update: (data: any) => ({...data, name: e.target.value})})}" />
+        <input type="text" slot="input" name="example" placeholder="Foo" />
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
 

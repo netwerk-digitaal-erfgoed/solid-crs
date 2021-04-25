@@ -3,9 +3,9 @@ import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Event } from '../state/event';
-import { FormContext, FormEvents } from './form.machine';
+import { FormContext, FormEvents, FormUpdatedEvent } from './form.machine';
 import { FormValidationResult } from './form-validation-result';
 
 /**
@@ -36,6 +36,12 @@ export class FormElementComponent extends RxLitElement {
    */
   @internalProperty({type: Array})
   public validationResults: FormValidationResult[];
+
+  /**
+   * The element's data.
+   */
+  @internalProperty({type: Object})
+  public data: any;
 
   /**
    * The actor controlling this component.
@@ -100,6 +106,21 @@ export class FormElementComponent extends RxLitElement {
     this.subscribe('validationResults', from(this.actor).pipe(
       map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
     ));
+
+    this.subscribe('data', from(this.actor).pipe(
+      map((state) => state.context?.data),
+    ));
+  }
+
+  handleInputSlotchange(slotchangeEvent: any) {
+    const childNodes: NodeListOf<HTMLElement> = slotchangeEvent.target.assignedNodes({flatten: true});
+    const node = childNodes?.length === 1 ? childNodes[0] : null;
+
+    if(node && node instanceof HTMLInputElement) {
+      const input = node as HTMLInputElement;
+      input.value = this.data[this.field];
+      input.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: input.value, field: this.field} as FormUpdatedEvent));
+    }
   }
 
   /**
@@ -117,7 +138,7 @@ export class FormElementComponent extends RxLitElement {
       <div class="content">
         <div class="field">
           <div class="input">
-            <slot name="input"></slot>
+            <slot name="input" @slotchange=${this.handleInputSlotchange}></slot>
           </div>
           <div class="icon">
             <slot name="icon"></slot>
