@@ -1,47 +1,17 @@
-import { assign, createMachine } from 'xstate';
+import { createMachine } from 'xstate';
 import { State } from '../state/state';
 import { Event } from '../state/event';
-import { FormValidationResult } from './form-validation-result';
+import { FormValidatorResult } from './form-validator-result';
+import { FormValidator } from './form-validator';
+import { FormEvents, update, validate } from './form.events';
 
 /**
- * Event references for the collection component, with readable log format.
- */
-export enum FormEvents {
-  FORM_UPDATED = '[FormEvent: Updated element]',
-  FORM_SUBMITTED = '[FormEvent: Subitted]',
-}
-
-/**
- * Event interfaces for the collection component, with their payloads.
- */
-export interface FormUpdatedEvent extends Event<FormEvents> { type: FormEvents.FORM_UPDATED; field: string; value: string }
-export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents.FORM_SUBMITTED }
-
-/**
- * Actions for the form component.
- */
-
-/**
- * Updates the data in context.
- */
-export const update = assign<FormContext<any>, FormUpdatedEvent>({
-  data: (context: FormContext<any>, event: FormUpdatedEvent) => ({...context.data ? context.data : {}, [event.field]: event.value}),
-});
-
-/**
- * Validates the data in context.
- */
-export const validate = (validator: FormValidator) => assign<FormContext<any>, Event<FormEvents>>({
-  validation: (context: FormContext<any>, event: Event<FormEvents>) => [ ...validator(context, event) ],
-});
-
-/**
- * The context of a collections feature.
+ * The context of a form.
  */
 export interface FormContext<TData> {
   data?: TData;
   original?: TData;
-  validation?: FormValidationResult[];
+  validation?: FormValidatorResult[];
 }
 
 /**
@@ -65,8 +35,6 @@ export enum FormStates {
   INVALID    = '[FormState: Invalid]',
 }
 
-export type FormValidator = (context: FormContext<any>, event: Event<FormEvents>) => FormValidationResult[];
-
 /**
  * The form component machine.
  */
@@ -74,9 +42,15 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
   id: 'form',
   type: 'parallel',
   states: {
+    /**
+     * State which determines if form has changed.
+     */
     [FormStates.CLEANLINESS]: {
       initial: FormStates.PRISTINE,
       states: {
+        /**
+         * The form has not changed.
+         */
         [FormStates.PRISTINE]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
@@ -85,6 +59,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           },
           exit: [ update, validate(validator) ],
         },
+        /**
+         * Transient state while checking if form was changed.
+         */
         [FormStates.CHECKING_CLEANLINESS]: {
           always: [
             {
@@ -96,6 +73,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
             },
           ],
         },
+        /**
+         * The form has been changed.
+         */
         [FormStates.DIRTY]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
@@ -106,9 +86,16 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
         },
       },
     },
+
+    /**
+     * State which determines if the form was submitted.
+     */
     [FormStates.SUBMISSION]: {
       initial: FormStates.NOT_SUBMITTED,
       states: {
+        /**
+         * The form has not been submitted.
+         */
         [FormStates.NOT_SUBMITTED]: {
           on: {
             [FormEvents.FORM_SUBMITTED]: {
@@ -117,6 +104,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           },
           exit: [ validate(validator) ],
         },
+        /**
+         * Transient state while submitting form.
+         */
         [FormStates.SUBMITTING]: {
           always: [
             {
@@ -128,12 +118,22 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
             },
           ],
         },
+        /**
+         * The form has been submitted.
+         */
         [FormStates.SUBMITTED]: { },
       },
     },
+
+    /**
+     * State which determines if the form is validated.
+     */
     [FormStates.VALIDATION]: {
       initial: FormStates.NOT_VALIDATED,
       states: {
+        /**
+         * The form has not yet been validated.
+         */
         [FormStates.NOT_VALIDATED]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
@@ -142,6 +142,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           },
           exit: [ update, validate(validator) ],
         },
+        /**
+         * Transient state while checking validation.
+         */
         [FormStates.CHECKING_VALIDATION]: {
           always: [
             {
@@ -153,6 +156,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
             },
           ],
         },
+        /**
+         * The form is valid, based on the provided validator function.
+         */
         [FormStates.VALID]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
@@ -161,6 +167,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           },
           exit: [ update, validate(validator) ],
         },
+        /**
+         * The form is invalid, based on the provided validator function.
+         */
         [FormStates.INVALID]: {
           on: {
             [FormEvents.FORM_UPDATED]: {

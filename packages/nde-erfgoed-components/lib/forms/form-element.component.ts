@@ -1,23 +1,18 @@
 import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
-import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Event } from '../state/event';
-import { FormContext, FormEvents, FormUpdatedEvent } from './form.machine';
-import { FormValidationResult } from './form-validation-result';
+import { FormContext } from './form.machine';
+import { FormValidatorResult } from './form-validator-result';
+import { FormEvents, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
  */
 export class FormElementComponent extends RxLitElement {
-
-  /**
-   * The component's logger.
-   */
-  @property({type: Logger})
-  public logger: Logger;
 
   /**
    * The component's translator.
@@ -34,13 +29,13 @@ export class FormElementComponent extends RxLitElement {
   /**
    * The element's form validation results.
    */
-  @internalProperty({type: Array})
-  public validationResults: FormValidationResult[];
+  @internalProperty()
+  public validationResults: FormValidatorResult[];
 
   /**
    * The element's data.
    */
-  @internalProperty({type: Object})
+  @internalProperty()
   public data: any;
 
   /**
@@ -91,6 +86,7 @@ export class FormElementComponent extends RxLitElement {
         .form-element .results .result {
           background-color: var(--colors-status-warning);
           padding: var(--gap-tiny) var(--gap-normal);
+          font-size: var(--font-size-small);
         }
       `,
     ];
@@ -103,24 +99,56 @@ export class FormElementComponent extends RxLitElement {
   firstUpdated(changed: PropertyValues) {
     super.firstUpdated(changed);
 
+    if (!this.actor) {
+      throw new ArgumentError('Argument this.actor should be set.', this.actor);
+    }
+
+    // Subscribes to the field's validation results.
     this.subscribe('validationResults', from(this.actor).pipe(
       map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
     ));
 
+    // Subscribes to data in the actor's context.
     this.subscribe('data', from(this.actor).pipe(
       map((state) => state.context?.data),
     ));
   }
 
+  /**
+   * Sets default data and event listener for input form.
+   *
+   * @param slotchangeEvent Event fired when slot is changed.
+   */
   handleInputSlotchange(slotchangeEvent: any) {
-    const childNodes: NodeListOf<HTMLElement> = slotchangeEvent.target.assignedNodes({flatten: true});
-    const node = childNodes?.length === 1 ? childNodes[0] : null;
-
-    if(node && node instanceof HTMLInputElement) {
-      const input = node as HTMLInputElement;
-      input.value = this.data[this.field];
-      input.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: input.value, field: this.field} as FormUpdatedEvent));
+    if (!slotchangeEvent || !slotchangeEvent.target) {
+      throw new ArgumentError('Argument slotchangeEvent should be set.', slotchangeEvent);
     }
+
+    if (!this.field) {
+      throw new ArgumentError('Argument this.field should be set.', this.field);
+    }
+
+    if (!this.data) {
+      throw new ArgumentError('Argument this.data should be set.', this.data);
+    }
+
+    if (!this.actor) {
+      throw new ArgumentError('Argument this.actor should be set.', this.actor);
+    }
+
+    const childNodes: NodeListOf<HTMLElement> = slotchangeEvent.target.assignedNodes({flatten: true});
+
+    childNodes.forEach((node) => {
+      if(node && node instanceof HTMLInputElement) {
+        const input = node as HTMLInputElement;
+
+        // Set the input field's default value.
+        input.value = this.data[this.field];
+
+        // Send event when input field's value changes.
+        input.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: input.value, field: this.field} as FormUpdatedEvent));
+      }
+    });
   }
 
   /**
@@ -152,7 +180,7 @@ export class FormElementComponent extends RxLitElement {
         <slot name="help"></slot>
       </div>
       <div class="results" ?hidden="${!this.validationResults || this.validationResults.length === 0}">
-        ${this.validationResults?.map((result) => html`<div class="result">${result.message}</div>`)}
+        ${this.validationResults?.map((result) => html`<div class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
       </div>
     </div>
   `;

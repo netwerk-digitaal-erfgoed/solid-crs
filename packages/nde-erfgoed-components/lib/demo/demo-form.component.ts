@@ -1,18 +1,27 @@
 import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
-import { Collection, ConsoleLogger, Logger, LoggerLevel, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter } from 'xstate';
+import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { interpret, Interpreter, StateValueMap } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { FormContext, formMachine, FormStates, FormEvents } from '../forms/form.machine';
+import { FormContext, formMachine, FormStates } from '../forms/form.machine';
 import { Event } from '../state/event';
-import { FormValidationResult } from 'lib/forms/form-validation-result';
+import { FormValidatorResult } from '../forms/form-validator-result';
+import { Schema } from '../state/schema';
+import { FormEvents } from 'lib/forms/form.events';
 
-export const validator = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidationResult[] => [
-  ...context.data && context.data.name ? [] : [ { field: 'name', message: 'Name is required' } ],
-  ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'URI is required.' } ],
+/**
+ * Validates the form and returns its results.
+ *
+ * @param context The form machine state's context.
+ * @param event The event which triggered the validation.
+ * @returns Results of the validation.
+ */
+export const validator = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+  ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
+  ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
 ];
 
 /**
@@ -21,23 +30,31 @@ export const validator = (context: FormContext<Collection>, event: Event<FormEve
 export class DemoFormComponent extends RxLitElement {
 
   /**
-   * The component's logger.
-   */
-  @property({type: Logger})
-  public logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
-
-  /**
    * The component's translator.
    */
   @property({type: Translator})
-  public translator: Translator;
+  public translator: Translator = new MemoryTranslator([
+    {
+      key: 'demo-form.name.required',
+      locale: 'nl-BE',
+      value: 'Name is required.',
+    },
+    {
+      key: 'demo-form.uri.required',
+      locale: 'nl-BE',
+      value: 'URI is required.',
+    },
+  ], 'nl-BE');
 
   /**
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: Interpreter<FormContext<Collection>, any, Event<FormEvents>>;
+  public actor: Interpreter<FormContext<Collection>, Schema<FormContext<Collection>, FormEvents>, Event<FormEvents>>;
 
+  /**
+   * Enables or disables the submit button.
+   */
   @internalProperty()
   enableSubmit = false;
 
@@ -60,15 +77,20 @@ export class DemoFormComponent extends RxLitElement {
 
   /**
    * Hook called on first update after connection to the DOM.
-   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   * It subscribes to the actor and pipes state to the properties.
    */
   firstUpdated(changed: PropertyValues) {
     super.firstUpdated(changed);
 
+    if (!this.actor) {
+      throw new ArgumentError('Argument this.actor should be set.', this.actor);
+    }
+
     this.subscribe('enableSubmit', from(this.actor).pipe(
-      map((state) => state.value[FormStates.CLEANLINESS] === FormStates.DIRTY
-      && state.value[FormStates.VALIDATION] === FormStates.VALID
-      && state.value[FormStates.SUBMISSION] === FormStates.NOT_SUBMITTED),
+      map((state) => state.value as StateValueMap),
+      map((value) => value[FormStates.CLEANLINESS] === FormStates.DIRTY
+      && value[FormStates.VALIDATION] === FormStates.VALID
+      && value[FormStates.SUBMISSION] === FormStates.NOT_SUBMITTED),
     ));
   }
 
@@ -77,9 +99,7 @@ export class DemoFormComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css`
-        
-      `,
+      css``,
     ];
   }
 
@@ -91,15 +111,15 @@ export class DemoFormComponent extends RxLitElement {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <nde-form .actor="${this.actor}">
-      <nde-form-element .actor="${this.actor}" field="uri">
+    <form>
+      <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
         <label slot="label" for="example">URI</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <input type="text" slot="input" name="example" placeholder="Foo" />
         <button slot="action">${ unsafeSVG(Login) }</button>
         <div slot="help">This isn't helpful</div>
       </nde-form-element>
-      <nde-form-element .actor="${this.actor}" field="name">
+      <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="name">
         <label slot="label" for="example">Name</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <input type="text" slot="input" name="example" placeholder="Foo" />
@@ -107,7 +127,7 @@ export class DemoFormComponent extends RxLitElement {
       </nde-form-element>
 
       <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>
-    </nde-form>
+    </form>
   `;
   }
 }

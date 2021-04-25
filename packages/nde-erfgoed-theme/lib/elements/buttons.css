@@ -4,6 +4,8 @@ button {
   text-transform: uppercase;
   padding: var(--gap-small);
   color: var(--colors-foreground-inverse);
+  cursor: pointer;
+  outline: none;
 }
 
 button.primary {
@@ -20,4 +22,5 @@ button:disabled {
   border: var(--border-normal) solid var(--colors-background-normal);
   background-color: var(--colors-background-light);
   color: var(--colors-foreground-light);
+  cursor: inherit;
 }
