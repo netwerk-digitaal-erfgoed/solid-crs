@@ -3,18 +3,21 @@
   "version": "0.0.1",
   "description": "Theme for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
-  "main": "./dist/index.js",
+  "main": "./dist/bundles/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsc && esbuild lib/index.js --loader:.svg=text --format=esm --bundle --outdir=dist --minify",
-    "build:dev": "rm -rf ./dist && tsc && esbuild lib/theme.css --bundle --outdir=dist",
+    "build": "rm -rf ./dist && snowpack build && tsc",
+    "build:dev": "rm -rf ./dist && snowpack build && tsc",
     "lint": "stylelint \"lib/**/*.css\"",
     "lint:fix": "stylelint \"lib/**/*.css\" --fix"
   },
   "devDependencies": {
-    "esbuild": "^0.11.6",
+    "@snowpack/plugin-typescript": "^1.2.1",
+    "snowpack": "3.3.5",
+    "snowpack-plugin-raw-file-loader": "1.0.9",
     "stylelint": "^13.12.0",
     "stylelint-config-standard": "^21.0.0",
     "typescript": "^4.1.3"
