@@ -4,6 +4,11 @@ export const Bell = BellIcon;
 import DismissIcon from './icons/Dismiss.svg';
 export const Dismiss = DismissIcon;
 
-import ThemeCss from './theme.css';
+import SearchIcon from './icons/Search.svg';
+export const Search = SearchIcon;
 
+import LoginIcon from './icons/Login.svg';
+export const Login = LoginIcon;
+
+import ThemeCss from './theme.css';
 export const Theme = ThemeCss;

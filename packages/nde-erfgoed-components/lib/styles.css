@@ -6,7 +6,8 @@ html {
   margin: 0;
 }
 body {
-  max-width: 1200px;
+  max-width: 800px;
   background-color: #fff;
   margin: 0 auto;
+  padding: var(--gap-normal);
 }
