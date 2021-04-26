@@ -10,7 +10,7 @@ import { FormContext, formMachine, FormStates } from '../forms/form.machine';
 import { Event } from '../state/event';
 import { FormValidatorResult } from '../forms/form-validator-result';
 import { Schema } from '../state/schema';
-import { FormEvents } from 'lib/forms/form.events';
+import { FormEvents } from '../forms/form.events';
 
 /**
  * Validates the form and returns its results.
