@@ -121,7 +121,14 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
         /**
          * The form has been submitted.
          */
-        [FormStates.SUBMITTED]: { },
+        [FormStates.SUBMITTED]: {
+          on: {
+            [FormEvents.FORM_SUBMITTED]: {
+              target: FormStates.SUBMITTING,
+            },
+          },
+          exit: [ validate(validator) ],
+        },
       },
     },
 
@@ -137,6 +144,9 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
         [FormStates.NOT_VALIDATED]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
+              target: FormStates.CHECKING_VALIDATION,
+            },
+            [FormEvents.FORM_SUBMITTED]: {
               target: FormStates.CHECKING_VALIDATION,
             },
           },
