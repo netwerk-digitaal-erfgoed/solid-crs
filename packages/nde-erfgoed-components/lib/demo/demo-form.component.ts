@@ -6,7 +6,7 @@ import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { FormContext, formMachine, FormStates } from '../forms/form.machine';
+import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { Event } from '../state/event';
 import { FormValidatorResult } from '../forms/form-validator-result';
 import { Schema } from '../state/schema';
@@ -88,9 +88,9 @@ export class DemoFormComponent extends RxLitElement {
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
       map((state) => state.value as StateValueMap),
-      map((value) => value[FormStates.CLEANLINESS] === FormStates.DIRTY
-      && value[FormStates.VALIDATION] === FormStates.VALID
-      && value[FormStates.SUBMISSION] === FormStates.NOT_SUBMITTED),
+      map((value) => value[FormRootStates.CLEANLINESS] === FormCleanlinessStates.DIRTY
+      && value[FormRootStates.VALIDATION] === FormValidationStates.VALID
+      && value[FormRootStates.SUBMISSION] === FormSubmissionStates.NOT_SUBMITTED),
     ));
   }
 

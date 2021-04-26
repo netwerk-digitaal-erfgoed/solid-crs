@@ -21,7 +21,7 @@ export class FormElementComponent extends RxLitElement {
   public translator: Translator;
 
   /**
-   * The element's form validation results.
+   * The name of the data attribute edited by the form element.
    */
   @property({type: String})
   public field: string;
@@ -82,6 +82,7 @@ export class FormElementComponent extends RxLitElement {
         .form-element .content .field .icon {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
+          margin-left: var(--gap-normal);
         }
         .form-element .results .result {
           background-color: var(--colors-status-warning);

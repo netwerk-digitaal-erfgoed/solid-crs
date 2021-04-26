@@ -23,6 +23,15 @@ form nde-form-element input {
   width: 100%;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--colors-background-light) inset !important;
+  box-shadow: 0 0 0 30px var(--colors-background-light) inset !important;
+  -webkit-text-fill-color: var(--colors-foreground-normal) !important;
+}
+
 form nde-form-element div[slot="icon"] svg {
   max-height: var(--gap-normal);
   max-width: var(--gap-normal);
