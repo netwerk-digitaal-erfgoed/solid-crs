@@ -108,7 +108,7 @@ export class AppRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
 
     // Create a collection root component if the app machine is in the correct state.
-    const collections = this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html``;
+    const collections = this.state?.matches(AppStates.FEATURE) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html``;
 
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">

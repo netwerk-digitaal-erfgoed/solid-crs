@@ -1,7 +1,10 @@
-import { MachineConfig } from 'xstate';
+import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { MachineConfig, StateNodeConfig } from 'xstate';
 import { AuthenticateContext } from './authenticate.context';
 import { AuthenticateEvent, AuthenticateEvents } from './authenticate.events';
 import { AuthenticateSchema, AuthenticateStates } from './authenticate.states';
+
+const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * Actor references for this machine config.
@@ -13,11 +16,11 @@ export enum AuthenticateActors {
 /**
  * The machine config for the collection component machine.
  */
-export const authenticateConfig: MachineConfig<AuthenticateContext, AuthenticateSchema, AuthenticateEvent> = {
+export const authenticateConfig: StateNodeConfig<AuthenticateContext, AuthenticateSchema, AuthenticateEvent> = {
   id: 'authenticate',
   initial: AuthenticateStates.UNAUTHENTICATED,
   context: {
-    session: null, // new Session()
+    session: {}, // new Session()
   },
   states: {
 
@@ -29,7 +32,7 @@ export const authenticateConfig: MachineConfig<AuthenticateContext, Authenticate
       },
       on: {
         [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
-        [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
+        [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,
       },
     },
 

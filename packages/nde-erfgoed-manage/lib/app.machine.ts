@@ -3,7 +3,9 @@ import { log, send } from 'xstate/lib/actions';
 import { addAlert, dismissAlert } from './app.actions';
 import { AppContext } from './app.context';
 import { AppEvent, AppEvents } from './app.events';
-import { AppSchema, AppState, AppStates } from './app.states';
+import { AppSchema, AppState, AppStates, FeatureStates } from './app.states';
+import { authenticateConfig } from './features/authenticate/authenticate.machine';
+import { AuthenticateStates } from './features/authenticate/authenticate.states';
 import { collectionsMachine } from './features/collections/collections.machine';
 
 /**
@@ -26,47 +28,43 @@ export enum AppActors {
 /**
  * The machine config for the application root machine.
  */
-export const appState: MachineConfig<AppContext, AppSchema, AppEvent> = {
+export const appState: MachineConfig<any, AppSchema, any> = {
   id: AppActors.APP_MACHINE,
-  initial: AppStates.COLLECTIONS,
-  on: {
-    [AppEvents.ADD_ALERT]: {
-      actions: addAlert,
-    },
-    [AppEvents.DISMISS_ALERT]: {
-      actions: dismissAlert,
-    },
-    [AppEvents.ERROR]: {
-      actions: [
-        log((context, event) => 'An error occurred'),
-        send((context, event) => ({
-          alert: { type: 'danger', message: 'nde.root.alerts.error' },
-          type: AppEvents.ADD_ALERT,
-        })),
-      ],
-    },
-  },
+  type: 'parallel',
   states: {
-    [AppStates.AUTHENTICATE]: {
-      entry: log('AppMachine entered state "authenticate"', 'AppMachine'),
+    [AppStates.FEATURE]: {
+      initial: FeatureStates.COLLECTIONS,
       on: {
-        [AppEvents.LOGIN]: {
-          target: AppStates.COLLECTIONS,
-          actions: log((context, event) => `User logged in. Current context: ${context}`, 'AppMachine'),
+        [AppEvents.ADD_ALERT]: {
+          actions: addAlert,
+        },
+        [AppEvents.DISMISS_ALERT]: {
+          actions: dismissAlert,
+        },
+        [AppEvents.ERROR]: {
+          actions: [
+            log(() => 'An error occurred'),
+            send(() => ({
+              alert: { type: 'danger', message: 'nde.root.alerts.error' },
+              type: AppEvents.ADD_ALERT,
+            })),
+          ],
+        },
+      },
+      states: {
+        [FeatureStates.COLLECTIONS]: {
+          entry: log('AppMachine entered state "collections"', 'AppMachine'),
+          invoke: {
+            id: AppActors.COLLECTIONS_MACHINE,
+            src: collectionsMachine.withContext({}),
+          },
+        },
+        [FeatureStates.AUTHENTICATE]: {
+          entry: log('AppMachine entered state "authenticate"', 'AppMachine'),
         },
       },
     },
-    [AppStates.COLLECTIONS]: {
-      entry: log('AppMachine entered state "collections"', 'AppMachine'),
-      invoke: {
-        id: AppActors.COLLECTIONS_MACHINE,
-        src: collectionsMachine.withContext({}),
-        onDone: AppStates.AUTHENTICATE,
-      },
-      on: {
-        [AppEvents.LOGOUT]: AppStates.AUTHENTICATE,
-      },
-    },
+    [AppStates.AUTHENTICATE]: authenticateConfig,
   },
 };
 
