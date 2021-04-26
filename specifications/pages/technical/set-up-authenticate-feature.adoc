@@ -58,7 +58,7 @@ The `authenticateConfig` has three possible states:
 
 image::../../assets/authenticate/authenticate-machine-state-chart.svg[AuthenticateMachine State Chart]
 
-The `AuthenticateStates.UNAUTHENTICATED` state is the initial state of the machine. From here, it can transition to the `AuthenticateStates.AUTHENTICATING` state when the `CLICKED_LOGIN` event is called. The machine should be in the `AuthenticateStates.AUTHENTICATING` state from the moment the button is clicked. The app should transition to `AuthenticateStates.AUTHENTICATED` using the `LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `LOGIN_SUCCESS`, we reach the `AuthenticateStates.AUTHENTICATED` state. From this state, the machine can go back to the `AuthenticateStates.UNAUTHENTICATED` state when a `CLICKED_LOGOUT` action is fired.
+The `AuthenticateStates.UNAUTHENTICATED` state is the initial state of the machine. From here, it can transition to the `AuthenticateStates.AUTHENTICATING` state when the `AuthenticateEvents.CLICKED_LOGIN` event is called. The machine should be in the `AuthenticateStates.AUTHENTICATING` state from the moment the button is clicked. The app should transition to `AuthenticateStates.AUTHENTICATED` using the `AuthenticateEvents.LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `AuthenticateEvents.LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `AuthenticateEvents.LOGIN_SUCCESS`, we reach the `AuthenticateStates.AUTHENTICATED` state. From this state, the machine can go back to the `AuthenticateStates.UNAUTHENTICATED` state when a `AuthenticateEvents.CLICKED_LOGOUT` action is fired.
 
 Take a look at the existing `CollectionsState(s)`, `CollectionsSchema`, `CollectionsActors` ('lib/features/collections/collections.states.ts') and `collectionsMachine` ('lib/features/collections/collections.machine.ts') for inspiration on how to set up an XState machine.
 
@@ -67,15 +67,15 @@ Take a look at the existing `CollectionsState(s)`, `CollectionsSchema`, `Collect
 
 Create in 'lib/features/authenticate/authenticate.context.ts'
 
-The context of the `AuthenticateMachine` is relatively simple. It contains the session info returned by the Inrupt authentication client. The session info can be used to retrieve the user's WebID or session ID.
-
+The context of the `AuthenticateMachine` is relatively simple. It contains the session to be used by the Inrupt auhtentication client. 
 [source, js]
 ----
 {
-  sessionInfo: ISessionInfo,
+  session: Session,
 }
 ----
 
+The initial value of `session` should be `new Session()`.
 
 ==== Events
 
@@ -87,16 +87,16 @@ Take a look at https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop
 |======================================
 | Event 	| Payload
 
-| `CLICKED_LOGIN`
+| `AuthenticateEvents.CLICKED_LOGIN`
 | `webId: string`
 
-| `LOGIN_SUCCESS`
-| `sessionInfo: ISessionInfo`
+| `AuthenticateEvents.LOGIN_SUCCESS`
+| No payload
 
-| `LOGIN_ERROR`
+| `AuthenticateEvents.LOGIN_ERROR`
 | `msg: string`
 
-| `CLICKED_LOGOUT`
+| `AuthenticateEvents.CLICKED_LOGOUT`
 | No payload
 
 |======================================
@@ -110,11 +110,11 @@ Create following actions in 'lib/features/authenticate/authenticate.actions.ts'
 |======================================
 | Action 	| Description
 
-| `setSessionInfo(sessionInfo: ISessionInfo)`
-| Should set `context.sessionInfo` to `sessionInfo`.
+| `setSession(session: Session)`
+| Should set `context.session` to `session`.
 
-| `deleteSessionInfo(sessionInfo: ISessionInfo)`
-| Should set `context.sessionInfo` to its initial value.
+| `deleteSession(session: Session)`
+| Should set `context.session` to its initial value.
 
 |======================================
 
@@ -131,10 +131,10 @@ Take a look at 'lib/features/collections/collections.services.ts' for inspiratio
 | Service function 	| Description
 
 | `login(webId: string)`
-| Should call the `SolidService.login(webId: string)` function.
+| Should call the `context.session.login()` function.
 
 | `logout()`
-| Should call the `SolidService.logout()` function.
+| Should call the `context.session.logout()` function.
 
 |======================================
 
@@ -145,15 +145,12 @@ Create in '@digita-ai/nde-erfgoed-core' package under 'lib/solid/solid.service.t
 
 This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.  Take a look at the https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/#enable-session-restore[authentication in a browser environment example].
 
-For now, implement the `login()`, `logout()` and `validateWebId()` functions. 
-
-`login(webId: string): Observable<void>` should first validate the webId. When successful, the Inrupt SDK's `login()` function should be called, which redirects the user to the OIDC provider's authentication page.
-
-The `logout(): Observable<void>` function should call the `session.logout()` function on the user's current session (`getDefaultSession()`).
+For now, implement the `validateWebId()` and `getIssuer()` function.
 
 `validateWebId(webId: string): Observable<boolean>` will be used for validating the input field of the `AuthenticateLoginPageComponent`.  
-Test URL validity with `new URL()`. Fetch the WebID. The response should `oidcRegistration` triple should be present on the profile of the given `webId`. The value of this triple should be checked as well. It should return a JSON object at '/.well-known/openid-configuration', which should contain a `solid_oidc_supported` key.
+Test URL validity with `new URL()`. Retrieve the OIDC issuer using `this.getIssuer()`. Fetching '<issuer_url>/.well-known/openid-configuration' should return a JSON object containing a `solid_oidc_supported` key.
 
+The `getIssuer(webId: string): Observable<string>` should query a user's profile for the `oidcIssuer` triple and return its value.
 
 ==== Components
 
