@@ -1,5 +1,7 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { assign, EventObject, send } from 'xstate';
+import { assign, EventObject, send, sendParent } from 'xstate';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { AppEvents } from '../../app.events';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvents, LoadedCollectionsEvent } from './collections.events';
 
@@ -17,3 +19,14 @@ export const addTestCollection = send((context: CollectionsContext) => ({ type: 
   name: `Test Collection ${ 1 + (context.collections?.length ?? 0) }`,
   uri: 'urn:example:nde:collections:test',
 } ] }));
+
+/**
+ * Adds an alert to the machine's parent.
+ *
+ * @param alert Alert to be added.
+ * @returns An action which sends an add alert event to the machine's parent.
+ */
+export const addAlert = (alert: Alert) => sendParent((context, event) => ({
+  alert,
+  type: AppEvents.ADD_ALERT,
+}));

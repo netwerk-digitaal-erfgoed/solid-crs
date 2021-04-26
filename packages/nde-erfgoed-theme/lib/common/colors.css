@@ -9,6 +9,7 @@
   /**
         Foreground colors
     */
+  --colors-foreground-inverse: #fff;
   --colors-foreground-light: #172a59;
   --colors-foreground-normal: #172a59;
   --colors-foreground-dark: #000;
@@ -19,4 +20,11 @@
   --colors-background-light: #fff;
   --colors-background-normal: #e8e9ee;
   --colors-background-dark: #e8e9ee;
+
+  /**
+        Status colors
+    */
+  --colors-status-success: #a0dc78;
+  --colors-status-warning: #fcd228;
+  --colors-status-danger: #be2c00;
 }
