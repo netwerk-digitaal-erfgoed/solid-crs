@@ -71,31 +71,6 @@ Example usage of a button with both icons set:
 ----
 
 
-===== InputFieldComponent
-
-The finished component should look like this:
-
-image::../../assets/authenticate/input-field.svg[SearchBoxComponent]
-
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/input-field.component.ts' with tag `<nde-input-field>`
-
-Use LitElement's https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots] for displaying the title and (validation error) message, the logo inside the right-side button, as well as the icon inside the input field. When no icon was set for the button, the button should not be shown.  
-The placeholder text should be able to be set through an HTML attribute (like a regular input field).  
-
-Example resembling https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=322%3A2091[Figma's `AuthenticateLoginPageComponent`]:
-
-[source, html]
-----
-<nde-input-field placeholder="Lorem ipsum">
-  <p slot="input-label">Enter your name</p>
-  <nde-button slot="button" disabled="true">
-    <i class="fas fa-angle-right" slot="icon-right"></i>
-  </nde-button> <!-- A "button" slot is set, so it should be displayed. It is disabled, so the button turns grey --> 
-  <p slot="validation-message">WebID is invalid: OIDC registration not set</p> <!-- This should be set programatically, based on context.error -->
-</nde-input-field>
-----
-
-
 ===== AuthenticateLoginPageComponent
 
 The finished component should look like this:
