@@ -109,7 +109,7 @@ The page consists two main elements:
 * The header which contains both the NDE logo and a title.
 * The WebID input field with a button to its right. Use the previously mentioned <nde-input-field> and <nde-button>.
 
-When a valid WebID is entered and the button is clicked (or the 'Enter' key is pressed), the `LOGIN` event should be fired.
+When a valid WebID is entered and the button is clicked (or the 'Enter' key is pressed), the `AuthenticateEvents.CLICKED_LOGOUT` event should be fired.
 
 While the WebID is being validated, the `ProgressComponent` should be displayed at the top of the page. Validation of the entered WebID should start when the input field was not changed for 250ms. 
 
@@ -118,7 +118,7 @@ The alert visible in the Figma mockup will be implemented later.
 
 ==== Translations
 
-The following translations are to be written in the 'nl-NL.json' file. No other languages should be supported. A file named 'nl-BE.json' already exists in the project, rename it and extend with the following:
+The following translations are to be written in the 'nl-NL.json' file. No other languages should be supported. A file named 'nl-BE.json' already exists in the project, rename it (and any other nl-BE references) and extend with the following:
 
 [options="header"]
 
