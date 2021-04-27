@@ -1,16 +1,16 @@
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, Schema, Event } from '@digita-ai/nde-erfgoed-components';
 import { interpret, Interpreter } from 'xstate';
-import { AppContext } from './app.context';
-import { AppEvent, AppEvents } from './app.events';
-import { appMachine } from './app.machine';
-import { AppSchema, AppState } from './app.states';
+import { AppEvents } from './app.events';
+import { AppContext, appMachine } from './app.machine';
 
 describe('AppMachine', () => {
-  let machine: Interpreter<AppContext, AppSchema, AppEvent, AppState>;
+  let machine: Interpreter<AppContext, Schema<AppContext, AppEvents>, Event<AppEvents>>;
 
   beforeEach(() => {
-    machine = interpret<AppContext, any, AppEvent, AppState>(appMachine.withContext({
+    machine = interpret<AppContext, any, Event<AppEvents>>(appMachine.withContext({
       alerts: [],
+      session: null,
+      loggedIn: false,
     }));
   });
 
@@ -30,8 +30,10 @@ describe('AppMachine', () => {
 
   it('should not add duplicate alert to context when sending addAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext, any, AppEvent, AppState>(appMachine.withContext({
+    machine = interpret<AppContext, any, Event<AppEvents>>(appMachine.withContext({
       alerts: [ alert ],
+      session: null,
+      loggedIn: false,
     }));
     machine.start();
     machine.send(AppEvents.ADD_ALERT, { alert });
@@ -55,8 +57,10 @@ describe('AppMachine', () => {
 
   it('should dismiss alert in context when sending dismissAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext, any, AppEvent, AppState>(appMachine.withContext({
+    machine = interpret<AppContext, any, Event<AppEvents>>(appMachine.withContext({
       alerts: [ alert ],
+      session: null,
+      loggedIn: false,
     }));
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);

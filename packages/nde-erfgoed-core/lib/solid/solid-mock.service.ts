@@ -17,4 +17,19 @@ export class SolidMockService extends SolidService {
     return of('issuer');
   }
 
+  handleIncomingRedirect(): Observable<any> {
+    this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
+    return of({ isLoggedIn: true });
+  }
+
+  login(): Observable<any> {
+    this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
+    return of(true);
+  }
+
+  logout(): Observable<any> {
+    this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
+    return of(true);
+  }
+
 }

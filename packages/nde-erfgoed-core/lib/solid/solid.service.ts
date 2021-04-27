@@ -21,4 +21,20 @@ export abstract class SolidService {
    */
   public abstract getIssuer(webId: string): Observable<string>;
 
+  /**
+   * Handles the post-login logic, as well as the restoration
+   * of sessions on page refreshes
+   */
+  public abstract handleIncomingRedirect(): Observable<any>;
+
+  /**
+   * Redirects the user to their OIDC provider
+   */
+  public abstract login(): Observable<any>;
+
+  /**
+   * Deauthenticates the user from their OIDC issuer
+   */
+  public abstract logout(): Observable<any>;
+
 }

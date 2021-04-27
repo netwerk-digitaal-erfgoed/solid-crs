@@ -1,8 +1,10 @@
 import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
-import { MachineConfig, StateNodeConfig } from 'xstate';
+import { Event } from '@digita-ai/nde-erfgoed-components';
+import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
+import { log } from 'xstate/lib/actions';
 import { AuthenticateContext } from './authenticate.context';
-import { AuthenticateEvent, AuthenticateEvents } from './authenticate.events';
-import { AuthenticateSchema, AuthenticateStates } from './authenticate.states';
+import { AuthenticateEvents } from './authenticate.events';
+import { AuthenticateSchema, AuthenticateState, AuthenticateStates } from './authenticate.states';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
@@ -14,9 +16,9 @@ export enum AuthenticateActors {
 }
 
 /**
- * The machine config for the collection component machine.
+ * The machine config for the authenticate machine.
  */
-export const authenticateConfig: StateNodeConfig<AuthenticateContext, AuthenticateSchema, AuthenticateEvent> = {
+export const authenticateConfig: MachineConfig<AuthenticateContext, any, Event<AuthenticateEvents>> = {
   id: 'authenticate',
   initial: AuthenticateStates.UNAUTHENTICATED,
   context: {
@@ -25,22 +27,28 @@ export const authenticateConfig: StateNodeConfig<AuthenticateContext, Authentica
   states: {
 
     [AuthenticateStates.UNAUTHENTICATED]: {
+      entry: [
+        assign({ session: null }),
+        log('entered unauthenticated state'),
+      ],
       invoke: {
-        src: null, // handleincomingredirect
-        onDone: AuthenticateEvents.LOGIN_SUCCESS,
-        onError: AuthenticateEvents.LOGIN_ERROR,
+        src: () => solid.handleIncomingRedirect(), // handleincomingredirect
+        // onDone: {
+        //   target: AuthenticateStates.AUTHENTICATED,
+        // },
       },
-      on: {
-        [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
-        [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,
-      },
+      // on: {
+      //   [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
+      //   [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,
+      // },
     },
 
     [AuthenticateStates.AUTHENTICATING]: {
+      entry: log('entered authenticating state'),
       invoke: {
-        src: null, // login()
-        onDone: AuthenticateEvents.LOGIN_SUCCESS,
-        onError: AuthenticateEvents.LOGIN_ERROR,
+        src: () => solid.login(), // login()
+        onDone: AuthenticateStates.AUTHENTICATED,
+        // onError: AuthenticateStates.UNAUTHENTICATED,
       },
       on: {
         [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
@@ -49,9 +57,16 @@ export const authenticateConfig: StateNodeConfig<AuthenticateContext, Authentica
     },
 
     [AuthenticateStates.AUTHENTICATED]: {
+      entry: log('entered authenticated state'),
+      type: 'final',
       on: {
         [AuthenticateEvents.CLICKED_LOGOUT]: AuthenticateStates.UNAUTHENTICATED,
       },
     },
   },
 };
+
+/**
+ * The authenticate machine.
+ */
+export const authenticateMachine = createMachine<AuthenticateContext, Event<AuthenticateEvents>, AuthenticateState>(authenticateConfig);

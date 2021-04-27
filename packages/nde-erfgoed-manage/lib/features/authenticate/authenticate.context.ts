@@ -9,3 +9,7 @@ export interface AuthenticateContext {
   // TODO replace any with Session type from inrupt sdk
   session: any;
 }
+
+export const initialAuthenticateContext: AuthenticateContext = {
+  session: null,
+};
