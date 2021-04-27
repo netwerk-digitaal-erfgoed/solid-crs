@@ -17,7 +17,7 @@ export enum CollectionsActors {
  * The machine config for the collection component machine.
  */
 const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, CollectionsEvent> = {
-  id: 'collections',
+  id: CollectionsActors.COLLECTIONS_MACHINE,
   initial: CollectionsStates.IDLE,
   on: {
     [CollectionsEvents.LOADED_COLLECTIONS]: {

@@ -21,7 +21,7 @@ export enum AuthenticateActors {
  * The authenticate machine.
  */
 export const authenticateMachine = createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
-  id: 'authenticate',
+  id: AuthenticateActors.AUTHENTICATE_MACHINE,
   initial: AuthenticateStates.UNAUTHENTICATED,
   context: {
     session: null, // new Session()
