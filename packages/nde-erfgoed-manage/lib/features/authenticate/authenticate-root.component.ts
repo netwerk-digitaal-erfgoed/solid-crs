@@ -1,9 +1,10 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Event } from '@digita-ai/nde-erfgoed-components';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { AuthenticateEvent } from './authenticate.events';
 import { AuthenticateContext } from './authenticate.context';
+import { AuthenticateEvents } from './authenticate.events';
 
 /**
  * The root page of the authenticate feature.
@@ -26,7 +27,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<AuthenticateEvent, State<AuthenticateContext>>;
+  public actor: SpawnedActorRef<Event<AuthenticateEvents>, State<AuthenticateContext>>;
 
   /**
    * The state of this component.
@@ -50,7 +51,10 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   render() {
     return html`
-    
+    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <p>${this.translator.translate('nde.authenticate.root.title')}</p>
+    <button @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
+    <div></div>
   `;
   }
 

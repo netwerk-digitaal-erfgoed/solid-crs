@@ -1,9 +1,11 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
-import { createMachine, MachineConfig } from 'xstate';
+import { createMachine, MachineConfig, sendParent } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
 import { initialAuthenticateContext } from './features/authenticate/authenticate.context';
+import { AuthenticateEvents } from './features/authenticate/authenticate.events';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
+import { CollectionsEvents } from './features/collections/collections.events';
 import { collectionsMachine } from './features/collections/collections.machine';
 
 /**
@@ -48,35 +50,33 @@ export enum AppRootStates {
  * State references for the application's features, with readable log format.
  */
 export enum AppFeatureStates {
-  AUTHENTICATE = '[FeatureState: Authenticate]',
-  COLLECTIONS  = '[FeatureState: Collections]',
+  AUTHENTICATE = '[AppFeatureState: Authenticate]',
+  COLLECTIONS  = '[AppFeatureState: Collections]',
 }
 
 /**
  * State references for the application's features, with readable log format.
  */
 export enum AppAuthenticateStates {
-  AUTHENTICATED = '[FeatureState: Authenticated 1]',
-  UNAUTHENTICATED  = '[FeatureState: Unauthenticated]',
+  AUTHENTICATED = '[AppAuthenticateState: Authenticated]',
+  UNAUTHENTICATED  = '[AppAuthenticateState: Unauthenticated]',
 }
 
 /**
- * Union type of the states for the application root, with their context typing.
+ * The application root machine and its configuration.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
-
-const appMachineConfig: MachineConfig<AppContext, State<AppStates, AppContext>, Event<AppEvents>> = {
+export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppRootStates, AppContext>>({
   id: AppActors.APP_MACHINE,
   type: 'parallel',
   states: {
     [AppRootStates.FEATURE]: {
       initial: AppFeatureStates.AUTHENTICATE,
       on: {
-        [AppEvents.ADD_ALERT]: {
-          actions: addAlert,
-        },
         [AppEvents.DISMISS_ALERT]: {
           actions: dismissAlert,
+        },
+        [AppEvents.ADD_ALERT]: {
+          actions: addAlert,
         },
         [AppEvents.ERROR]: {
           actions: [
@@ -90,19 +90,20 @@ const appMachineConfig: MachineConfig<AppContext, State<AppStates, AppContext>, 
       },
       states: {
         [AppFeatureStates.COLLECTIONS]: {
-          entry: log('AppMachine entered state "collections"', 'AppMachine'),
           invoke: {
             id: AppActors.COLLECTIONS_MACHINE,
             src: collectionsMachine.withContext({}),
+            onDone: AppFeatureStates.AUTHENTICATE,
           },
         },
         [AppFeatureStates.AUTHENTICATE]: {
-          entry: log('AppMachine entered state "authenticate"', 'AppMachine'),
           invoke: {
             id: AppActors.AUTHENTICATE_MACHINE,
             src: authenticateMachine.withContext(initialAuthenticateContext),
+            onDone: {
+              target: AppFeatureStates.COLLECTIONS,
+            },
           },
-          onDone: AppFeatureStates.COLLECTIONS,
         },
       },
     },
@@ -121,9 +122,4 @@ const appMachineConfig: MachineConfig<AppContext, State<AppStates, AppContext>, 
       },
     },
   },
-};
-
-/**
- * The application root machine and its configuration.
- */
-export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppStates, AppContext>>(appMachineConfig);
+});

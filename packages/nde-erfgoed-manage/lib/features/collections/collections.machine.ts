@@ -1,4 +1,5 @@
-import { createMachine, MachineConfig } from 'xstate';
+import { createMachine, MachineConfig, sendParent } from 'xstate';
+import { AppEvents } from '../../app.events';
 import { CollectionsContext } from './collections.context';
 import { CollectionsEvent, CollectionsEvents } from './collections.events';
 import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
@@ -28,10 +29,12 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
     [CollectionsEvents.CLICKED_ADD]: {
       actions: [
         addTestCollection,
-        addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
+        sendParent({ type: AppEvents.ADD_ALERT, alert: { type: 'success', message: 'nde.collections.alerts.created-collection' } }),
       ],
     },
-    [CollectionsEvents.CLICKED_LOGOUT]: CollectionsStates.LOGOUT,
+    [CollectionsEvents.CLICKED_LOGOUT]: {
+      target: CollectionsStates.LOGOUT,
+    },
   },
   states: {
     [CollectionsStates.IDLE]: {

@@ -1,8 +1,15 @@
 import { AlertComponent, CollectionsComponent, CollectionComponent } from '@digita-ai/nde-erfgoed-components';
+import { inspect } from '@xstate/inspect';
 import { AppRootComponent } from './app.root';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 import './index';
+
+inspect({
+  // options
+  // url: 'https://statecharts.io/inspect', // (default)
+  iframe: false, // open in new window
+});
 
 /**
  * Register tags for components.
