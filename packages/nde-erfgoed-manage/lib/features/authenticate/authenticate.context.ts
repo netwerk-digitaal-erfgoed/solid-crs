@@ -1,15 +1,8 @@
 /**
  * The context of th authenticate feature.
  */
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AuthenticateContext {
 
-  /**
-   * The session with the oidc issuer
-   */
-  // TODO replace any with Session type from inrupt sdk
-  session: any;
 }
-
-export const initialAuthenticateContext: AuthenticateContext = {
-  session: null,
-};

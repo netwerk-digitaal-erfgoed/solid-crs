@@ -1,11 +1,8 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
-import { createMachine, MachineConfig, sendParent } from 'xstate';
+import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
-import { initialAuthenticateContext } from './features/authenticate/authenticate.context';
-import { AuthenticateEvents } from './features/authenticate/authenticate.events';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
-import { CollectionsEvents } from './features/collections/collections.events';
 import { collectionsMachine } from './features/collections/collections.machine';
 
 /**
@@ -28,6 +25,12 @@ export interface AppContext {
   session: unknown;
   loggedIn: boolean;
 }
+
+export const initialAppContext = {
+  alerts: [] as Alert[],
+  session: {},
+  loggedIn: false,
+};
 
 /**
  * Actor references for this machine config.
@@ -99,7 +102,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
         [AppFeatureStates.AUTHENTICATE]: {
           invoke: {
             id: AppActors.AUTHENTICATE_MACHINE,
-            src: authenticateMachine.withContext(initialAuthenticateContext),
+            src: authenticateMachine.withContext({}),
             onDone: {
               target: AppFeatureStates.COLLECTIONS,
             },
