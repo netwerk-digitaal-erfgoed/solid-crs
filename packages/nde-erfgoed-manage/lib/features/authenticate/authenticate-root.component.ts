@@ -3,8 +3,8 @@ import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event } from '@digita-ai/nde-erfgoed-components';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { AuthenticateContext } from './authenticate.context';
 import { AuthenticateEvents } from './authenticate.events';
+import { AuthenticateContext } from './authenticate.machine';
 
 /**
  * The root page of the authenticate feature.

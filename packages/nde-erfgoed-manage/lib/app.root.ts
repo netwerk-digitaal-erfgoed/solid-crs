@@ -6,9 +6,9 @@ import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Tr
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 import nlBe from './i8n/nl-BE.json';
 import { AppEvents } from './app.events';
+import { CollectionsRootComponent } from './features/collections/collections-root.component';
 
 /**
  * The root page of the application.

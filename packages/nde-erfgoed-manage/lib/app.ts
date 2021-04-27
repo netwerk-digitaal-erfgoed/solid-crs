@@ -2,7 +2,7 @@ import { AlertComponent, CollectionsComponent, CollectionComponent } from '@digi
 import { inspect } from '@xstate/inspect';
 import { AppRootComponent } from './app.root';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
-import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
+import { CollectionsRootComponent } from './features/collections/collections-root.component';
 import './index';
 
 inspect({

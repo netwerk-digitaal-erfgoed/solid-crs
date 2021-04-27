@@ -1,14 +1,13 @@
 import { Schema, Event } from '@digita-ai/nde-erfgoed-components';
 import { interpret, Interpreter } from 'xstate';
-import { appMachine } from '../../app.machine';
-import { AuthenticateContext } from './authenticate.context';
 import { AuthenticateEvents } from './authenticate.events';
+import { AuthenticateContext, authenticateMachine } from './authenticate.machine';
 
 describe('AppMachine', () => {
   let machine: Interpreter<AuthenticateContext, Schema<AuthenticateContext, AuthenticateEvents>, Event<AuthenticateEvents>>;
 
   beforeEach(() => {
-    machine = interpret<AuthenticateContext, any, Event<AuthenticateEvents>>(appMachine.withContext({}));
+    machine = interpret<AuthenticateContext, any, Event<AuthenticateEvents>>(authenticateMachine.withContext({}));
   });
 
   it('should be correctly instantiated', () => {

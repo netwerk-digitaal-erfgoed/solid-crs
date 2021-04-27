@@ -1,10 +1,19 @@
-import { createMachine, MachineConfig, sendParent } from 'xstate';
-import { AppEvents } from '../../app.events';
-import { CollectionsContext } from './collections.context';
-import { CollectionsEvent, CollectionsEvents } from './collections.events';
-import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
-import { addCollections, addTestCollection, replaceCollections, addAlert } from './collections.actions';
+import { createMachine } from 'xstate';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Event, State } from '@digita-ai/nde-erfgoed-components';
+import {  addAlert, CollectionsEvents, addCollections, addTestCollection, replaceCollections } from './collections.events';
 import { loadCollectionsService } from './collections.services';
+
+/**
+ * The context of a collections feature.
+ */
+export interface CollectionsContext {
+  /**
+   * The list of collections available to the feature.
+   */
+  collections?: Collection[];
+
+}
 
 /**
  * Actor references for this machine config.
@@ -14,9 +23,18 @@ export enum CollectionsActors {
 }
 
 /**
- * The machine config for the collection component machine.
+ * State references for the collection component, with readable log format.
  */
-const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, CollectionsEvent> = {
+export enum CollectionsStates {
+  IDLE    = '[CollectionsState: Idle]',
+  LOADING = '[CollectionsState: Loading]',
+  LOGOUT  = '[CollectionsState: Logout]',
+}
+
+/**
+ * The collection component machine.
+ */
+export const collectionsMachine = createMachine<CollectionsContext, Event<CollectionsEvents>, State<CollectionsStates, CollectionsContext>>({
   id: CollectionsActors.COLLECTIONS_MACHINE,
   initial: CollectionsStates.IDLE,
   on: {
@@ -29,7 +47,7 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
     [CollectionsEvents.CLICKED_ADD]: {
       actions: [
         addTestCollection,
-        sendParent({ type: AppEvents.ADD_ALERT, alert: { type: 'success', message: 'nde.collections.alerts.created-collection' } }),
+        addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
       ],
     },
     [CollectionsEvents.CLICKED_LOGOUT]: {
@@ -52,9 +70,4 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
       type: 'final',
     },
   },
-};
-
-/**
- * The collection component machine.
- */
-export const collectionsMachine = createMachine<CollectionsContext, CollectionsEvent, CollectionsState>(collectionsConfig);
+});

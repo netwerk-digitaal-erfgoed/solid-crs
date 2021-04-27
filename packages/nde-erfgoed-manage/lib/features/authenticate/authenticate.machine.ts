@@ -4,17 +4,33 @@ import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { AuthenticateContext } from './authenticate.context';
 import { AuthenticateEvents } from './authenticate.events';
-import { AuthenticateStates } from './authenticate.states';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+
+/**
+ * The context of th authenticate feature.
+ */
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface AuthenticateContext {
+
+}
 
 /**
  * Actor references for this machine config.
  */
 export enum AuthenticateActors {
   AUTHENTICATE_MACHINE = 'AuthenticateMachine',
+}
+
+/**
+ * State references for the collection component, with readable log format.
+ */
+export enum AuthenticateStates {
+  AUTHENTICATED    = '[AuthenticateState: Authenticated]',
+  AUTHENTICATING = '[AuthenticateState: Authenticating]',
+  UNAUTHENTICATED  = '[AuthenticateState: Unauthenticated]',
 }
 
 /**

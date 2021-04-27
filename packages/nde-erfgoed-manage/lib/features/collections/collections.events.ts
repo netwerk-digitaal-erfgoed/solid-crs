@@ -1,5 +1,8 @@
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { EventObject } from 'xstate';
+import { assign, EventObject, send, sendParent } from 'xstate';
+import { AppEvents } from '../../app.events';
+import { CollectionsContext } from './collections.machine';
 
 /**
  * Event references for the collection component, with readable log format.
@@ -22,11 +25,27 @@ export interface LoadedCollectionsEvent extends EventObject { type: CollectionsE
 export interface CreatedTestCollection extends EventObject { type: CollectionsEvents.CREATED_TEST_COLLECTION; collections: Collection[] }
 
 /**
- * Union event type of the interfaces for the collection component.
+ * Actions for the collections component.
  */
-export type CollectionsEvent =
-  | ClickedLoadEvent
-  | ClickedAddEvent
-  | ClickedLogoutEvent
-  | LoadedCollectionsEvent
-  | CreatedTestCollection;
+
+export const replaceCollections = assign({ collections: (_, event: LoadedCollectionsEvent) => event.collections });
+
+export const addCollections = assign<CollectionsContext, EventObject & { collections: Collection[] }>({
+  collections: (context, event) => [ ... context.collections ?? [], ... event.collections ],
+});
+
+export const addTestCollection = send((context: CollectionsContext) => ({ type: CollectionsEvents.CREATED_TEST_COLLECTION, collections: [ {
+  name: `Test Collection ${ 1 + (context.collections?.length ?? 0) }`,
+  uri: 'urn:example:nde:collections:test',
+} ] }));
+
+/**
+ * Adds an alert to the machine's parent.
+ *
+ * @param alert Alert to be added.
+ * @returns An action which sends an add alert event to the machine's parent.
+ */
+export const addAlert = (alert: Alert) => sendParent((context, event) => ({
+  alert,
+  type: AppEvents.ADD_ALERT,
+}));
