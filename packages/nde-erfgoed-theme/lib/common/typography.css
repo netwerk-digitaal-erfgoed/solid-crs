@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
 :root {
+  --font-size-small: 14px;
   --font-size-normal: 16.5px;
+  --font-weight-bold: bold;
 }
 
 body {

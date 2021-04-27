@@ -4,13 +4,13 @@
     */
   --colors-primary-light: #0a3dfa;
   --colors-primary-normal: #0a3dfa;
-  --colors-primary-dark: #0a3dfa;
+  --colors-primary-dark: #172a59;
 
   /**
         Foreground colors
     */
   --colors-foreground-inverse: #fff;
-  --colors-foreground-light: #172a59;
+  --colors-foreground-light: #8990a9;
   --colors-foreground-normal: #172a59;
   --colors-foreground-dark: #000;
 
