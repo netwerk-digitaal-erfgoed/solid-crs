@@ -1,16 +1,17 @@
-// import { Alert } from '@digita-ai/nde-erfgoed-components';
-// import { interpret, Interpreter } from 'xstate';
+import { Schema, Event } from '@digita-ai/nde-erfgoed-components';
+import { interpret, Interpreter } from 'xstate';
+import { appMachine } from '../../app.machine';
+import { AuthenticateContext } from './authenticate.context';
+import { AuthenticateEvents } from './authenticate.events';
 
-// describe('AppMachine', () => {
-//   let machine: Interpreter<AppContext, AppSchema, AppEvent, AppState>;
+describe('AppMachine', () => {
+  let machine: Interpreter<AuthenticateContext, Schema<AuthenticateContext, AuthenticateEvents>, Event<AuthenticateEvents>>;
 
-//   beforeEach(() => {
-//     machine = interpret<AppContext, any, AppEvent, AppState>(appMachine.withContext({
-//       alerts: [],
-//     }));
-//   });
+  beforeEach(() => {
+    machine = interpret<AuthenticateContext, any, Event<AuthenticateEvents>>(appMachine.withContext({}));
+  });
 
-//   it('should be correctly instantiated', () => {
-//     expect(machine).toBeTruthy();
-//   });
-// });
+  it('should be correctly instantiated', () => {
+    expect(machine).toBeTruthy();
+  });
+});
