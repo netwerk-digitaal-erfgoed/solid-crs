@@ -1,10 +1,9 @@
-import { ConsoleLogger, LoggerLevel, SolidMockService, SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult } from '@digita-ai/nde-erfgoed-components';
-import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
-import { log } from 'xstate/lib/actions';
+import { SolidService } from '@digita-ai/nde-erfgoed-core';
+import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { assign, createMachine } from 'xstate';
+import { log, send } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { FormEvents } from '@digita-ai/nde-erfgoed-components/dist/forms/form.events';
 import { AuthenticateEvents } from './authenticate.events';
 
 /**
@@ -68,7 +67,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         },
       ],
       on: {
-        [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
+        [FormEvents.FORM_SUBMITTED as any]: AuthenticateStates.AUTHENTICATING,
         [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,
       },
     },

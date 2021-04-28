@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { createMachine, sendParent } from 'xstate';
 import { State } from '../state/state';
 import { Event } from '../state/event';
 import { FormValidatorResult } from './form-validator-result';
@@ -150,12 +150,7 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
          * The form has been submitted.
          */
         [FormSubmissionStates.SUBMITTED]: {
-          on: {
-            [FormEvents.FORM_SUBMITTED]: {
-              target: FormSubmissionStates.SUBMITTING,
-            },
-          },
-          exit: [ validate(validator) ],
+          entry: sendParent(FormEvents.FORM_SUBMITTED),
         },
       },
     },

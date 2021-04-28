@@ -1,10 +1,13 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
-import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, Schema, FormActors } from '@digita-ai/nde-erfgoed-components';
-import { Interpreter, SpawnedActorRef, State} from 'xstate';
+import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Event, Schema, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates } from '@digita-ai/nde-erfgoed-components';
+import { Interpreter, SpawnedActorRef, State, StateValueMap} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, NdeLogoInverse } from '@digita-ai/nde-erfgoed-theme';
+import { FormEvents } from '@digita-ai/nde-erfgoed-components/dist/forms/form.events';
+import { map } from 'rxjs/operators';
+import { from } from 'rxjs';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext } from './authenticate.machine';
 
@@ -32,10 +35,22 @@ export class AuthenticateRootComponent extends RxLitElement {
   public actor: Interpreter<AuthenticateContext, Schema<AuthenticateContext, AuthenticateEvents>, Event<AuthenticateEvents>>;
 
   /**
+   * The actor responsible for form validation in this component.
+   */
+  @internalProperty()
+  formActor: SpawnedActorRef<Event<FormEvents>, State<FormContext<{webId: string}>>>;
+
+  /**
    * The state of this component.
    */
   @internalProperty()
   state?: State<AuthenticateContext>;
+
+  /**
+   * The state of this component.
+   */
+  @internalProperty()
+  enableSubmit?: boolean;
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -44,6 +59,14 @@ export class AuthenticateRootComponent extends RxLitElement {
   firstUpdated(changed: PropertyValues) {
     super.firstUpdated(changed);
 
+    this.formActor = this.actor.children.get(FormActors.FORM_MACHINE);
+
+    this.subscribe('enableSubmit', from(this.formActor).pipe(
+      map((state) => state.value as StateValueMap),
+      map((value) => value[FormRootStates.CLEANLINESS] === FormCleanlinessStates.DIRTY
+      && value[FormRootStates.VALIDATION] === FormValidationStates.VALID
+      && value[FormRootStates.SUBMISSION] === FormSubmissionStates.NOT_SUBMITTED),
+    ));
   }
 
   /**
@@ -52,23 +75,23 @@ export class AuthenticateRootComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
-    return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <div class="title-container">
-      <svg> ${ unsafeSVG(NdeLogoInverse) } </svg>
-      <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
-    </div>
-    <div class="form-container">
-      <form>
-        <nde-form-element .border="${false}" .actor="${this.actor.children.get(FormActors.FORM_MACHINE)}" .translator="${this.translator}" field="webId">
-          <div slot="icon"></div>
-          <input type="text" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
-          <button slot="action" @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">${ unsafeSVG(Login) }</button>
-        </nde-form-element>
-      </form>
-    </div>
-    <div></div>
-  `;
+    return this.formActor ? html`
+      <link href="./dist/bundles/styles.css" rel="stylesheet">
+      <div class="title-container">
+        <svg> ${ unsafeSVG(NdeLogoInverse) } </svg>
+        <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
+      </div>
+      <div class="form-container">
+        <form>
+          <nde-form-element .border="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+            <div slot="icon"></div>
+            <input type="text" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+            <button slot="action" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+          </nde-form-element>
+        </form>
+      </div>
+      <div></div>
+    ` : html``;
   }
 
   /**
@@ -83,11 +106,11 @@ export class AuthenticateRootComponent extends RxLitElement {
           margin: auto;
           display: flex;
           flex-direction: column;
-          justify-content: center;
           gap: 80px;
         }
 
         .title-container {
+          margin-top: 30vh; 
           max-height: 50px;
           height: 50px;
           display: flex;
@@ -110,7 +133,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         }
 
         nde-form-element button {
-          background-color: var(--colors-primary-light)
+          background-color: var(--colors-primary-light);
         }
 
         nde-form-element {
