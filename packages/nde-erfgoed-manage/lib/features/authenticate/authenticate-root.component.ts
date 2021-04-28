@@ -1,7 +1,7 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event } from '@digita-ai/nde-erfgoed-components';
-import { SpawnedActorRef, State} from 'xstate';
+import { Event, Schema, FormActors } from '@digita-ai/nde-erfgoed-components';
+import { Interpreter, SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, NdeLogoInverse } from '@digita-ai/nde-erfgoed-theme';
@@ -29,7 +29,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<AuthenticateEvents>, State<AuthenticateContext>>;
+  public actor: Interpreter<AuthenticateContext, Schema<AuthenticateContext, AuthenticateEvents>, Event<AuthenticateEvents>>;
 
   /**
    * The state of this component.
@@ -60,9 +60,9 @@ export class AuthenticateRootComponent extends RxLitElement {
     </div>
     <div class="form-container">
       <form>
-        <nde-form-element .border="${false}" .actor="${this.actor}" .translator="${this.translator}" field="uri">
+        <nde-form-element .border="${false}" .actor="${this.actor.children.get(FormActors.FORM_MACHINE)}" .translator="${this.translator}" field="webId">
           <div slot="icon"></div>
-          <input type="text" slot="input" name="webId" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+          <input type="text" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
           <button slot="action" @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">${ unsafeSVG(Login) }</button>
         </nde-form-element>
       </form>

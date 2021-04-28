@@ -1,9 +1,10 @@
 import { ConsoleLogger, LoggerLevel, SolidMockService, SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, State } from '@digita-ai/nde-erfgoed-components';
+import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { FormEvents } from '@digita-ai/nde-erfgoed-components/dist/forms/form.events';
 import { AuthenticateEvents } from './authenticate.events';
 
 /**
@@ -31,6 +32,9 @@ export enum AuthenticateStates {
   UNAUTHENTICATED  = '[AuthenticateState: Unauthenticated]',
 }
 
+const validator = (context: FormContext<{ webId: string }>, event: Event<FormEvents>): FormValidatorResult[] =>
+  context.data && context.data.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ];
+
 /**
  * The authenticate machine.
  */
@@ -43,16 +47,26 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
       entry: [
         assign({ session: null }),
       ],
-      invoke: {
-        src: () => solid.handleIncomingRedirect().pipe(
-          switchMap(() => throwError(new Error())),
-          map(() => ({ type: AuthenticateEvents.SESSION_RESTORED, webId: ''})),
-        ),
-        onDone: {
-          target: AuthenticateStates.AUTHENTICATED,
+      invoke: [
+        {
+          src: () => solid.handleIncomingRedirect().pipe(
+            switchMap(() => throwError(new Error())),
+            map(() => ({ type: AuthenticateEvents.SESSION_RESTORED, webId: ''})),
+          ),
+          onDone: {
+            target: AuthenticateStates.AUTHENTICATED,
+          },
+          onError: { actions: log('Could not restore session.')},
+
         },
-        onError: { actions: log('Could not restore session.')},
-      },
+        {
+          id: FormActors.FORM_MACHINE,
+          src: formMachine(validator).withContext({
+            data: { webId: ''},
+            original: { webId: ''},
+          }),
+        },
+      ],
       on: {
         [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
         [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,

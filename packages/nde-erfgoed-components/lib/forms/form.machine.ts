@@ -15,6 +15,13 @@ export interface FormContext<TData> {
 }
 
 /**
+ * Actor references for this machine config.
+ */
+export enum FormActors {
+  FORM_MACHINE = 'FormMachine',
+}
+
+/**
  * State references of the root parallel states of the form machine.
  */
 export enum FormRootStates {
@@ -60,7 +67,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  * The form component machine.
  */
 export const formMachine = (validator: FormValidator) => createMachine<FormContext<any>, Event<FormEvents>, State<FormStates, FormContext<any>>>({
-  id: 'form',
+  id: FormActors.FORM_MACHINE,
   type: 'parallel',
   states: {
     /**
