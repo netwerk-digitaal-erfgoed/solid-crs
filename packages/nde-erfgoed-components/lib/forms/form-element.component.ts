@@ -15,6 +15,12 @@ import { FormEvents, FormUpdatedEvent } from './form.events';
 export class FormElementComponent extends RxLitElement {
 
   /**
+   * Decides whether a border should be shown around the content
+   */
+  @property()
+  public border = false;
+
+  /**
    * The component's translator.
    */
   @property({type: Translator})
@@ -110,13 +116,12 @@ export class FormElementComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="form-element">
       <div class="label">
         <slot name="label"></slot>
       </div>
       <div class="content">
-        <div class="field">
+        <div class="field ${!this.border ? 'no-border' : ''}">
           <div class="input">
             <slot name="input" @slotchange=${this.handleInputSlotchange}></slot>
           </div>
@@ -125,7 +130,7 @@ export class FormElementComponent extends RxLitElement {
           </div>
         </div>
         <div class="action">
-          <slot name="action"></slot>
+          <slot name="action" class="${!this.border ? 'no-border' : ''}"></slot>
         </div>
       </div>
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
@@ -146,6 +151,9 @@ export class FormElementComponent extends RxLitElement {
       css`
         :root {
           display: block;
+        }
+        .no-border, .no-border ::slotted(*) {
+          border: none
         }
         .form-element {
           display: flex;
@@ -169,7 +177,6 @@ export class FormElementComponent extends RxLitElement {
           align-items: stretch;
           justify-content: space-between;
           flex: 1 0;
-          border: var(--border-normal) solid var(--colors-foreground-normal);
         }
         .form-element .content .field .input {
           padding: 0 var(--gap-normal);
