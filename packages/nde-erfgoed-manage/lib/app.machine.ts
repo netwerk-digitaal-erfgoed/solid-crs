@@ -1,4 +1,7 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
+import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
@@ -13,6 +16,8 @@ import { collectionsMachine } from './features/collections/collections.machine';
  * - services: Record<string, ServiceConfig<CollectionsContext, CollectionsEvent>>;
  * - delays: DelayFunctionMap<CollectionsContext, CollectionsEvent>;
  */
+
+const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The root context of the application.
@@ -85,9 +90,21 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
           actions: [
             log(() => 'An error occurred'),
             send(() => ({
-              alert: { type: 'danger', message: 'nde.root.alerts.error' },
               type: AppEvents.ADD_ALERT,
+              alert: { type: 'danger', message: 'nde.root.alerts.error' },
             })),
+          ],
+        },
+        [AppEvents.LOGIN]: {
+          target: [
+            `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
+          ],
+        },
+        [AppEvents.LOGOUT]: {
+          target: [
+            `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
           ],
         },
       },
@@ -97,14 +114,20 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
             id: AppActors.COLLECTIONS_MACHINE,
             src: collectionsMachine.withContext({}),
             onDone: AppFeatureStates.AUTHENTICATE,
+            onError: {
+              actions: send({ type: AppEvents.ERROR }),
+            },
           },
         },
         [AppFeatureStates.AUTHENTICATE]: {
           invoke: {
             id: AppActors.AUTHENTICATE_MACHINE,
-            src: authenticateMachine.withContext({}),
+            src: authenticateMachine(solid).withContext({}),
             onDone: {
-              target: AppFeatureStates.COLLECTIONS,
+              actions: send({type: AppEvents.LOGIN }),
+            },
+            onError: {
+              actions: send({ type: AppEvents.ERROR }),
             },
           },
         },
@@ -120,7 +143,11 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
 
         },
         [AppAuthenticateStates.UNAUTHENTICATED]: {
-
+          invoke: {
+            src: () => solid.logout().pipe(
+              map(() => log('Logged out')),
+            ),
+          },
         },
       },
     },

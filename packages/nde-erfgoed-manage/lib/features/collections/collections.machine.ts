@@ -28,7 +28,7 @@ export enum CollectionsActors {
 export enum CollectionsStates {
   IDLE    = '[CollectionsState: Idle]',
   LOADING = '[CollectionsState: Loading]',
-  LOGOUT  = '[CollectionsState: Logout]',
+  EXITED  = '[CollectionsState: Logout]',
 }
 
 /**
@@ -50,9 +50,6 @@ export const collectionsMachine = createMachine<CollectionsContext, Event<Collec
         addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
       ],
     },
-    [CollectionsEvents.CLICKED_LOGOUT]: {
-      target: CollectionsStates.LOGOUT,
-    },
   },
   states: {
     [CollectionsStates.IDLE]: {
@@ -66,7 +63,7 @@ export const collectionsMachine = createMachine<CollectionsContext, Event<Collec
         onDone: CollectionsStates.IDLE,
       },
     },
-    [CollectionsStates.LOGOUT]: {
+    [CollectionsStates.EXITED]: {
       type: 'final',
     },
   },

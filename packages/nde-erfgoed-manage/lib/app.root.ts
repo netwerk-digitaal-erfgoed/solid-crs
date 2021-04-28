@@ -115,7 +115,9 @@ export class AppRootComponent extends RxLitElement {
 
     let currentPage: TemplateResult;
 
-    switch((this.actor.state.value as any)[AppRootStates.FEATURE]) {
+    const currentFeature = (this.actor.state.value as any)[AppRootStates.FEATURE];
+
+    switch(currentFeature) {
 
     case AppFeatureStates.AUTHENTICATE: currentPage = authenticate; break;
 
@@ -128,6 +130,7 @@ export class AppRootComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
+    <button @click="${() => this.actor.send(AppEvents.LOGOUT)}" ?hidden="${currentFeature === AppFeatureStates.AUTHENTICATE}">Logout</button>
     ${ alerts }
     ${ currentPage }  
     `;

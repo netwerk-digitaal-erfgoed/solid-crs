@@ -1,12 +1,10 @@
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { ConsoleLogger, LoggerLevel, SolidMockService, SolidService } from '@digita-ai/nde-erfgoed-core';
 import { Event, State } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AuthenticateEvents } from './authenticate.events';
-
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The context of th authenticate feature.
@@ -36,7 +34,7 @@ export enum AuthenticateStates {
 /**
  * The authenticate machine.
  */
-export const authenticateMachine = createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
+export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
   id: AuthenticateActors.AUTHENTICATE_MACHINE,
   initial: AuthenticateStates.UNAUTHENTICATED,
   states: {
@@ -44,7 +42,6 @@ export const authenticateMachine = createMachine<AuthenticateContext, Event<Auth
     [AuthenticateStates.UNAUTHENTICATED]: {
       entry: [
         assign({ session: null }),
-        log('entered unauthenticated state'),
       ],
       invoke: {
         src: () => solid.handleIncomingRedirect().pipe(
@@ -63,10 +60,9 @@ export const authenticateMachine = createMachine<AuthenticateContext, Event<Auth
     },
 
     [AuthenticateStates.AUTHENTICATING]: {
-      entry: log('entered authenticating state'),
       invoke: {
         src: () => solid.login().pipe(
-          map(() => ({ type: AuthenticateEvents.SESSION_RESTORED, webId: ''})),
+          map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
         ),
         onDone: AuthenticateStates.AUTHENTICATED,
         onError: AuthenticateStates.UNAUTHENTICATED,
@@ -76,10 +72,8 @@ export const authenticateMachine = createMachine<AuthenticateContext, Event<Auth
         [AuthenticateEvents.LOGIN_ERROR]: AuthenticateStates.UNAUTHENTICATED,
       },
     },
-
     [AuthenticateStates.AUTHENTICATED]: {
       type: 'final',
-      entry: log('entered authenticated state'),
     },
   },
 });

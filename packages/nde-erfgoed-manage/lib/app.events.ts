@@ -9,6 +9,8 @@ export enum AppEvents {
   ADD_ALERT = '[AppEvent: Add alert]',
   DISMISS_ALERT = '[AppEvent: Dismiss alert]',
   ERROR = 'xstate.error',
+  LOGOUT = '[AppEvent: Logout]',
+  LOGIN = '[AppEvent: Login]',
 }
 
 /**
@@ -29,6 +31,16 @@ export interface DismissAlertEvent extends Event<AppEvents> { type: AppEvents.DI
  * An event which is dispatched when an error occurs.
  */
 export interface ErrorEvent extends Event<AppEvents> { type: AppEvents.ERROR; data?: { error?: Error | string } }
+
+/**
+ * An event which is dispatched when an error occurs.
+ */
+export interface LogoutEvent extends Event<AppEvents> { type: AppEvents.LOGOUT }
+
+/**
+ * An event which is dispatched when an error occurs.
+ */
+export interface LoginEvent extends Event<AppEvents> { type: AppEvents.LOGIN }
 
 /**
  * Actions for the alerts component.
