@@ -23,12 +23,12 @@ export class SolidMockService extends SolidService {
   }
 
   login(): Observable<any> {
-    this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
+    this.logger.debug(SolidMockService.name, 'Loggin in user');
     return of(true);
   }
 
   logout(): Observable<any> {
-    this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
+    this.logger.debug(SolidMockService.name, 'Logging out user');
     return of(true);
   }
 

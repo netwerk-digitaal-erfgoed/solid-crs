@@ -1,7 +1,7 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
 import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
 import { throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
@@ -145,7 +145,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
         [AppAuthenticateStates.UNAUTHENTICATED]: {
           invoke: {
             src: () => solid.logout().pipe(
-              map(() => log('Logged out')),
+              map(() => ({ type: '' })),
             ),
           },
         },
