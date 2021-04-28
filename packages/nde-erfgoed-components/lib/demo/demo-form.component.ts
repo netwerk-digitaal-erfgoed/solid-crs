@@ -36,15 +36,15 @@ export class DemoFormComponent extends RxLitElement {
   public translator: Translator = new MemoryTranslator([
     {
       key: 'demo-form.name.required',
-      locale: 'nl-BE',
+      locale: 'nl-NL',
       value: 'Name is required.',
     },
     {
       key: 'demo-form.uri.required',
-      locale: 'nl-BE',
+      locale: 'nl-NL',
       value: 'URI is required.',
     },
-  ], 'nl-BE');
+  ], 'nl-NL');
 
   /**
    * The actor controlling this component.

@@ -6,7 +6,7 @@ import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Tr
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import nlBe from './i8n/nl-BE.json';
+import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { CollectionsRootComponent } from './features/collections/collections-root.component';
 
@@ -31,7 +31,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({type: Translator})
-  public translator: Translator = new MemoryTranslator(nlBe, 'nl-BE');
+  public translator: Translator = new MemoryTranslator(nlNL, 'nl-NL');
 
   /**
    * The constructor of the application root component,
@@ -127,7 +127,6 @@ export class AppRootComponent extends RxLitElement {
 
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <h1>${this.translator.translate('nde.app.root.title')}</h1>
     <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${currentFeature === AppFeatureStates.AUTHENTICATE}">Logout</button>
     ${ alerts }
     ${ currentPage }  
@@ -140,6 +139,13 @@ export class AppRootComponent extends RxLitElement {
   static get styles() {
     return [
       css`
+        :host {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          background-color: var(--colors-foreground-normal);
+        }
+
         .collection { }
       `,
     ];

@@ -52,8 +52,18 @@ export class AuthenticateRootComponent extends RxLitElement {
   render() {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
-    <p>${this.translator.translate('nde.authenticate.root.title')}</p>
-    <button @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
+    <div class="title-container">
+      <img alt="Logo NDE">
+      <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
+    </div>
+    <div class="form-container">
+      <form>
+        <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
+          <input type="text" slot="input" name="webId" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+          <button slot="action" @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
+        </nde-form-element>
+      </form>
+    </div>
     <div></div>
   `;
   }
@@ -64,7 +74,40 @@ export class AuthenticateRootComponent extends RxLitElement {
   static get styles() {
     return [
       css`
-      
+        :host {
+          width: 400px;
+          height: 100%;
+          margin: auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 80px;
+        }
+
+        .title-container {
+          max-height: 50px;
+          height: 50px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+
+        .title-container img {
+          max-height: 50px;
+          height: 50px;
+          max-width: 50px;
+          width: 50px;
+        }
+
+        .title-container h1 {
+          color: white;
+          font-size: var(--font-size-header-normal)
+          font-weight: normal;
+        }
+
+        nde-form-element button {
+          background-color: var(--colors-primary-light)
+        }
       `,
     ];
   }
