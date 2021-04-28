@@ -3,6 +3,8 @@ import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event } from '@digita-ai/nde-erfgoed-components';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { NdeLogoInverse } from '@digita-ai/nde-erfgoed-theme';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext } from './authenticate.machine';
 
@@ -53,12 +55,13 @@ export class AuthenticateRootComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="title-container">
-      <img alt="Logo NDE">
+      <svg> ${ unsafeSVG(NdeLogoInverse) } </svg>
       <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
     </div>
     <div class="form-container">
       <form>
         <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
+          <div slot="icon"></div>
           <input type="text" slot="input" name="webId" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
           <button slot="action" @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
         </nde-form-element>
@@ -90,9 +93,10 @@ export class AuthenticateRootComponent extends RxLitElement {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
+          align-items: center;
         }
 
-        .title-container img {
+        .title-container svg {
           max-height: 50px;
           height: 50px;
           max-width: 50px;
@@ -101,12 +105,16 @@ export class AuthenticateRootComponent extends RxLitElement {
 
         .title-container h1 {
           color: white;
-          font-size: var(--font-size-header-normal)
+          font-size: var(--font-size-header-normal);
           font-weight: normal;
         }
 
         nde-form-element button {
           background-color: var(--colors-primary-light)
+        }
+
+        nde-form-element {
+          border: none;
         }
       `,
     ];
