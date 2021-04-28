@@ -5,6 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
+import { login } from '@inrupt/solid-client-authn-browser';
 import { AppActors, appMachine } from './app.machine';
 import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
 import { AppStates } from './app.states';
