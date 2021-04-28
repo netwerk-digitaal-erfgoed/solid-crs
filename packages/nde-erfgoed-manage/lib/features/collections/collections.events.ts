@@ -1,4 +1,4 @@
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { assign, EventObject, send, sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
@@ -18,19 +18,21 @@ export enum CollectionsEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
-export interface ClickedLoadEvent extends EventObject { type: CollectionsEvents.CLICKED_LOAD }
-export interface ClickedAddEvent extends EventObject { type: CollectionsEvents.CLICKED_ADD }
-export interface ClickedLogoutEvent extends EventObject { type: CollectionsEvents.CLICKED_LOGOUT }
-export interface LoadedCollectionsEvent extends EventObject { type: CollectionsEvents.LOADED_COLLECTIONS; collections: Collection[] }
-export interface CreatedTestCollection extends EventObject { type: CollectionsEvents.CREATED_TEST_COLLECTION; collections: Collection[] }
+export interface ClickedLoadEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_LOAD }
+export interface ClickedAddEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_ADD }
+export interface ClickedLogoutEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_LOGOUT }
+export interface LoadedCollectionsEvent extends Event<CollectionsEvents> { type: CollectionsEvents.LOADED_COLLECTIONS; collections: Collection[] }
+export interface CreatedTestCollection extends Event<CollectionsEvents> { type: CollectionsEvents.CREATED_TEST_COLLECTION; collections: Collection[] }
 
 /**
  * Actions for the collections component.
  */
 
-export const replaceCollections = assign({ collections: (_, event: LoadedCollectionsEvent) => event.collections });
+export const replaceCollections = assign<CollectionsContext, Event<CollectionsEvents> & { collections: Collection[] }>({
+  collections: (_, event: LoadedCollectionsEvent) => event.collections,
+});
 
-export const addCollections = assign<CollectionsContext, EventObject & { collections: Collection[] }>({
+export const addCollections = assign<CollectionsContext, Event<CollectionsEvents> & { collections: Collection[] }>({
   collections: (context, event) => [ ... context.collections ?? [], ... event.collections ],
 });
 

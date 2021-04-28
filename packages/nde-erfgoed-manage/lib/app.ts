@@ -5,9 +5,12 @@ import { AuthenticateRootComponent } from './features/authenticate/authenticate-
 import { CollectionsRootComponent } from './features/collections/collections-root.component';
 import './index';
 
+/**
+ * Starts the xstate devtools
+ *
+ * https://github.com/davidkpiano/xstate/tree/master/packages/xstate-inspect
+ */
 inspect({
-  // options
-  // url: 'https://statecharts.io/inspect', // (default)
   iframe: false, // open in new window
 });
 

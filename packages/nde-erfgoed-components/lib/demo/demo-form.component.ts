@@ -3,14 +3,14 @@ import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita
 import { interpret, Interpreter, StateValueMap } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { Event } from '../state/event';
 import { FormValidatorResult } from '../forms/form-validator-result';
-import { Schema } from '../state/schema';
 import { FormEvents } from '../forms/form.events';
+import { FormValidator } from '../forms/form-validator';
 
 /**
  * Validates the form and returns its results.
@@ -19,7 +19,7 @@ import { FormEvents } from '../forms/form.events';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+export const validator: FormValidator<Collection> = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
 ];
@@ -50,7 +50,7 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: Interpreter<FormContext<Collection>, Schema<FormContext<Collection>, FormEvents>, Event<FormEvents>>;
+  public actor: Interpreter<FormContext<Collection>>;
 
   /**
    * Enables or disables the submit button.
@@ -65,8 +65,8 @@ export class DemoFormComponent extends RxLitElement {
   constructor() {
     super();
 
-    this.actor = interpret<FormContext<Collection>, any, Event<FormEvents>>(
-      formMachine(validator).withContext({
+    this.actor = interpret(
+      formMachine<Collection>(validator).withContext({
         data: { uri: '', name: 'Test' },
         original: { uri: '', name: 'Test' },
       }),
@@ -87,7 +87,7 @@ export class DemoFormComponent extends RxLitElement {
     }
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
-      map((state) => state.value as StateValueMap),
+      filter((state) => state.value && state.value instanceof StateValueMap),
       map((value) => value[FormRootStates.CLEANLINESS] === FormCleanlinessStates.DIRTY
       && value[FormRootStates.VALIDATION] === FormValidationStates.VALID
       && value[FormRootStates.SUBMISSION] === FormSubmissionStates.NOT_SUBMITTED),

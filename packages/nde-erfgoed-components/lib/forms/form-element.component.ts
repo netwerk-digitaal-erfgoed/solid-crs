@@ -42,7 +42,7 @@ export class FormElementComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<any>>>;
+  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<unknown>>>;
 
   /**
    * The styles associated with the component.
@@ -141,13 +141,11 @@ export class FormElementComponent extends RxLitElement {
 
     childNodes.forEach((node) => {
       if(node && node instanceof HTMLInputElement) {
-        const input = node as HTMLInputElement;
-
         // Set the input field's default value.
-        input.value = this.data[this.field];
+        node.value = this.data[this.field];
 
         // Send event when input field's value changes.
-        input.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: input.value, field: this.field} as FormUpdatedEvent));
+        node.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: node.value, field: this.field} as FormUpdatedEvent));
       }
     });
   }

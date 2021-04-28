@@ -12,7 +12,6 @@ export interface CollectionsContext {
    * The list of collections available to the feature.
    */
   collections?: Collection[];
-
 }
 
 /**

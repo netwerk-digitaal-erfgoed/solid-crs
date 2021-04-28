@@ -59,7 +59,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
 /**
  * The form component machine.
  */
-export const formMachine = (validator: FormValidator) => createMachine<FormContext<any>, Event<FormEvents>, State<FormStates, FormContext<any>>>({
+export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, Event<FormEvents>, State<FormStates, FormContext<T>>>({
   id: 'form',
   type: 'parallel',
   states: {
@@ -87,7 +87,7 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           always: [
             {
               target: FormCleanlinessStates.PRISTINE,
-              cond: (context, event) => JSON.stringify(context.data) === JSON.stringify(context.original),
+              cond: (context: FormContext<T>) => JSON.stringify(context.data) === JSON.stringify(context.original),
             },
             {
               target: FormCleanlinessStates.DIRTY,
@@ -132,7 +132,7 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           always: [
             {
               target: FormSubmissionStates.SUBMITTED,
-              cond: (context, event) => context.validation === null || context.validation.length === 0,
+              cond: (context: FormContext<T>) => context.validation === null || context.validation.length === 0,
             },
             {
               target: FormSubmissionStates.NOT_SUBMITTED,
@@ -180,7 +180,7 @@ export const formMachine = (validator: FormValidator) => createMachine<FormConte
           always: [
             {
               target: FormValidationStates.VALID,
-              cond: (context, event) => context.validation === null || context.validation.length === 0,
+              cond: (context: FormContext<T>) => context.validation === null || context.validation.length === 0,
             },
             {
               target: FormValidationStates.INVALID,
