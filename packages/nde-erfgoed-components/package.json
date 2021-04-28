@@ -3,15 +3,22 @@
   "version": "0.0.1",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
-  "main": "./dist/index.js",
+  "main": "./dist/nde-erfgoed-components.umd.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/nde-erfgoed-components.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/nde-erfgoed-components.es.js",
+      "require": "./dist/nde-erfgoed-components.umd.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "start:watch": "rm -rf ./dist && esbuild lib/demo.ts lib/styles.css --servedir=./ --outdir=dist/bundles --bundle",
-    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles --minify",
-    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts lib/styles.css lib/collections/collection.component.ts lib/collections/collections.component.ts --bundle --outdir=dist/bundles",
+    "start:watch": "rm -rf ./dist && npm run build && vite --config vite.serve.config.ts",
+    "build": "rm -rf ./dist && vite build --config vite.build.config.ts && tsc",
+    "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",
@@ -37,7 +44,8 @@
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "ts-jest": "26.5.4",
     "ts-node": "9.1.1",
-    "typescript": "^4.1.3"
+    "typescript": "^4.1.3",
+    "vite": "2.2.3"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

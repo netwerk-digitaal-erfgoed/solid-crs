@@ -111,7 +111,7 @@ export class AppRootComponent extends RxLitElement {
     const collections = this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html``;
 
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
     ${ alerts }
     ${ collections }

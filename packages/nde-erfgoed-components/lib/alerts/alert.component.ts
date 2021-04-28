@@ -97,7 +97,7 @@ export class AlertComponent extends LitElement {
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
 
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <div class="alert ${ type }">
       <div class="icon">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>

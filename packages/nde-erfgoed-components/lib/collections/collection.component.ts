@@ -61,7 +61,7 @@ export class CollectionComponent extends LitElement implements Component {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
     </div>
