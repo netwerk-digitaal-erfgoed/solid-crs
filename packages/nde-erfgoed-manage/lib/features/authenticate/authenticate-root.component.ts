@@ -60,7 +60,7 @@ export class AuthenticateRootComponent extends RxLitElement {
     </div>
     <div class="form-container">
       <form>
-        <nde-form-element .border="false" .actor="${this.actor}" .translator="${this.translator}" field="uri">
+        <nde-form-element .border="${false}" .actor="${this.actor}" .translator="${this.translator}" field="uri">
           <div slot="icon"></div>
           <input type="text" slot="input" name="webId" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
           <button slot="action" @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">${ unsafeSVG(Login) }</button>

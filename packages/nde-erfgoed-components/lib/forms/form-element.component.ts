@@ -18,7 +18,7 @@ export class FormElementComponent extends RxLitElement {
    * Decides whether a border should be shown around the content
    */
   @property()
-  public border = false;
+  public border = true;
 
   /**
    * The component's translator.
@@ -153,7 +153,7 @@ export class FormElementComponent extends RxLitElement {
           display: block;
         }
         .no-border, .no-border ::slotted(*) {
-          border: none
+          border: none !important;
         }
         .form-element {
           display: flex;
@@ -177,6 +177,7 @@ export class FormElementComponent extends RxLitElement {
           align-items: stretch;
           justify-content: space-between;
           flex: 1 0;
+          border: var(--border-normal) solid var(--colors-foreground-normal);
         }
         .form-element .content .field .input {
           padding: 0 var(--gap-normal);
