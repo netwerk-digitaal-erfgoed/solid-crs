@@ -113,16 +113,14 @@ export class AppRootComponent extends RxLitElement {
     // Create a authenticate root component if the app machine is in the correct state.
     const collections = html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>`;
 
+    // display different pages for different AppFeatureStates
     let currentPage: TemplateResult;
-
     const currentFeature = (this.actor.state.value as any)[AppRootStates.FEATURE];
 
     switch(currentFeature) {
 
     case AppFeatureStates.AUTHENTICATE: currentPage = authenticate; break;
-
     case AppFeatureStates.COLLECTIONS: currentPage = collections; break;
-
     default: currentPage = authenticate;
 
     }
@@ -130,7 +128,7 @@ export class AppRootComponent extends RxLitElement {
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
-    <button @click="${() => this.actor.send(AppEvents.LOGOUT)}" ?hidden="${currentFeature === AppFeatureStates.AUTHENTICATE}">Logout</button>
+    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${currentFeature === AppFeatureStates.AUTHENTICATE}">Logout</button>
     ${ alerts }
     ${ currentPage }  
     `;

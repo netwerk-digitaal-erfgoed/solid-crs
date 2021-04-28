@@ -95,13 +95,13 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
             })),
           ],
         },
-        [AppEvents.LOGIN]: {
+        [AppEvents.CLICKED_LOGIN]: {
           target: [
             `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
           ],
         },
-        [AppEvents.LOGOUT]: {
+        [AppEvents.CLICKED_LOGOUT]: {
           target: [
             `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
@@ -124,7 +124,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppR
             id: AppActors.AUTHENTICATE_MACHINE,
             src: authenticateMachine(solid).withContext({}),
             onDone: {
-              actions: send({type: AppEvents.LOGIN }),
+              actions: send({type: AppEvents.CLICKED_LOGIN }),
             },
             onError: {
               actions: send({ type: AppEvents.ERROR }),
