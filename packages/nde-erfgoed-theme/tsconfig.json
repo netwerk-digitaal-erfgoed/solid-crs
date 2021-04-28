@@ -10,6 +10,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     // Others
+    "emitDeclarationOnly": true,
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
@@ -30,5 +31,6 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
+  "plugins": [{ "name": "typescript-plugin-css-modules" }]
 }

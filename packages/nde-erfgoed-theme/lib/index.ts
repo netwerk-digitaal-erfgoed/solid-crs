@@ -10,5 +10,8 @@ export const Search = SearchIcon;
 import LoginIcon from './icons/Login.svg';
 export const Login = LoginIcon;
 
-import ThemeCss from './theme.css';
-export const Theme = ThemeCss;
+export * as theme from './theme.module.css';
+// export {default} from './theme.module.css';
+// import ThemeCss from './theme.module.css';
+// export const Theme = ThemeCss;
+// import './theme.module.css';
