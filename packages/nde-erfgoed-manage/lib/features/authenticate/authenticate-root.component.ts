@@ -1,8 +1,9 @@
-import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
 import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event } from '@digita-ai/nde-erfgoed-components';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext } from './authenticate.machine';
 
@@ -50,7 +51,6 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <p>${this.translator.translate('nde.authenticate.root.title')}</p>
     <button @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
   `;
@@ -61,7 +61,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css``,
+      unsafeCSS(Theme),
     ];
   }
 
