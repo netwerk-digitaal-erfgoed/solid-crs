@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
-import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -52,23 +52,41 @@ export class CollectionsRootComponent extends RxLitElement {
   collections?: Collection[];
 
   /**
-   * Hook called on first update after connection to the DOM.
-   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   * Hook called on at every update after connection to the DOM.
    */
-  firstUpdated(changed: PropertyValues) {
-    super.firstUpdated(changed);
+  updated(changed: PropertyValues) {
+    super.updated(changed);
 
-    this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
-    ));
+    if(changed.has('actor')){
+      this.subscribe('alerts', from(this.actor.parent)
+        .pipe(map((state) => state.context.alerts)));
 
-    this.subscribe('collections', from(this.actor).pipe(
-      map((state) => state.context.collections),
-    ));
+      this.subscribe('state', from(this.actor).pipe(
+        tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
+      ));
 
+      this.subscribe('collections', from(this.actor).pipe(
+        map((state) => state.context.collections),
+      ));
+    }
   }
 
-  dismiss = (event: CustomEvent<Alert>) => this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+  /**
+   * Handles a dismiss event by sending a dismiss alert event to its parent.
+   *
+   * @param event Dismiss event dispatched by an alert componet.
+   */
+  handleDismiss(event: CustomEvent<Alert>) {
+    if (!event || !event.detail) {
+      throw new ArgumentError('Argument event || event.detail should be set.', event && event.detail);
+    }
+
+    if (!this.actor || !this.actor.parent) {
+      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor || !this.actor.parent);
+    }
+
+    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+  }
 
   /**
    * Renders the component as HTML.
@@ -77,7 +95,7 @@ export class CollectionsRootComponent extends RxLitElement {
    */
   render() {
     // Create an alert components for each alert.
-    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
+    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`

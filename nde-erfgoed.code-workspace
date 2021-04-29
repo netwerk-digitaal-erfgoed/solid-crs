@@ -34,7 +34,8 @@
     "cSpell.words": [
       "semcom",
       "xstate"
-    ]
+    ],
+    "files.eol": "\n",
   },
   "extensions": {
     "recommendations": [

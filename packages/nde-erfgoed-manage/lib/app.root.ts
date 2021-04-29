@@ -17,12 +17,6 @@ import { CollectionsRootComponent } from './features/collections/collections-roo
 export class AppRootComponent extends RxLitElement {
 
   /**
-   * The component's alerts.
-   */
-  @property({type: Array})
-  public alerts: Alert[];
-
-  /**
    * The component's logger.
    */
   @property({type: Logger})
@@ -90,13 +84,6 @@ export class AppRootComponent extends RxLitElement {
     this.subscribe('state', from(this.actor).pipe(
       tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
     ));
-
-    /**
-     * Subscribes property alerts to changes in the app context.
-     */
-    this.subscribe('alerts', from(this.actor).pipe(
-      map((state) => state.context.alerts),
-    ));
   }
 
   /**
@@ -107,9 +94,9 @@ export class AppRootComponent extends RxLitElement {
   render() {
     return html`
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
-    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) && html`<nde-authenticate-root .alerts='${this.alerts}' .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` }  
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) && html`<nde-collections-root .alerts='${this.alerts}' .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` }  
+    <button @click="${() => this.actor.send(AppEvents.LOGGED_OUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) && html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) && html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` }  
     `;
   }
 
