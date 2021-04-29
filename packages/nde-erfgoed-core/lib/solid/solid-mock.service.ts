@@ -1,5 +1,4 @@
-import { Observable, of, throwError, timer } from 'rxjs';
-import { delay, switchMap, tap } from 'rxjs/operators';
+import { ArgumentError } from '../errors/argument-error';
 import { Logger } from '../logging/logger';
 import { SolidService } from './solid.service';
 
@@ -38,18 +37,26 @@ export class SolidMockService extends SolidService {
    *
    * @param webId The WebID to validate
    */
-  validateWebId(webId: string): Observable<boolean> {
+  async validateWebId(webId: string): Promise<boolean> {
     this.logger.debug(SolidMockService.name, 'Validating WebID', webId);
+
+    if (!webId) {
+      throw new ArgumentError('Argument webId should be set.', webId);
+    }
 
     try {
       new URL(webId);
     } catch {
-      return throwError(new Error('nde.root.alerts.error'));
+      throw new ArgumentError('nde.root.alerts.error', webId);
     }
 
-    return of(this.profiles.find((profile) => profile.webId === webId) && true).pipe(
-      delay(1000),
-    );
+    const issuer = await this.getIssuer(webId);
+
+    if (!issuer) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+    }
+
+    return this.profiles.find((profile) => profile.webId === webId) !== null;
   }
 
   /**
@@ -58,49 +65,60 @@ export class SolidMockService extends SolidService {
    *
    * @param webId The WebID for which to retrieve the OIDC issuer
    */
-  getIssuer(webId: string): Observable<string> {
+  async getIssuer(webId: string): Promise<string> {
     this.logger.debug(SolidMockService.name, 'Retrieving issuer', webId);
 
-    const issuer = this.profiles.find((profile) => profile.webId === webId)?.issuer;
-
-    if (!issuer) {
-      return throwError(new Error('nde.features.authenticate.error.invalid-webid.no-oidc-registration'));
+    if (!webId) {
+      throw new ArgumentError('Argument webId should be set.', webId);
     }
 
-    return of(issuer).pipe(
-      delay(1000),
-    );
+    if (!this.profiles) {
+      throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
+    }
+
+    return this.profiles.find((profile) => profile.webId === webId)?.issuer;
   }
 
   /**
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  handleIncomingRedirect(): Observable<unknown> {
+  async handleIncomingRedirect(): Promise<unknown> {
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
-    return of({ isLoggedIn: true, webId: this.profiles[0].webId }).pipe(
-      delay(1000),
-    );
+
+    if (!this.profiles) {
+      throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
+    }
+
+    throw new Error();
+
+    return { isLoggedIn: true, webId: this.profiles[0].webId };
   }
 
   /**
    * Redirects the user to their OIDC provider
    */
-  login(webId: string): Observable<unknown> {
+  async login(webId: string): Promise<unknown> {
     this.logger.debug(SolidMockService.name, 'Logging in user');
-    return this.validateWebId(webId).pipe(
-      delay(1000),
-      switchMap((valid) => valid ? of(true) : throwError(new Error('nde.root.alerts.error'))),
-    );
+
+    if (!webId) {
+      throw new ArgumentError('Argument webId should be set.', webId);
+    }
+
+    const isWebIdValid = await this.validateWebId(webId);
+
+    if (!isWebIdValid) {
+      throw new ArgumentError('nde.root.alerts.error', isWebIdValid);
+    }
+
+    return true;
   }
 
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  logout(): Observable<unknown> {
+  async logout(): Promise<unknown> {
     this.logger.debug(SolidMockService.name, 'Logging out user');
-    return of(true).pipe(
-      delay(1000),
-    );
+    return true;
   }
 }

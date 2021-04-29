@@ -1,7 +1,7 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
 import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { pure, send } from 'xstate/lib/actions';
+import { log, pure, send } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
@@ -57,10 +57,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Listen for redirects, and determine if a user is authenticated or not.
          */
         {
-          src: () => solid.handleIncomingRedirect().pipe(
-            switchMap(() => throwError(new Error())),
-            map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
-          ),
+          src: () => solid.handleIncomingRedirect(),
           onDone: { actions: send(AuthenticateEvents.LOGIN_SUCCESS) },
           onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
@@ -73,7 +70,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
             data: { webId: ''},
             original: { webId: ''},
           }),
-          onDone: { actions: send(AuthenticateEvents.LOGIN_STARTED) },
+          onDone: { actions: send((context, event, meta) => ({type: AuthenticateEvents.LOGIN_STARTED, meta, event, context})) },
         },
       ],
       on: {
@@ -90,9 +87,11 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         /**
          * Redirects the user to the identity provider.
          */
-        src: () => solid.login('test').pipe(
-          map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
-        ),
+        // src: (c, e) => solid.login('test'),
+        src: (c, e) => solid.login('https://pod.inrupt.com/digitatestpod1/profile/card#me'),
+        onDone: {
+          target: AuthenticateStates.AUTHENTICATED,
+        },
         /**
          * Go back to unauthenticated when something goes wrong, and show an alert.
          */

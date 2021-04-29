@@ -142,9 +142,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
         },
         [AppAuthenticateStates.UNAUTHENTICATED]: {
           invoke: {
-            src: () => solid.logout().pipe(
-              map(() => ({ type: '' })),
-            ),
+            src: () => solid.logout(),
           },
         },
       },

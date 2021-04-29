@@ -152,7 +152,9 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
          * The form has been submitted.
          */
         [FormSubmissionStates.SUBMITTED]: {
-          // entry: sendParent(FormEvents.FORM_SUBMITTED),
+          data: {
+            data: (context: FormContext<T>) => 'bla',
+          },
           type: 'final',
         },
       },
