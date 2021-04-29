@@ -1,4 +1,5 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError, timer } from 'rxjs';
+import { delay, switchMap, tap } from 'rxjs/operators';
 import { Logger } from '../logging/logger';
 import { SolidService } from './solid.service';
 
@@ -6,6 +7,14 @@ import { SolidService } from './solid.service';
  * A mock implementation of the Solid service.
  */
 export class SolidMockService extends SolidService {
+
+  // TODO: replace with our own hosted css pods when available
+  private profiles = [
+    {
+      webId: 'https://pod.inrupt.com/digitatestpod/profile/card#me',
+      issuer: 'https://broker.pod.inrupt.com/',
+    },
+  ];
 
   /**
    * Instantiates a solid mock service.
@@ -24,7 +33,16 @@ export class SolidMockService extends SolidService {
    */
   validateWebId(webId: string): Observable<boolean> {
     this.logger.debug(SolidMockService.name, 'Validating WebID', webId);
-    return of(true);
+
+    try {
+      new URL(webId);
+    } catch {
+      return throwError(new Error('nde.root.alerts.error'));
+    }
+
+    return of(this.profiles.find((profile) => profile.webId === webId) && true).pipe(
+      delay(1000),
+    );
   }
 
   /**
@@ -35,7 +53,9 @@ export class SolidMockService extends SolidService {
    */
   getIssuer(webId: string): Observable<string> {
     this.logger.debug(SolidMockService.name, 'Retrieving issuer', webId);
-    return of('issuer');
+    return of(this.profiles.find((profile) => profile.webId === webId)?.issuer).pipe(
+      delay(1000),
+    );
   }
 
   /**
@@ -44,15 +64,20 @@ export class SolidMockService extends SolidService {
    */
   handleIncomingRedirect(): Observable<unknown> {
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
-    return of({ isLoggedIn: true });
+    return of({ isLoggedIn: true, webId: this.profiles[0].webId }).pipe(
+      delay(1000),
+    );
   }
 
   /**
    * Redirects the user to their OIDC provider
    */
-  login(): Observable<unknown> {
-    this.logger.debug(SolidMockService.name, 'Loggin in user');
-    return of(true);
+  login(webId: string): Observable<unknown> {
+    this.logger.debug(SolidMockService.name, 'Logging in user');
+    return this.validateWebId(webId).pipe(
+      delay(1000),
+      switchMap((valid) => valid ? of(true) : throwError(new Error('nde.root.alerts.error'))),
+    );
   }
 
   /**
@@ -60,6 +85,8 @@ export class SolidMockService extends SolidService {
    */
   logout(): Observable<unknown> {
     this.logger.debug(SolidMockService.name, 'Logging out user');
-    return of(true);
+    return of(true).pipe(
+      delay(1000),
+    );
   }
 }

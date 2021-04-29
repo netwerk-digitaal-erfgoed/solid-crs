@@ -30,7 +30,7 @@ export abstract class SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  public abstract login(): Observable<unknown>;
+  public abstract login(webId: string): Observable<unknown>;
 
   /**
    * Deauthenticates the user from their OIDC issuer
