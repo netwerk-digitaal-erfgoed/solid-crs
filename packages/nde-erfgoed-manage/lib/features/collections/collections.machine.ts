@@ -1,7 +1,7 @@
 import { createMachine } from 'xstate';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { Event, State } from '@digita-ai/nde-erfgoed-components';
-import {  addAlert, CollectionsEvents, addCollections, addTestCollection, replaceCollections } from './collections.events';
+import { addAlert, CollectionsEvents, addCollections, addTestCollection, replaceCollections } from './collections.events';
 import { loadCollectionsService } from './collections.services';
 
 /**
@@ -12,7 +12,6 @@ export interface CollectionsContext {
    * The list of collections available to the feature.
    */
   collections?: Collection[];
-
 }
 
 /**

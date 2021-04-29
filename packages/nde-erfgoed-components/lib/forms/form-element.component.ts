@@ -12,7 +12,7 @@ import { FormEvents, FormUpdatedEvent } from './form.events';
 /**
  * A component which shows the details of a single collection.
  */
-export class FormElementComponent extends RxLitElement {
+export class FormElementComponent<T> extends RxLitElement {
 
   /**
    * Decides whether a border should be shown around the content
@@ -30,7 +30,7 @@ export class FormElementComponent extends RxLitElement {
    * The name of the data attribute edited by the form element.
    */
   @property({type: String})
-  public field: string;
+  public field: keyof T;
 
   /**
    * The element's form validation results.
@@ -42,13 +42,13 @@ export class FormElementComponent extends RxLitElement {
    * The element's data.
    */
   @internalProperty()
-  public data: any;
+  public data: T;
 
   /**
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<any>>>;
+  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -77,7 +77,7 @@ export class FormElementComponent extends RxLitElement {
    *
    * @param slotchangeEvent Event fired when slot is changed.
    */
-  handleInputSlotchange(slotchangeEvent: any) {
+  handleInputSlotchange(slotchangeEvent: UIEvent) {
     if (!slotchangeEvent || !slotchangeEvent.target) {
       throw new ArgumentError('Argument slotchangeEvent should be set.', slotchangeEvent);
     }
@@ -94,17 +94,20 @@ export class FormElementComponent extends RxLitElement {
       throw new ArgumentError('Argument this.actor should be set.', this.actor);
     }
 
-    const childNodes: NodeListOf<HTMLElement> = slotchangeEvent.target.assignedNodes({flatten: true});
+    if(!typeof slotchangeEvent.target || !(slotchangeEvent.target instanceof HTMLSlotElement)) {
+      throw new ArgumentError('Argument slotchangeEvent.target should be set with a HTMLSlotElement.', this.actor);
+    }
+
+    const childNodes: Node[] = slotchangeEvent.target.assignedNodes({flatten: true});
 
     childNodes.forEach((node) => {
       if(node && node instanceof HTMLInputElement) {
-        const input = node as HTMLInputElement;
-
         // Set the input field's default value.
-        input.value = this.data[this.field];
+        const fieldData = this.data[this.field];
+        node.value = typeof fieldData === 'string' ? fieldData : '';
 
         // Send event when input field's value changes.
-        input.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: input.value, field: this.field} as FormUpdatedEvent));
+        node.addEventListener('input', () => this.actor.send({type: FormEvents.FORM_UPDATED, value: node.value, field: this.field} as FormUpdatedEvent));
       }
     });
   }

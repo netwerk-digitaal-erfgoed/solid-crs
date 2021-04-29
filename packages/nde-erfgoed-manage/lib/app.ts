@@ -12,6 +12,15 @@ inspect({
 });
 
 /**
+ * Starts the xstate devtools
+ *
+ * https://github.com/davidkpiano/xstate/tree/master/packages/xstate-inspect
+ */
+inspect({
+  iframe: false, // open in new window
+});
+
+/**
  * Register tags for components.
  */
 customElements.define('nde-collection', CollectionComponent);

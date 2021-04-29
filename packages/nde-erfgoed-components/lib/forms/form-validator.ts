@@ -6,4 +6,4 @@ import { FormContext } from './form.machine';
 /**
  * Validates the form and returns validator results.
  */
-export type FormValidator = (context: FormContext<any>, event: Event<FormEvents>) => FormValidatorResult[];
+export type FormValidator<TData> = (context: FormContext<TData>, event: Event<FormEvents>) => FormValidatorResult[];

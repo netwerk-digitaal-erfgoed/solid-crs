@@ -7,7 +7,6 @@ describe('AlertComponent', () => {
 
   beforeEach(() => {
     component = window.document.createElement('nde-alert') as AlertComponent;
-    (component as any).createRenderRoot = () => this;
   });
 
   afterEach(() => {

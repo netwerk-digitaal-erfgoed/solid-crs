@@ -1,7 +1,7 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
 import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine } from 'xstate';
-import { log, send } from 'xstate/lib/actions';
+import { log } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { AuthenticateEvents } from './authenticate.events';

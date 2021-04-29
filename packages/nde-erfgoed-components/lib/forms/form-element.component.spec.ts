@@ -1,19 +1,18 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { Event } from '../state/event';
-import { Schema } from '../state/schema';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvents } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 describe('FormElementComponent', () => {
-  let component: FormElementComponent;
-  let machine: Interpreter<FormContext<Collection>, Schema<FormContext<Collection>, FormEvents>, Event<FormEvents>>;
+  let component: FormElementComponent<Collection>;
+  let machine: Interpreter<FormContext<Collection>>;
 
   beforeEach(() => {
-    machine = interpret<FormContext<Collection>, any, Event<FormEvents>>(
-      formMachine(
+    machine = interpret(
+      formMachine<Collection>(
         (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
@@ -25,8 +24,7 @@ describe('FormElementComponent', () => {
           validation: [],
         }),
     );
-    component = window.document.createElement('nde-form-element') as FormElementComponent;
-    (component as any).createRenderRoot = () => this;
+    component = window.document.createElement('nde-form-element') as FormElementComponent<Collection>;
 
     component.actor = machine;
     component.field = 'name';
