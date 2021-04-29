@@ -1,9 +1,10 @@
-import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
+import { css, html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
 import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { Event } from '../state/event';
 import { FormContext } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
@@ -49,6 +50,56 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   @property({type: Object})
   public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
+
+  /**
+   * The styles associated with the component.
+   */
+  // static get styles() {
+  //   return [
+  //     unsafeCSS(Theme),
+  //     css`
+  //       :root {
+  //         display: block;
+  //       }
+  //       .form-element {
+  //         display: flex;
+  //         flex-direction: column;
+  //         align-items: stretch;
+  //       }
+  //       .form-element .content {
+  //         display: flex;
+  //         flex-direction: row;
+  //         align-items: stretch;
+  //       }
+  //       .form-element .content .field {
+  //         display: flex;
+  //         flex-direction: row;
+  //         border: var(--border-normal) solid var(--colors-foreground-normal);
+  //         padding: var(--gap-small) var(--gap-normal);
+  //         height: 20px;
+  //         align-items: center;
+  //         flex: 1 0;
+  //       }
+  //       .form-element .label {
+  //         font-weight: var(--font-weight-bold);
+  //         margin-bottom: var(--gap-small);
+  //       }
+  //       .form-element .content .field .input {
+  //         flex: 1 0;
+  //       }
+  //       .form-element .content .field .icon {
+  //         max-height: var(--gap-normal);
+  //         max-width: var(--gap-normal);
+  //         margin-left: var(--gap-normal);
+  //       }
+  //       .form-element .results .result {
+  //         background-color: var(--colors-status-warning);
+  //         padding: var(--gap-tiny) var(--gap-normal);
+  //         font-size: var(--font-size-small);
+  //       }
+  //     `,
+  //   ];
+  // }
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -119,7 +170,6 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <div class="form-element">
       <div class="label">
         <slot name="label"></slot>
@@ -152,6 +202,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   static get styles() {
     return [
+      unsafeCSS(Theme),
       css`
         :root {
           display: block;

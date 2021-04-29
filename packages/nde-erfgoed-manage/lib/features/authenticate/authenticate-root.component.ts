@@ -1,10 +1,10 @@
-import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event, Schema, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { Interpreter, SpawnedActorRef, State, StateValueMap} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, NdeLogoInverse } from '@digita-ai/nde-erfgoed-theme';
+import { Login, NdeLogoInverse, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { AuthenticateEvents } from './authenticate.events';
@@ -75,9 +75,8 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   render() {
     return this.formActor ? html`
-      <link href="./dist/bundles/styles.css" rel="stylesheet">
       <div class="title-container">
-        <svg> ${ unsafeSVG(NdeLogoInverse) } </svg>
+        ${ unsafeSVG(NdeLogoInverse) }
         <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
       <div class="form-container">
@@ -98,6 +97,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   static get styles() {
     return [
+      unsafeCSS(Theme),
       css`
         :host {
           width: 400px;

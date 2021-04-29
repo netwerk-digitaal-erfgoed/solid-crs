@@ -1,10 +1,11 @@
-import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { CollectionsEvents } from './collections.events';
 import { CollectionsContext, CollectionsStates } from './collections.machine';
 
@@ -68,7 +69,6 @@ export class CollectionsRootComponent extends RxLitElement {
   render() {
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <p>${this.translator.translate('nde.collections.root.title')}</p>
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
@@ -82,9 +82,7 @@ export class CollectionsRootComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css`
-        .collection { }
-      `,
+      unsafeCSS(Theme),
     ];
   }
 
