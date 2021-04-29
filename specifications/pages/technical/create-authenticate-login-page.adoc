@@ -116,7 +116,7 @@ The following translations are to be written in the 'nl-NL.json' file. No other 
 | `nde.features.authenticate.pages.login.title`
 | Collectiebeheersysteem
 
-| `nde.features.authenticate.pages.login.search-placeholder`
+| `nde.features.authenticate.pages.login.webid-placeholder`
 | E.g. https://profile.janjanssens.nl/
 
 |======================================

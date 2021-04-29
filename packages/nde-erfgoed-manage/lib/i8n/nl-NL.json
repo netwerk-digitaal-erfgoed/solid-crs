@@ -45,9 +45,14 @@
         "value": "Collectiebeheersysteem"
     },
     {
-        "key": "nde.features.authenticate.pages.login.search-placeholder",
+        "key": "nde.features.authenticate.pages.login.webid-placeholder",
         "locale": "nl-NL",
         "value": "bv. https://profile.janjanssens.nl/"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.webid-label",
+        "locale": "nl-NL",
+        "value": "WebID"
     },
     {
         "key": "nde.features.authenticate.pages.login.create-webid",
