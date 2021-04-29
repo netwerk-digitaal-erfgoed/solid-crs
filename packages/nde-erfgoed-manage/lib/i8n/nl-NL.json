@@ -1,0 +1,52 @@
+[
+    {
+        "key": "nde.app.root.title",
+        "locale": "nl-NL",
+        "value": "App"
+    },
+    {
+        "key": "nde.root.alerts.error",
+        "locale": "nl-NL",
+        "value": "Er ging iets fout"
+    },
+    {
+        "key": "nde.collections.alerts.created-collection",
+        "locale": "nl-NL",
+        "value": "Collectie aangemaakt"
+    },
+    {
+        "key": "nde.collections.root.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.invalid-url",
+        "locale": "nl-NL",
+        "value": "Gelieve een geldig WebID in te voeren. Een WebID start met https://."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.no-profile",
+        "locale": "nl-NL",
+        "value": "Er werd geen actieve profielpagina gevonden voor deze WebID."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.no-oidc-registration",
+        "locale": "nl-NL",
+        "value": "De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.invalid-oidc-registration",
+        "locale": "nl-NL",
+        "value": "De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ."
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.title",
+        "locale": "nl-NL",
+        "value": "Collectiebeheersysteem"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.search-placeholder",
+        "locale": "nl-NL",
+        "value": "E.g. https://profile.janjanssens.nl/"
+    }
+]
