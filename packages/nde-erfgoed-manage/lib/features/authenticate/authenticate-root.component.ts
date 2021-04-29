@@ -115,8 +115,8 @@ export class AuthenticateRootComponent extends RxLitElement {
         ${ unsafeSVG(NdeLogoInverse) }
         <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
-      ${ alerts }
       <div class="form-container">
+        ${ alerts }
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <div slot="icon"></div>
@@ -137,23 +137,22 @@ export class AuthenticateRootComponent extends RxLitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          width: 400px;
           height: 100%;
-          margin: auto;
           display: flex;
           flex-direction: column;
-          gap: 80px;
+          justify-content: center;
+          align-items: center;
+          gap: var(--gap-huge);
         }
 
         .title-container {
-          margin-top: 30vh; 
-          max-height: 50px;
           height: 50px;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
           color: var(--colors-foreground-inverse);
+          width: 400px;
         }
         
         .title-container svg {
@@ -167,6 +166,15 @@ export class AuthenticateRootComponent extends RxLitElement {
         .title-container h1 {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
+        }
+
+        .form-container {
+          width: 400px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: stretch;
+          gap: var(--gap-large);
         }
       `,
     ];

@@ -109,6 +109,7 @@ export class AppRootComponent extends RxLitElement {
       css`
         :host {
           height: 100%;
+          flex-direction: column;
           display: flex;
           background-color: var(--colors-primary-dark);
         }
