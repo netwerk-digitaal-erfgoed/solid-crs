@@ -9,8 +9,8 @@
 *Solid voor kleine erfgoedinstellingen:*
 Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website. Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers.
 
-Om dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: A en B. 
-Fase A wijst op de functionele vereisten met de hoogste prioriteit. De functies die in fase B worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een Proof of Concept te komen die de kleine erfgoedinstellingen kunnen gebruiken.
+Om dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: een Proof of Concept (PoC) en een Minimum Viable Product (MVP). 
+De PoC bevat de functionele vereisten met de hoogste prioriteit. De functies die in de MVP worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een Proof of Concept te komen die de kleine erfgoedinstellingen kunnen gebruiken.
 Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen(netwerk) en presentatie. Beheer wordt hierbij nogmaals opgedeeld in beheer van collecties en beheer van objecten.
 
 
@@ -25,12 +25,11 @@ Het systeem bestaat uit vier lagen: onboarding, beheer, het toevoegen van termen
 `Digitaal object`:: Digitale representatie van een `erfgoedobject`.
 `Objectbeschrijving`:: Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
 `Term`:: Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
-`Digita Connect`:: Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
 
 == Assumpties
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
  * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
- * Een term kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
+ * Een term wordt gekozen uit een reeds bestaande lijst met termen, maar kan niet nieuw worden aangemaakt.
 
 == Functionele vereisten
 :sectnums!:
