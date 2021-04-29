@@ -1,9 +1,9 @@
-import { css, html, property, PropertyValues, internalProperty, TemplateResult } from 'lit-element';
+import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';

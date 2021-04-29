@@ -1,4 +1,4 @@
-import { Alert, Schema, Event } from '@digita-ai/nde-erfgoed-components';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
 import { AppContext, appMachine } from './app.machine';
