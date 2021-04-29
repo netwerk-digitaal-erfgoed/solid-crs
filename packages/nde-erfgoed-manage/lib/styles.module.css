@@ -1,15 +1,9 @@
 @import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/style.css';
 
 html {
-  width: 100%;
   height: 100%;
-  background-color: var(--colors-background-normal);
-  padding: 0;
-  margin: 0;
 }
 body {
-  width: 100%;
   height: 100%;
-  background-color: #fff;
-  margin: 0 auto;
+  background-color: var(--colors-background-normal);
 }

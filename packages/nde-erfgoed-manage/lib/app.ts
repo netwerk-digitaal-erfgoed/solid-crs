@@ -5,20 +5,14 @@ import { AuthenticateRootComponent } from './features/authenticate/authenticate-
 import { CollectionsRootComponent } from './features/collections/collections-root.component';
 import './index';
 
-inspect({
-  // options
-  // url: 'https://statecharts.io/inspect', // (default)
-  iframe: false, // open in new window
-});
-
 /**
  * Starts the xstate devtools
  *
  * https://github.com/davidkpiano/xstate/tree/master/packages/xstate-inspect
  */
-inspect({
-  iframe: false, // open in new window
-});
+// inspect({
+//   iframe: false, // open in new window
+// });
 
 /**
  * Register tags for components.

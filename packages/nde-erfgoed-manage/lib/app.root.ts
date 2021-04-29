@@ -125,13 +125,10 @@ export class AppRootComponent extends RxLitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          width: 100%;
           height: 100%;
           display: flex;
-          background-color: var(--colors-foreground-normal);
+          background-color: var(--colors-primary-dark);
         }
-
-        .collection { }
       `,
     ];
   }

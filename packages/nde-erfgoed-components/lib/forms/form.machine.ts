@@ -86,6 +86,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * Transient state while checking if form was changed.
@@ -111,6 +112,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
       },
     },
@@ -151,6 +153,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
          */
         [FormSubmissionStates.SUBMITTED]: {
           entry: sendParent(FormEvents.FORM_SUBMITTED),
+          type: 'final',
         },
       },
     },
@@ -174,6 +177,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * Transient state while checking validation.
@@ -199,6 +203,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * The form is invalid, based on the provided validator function.
@@ -210,6 +215,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
       },
     },
