@@ -1,9 +1,9 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event } from '@digita-ai/nde-erfgoed-components';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { SpawnedActorRef, State} from 'xstate';
+import { Interpreter, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { CollectionsEvents } from './collections.events';
@@ -30,7 +30,13 @@ export class CollectionsRootComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<CollectionsEvents>, State<CollectionsContext>>;
+  public actor: Interpreter<CollectionsContext>;
+
+  /**
+   * The component's alerts.
+   */
+  @property({type: Array})
+  public alerts: Alert[];
 
   /**
    * The state of this component.
@@ -61,15 +67,21 @@ export class CollectionsRootComponent extends RxLitElement {
 
   }
 
+  dismiss = (event: CustomEvent<Alert>) => this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
   /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
   render() {
+    // Create an alert components for each alert.
+    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
+
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`
     <p>${this.translator.translate('nde.collections.root.title')}</p>
+    ${ alerts }
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
