@@ -1,9 +1,7 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
 import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { log, pure, send } from 'xstate/lib/actions';
-import { map, switchMap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { pure, send } from 'xstate/lib/actions';
 import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvents } from './authenticate.events';
 
@@ -70,7 +68,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
             data: { webId: ''},
             original: { webId: ''},
           }),
-          onDone: { actions: send((context, event, meta) => ({type: AuthenticateEvents.LOGIN_STARTED, meta, event, context})) },
+          onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
         },
       ],
       on: {
@@ -87,8 +85,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         /**
          * Redirects the user to the identity provider.
          */
-        // src: (c, e) => solid.login('test'),
-        src: (c, e) => solid.login('https://pod.inrupt.com/digitatestpod1/profile/card#me'),
+        src: (_, event) => solid.login(event.webId),
         onDone: {
           target: AuthenticateStates.AUTHENTICATED,
         },
@@ -96,11 +93,10 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Go back to unauthenticated when something goes wrong, and show an alert.
          */
         onError: {
-          actions: pure((_ctx, event) => addAlert({ message: event.data.toString().split('Error: ')[1], type: 'warning' })),
+          actions: pure((_ctx, event) => addAlert({ message: 'nde.root.alerts.error', type: 'warning' })),
           target: AuthenticateStates.UNAUTHENTICATED,
         },
       },
-      type: 'final',
     },
 
     /**
