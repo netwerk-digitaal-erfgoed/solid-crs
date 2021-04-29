@@ -16,8 +16,8 @@
     "dist"
   ],
   "scripts": {
-    "start:watch": "rm -rf ./dist && vite --config vite.serve.config.ts",
-    "build": "rm -rf ./dist && vite build --config vite.build.config.ts && tsc",
+    "start:watch": "rimraf ./dist && vite --config vite.serve.config.ts",
+    "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
     "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -45,6 +45,7 @@
     "eslint": "^7.16.0",
     "jest": "26.6.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "rimraf": "^3.0.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "ts-jest": "26.5.4",
     "ts-node": "9.1.1",
