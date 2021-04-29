@@ -50,7 +50,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <p>${this.translator.translate('nde.authenticate.root.title')}</p>
     <button @click="${() => this.actor.send(AuthenticateEvents.CLICKED_LOGIN)}">Login</button>
   `;
