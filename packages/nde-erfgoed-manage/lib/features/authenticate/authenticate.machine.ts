@@ -3,7 +3,7 @@ import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvents } from './authenticate.events';
 
@@ -69,7 +69,10 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          */
         {
           id: FormActors.FORM_MACHINE,
-          src: formMachine(validator).withContext({
+          src: formMachine<{webId: string}>((context): Observable<FormValidatorResult[]> =>
+            solid.validateWebId(context.data?.webId).pipe(
+              map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+            )).withContext({
             data: { webId: ''},
             original: { webId: ''},
           }),
