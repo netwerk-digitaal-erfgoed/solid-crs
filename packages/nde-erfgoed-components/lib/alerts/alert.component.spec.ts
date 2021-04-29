@@ -46,7 +46,7 @@ describe('AlertComponent', () => {
     expect(message).toBe('bar');
   });
 
-  it('should not print message when translator is set but translation is not found', async () => {
+  it('should print key when translator is set but translation is not found', async () => {
     component.alert = {
       type: 'success',
       message: 'foo',
@@ -58,7 +58,7 @@ describe('AlertComponent', () => {
 
     const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
-    expect(message.trim()).toBe('');
+    expect(message.trim()).toBe(component.alert.message);
   });
 
   it.each([ 'success', 'warning', 'danger' ])('should be assigned the appropriate class when %s', async (type: 'success' | 'warning' | 'danger') => {
