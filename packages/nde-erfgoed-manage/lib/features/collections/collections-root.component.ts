@@ -6,6 +6,7 @@ import { from } from 'rxjs';
 import { Interpreter, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { AppEvents } from '../../app.events';
 import { CollectionsEvents } from './collections.events';
 import { CollectionsContext, CollectionsStates } from './collections.machine';
 
