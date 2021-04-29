@@ -11,8 +11,15 @@ export class SolidMockService extends SolidService {
   // TODO: replace with our own hosted css pods when available
   private profiles = [
     {
-      webId: 'https://pod.inrupt.com/digitatestpod/profile/card#me',
+      webId: 'https://pod.inrupt.com/digitatestpod1/profile/card#me',
       issuer: 'https://broker.pod.inrupt.com/',
+    },
+    {
+      webId: 'https://pod.inrupt.com/digitatestpod2/profile/card#me',
+    },
+    {
+      webId: 'https://pod.inrupt.com/digitatestpod3/profile/card#me',
+      issuer: 'https://google.com/',
     },
   ];
 
@@ -53,7 +60,14 @@ export class SolidMockService extends SolidService {
    */
   getIssuer(webId: string): Observable<string> {
     this.logger.debug(SolidMockService.name, 'Retrieving issuer', webId);
-    return of(this.profiles.find((profile) => profile.webId === webId)?.issuer).pipe(
+
+    const issuer = this.profiles.find((profile) => profile.webId === webId)?.issuer;
+
+    if (!issuer) {
+      return throwError(new Error('nde.features.authenticate.error.invalid-webid.no-oidc-registration'));
+    }
+
+    return of(issuer).pipe(
       delay(1000),
     );
   }
