@@ -16,7 +16,7 @@
     "dist"
   ],
   "scripts": {
-    "start:watch": "rm -rf ./dist && npm run build && vite --config vite.serve.config.ts",
+    "start:watch": "rm -rf ./dist && vite --config vite.serve.config.ts",
     "build": "rm -rf ./dist && vite build --config vite.build.config.ts && tsc",
     "build:dev": "npm run build",
     "lint": "eslint .",
@@ -29,8 +29,6 @@
     "@digita-ai/nde-erfgoed-core": "0.0.1",
     "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
-    "@inrupt/solid-client": "^1.6.1",
-    "@inrupt/solid-client-authn-browser": "^1.8.0",
     "crypto-browserify": "^3.12.0",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",

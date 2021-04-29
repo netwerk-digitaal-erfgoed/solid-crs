@@ -1,6 +1,5 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default defineConfig({
   root: 'lib',
@@ -11,14 +10,5 @@ export default defineConfig({
           name: '@digita-ai/nde-erfgoed-components'
       },
       outDir: '../dist',
-      rollupOptions: {
-        plugins: [
-          nodePolyfills( 
-            {
-              crypto: true,
-            }
-           )
-        ]
-      },
   }
 });
