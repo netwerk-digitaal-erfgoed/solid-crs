@@ -47,7 +47,7 @@
     {
         "key": "nde.features.authenticate.pages.login.search-placeholder",
         "locale": "nl-NL",
-        "value": "E.g. https://profile.janjanssens.nl/"
+        "value": "bv. https://profile.janjanssens.nl/"
     },
     {
         "key": "nde.features.authenticate.pages.login.create-webid",
