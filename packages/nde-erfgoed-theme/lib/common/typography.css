@@ -17,3 +17,8 @@ body {
 svg {
   fill: var(--colors-foreground-normal);
 }
+
+a {
+  color: inherit;
+  text-underline-offset: 5px;
+}

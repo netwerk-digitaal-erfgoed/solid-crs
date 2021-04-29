@@ -48,5 +48,10 @@
         "key": "nde.features.authenticate.pages.login.search-placeholder",
         "locale": "nl-NL",
         "value": "E.g. https://profile.janjanssens.nl/"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.create-webid",
+        "locale": "nl-NL",
+        "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
     }
 ]

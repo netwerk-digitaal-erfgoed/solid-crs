@@ -1,4 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { Interpreter, SpawnedActorRef, State} from 'xstate';
@@ -92,7 +93,9 @@ export class AuthenticateRootComponent extends RxLitElement {
           </nde-form-element>
         </form>
       </div>
-      <div></div>
+      <div class="webid-container">
+        <p> ${unsafeHTML(this.translator.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+      </div>
     ` : html``;
   }
 
@@ -134,6 +137,16 @@ export class AuthenticateRootComponent extends RxLitElement {
         .title-container h1 {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
+        }
+
+        .webid-container {
+          flex: 1 0;
+          text-align: center;
+        }
+
+        .webid-container p {
+          color: var(--colors-foreground-light);
+          font-size: var(--font-size-small);
         }
       `,
     ];
