@@ -90,7 +90,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         /**
          * Redirects the user to the identity provider.
          */
-        src: () => solid.login().pipe(
+        src: () => solid.login('test').pipe(
           map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
         ),
         /**
