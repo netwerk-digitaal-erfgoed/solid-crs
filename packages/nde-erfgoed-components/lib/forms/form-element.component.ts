@@ -119,6 +119,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   render() {
     return html`
+    <link href="./styles.css" rel="stylesheet">
     <div class="form-element">
       <div class="label">
         <slot name="label"></slot>

@@ -111,7 +111,7 @@ export class DemoFormComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <form>
       <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
         <label slot="label" for="example">URI</label>

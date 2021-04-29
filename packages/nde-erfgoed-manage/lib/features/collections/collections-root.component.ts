@@ -68,7 +68,7 @@ export class CollectionsRootComponent extends RxLitElement {
   render() {
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <p>${this.translator.translate('nde.collections.root.title')}</p>
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
