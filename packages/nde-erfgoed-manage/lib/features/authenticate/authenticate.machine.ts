@@ -3,7 +3,7 @@ import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
 import { addAlert } from '../collections/collections.events';
-import { AuthenticateEvents } from './authenticate.events';
+import { AuthenticateEvent, AuthenticateEvents, LoginStartedEvent } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
@@ -41,7 +41,7 @@ const validator = (context: FormContext<{ webId: string }>, event: Event<FormEve
 /**
  * The authenticate machine.
  */
-export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
+export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, AuthenticateEvent, State<AuthenticateStates, AuthenticateContext>>({
   id: AuthenticateActors.AUTHENTICATE_MACHINE,
   initial: AuthenticateStates.UNAUTHENTICATED,
 
@@ -85,7 +85,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         /**
          * Redirects the user to the identity provider.
          */
-        src: (_, event) => solid.login(event.webId),
+        src: (_, event: LoginStartedEvent) => solid.login(event.webId),
         onDone: {
           target: AuthenticateStates.AUTHENTICATED,
         },
