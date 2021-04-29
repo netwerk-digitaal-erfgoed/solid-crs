@@ -138,13 +138,9 @@ export class AuthenticateRootComponent extends RxLitElement {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
         }
-
-        .webid-container {
-          flex: 1 0;
-          text-align: center;
-        }
-
+        
         .webid-container p {
+          text-align: center;
           color: var(--colors-foreground-light);
           font-size: var(--font-size-small);
         }
