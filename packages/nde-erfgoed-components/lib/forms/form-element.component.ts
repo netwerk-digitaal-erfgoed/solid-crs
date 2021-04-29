@@ -16,6 +16,12 @@ import { FormEvents, FormUpdatedEvent } from './form.events';
 export class FormElementComponent<T> extends RxLitElement {
 
   /**
+   * Decides whether a border should be shown around the content
+   */
+  @property()
+  public inverse = false;
+
+  /**
    * The component's translator.
    */
   @property({type: Translator})
@@ -44,56 +50,6 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   @property({type: Object})
   public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
-
-  /**
-   * The styles associated with the component.
-   */
-  static get styles() {
-    return [
-      unsafeCSS(Theme),
-      css`
-        :root {
-          display: block;
-        }
-        .form-element {
-          display: flex;
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .form-element .content {
-          display: flex;
-          flex-direction: row;
-          align-items: stretch;
-        }
-        .form-element .content .field {
-          display: flex;
-          flex-direction: row;
-          border: var(--border-normal) solid var(--colors-foreground-normal);
-          padding: var(--gap-small) var(--gap-normal);
-          height: 20px;
-          align-items: center;
-          flex: 1 0;
-        }
-        .form-element .label {
-          font-weight: var(--font-weight-bold);
-          margin-bottom: var(--gap-small);
-        }
-        .form-element .content .field .input {
-          flex: 1 0;
-        }
-        .form-element .content .field .icon {
-          max-height: var(--gap-normal);
-          max-width: var(--gap-normal);
-          margin-left: var(--gap-normal);
-        }
-        .form-element .results .result {
-          background-color: var(--colors-status-warning);
-          padding: var(--gap-tiny) var(--gap-normal);
-          font-size: var(--font-size-small);
-        }
-      `,
-    ];
-  }
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -169,7 +125,7 @@ export class FormElementComponent<T> extends RxLitElement {
         <slot name="label"></slot>
       </div>
       <div class="content">
-        <div class="field">
+        <div class="field ${this.inverse ? 'no-border' : ''}">
           <div class="input">
             <slot name="input" @slotchange=${this.handleInputSlotchange}></slot>
           </div>
@@ -178,7 +134,7 @@ export class FormElementComponent<T> extends RxLitElement {
           </div>
         </div>
         <div class="action">
-          <slot name="action"></slot>
+          <slot name="action" class="${this.inverse ? 'no-border' : ''}"></slot>
         </div>
       </div>
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
@@ -189,6 +145,71 @@ export class FormElementComponent<T> extends RxLitElement {
       </div>
     </div>
   `;
+  }
+
+  /**
+   * The styles associated with the component.
+   */
+  static get styles() {
+    return [
+      unsafeCSS(Theme),
+      css`
+        :root {
+          display: block;
+        }
+        .no-border, .no-border ::slotted(*) {
+          border: none !important;
+        }
+        .form-element {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .form-element .label {
+          font-weight: var(--font-weight-bold);
+          margin-bottom: var(--gap-small);
+        }
+        .form-element .content {
+          display: flex;
+          flex-direction: row;
+          align-items: stretch;
+          height: 44px;
+          background-color: var(--colors-background-light)
+        }
+        .form-element .content .field {
+          display: flex;
+          flex-direction: row;
+          align-items: stretch;
+          justify-content: space-between;
+          flex: 1 0;
+          border: var(--border-normal) solid var(--colors-foreground-normal);
+        }
+        .form-element .content .field .input {
+          padding: 0 var(--gap-normal);
+          width: 100%;
+          height: 100%;
+        }
+        .form-element .content .field .input ::slotted(input) {
+          width: 100%;
+          height: 100%;
+        }
+        .form-element .content .field .icon {
+          padding: 0 var(--gap-normal);
+          height: 100%;
+          display: flex;
+          align-items: center;
+        }
+        .form-element .content .field .icon ::slotted(*)  {
+          max-height: var(--gap-normal);
+          max-width: var(--gap-normal);
+        }
+        .form-element .results .result {
+          background-color: var(--colors-status-warning);
+          padding: var(--gap-tiny) var(--gap-normal);
+          font-size: var(--font-size-small);
+        }
+      `,
+    ];
   }
 }
 

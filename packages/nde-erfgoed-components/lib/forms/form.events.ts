@@ -8,7 +8,7 @@ import { FormContext } from './form.machine';
  */
 export enum FormEvents {
   FORM_UPDATED = '[FormEvent: Updated element]',
-  FORM_SUBMITTED = '[FormEvent: Subitted]',
+  FORM_SUBMITTED = '[FormEvent: Submitted]',
 }
 
 /**

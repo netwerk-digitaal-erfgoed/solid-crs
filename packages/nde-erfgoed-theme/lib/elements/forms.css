@@ -18,6 +18,7 @@ form nde-form-element input {
   padding: 0;
   border: none;
   font-size: var(--font-size-small);
+  font-family: var(--font-family);
   outline: none;
   display: block;
   width: 100%;

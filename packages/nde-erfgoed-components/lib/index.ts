@@ -10,6 +10,7 @@ export * from './forms/form-element.component';
 export * from './forms/form-validator-result';
 export * from './forms/form-validator';
 export * from './forms/form.machine';
+export * from './forms/form.events';
 export * from './state/event';
 export * from './state/schema';
 export * from './state/state';

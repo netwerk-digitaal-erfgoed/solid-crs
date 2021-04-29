@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { createMachine, sendParent } from 'xstate';
 import { State } from '../state/state';
 import { Event } from '../state/event';
 import { FormValidatorResult } from './form-validator-result';
@@ -12,6 +12,13 @@ export interface FormContext<TData> {
   data?: TData;
   original?: TData;
   validation?: FormValidatorResult[];
+}
+
+/**
+ * Actor references for this machine config.
+ */
+export enum FormActors {
+  FORM_MACHINE = 'FormMachine',
 }
 
 /**
@@ -60,7 +67,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  * The form component machine.
  */
 export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, Event<FormEvents>, State<FormStates, FormContext<T>>>({
-  id: 'form',
+  id: FormActors.FORM_MACHINE,
   type: 'parallel',
   states: {
     /**
@@ -79,6 +86,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * Transient state while checking if form was changed.
@@ -104,6 +112,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
       },
     },
@@ -143,12 +152,8 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
          * The form has been submitted.
          */
         [FormSubmissionStates.SUBMITTED]: {
-          on: {
-            [FormEvents.FORM_SUBMITTED]: {
-              target: FormSubmissionStates.SUBMITTING,
-            },
-          },
-          exit: [ validate(validator) ],
+          // entry: sendParent(FormEvents.FORM_SUBMITTED),
+          type: 'final',
         },
       },
     },
@@ -172,6 +177,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * Transient state while checking validation.
@@ -197,6 +203,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
         /**
          * The form is invalid, based on the provided validator function.
@@ -208,6 +215,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
             },
           },
           exit: [ update, validate(validator) ],
+          type: 'final',
         },
       },
     },
