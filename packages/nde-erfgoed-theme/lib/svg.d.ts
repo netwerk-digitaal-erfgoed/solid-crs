@@ -1,9 +1,9 @@
 declare module '*.svg' {
-  const content: any;
+  const content: unknown;
   export default content;
 }
 
 declare module '*.css' {
-  const content: any;
+  const content: unknown;
   export default content;
 }

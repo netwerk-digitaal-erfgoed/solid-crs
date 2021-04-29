@@ -1,16 +1,14 @@
-import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
-import { interpret, State } from 'xstate';
+import { css, html, property, PropertyValues, internalProperty, TemplateResult } from 'lit-element';
+import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
-import { AppActors, appMachine } from './app.machine';
-import { CollectionsRootComponent } from './features/collections/root/collections-root.component';
-import { AppStates } from './app.states';
-import { AppContext } from './app.context';
+import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlBe from './i8n/nl-BE.json';
 import { AppEvents } from './app.events';
+import { CollectionsRootComponent } from './features/collections/collections-root.component';
 
 /**
  * The root page of the application.
@@ -50,9 +48,11 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor = interpret(appMachine.withContext({
+  actor: Interpreter<AppContext> = interpret(appMachine.withContext({
     alerts: [],
-  }));
+    loggedIn: false,
+    session: null,
+  }), { devTools: true});
 
   /**
    * The state of this component.
@@ -87,7 +87,7 @@ export class AppRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', state)),
+      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
     ));
 
     /**
@@ -107,14 +107,13 @@ export class AppRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
 
-    // Create a collection root component if the app machine is in the correct state.
-    const collections = this.state?.matches(AppStates.COLLECTIONS) ?? false ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : html``;
-
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
+    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
     ${ alerts }
-    ${ collections }
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ?? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) ?? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` }  
     `;
   }
 

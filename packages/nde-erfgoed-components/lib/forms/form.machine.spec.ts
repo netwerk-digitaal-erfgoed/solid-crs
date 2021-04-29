@@ -1,16 +1,15 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter, StateValueMap } from 'xstate';
 import { Event } from '../state/event';
-import { Schema } from '../state/schema';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvents } from './form.events';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormMachine', () => {
-  let machine: Interpreter<FormContext<Collection>, Schema<FormContext<Collection>, FormEvents>, Event<FormEvents>>;
+  let machine: Interpreter<FormContext<Collection>>;
 
   beforeEach(() => {
-    machine = interpret<FormContext<Collection>, any, Event<FormEvents>>(
+    machine = interpret<FormContext<Collection>>(
       formMachine(
         (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],

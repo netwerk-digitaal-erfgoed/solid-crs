@@ -32,13 +32,13 @@ export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents
 /**
  * Updates the data in context.
  */
-export const update = assign<FormContext<any>, FormUpdatedEvent>({
-  data: (context: FormContext<any>, event: FormUpdatedEvent) => ({...context.data ? context.data : {}, [event.field]: event.value}),
+export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
+  data: (context: FormContext<unknown>, event: FormUpdatedEvent) => (typeof context.data === 'object' ? {...context.data ? context.data : {}, [event.field]: event.value} : event.value),
 });
 
 /**
  * Validates the data in context.
  */
-export const validate = (validator: FormValidator) => assign<FormContext<any>, Event<FormEvents>>({
-  validation: (context: FormContext<any>, event: Event<FormEvents>) => [ ...validator(context, event) ],
+export const validate = (validator: FormValidator<unknown>) => assign<FormContext<unknown>, Event<FormEvents>>({
+  validation: (context: FormContext<unknown>, event: Event<FormEvents>) => [ ...validator(context, event) ],
 });
