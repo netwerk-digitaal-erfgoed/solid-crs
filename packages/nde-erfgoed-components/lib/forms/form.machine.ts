@@ -1,9 +1,10 @@
-import { createMachine, sendParent } from 'xstate';
+import { createMachine, send, sendParent } from 'xstate';
+import { map, tap } from 'rxjs/operators';
 import { State } from '../state/state';
 import { Event } from '../state/event';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
-import { FormEvents, update, validate } from './form.events';
+import { addValidationResults, FormEvents, update } from './form.events';
 
 /**
  * The context of a form.
@@ -53,6 +54,7 @@ export enum FormCleanlinessStates {
  */
 export enum FormValidationStates {
   NOT_VALIDATED = '[FormState: Not validated]',
+  VALIDATING = '[FormState: Validating]',
   CHECKING_VALIDATION = '[FormState: Checking validation]',
   VALID      = '[FormState: Valid]',
   INVALID    = '[FormState: Invalid]',
@@ -85,13 +87,13 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
               target: FormCleanlinessStates.CHECKING_CLEANLINESS,
             },
           },
-          exit: [ update, validate(validator) ],
           type: 'final',
         },
         /**
          * Transient state while checking if form was changed.
          */
         [FormCleanlinessStates.CHECKING_CLEANLINESS]: {
+          entry: update,
           always: [
             {
               target: FormCleanlinessStates.PRISTINE,
@@ -111,7 +113,6 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
               target: FormCleanlinessStates.CHECKING_CLEANLINESS,
             },
           },
-          exit: [ update, validate(validator) ],
           type: 'final',
         },
       },
@@ -129,30 +130,14 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormSubmissionStates.NOT_SUBMITTED]: {
           on: {
             [FormEvents.FORM_SUBMITTED]: {
-              target: FormSubmissionStates.SUBMITTING,
+              target: FormSubmissionStates.SUBMITTED,
             },
           },
-          exit: [ validate(validator) ],
-        },
-        /**
-         * Transient state while submitting form.
-         */
-        [FormSubmissionStates.SUBMITTING]: {
-          always: [
-            {
-              target: FormSubmissionStates.SUBMITTED,
-              cond: (context: FormContext<T>) => context.validation === null || context.validation.length === 0,
-            },
-            {
-              target: FormSubmissionStates.NOT_SUBMITTED,
-            },
-          ],
         },
         /**
          * The form has been submitted.
          */
         [FormSubmissionStates.SUBMITTED]: {
-          // entry: sendParent(FormEvents.FORM_SUBMITTED),
           type: 'final',
         },
       },
@@ -170,14 +155,32 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormValidationStates.NOT_VALIDATED]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
-              target: FormValidationStates.CHECKING_VALIDATION,
+              target: FormValidationStates.VALIDATING,
             },
             [FormEvents.FORM_SUBMITTED]: {
-              target: FormValidationStates.CHECKING_VALIDATION,
+              target: FormValidationStates.VALIDATING,
             },
           },
-          exit: [ update, validate(validator) ],
           type: 'final',
+        },
+        /**
+         * Transient state while validating.
+         */
+        [FormValidationStates.VALIDATING]: {
+          entry: update,
+          invoke: {
+            src: (c, e) => validator(c, e).pipe(
+              map((results) => ({ type: FormEvents.FORM_VALIDATED, results })),
+            ),
+          },
+          on: {
+            [FormEvents.FORM_VALIDATED]: [
+              {
+                actions: addValidationResults,
+                target: FormValidationStates.CHECKING_VALIDATION,
+              },
+            ],
+          },
         },
         /**
          * Transient state while checking validation.
@@ -199,10 +202,9 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormValidationStates.VALID]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
-              target: FormValidationStates.CHECKING_VALIDATION,
+              target: FormValidationStates.VALIDATING,
             },
           },
-          exit: [ update, validate(validator) ],
           type: 'final',
         },
         /**
@@ -211,10 +213,9 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormValidationStates.INVALID]: {
           on: {
             [FormEvents.FORM_UPDATED]: {
-              target: FormValidationStates.CHECKING_VALIDATION,
+              target: FormValidationStates.VALIDATING,
             },
           },
-          exit: [ update, validate(validator) ],
           type: 'final',
         },
       },

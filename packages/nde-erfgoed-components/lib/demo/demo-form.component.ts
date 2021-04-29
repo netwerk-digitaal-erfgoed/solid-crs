@@ -2,7 +2,7 @@ import { html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit
 import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Login, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -19,10 +19,10 @@ import { FormValidator } from '../forms/form-validator';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+export const validator: FormValidator<Collection> = (context: FormContext<Collection>, event: Event<FormEvents>) => of([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-];
+]);
 
 /**
  * A component which shows the details of a single collection.

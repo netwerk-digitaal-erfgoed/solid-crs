@@ -1,9 +1,9 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvents } from './authenticate.events';
 
@@ -37,8 +37,8 @@ export enum AuthenticateStates {
  * @param event The even which triggered the validation.
  * @returns Validation results, or an empty array when valid.
  */
-const validator = (context: FormContext<{ webId: string }>, event: Event<FormEvents>): FormValidatorResult[] =>
-  context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ];
+const validator: FormValidator<{ webId: string }> = (context) =>
+  of(context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]);
 
 /**
  * The authenticate machine.
