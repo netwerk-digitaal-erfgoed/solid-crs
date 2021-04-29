@@ -110,7 +110,7 @@ export class AppRootComponent extends RxLitElement {
 
     return html`
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
-    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
+    <button @click="${() => this.actor.send(AppEvents.LOGGED_OUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
     ${ alerts }
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) && html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` }  
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) && html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` }  
