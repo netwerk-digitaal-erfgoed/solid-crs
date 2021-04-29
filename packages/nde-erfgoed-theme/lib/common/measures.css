@@ -1,0 +1,14 @@
+:root {
+  /**
+    Border sizes
+  */
+  --border-normal: 2px;
+
+  /**
+        Gap sizes
+    */
+  --gap-tiny: 5px;
+  --gap-small: 10px;
+  --gap-normal: 20px;
+  --gap-large: 40px;
+}

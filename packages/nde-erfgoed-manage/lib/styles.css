@@ -1,0 +1,12 @@
+@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/index.css';
+
+html {
+  background-color: var(--colors-background-normal);
+  padding: 0;
+  margin: 0;
+}
+body {
+  max-width: 1200px;
+  background-color: #fff;
+  margin: 0 auto;
+}
