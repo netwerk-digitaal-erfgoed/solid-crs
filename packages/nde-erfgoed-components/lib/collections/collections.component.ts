@@ -61,7 +61,7 @@ export class CollectionsComponent extends LitElement implements Component {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <div class="collections">
     ${this.collections?.map((collection) => html`<nde-collection .collection='${collection}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection>`)}
     </div>

@@ -108,7 +108,7 @@ export class AppRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
 
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
+    <link href="./styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
     <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
     ${ alerts }

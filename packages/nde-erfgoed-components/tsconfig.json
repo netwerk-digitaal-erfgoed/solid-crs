@@ -25,9 +25,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
+    "types": ["vite/client"],
+    "emitDeclarationOnly": true
   },
   "include": ["lib"],
   "exclude": [
+    "**/*.spec.ts",
     "node_modules",
     "dist"
   ]

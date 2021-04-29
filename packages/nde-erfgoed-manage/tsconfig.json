@@ -25,10 +25,13 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["vite/client"],
+    "emitDeclarationOnly": true,
   },
   "include": ["lib"],
   "exclude": [
+    "**/*.spec.ts",
     "node_modules",
     "dist"
   ]
