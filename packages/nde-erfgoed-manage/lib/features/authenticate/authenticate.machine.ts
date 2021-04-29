@@ -1,9 +1,10 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
 import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { send } from 'xstate/lib/actions';
+import { pure, send } from 'xstate/lib/actions';
 import { map, switchMap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvents } from './authenticate.events';
 
 /**
@@ -92,6 +93,13 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         src: () => solid.login().pipe(
           map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
         ),
+        /**
+         * Go back to unauthenticated when something goes wrong, and show an alert.
+         */
+        onError: {
+          actions: pure((_ctx, event) => addAlert({ message: event.data.toString().split('Error: ')[1], type: 'warning' })),
+          target: AuthenticateStates.UNAUTHENTICATED,
+        },
       },
       type: 'final',
     },

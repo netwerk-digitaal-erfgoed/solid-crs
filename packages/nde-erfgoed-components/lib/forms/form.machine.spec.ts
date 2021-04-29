@@ -48,23 +48,25 @@ describe('FormMachine', () => {
     expect(machine.state.context.data).toEqual(data);
 
     // States should be updated
-    const stateValueMap = machine.state.value as StateValueMap;
-    expect(stateValueMap[FormRootStates.CLEANLINESS]).toBe(cleanliness);
-    expect(stateValueMap[FormRootStates.SUBMISSION]).toBe(submission);
-    expect(stateValueMap[FormRootStates.VALIDATION]).toBe(validation);
+    expect(machine.state.matches({
+      [FormRootStates.CLEANLINESS]: cleanliness,
+      [FormRootStates.VALIDATION]: validation,
+      [FormRootStates.SUBMISSION]: submission,
+    })).toBeTruthy();
   });
 
-  // it('should should submit when form is valid', () => {
-  //   machine.start();
+  it('should submit when form is valid', () => {
+    machine.start();
 
-  //   machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
-  //   machine.send(FormEvents.FORM_SUBMITTED);
+    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
+    machine.send(FormEvents.FORM_SUBMITTED);
 
-  //   const stateValueMap = machine.state.value as StateValueMap;
-  //   expect(stateValueMap[FormRootStates.CLEANLINESS]).toBe(FormCleanlinessStates.DIRTY);
-  //   expect(stateValueMap[FormRootStates.SUBMISSION]).toBe(FormSubmissionStates.SUBMITTED);
-  //   expect(stateValueMap[FormRootStates.VALIDATION]).toBe(FormValidationStates.VALID);
-  // });
+    expect(machine.state.matches({
+      [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+      [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+      [FormRootStates.SUBMISSION]: FormSubmissionStates.SUBMITTED,
+    })).toBeTruthy();
+  });
 
   it('should not change original data when form is updated', () => {
     machine.start();
@@ -79,23 +81,10 @@ describe('FormMachine', () => {
 
     machine.send(FormEvents.FORM_SUBMITTED);
 
-    const stateValueMap = machine.state.value as StateValueMap;
-    expect(stateValueMap[FormRootStates.CLEANLINESS]).toBe(FormCleanlinessStates.PRISTINE);
-    expect(stateValueMap[FormRootStates.SUBMISSION]).toBe(FormSubmissionStates.NOT_SUBMITTED);
-    expect(stateValueMap[FormRootStates.VALIDATION]).toBe(FormValidationStates.INVALID);
+    expect(machine.state.matches({
+      [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
+      [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
+      [FormRootStates.SUBMISSION]: FormSubmissionStates.NOT_SUBMITTED,
+    })).toBeTruthy();
   });
-
-  // it('should allow re-submitting forms', () => {
-  //   machine.start();
-
-  //   machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
-  //   machine.send(FormEvents.FORM_SUBMITTED);
-  //   machine.send(FormEvents.FORM_UPDATED, {field: 'name', value: ''});
-  //   machine.send(FormEvents.FORM_SUBMITTED);
-
-  //   const stateValueMap = machine.state.value as StateValueMap;
-  //   expect(stateValueMap[FormRootStates.CLEANLINESS]).toBe(FormCleanlinessStates.DIRTY);
-  //   expect(stateValueMap[FormRootStates.SUBMISSION]).toBe(FormSubmissionStates.NOT_SUBMITTED);
-  //   expect(stateValueMap[FormRootStates.VALIDATION]).toBe(FormValidationStates.INVALID);
-  // });
 });

@@ -52,56 +52,6 @@ export class FormElementComponent<T> extends RxLitElement {
   public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
 
   /**
-   * The styles associated with the component.
-   */
-  // static get styles() {
-  //   return [
-  //     unsafeCSS(Theme),
-  //     css`
-  //       :root {
-  //         display: block;
-  //       }
-  //       .form-element {
-  //         display: flex;
-  //         flex-direction: column;
-  //         align-items: stretch;
-  //       }
-  //       .form-element .content {
-  //         display: flex;
-  //         flex-direction: row;
-  //         align-items: stretch;
-  //       }
-  //       .form-element .content .field {
-  //         display: flex;
-  //         flex-direction: row;
-  //         border: var(--border-normal) solid var(--colors-foreground-normal);
-  //         padding: var(--gap-small) var(--gap-normal);
-  //         height: 20px;
-  //         align-items: center;
-  //         flex: 1 0;
-  //       }
-  //       .form-element .label {
-  //         font-weight: var(--font-weight-bold);
-  //         margin-bottom: var(--gap-small);
-  //       }
-  //       .form-element .content .field .input {
-  //         flex: 1 0;
-  //       }
-  //       .form-element .content .field .icon {
-  //         max-height: var(--gap-normal);
-  //         max-width: var(--gap-normal);
-  //         margin-left: var(--gap-normal);
-  //       }
-  //       .form-element .results .result {
-  //         background-color: var(--colors-status-warning);
-  //         padding: var(--gap-tiny) var(--gap-normal);
-  //         font-size: var(--font-size-small);
-  //       }
-  //     `,
-  //   ];
-  // }
-
-  /**
    * Hook called on first update after connection to the DOM.
    * It subscribes to the actor, logs state changes, and pipes state to the properties.
    */
