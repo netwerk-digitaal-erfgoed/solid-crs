@@ -1,12 +1,12 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Event } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { CollectionsContext } from '../collections.context';
-import { CollectionsEvent, CollectionsEvents } from '../collections.events';
-import { CollectionsStates } from '../collections.states';
+import { CollectionsEvents } from './collections.events';
+import { CollectionsContext, CollectionsStates } from './collections.machine';
 
 /**
  * The root page of the collections feature.
@@ -29,7 +29,7 @@ export class CollectionsRootComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<CollectionsEvent, State<CollectionsContext>>;
+  public actor: SpawnedActorRef<Event<CollectionsEvents>, State<CollectionsContext>>;
 
   /**
    * The state of this component.
@@ -73,7 +73,6 @@ export class CollectionsRootComponent extends RxLitElement {
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
-    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOGOUT)}" ?disabled="${loading}">Logout</button>
     <div></div>
   `;
   }

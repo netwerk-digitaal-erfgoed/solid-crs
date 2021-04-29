@@ -1,9 +1,18 @@
-import { createMachine, MachineConfig } from 'xstate';
-import { CollectionsContext } from './collections.context';
-import { CollectionsEvent, CollectionsEvents } from './collections.events';
-import { CollectionsState, CollectionsSchema, CollectionsStates } from './collections.states';
-import { addCollections, addTestCollection, replaceCollections, addAlert } from './collections.actions';
+import { createMachine } from 'xstate';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Event, State } from '@digita-ai/nde-erfgoed-components';
+import { addAlert, CollectionsEvents, addCollections, addTestCollection, replaceCollections } from './collections.events';
 import { loadCollectionsService } from './collections.services';
+
+/**
+ * The context of a collections feature.
+ */
+export interface CollectionsContext {
+  /**
+   * The list of collections available to the feature.
+   */
+  collections?: Collection[];
+}
 
 /**
  * Actor references for this machine config.
@@ -13,10 +22,19 @@ export enum CollectionsActors {
 }
 
 /**
- * The machine config for the collection component machine.
+ * State references for the collection component, with readable log format.
  */
-const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, CollectionsEvent> = {
-  id: 'collections',
+export enum CollectionsStates {
+  IDLE    = '[CollectionsState: Idle]',
+  LOADING = '[CollectionsState: Loading]',
+  EXITED  = '[CollectionsState: Logout]',
+}
+
+/**
+ * The collection component machine.
+ */
+export const collectionsMachine = createMachine<CollectionsContext, Event<CollectionsEvents>, State<CollectionsStates, CollectionsContext>>({
+  id: CollectionsActors.COLLECTIONS_MACHINE,
   initial: CollectionsStates.IDLE,
   on: {
     [CollectionsEvents.LOADED_COLLECTIONS]: {
@@ -31,7 +49,6 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
         addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
       ],
     },
-    [CollectionsEvents.CLICKED_LOGOUT]: CollectionsStates.LOGOUT,
   },
   states: {
     [CollectionsStates.IDLE]: {
@@ -45,13 +62,8 @@ const collectionsConfig: MachineConfig<CollectionsContext, CollectionsSchema, Co
         onDone: CollectionsStates.IDLE,
       },
     },
-    [CollectionsStates.LOGOUT]: {
+    [CollectionsStates.EXITED]: {
       type: 'final',
     },
   },
-};
-
-/**
- * The collection component machine.
- */
-export const collectionsMachine = createMachine<CollectionsContext, CollectionsEvent, CollectionsState>(collectionsConfig);
+});

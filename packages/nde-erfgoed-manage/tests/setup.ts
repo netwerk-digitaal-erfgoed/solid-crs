@@ -1,5 +1,5 @@
 import {CollectionsComponent, AlertComponent, CollectionComponent} from '@digita-ai/nde-erfgoed-components';
-import {CollectionsRootComponent} from '../lib/features/collections/root/collections-root.component';
+import {CollectionsRootComponent} from '../lib/features/collections/collections-root.component';
 import {AppRootComponent} from '../lib/app.root';
 
 /**
