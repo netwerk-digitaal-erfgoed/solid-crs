@@ -1,11 +1,10 @@
 import { css, html, property, PropertyValues, internalProperty } from 'lit-element';
 import { Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, Schema, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates } from '@digita-ai/nde-erfgoed-components';
+import { Event, Schema, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { Interpreter, SpawnedActorRef, State, StateValueMap} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, NdeLogoInverse } from '@digita-ai/nde-erfgoed-theme';
-import { FormEvents } from '@digita-ai/nde-erfgoed-components/dist/forms/form.events';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { AuthenticateEvents } from './authenticate.events';
