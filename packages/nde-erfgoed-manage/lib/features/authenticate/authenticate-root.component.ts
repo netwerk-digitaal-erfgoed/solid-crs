@@ -1,12 +1,13 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { Event, FormActors, FormContext, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { Interpreter, SpawnedActorRef, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, NdeLogoInverse, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { AppEvents } from '../../app.events';
 import { AuthenticateContext } from './authenticate.machine';
 
 /**
@@ -31,6 +32,12 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   @property({type: Object})
   public actor: Interpreter<AuthenticateContext>;
+
+  /**
+   * The component's alerts.
+   */
+  @property({type: Array})
+  public alerts: Alert[];
 
   /**
    * The actor responsible for form validation in this component.
@@ -72,17 +79,23 @@ export class AuthenticateRootComponent extends RxLitElement {
     ));
   }
 
+  dismiss = (event: CustomEvent<Alert>) => this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
   /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
   render() {
+    // Create an alert components for each alert.
+    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
+
     return this.formActor ? html`
       <div class="title-container">
         ${ unsafeSVG(NdeLogoInverse) }
         <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
+      ${ alerts }
       <div class="form-container">
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">

@@ -100,8 +100,10 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
           actions: pure((_ctx, event) => addAlert({ message: event.data.toString().split('Error: ')[1], type: 'warning' })),
           target: AuthenticateStates.UNAUTHENTICATED,
         },
+        onDone: {
+          target: AuthenticateStates.AUTHENTICATED,
+        },
       },
-      type: 'final',
     },
 
     /**
