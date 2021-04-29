@@ -130,9 +130,24 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormSubmissionStates.NOT_SUBMITTED]: {
           on: {
             [FormEvents.FORM_SUBMITTED]: {
-              target: FormSubmissionStates.SUBMITTED,
+              target: FormSubmissionStates.SUBMITTING,
             },
           },
+        },
+        /**
+         * Transient state while submitting form.
+         */
+        [FormSubmissionStates.SUBMITTING]: {
+          entry: update,
+          always: [
+            {
+              target: FormSubmissionStates.SUBMITTED,
+              cond: (context: FormContext<T>) => context.validation === null || context.validation.length === 0,
+            },
+            {
+              target: FormSubmissionStates.NOT_SUBMITTED,
+            },
+          ],
         },
         /**
          * The form has been submitted.
@@ -169,7 +184,7 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         [FormValidationStates.VALIDATING]: {
           entry: update,
           invoke: {
-            src: (c, e) => validator(c, e).pipe(
+            src: (context, event) => validator(context, event).pipe(
               map((results) => ({ type: FormEvents.FORM_VALIDATED, results })),
             ),
           },

@@ -1,7 +1,7 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter, StateValueMap } from 'xstate';
+import { of } from 'rxjs';
+import { interpret, Interpreter } from 'xstate';
 import { Event } from '../state/event';
-import { FormValidatorResult } from './form-validator-result';
 import { FormEvents } from './form.events';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
@@ -11,10 +11,10 @@ describe('FormMachine', () => {
   beforeEach(() => {
     machine = interpret<FormContext<Collection>>(
       formMachine(
-        (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+        (context: FormContext<Collection>, event: Event<FormEvents>) => of([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ],
+        ]),
       )
         .withContext({
           data: { uri: '', name: 'Test' },
@@ -79,6 +79,7 @@ describe('FormMachine', () => {
   it('should not be submitted if form is invalid', () => {
     machine.start();
 
+    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: ''});
     machine.send(FormEvents.FORM_SUBMITTED);
 
     expect(machine.state.matches({
