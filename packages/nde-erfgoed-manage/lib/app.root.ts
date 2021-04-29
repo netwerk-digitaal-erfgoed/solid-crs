@@ -1,5 +1,5 @@
 import { css, html, property, PropertyValues, internalProperty, TemplateResult } from 'lit-element';
-import { interpret, State } from 'xstate';
+import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
@@ -48,7 +48,7 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor = interpret<AppContext, any, Event<AppEvents>>(appMachine.withContext({
+  actor: Interpreter<AppContext> = interpret(appMachine.withContext({
     alerts: [],
     loggedIn: false,
     session: null,
@@ -87,7 +87,7 @@ export class AppRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', state)),
+      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
     ));
 
     /**
@@ -107,30 +107,13 @@ export class AppRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
 
-    // Create a authenticate root component if the app machine is in the correct state.
-    const authenticate = html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`;
-
-    // Create a authenticate root component if the app machine is in the correct state.
-    const collections = html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>`;
-
-    // display different pages for different AppFeatureStates
-    let currentPage: TemplateResult;
-    const currentFeature = (this.actor.state.value as any)[AppRootStates.FEATURE];
-
-    switch(currentFeature) {
-
-    case AppFeatureStates.AUTHENTICATE: currentPage = authenticate; break;
-    case AppFeatureStates.COLLECTIONS: currentPage = collections; break;
-    default: currentPage = authenticate;
-
-    }
-
     return html`
     <link href="./dist/bundles/styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
-    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${currentFeature === AppFeatureStates.AUTHENTICATE}">Logout</button>
+    <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
     ${ alerts }
-    ${ currentPage }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ?? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) ?? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` }  
     `;
   }
 

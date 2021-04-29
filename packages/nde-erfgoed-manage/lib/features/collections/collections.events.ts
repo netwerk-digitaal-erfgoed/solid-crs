@@ -1,6 +1,6 @@
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { assign, EventObject, send, sendParent } from 'xstate';
+import { assign, send, sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { CollectionsContext } from './collections.machine';
 

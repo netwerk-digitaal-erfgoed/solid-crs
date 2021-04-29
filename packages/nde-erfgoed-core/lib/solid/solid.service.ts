@@ -25,16 +25,16 @@ export abstract class SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  public abstract handleIncomingRedirect(): Observable<any>;
+  public abstract handleIncomingRedirect(): Observable<unknown>;
 
   /**
    * Redirects the user to their OIDC provider
    */
-  public abstract login(): Observable<any>;
+  public abstract login(): Observable<unknown>;
 
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  public abstract logout(): Observable<any>;
+  public abstract logout(): Observable<unknown>;
 
 }

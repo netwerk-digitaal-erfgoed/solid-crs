@@ -30,7 +30,7 @@ export class ConsoleLogger extends Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  log(level: LoggerLevel, typeName: string, message: string, data?: any) {
+  log(level: LoggerLevel, typeName: string, message: string, data?: unknown) {
     if (level === null || level === undefined) {
       throw new ArgumentError('level should be set', typeName);
     }

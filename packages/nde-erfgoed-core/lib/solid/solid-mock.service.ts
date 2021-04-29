@@ -42,7 +42,7 @@ export class SolidMockService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  handleIncomingRedirect(): Observable<any> {
+  handleIncomingRedirect(): Observable<unknown> {
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
     return of({ isLoggedIn: true });
   }
@@ -50,7 +50,7 @@ export class SolidMockService extends SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  login(): Observable<any> {
+  login(): Observable<unknown> {
     this.logger.debug(SolidMockService.name, 'Loggin in user');
     return of(true);
   }
@@ -58,7 +58,7 @@ export class SolidMockService extends SolidService {
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  logout(): Observable<any> {
+  logout(): Observable<unknown> {
     this.logger.debug(SolidMockService.name, 'Logging out user');
     return of(true);
   }

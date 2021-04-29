@@ -69,10 +69,12 @@ export enum AppAuthenticateStates {
   UNAUTHENTICATED  = '[AppAuthenticateState: Unauthenticated]',
 }
 
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
+
 /**
  * The application root machine and its configuration.
  */
-export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppRootStates, AppContext>>({
+export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppStates, AppContext>>({
   id: AppActors.APP_MACHINE,
   type: 'parallel',
   states: {

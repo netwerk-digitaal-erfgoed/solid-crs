@@ -7,7 +7,7 @@ import { FormEvents } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 describe('FormElementComponent', () => {
-  let component: FormElementComponent;
+  let component: FormElementComponent<Collection>;
   let machine: Interpreter<FormContext<Collection>>;
 
   beforeEach(() => {
@@ -24,8 +24,7 @@ describe('FormElementComponent', () => {
           validation: [],
         }),
     );
-    component = window.document.createElement('nde-form-element') as FormElementComponent;
-    (component as any).createRenderRoot = () => this;
+    component = window.document.createElement('nde-form-element') as FormElementComponent<Collection>;
 
     component.actor = machine;
     component.field = 'name';

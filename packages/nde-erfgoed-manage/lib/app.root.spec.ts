@@ -5,7 +5,6 @@ describe('AppRootComponent', () => {
 
   beforeEach(() => {
     component = window.document.createElement('nde-app-root') as AppRootComponent;
-    (component as any).createRenderRoot = () => this;
   });
 
   afterEach(() => {
