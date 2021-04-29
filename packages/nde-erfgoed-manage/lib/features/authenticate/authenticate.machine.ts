@@ -72,7 +72,13 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         },
       ],
       on: {
+        /**
+         * Transition to redirecting state when the form was submitted.
+         */
         [AuthenticateEvents.LOGIN_STARTED]: AuthenticateStates.REDIRECTING,
+        /**
+         * Transition to authenticated when a redirect leads to a successful login.
+         */
         [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
       },
     },
