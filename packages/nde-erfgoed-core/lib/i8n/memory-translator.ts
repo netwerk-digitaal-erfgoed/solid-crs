@@ -38,6 +38,7 @@ export class MemoryTranslator {
     // Find translation based on locale
     const foundTranslation = this.translations?.find((translation) => translation.locale === usedLocale && translation.key === key);
 
-    return foundTranslation ? foundTranslation.value : null;
+    // return key when no translation was found
+    return foundTranslation?.value || key;
   }
 }
