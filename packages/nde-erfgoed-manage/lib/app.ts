@@ -10,9 +10,9 @@ import './index';
  *
  * https://github.com/davidkpiano/xstate/tree/master/packages/xstate-inspect
  */
-// inspect({
-//   iframe: false, // open in new window
-// });
+inspect({
+  iframe: false, // open in new window
+});
 
 /**
  * Register tags for components.
