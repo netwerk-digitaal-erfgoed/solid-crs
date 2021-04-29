@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["jest"],
+    "types": ["jest", "vite/client"],
     "declaration": false,
     "inlineSources": false,
   },

@@ -1,4 +1,4 @@
-@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/theme.css';
+@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/style.css';
 
 html {
   background-color: var(--colors-background-normal);

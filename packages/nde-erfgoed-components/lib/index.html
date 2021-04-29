@@ -4,19 +4,27 @@
   <meta charset="utf-8">
   <title>Netwerk Digitaal Erfgoed</title>
   <base href="/">
-  <link href="dist/bundles/styles.css" rel="stylesheet">
+  <link href="./styles.css" rel="stylesheet">
 </head>
 <body>
 
   <!-- just a placeholder for serving in develop -->
 
-  <script type="module" src="dist/bundles/demo.js"></script>
+  <script type="module" src="./demo.ts"></script>
 
   <p>Collection Component</p>
   <nde-collection collection='{"uri": "test", "name": "Foo"}'></nde-collection>
 
   <p>Collections Component</p>
   <nde-collections collections='[{"uri": "test", "name": "Foo"}, {"uri": "test", "name": "Bar"}]'></nde-collections>
+
+  <p>Alert Component</p>
+  <nde-alert alert='{"type": "success", "message": "Lorem ipsum"}'></nde-alert>
+  <nde-alert alert='{"type": "warning", "message": "Lorem ipsum"}'></nde-alert>
+  <nde-alert alert='{"type": "danger", "message": "Lorem ipsum"}'></nde-alert>
+  
+  <p>Form Component</p>
+  <nde-demo-form></nde-demo-form>
 
 </body>
 </html>

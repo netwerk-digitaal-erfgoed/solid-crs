@@ -1,4 +1,4 @@
-@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/theme.css';
+@import '../node_modules/@digita-ai/nde-erfgoed-theme/dist/style.css';
 
 html {
   background-color: var(--colors-background-normal);
@@ -6,7 +6,8 @@ html {
   margin: 0;
 }
 body {
-  max-width: 1200px;
+  max-width: 800px;
   background-color: #fff;
   margin: 0 auto;
+  padding: var(--gap-normal);
 }

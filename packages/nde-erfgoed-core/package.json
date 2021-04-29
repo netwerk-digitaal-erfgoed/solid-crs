@@ -3,14 +3,21 @@
   "version": "0.0.1",
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
-  "main": "./dist/index.js",
+  "main": "./dist/nde-erfgoed-core.umd.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/nde-erfgoed-core.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/nde-erfgoed-core.es.js",
+      "require": "./dist/nde-erfgoed-core.umd.js"
+    }
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist/bundles --minify",
-    "build:dev": "rm -rf ./dist && tsc && esbuild lib/index.ts --bundle --outdir=dist/bundles",
+    "build": "rm -rf ./dist && vite build && tsc",
+    "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",
@@ -26,7 +33,8 @@
     "jest": "26.6.3",
     "ts-jest": "26.5.4",
     "ts-node": "9.1.1",
-    "typescript": "^4.1.3"
+    "typescript": "^4.1.3",
+    "vite": "2.2.3"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
