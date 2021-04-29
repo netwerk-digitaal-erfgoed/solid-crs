@@ -87,8 +87,9 @@ export class AuthenticateRootComponent extends RxLitElement {
       <div class="form-container">
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+            <label slot="label" for="webid">WebID</label>
             <div slot="icon"></div>
-            <input type="text" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+            <input type="text" name="webid" id="webid" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
             <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
@@ -115,6 +116,7 @@ export class AuthenticateRootComponent extends RxLitElement {
           gap: 80px;
         }
 
+        
         .title-container {
           margin-top: 30vh; 
           max-height: 50px;
@@ -133,12 +135,16 @@ export class AuthenticateRootComponent extends RxLitElement {
           width: 50px;
           fill: var(--colors-foreground-inverse);
         }
-
+        
         .title-container h1 {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
         }
         
+        nde-form-element label {
+          color: white;
+        }
+
         .webid-container p {
           text-align: center;
           color: var(--colors-foreground-light);
