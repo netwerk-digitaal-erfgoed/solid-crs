@@ -68,8 +68,10 @@ export class AuthenticateRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
-      this.subscribe('alerts', from(this.actor.parent)
-        .pipe(map((state) => state.context.alerts)));
+      if(this.actor.parent) {
+        this.subscribe('alerts', from(this.actor.parent)
+          .pipe(map((state) => state.context.alerts)));
+      }
     }
 
     if(changed.has('formActor')){
@@ -110,23 +112,24 @@ export class AuthenticateRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    return this.formActor ? html`
+    return html`
       <div class="title-container">
         ${ unsafeSVG(NdeLogoInverse) }
-        <h1>${this.translator.translate('nde.features.authenticate.pages.login.title')}</h1>
+        <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
       <div class="form-container">
         ${ alerts }
+        ${ this.formActor ? html`
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <div slot="icon"></div>
-            <input type="text" slot="input" placeholder="${this.translator.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
             <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
+        ` : html``}
       </div>
-      <div></div>
-    ` : html``;
+    `;
   }
 
   /**

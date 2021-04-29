@@ -14,32 +14,4 @@ describe('AppRootComponent', () => {
   it('should be correctly instantiated', () => {
     expect(component).toBeTruthy();
   });
-
-  // TODO: move this test to authenticate page (and others)
-  // it('should show alerts when set', async () => {
-  //   component.alerts = [ {
-  //     type: 'success',
-  //     message: 'Foo',
-  //   } ];
-
-  //   window.document.body.appendChild(component);
-  //   await component.updateComplete;
-
-  //   const alerts = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-alert');
-
-  //   expect(alerts).toBeTruthy();
-  //   expect(alerts.length).toBe(1);
-  // });
-
-  it('should not show alerts when unset', async () => {
-    component.alerts = null;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const alerts = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-alert');
-
-    expect(alerts).toBeTruthy();
-    expect(alerts.length).toBe(0);
-  });
 });

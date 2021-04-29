@@ -58,8 +58,10 @@ export class CollectionsRootComponent extends RxLitElement {
     super.updated(changed);
 
     if(changed.has('actor')){
-      this.subscribe('alerts', from(this.actor.parent)
-        .pipe(map((state) => state.context.alerts)));
+      if(this.actor.parent){
+        this.subscribe('alerts', from(this.actor.parent)
+          .pipe(map((state) => state.context.alerts)));
+      }
 
       this.subscribe('state', from(this.actor).pipe(
         tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
@@ -99,7 +101,7 @@ export class CollectionsRootComponent extends RxLitElement {
 
     const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
     return html`
-    <p>${this.translator.translate('nde.collections.root.title')}</p>
+    <p>${this.translator?.translate('nde.collections.root.title')}</p>
     ${ alerts }
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
