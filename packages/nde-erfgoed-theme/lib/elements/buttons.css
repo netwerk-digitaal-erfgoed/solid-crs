@@ -19,10 +19,10 @@ button svg {
 
 button:disabled {
   background-color: var(--colors-background-normal);
-  color: var(--colors-foreground-dark);
+  color: var(--colors-foreground-light);
   cursor: inherit;
 }
 
 button:disabled svg {
-  fill: var(--colors-foreground-dark);
+  fill: var(--colors-foreground-light);
 }
