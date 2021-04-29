@@ -1,10 +1,10 @@
-import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
+import { html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
 import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter, StateValueMap } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
+import { map } from 'rxjs/operators';
+import { Login, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { Event } from '../state/event';
@@ -100,7 +100,7 @@ export class DemoFormComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css``,
+      unsafeCSS(Theme),
     ];
   }
 
@@ -111,7 +111,6 @@ export class DemoFormComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <form>
       <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
         <label slot="label" for="example">URI</label>

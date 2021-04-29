@@ -1,9 +1,10 @@
-import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
+import { css, html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
 import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { Event } from '../state/event';
 import { FormContext } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
@@ -49,6 +50,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   static get styles() {
     return [
+      unsafeCSS(Theme),
       css`
         :root {
           display: block;
@@ -162,7 +164,6 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <div class="form-element">
       <div class="label">
         <slot name="label"></slot>

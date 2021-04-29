@@ -1,6 +1,6 @@
-import { css, html, LitElement, property } from 'lit-element';
+import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Bell, Dismiss } from '@digita-ai/nde-erfgoed-theme';
+import { Bell, Dismiss, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
@@ -32,6 +32,7 @@ export class AlertComponent extends LitElement {
    */
   static get styles() {
     return [
+      unsafeCSS(Theme),
       css`
         .alert {
           padding: var(--gap-normal) var(--gap-small);
@@ -97,7 +98,6 @@ export class AlertComponent extends LitElement {
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
 
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <div class="alert ${ type }">
       <div class="icon">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>

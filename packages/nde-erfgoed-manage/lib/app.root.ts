@@ -1,10 +1,11 @@
-import { css, html, property, PropertyValues, internalProperty, TemplateResult } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
 import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlBe from './i8n/nl-BE.json';
 import { AppEvents } from './app.events';
@@ -108,7 +109,6 @@ export class AppRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.dismiss}"></nde-alert>`);
 
     return html`
-    <link href="./styles.css" rel="stylesheet">
     <h1>${this.translator.translate('nde.app.root.title')}</h1>
     <button @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}" ?hidden="${this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE})}">Logout</button>
     ${ alerts }
@@ -122,9 +122,7 @@ export class AppRootComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css`
-        .collection { }
-      `,
+      unsafeCSS(Theme),
     ];
   }
 
