@@ -1,4 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
+import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Event, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { ActorRef, Interpreter, State} from 'xstate';
@@ -122,14 +123,17 @@ export class AuthenticateRootComponent extends RxLitElement {
         ${ this.formActor ? html`
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+            <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
             <div slot="icon"></div>
-            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.search-placeholder')}" />
+            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
             <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
         ` : html``}
       </div>
-    `;
+      <div class="webid-container">
+        <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+      </div>`;
   }
 
   /**
@@ -148,6 +152,7 @@ export class AuthenticateRootComponent extends RxLitElement {
           gap: var(--gap-huge);
         }
 
+        
         .title-container {
           height: 50px;
           display: flex;
@@ -165,10 +170,24 @@ export class AuthenticateRootComponent extends RxLitElement {
           width: 50px;
           fill: var(--colors-foreground-inverse);
         }
-
+        
         .title-container h1 {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
+        }
+        
+        nde-form-element label {
+          color: white;
+        }
+
+        .webid-container p {
+          text-align: center;
+          color: var(--colors-foreground-light);
+          font-size: var(--font-size-small);
+        }
+
+        .webid-container p a {
+          color: var(--colors-foreground-light);
         }
 
         .form-container {
