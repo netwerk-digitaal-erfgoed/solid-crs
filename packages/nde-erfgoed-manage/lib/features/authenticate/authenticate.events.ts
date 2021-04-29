@@ -27,3 +27,8 @@ export interface LoginSuccessEvent extends Event<AuthenticateEvents> { type: Aut
  * An event which is dispatched when a user login failed.
  */
 export interface LoginErrorEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_ERROR; message: string }
+
+/**
+ * Union type of all authenticate events
+ */
+export type AuthenticateEvent = LoginStartedEvent | LoginSuccessEvent | LoginStartedEvent;

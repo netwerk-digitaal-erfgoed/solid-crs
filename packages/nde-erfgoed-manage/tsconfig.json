@@ -26,7 +26,7 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
     "resolveJsonModule": true,
-    "types": ["vite/client"],
+    "types": ["jest", "vite/client"],
     "emitDeclarationOnly": true,
   },
   "include": ["lib"],
