@@ -3,7 +3,7 @@ import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita
 import { interpret, Interpreter, StateValueMap } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
@@ -87,10 +87,11 @@ export class DemoFormComponent extends RxLitElement {
     }
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
-      filter((state) => state.value && state.value instanceof StateValueMap),
-      map((value) => value[FormRootStates.CLEANLINESS] === FormCleanlinessStates.DIRTY
-      && value[FormRootStates.VALIDATION] === FormValidationStates.VALID
-      && value[FormRootStates.SUBMISSION] === FormSubmissionStates.NOT_SUBMITTED),
+      map((state) => state.matches({
+        [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+        [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        [FormRootStates.SUBMISSION]: FormSubmissionStates.NOT_SUBMITTED,
+      })),
     ));
   }
 
