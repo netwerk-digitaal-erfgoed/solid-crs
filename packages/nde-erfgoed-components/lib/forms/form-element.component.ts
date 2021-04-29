@@ -18,7 +18,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * Decides whether a border should be shown around the content
    */
   @property()
-  public border = true;
+  public inverse = false;
 
   /**
    * The component's translator.
@@ -124,7 +124,7 @@ export class FormElementComponent<T> extends RxLitElement {
         <slot name="label"></slot>
       </div>
       <div class="content">
-        <div class="field ${!this.border ? 'no-border' : ''}">
+        <div class="field ${this.inverse ? 'no-border' : ''}">
           <div class="input">
             <slot name="input" @slotchange=${this.handleInputSlotchange}></slot>
           </div>
@@ -133,7 +133,7 @@ export class FormElementComponent<T> extends RxLitElement {
           </div>
         </div>
         <div class="action">
-          <slot name="action" class="${!this.border ? 'no-border' : ''}"></slot>
+          <slot name="action" class="${this.inverse ? 'no-border' : ''}"></slot>
         </div>
       </div>
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">

@@ -18,8 +18,11 @@ button svg {
 }
 
 button:disabled {
-  border: var(--border-normal) solid var(--colors-background-normal);
-  background-color: var(--colors-background-light);
-  color: var(--colors-foreground-light);
+  background-color: var(--colors-background-normal);
+  color: var(--colors-foreground-dark);
   cursor: inherit;
+}
+
+button:disabled svg {
+  fill: var(--colors-foreground-dark);
 }
