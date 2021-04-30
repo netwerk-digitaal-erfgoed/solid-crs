@@ -28,7 +28,7 @@ export abstract class SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  public abstract login(webId: string): Promise<unknown>;
+  public abstract login(webId: string): Promise<void>;
 
   /**
    * Deauthenticates the user from their OIDC issuer
