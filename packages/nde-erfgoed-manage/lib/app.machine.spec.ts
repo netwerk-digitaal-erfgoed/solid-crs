@@ -1,4 +1,5 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
 import { AppContext, appMachine } from './app.machine';
@@ -7,11 +8,16 @@ describe('AppMachine', () => {
   let machine: Interpreter<AppContext>;
 
   beforeEach(() => {
-    machine = interpret<AppContext>(appMachine.withContext({
-      alerts: [],
-      session: null,
-      loggedIn: false,
-    }));
+    machine = interpret<AppContext>(
+      appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      )
+        .withContext({
+          alerts: [],
+          session: null,
+          loggedIn: false,
+        }),
+    );
   });
 
   it('should be correctly instantiated', () => {
@@ -30,7 +36,9 @@ describe('AppMachine', () => {
 
   it('should not add duplicate alert to context when sending addAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext>(appMachine.withContext({
+    machine = interpret<AppContext>(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+    ).withContext({
       alerts: [ alert ],
       session: null,
       loggedIn: false,
@@ -57,11 +65,14 @@ describe('AppMachine', () => {
 
   it('should dismiss alert in context when sending dismissAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext>(appMachine.withContext({
-      alerts: [ alert ],
-      session: null,
-      loggedIn: false,
-    }));
+    machine = interpret<AppContext>(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+    )
+      .withContext({
+        alerts: [ alert ],
+        session: null,
+        loggedIn: false,
+      }));
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);
     machine.send(AppEvents.DISMISS_ALERT, { alert });

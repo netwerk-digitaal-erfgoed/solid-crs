@@ -4,12 +4,11 @@ import { interpret, Interpreter } from 'xstate';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext, authenticateMachine, AuthenticateStates } from './authenticate.machine';
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
-
 describe('AuthenticateMachine', () => {
   let machine: Interpreter<AuthenticateContext>;
 
   beforeEach(() => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
     machine = interpret<AuthenticateContext>(authenticateMachine(solid).withContext({}));
   });
 
@@ -64,6 +63,68 @@ describe('AuthenticateMachine', () => {
 
     machine.start();
     machine.send(AuthenticateEvents.LOGIN_SUCCESS);
+  });
+
+  it('should dispatch login error when returning invalid session', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => null);
+
+    machine = interpret<AuthenticateContext>(authenticateMachine(solid).withContext({}));
+
+    machine.onEvent((event) => {
+      if(event.type === AuthenticateEvents.LOGIN_ERROR) {
+        done();
+      }
+    });
+
+    machine.start();
+  });
+
+  it('should dispatch login error when returning error session', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => {
+      throw new Error();
+    });
+
+    machine = interpret<AuthenticateContext>(authenticateMachine(solid).withContext({}));
+
+    machine.onEvent((event) => {
+      if(event.type === AuthenticateEvents.LOGIN_ERROR) {
+        done();
+      }
+    });
+
+    machine.start();
+  });
+
+  it('should dispatch login success when returning valid session', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
+
+    machine = interpret<AuthenticateContext>(authenticateMachine(solid).withContext({}));
+
+    machine.onEvent((event) => {
+      if(event.type === AuthenticateEvents.LOGIN_SUCCESS) {
+        done();
+      }
+    });
+
+    machine.start();
+  });
+
+  it('should assign session when returning valid session', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
+
+    machine = interpret<AuthenticateContext>(authenticateMachine(solid).withContext({}));
+
+    machine.onChange((context) => {
+      if(context.session?.webId === 'lorem') {
+        done();
+      }
+    });
+
+    machine.start();
   });
 
   // it('should emit login error event when cannot handle incoming redirect', () => {

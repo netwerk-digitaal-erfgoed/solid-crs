@@ -1,12 +1,10 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidSDKService, SolidSession } from '@digita-ai/nde-erfgoed-core';
+import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvent, AppEvents, dismissAlert } from './app.events';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionsMachine } from './features/collections/collections.machine';
-
-const solid = new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The root context of the application.
@@ -64,7 +62,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
 /**
  * The application root machine and its configuration.
  */
-export const appMachine = createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
+export const appMachine = (solid: SolidService) => createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
   id: AppActors.APP_MACHINE,
   type: 'parallel',
   states: {
