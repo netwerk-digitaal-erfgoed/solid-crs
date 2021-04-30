@@ -1,4 +1,4 @@
-import { SolidService } from '@digita-ai/nde-erfgoed-core';
+import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
@@ -8,9 +8,12 @@ import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate, LoginStarte
 /**
  * The context of th authenticate feature.
  */
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AuthenticateContext { }
+export interface AuthenticateContext {
+  /**
+   * Session of the current user.
+   */
+  session?: SolidSession;
+}
 
 /**
  * Actor references for this machine config.
@@ -106,6 +109,9 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
      * The user has been authenticated.
      */
     [AuthenticateStates.AUTHENTICATED]: {
+      data: {
+        session: (context: AuthenticateContext) => context.session,
+      },
       type: 'final',
     },
   },

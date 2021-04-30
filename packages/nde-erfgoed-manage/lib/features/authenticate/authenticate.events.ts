@@ -1,7 +1,7 @@
 import { Event } from '@digita-ai/nde-erfgoed-components';
 import { SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { DoneInvokeEvent } from 'xstate';
-import { choose, send } from 'xstate/lib/actions';
+import { assign, choose, send } from 'xstate/lib/actions';
 import { AuthenticateContext } from './authenticate.machine';
 
 /**
@@ -49,6 +49,7 @@ export const handleSessionUpdate = choose<AuthenticateContext, DoneInvokeEvent<S
   },
   {
     actions: [
+      assign({session: (context, event) => event.data}),
       send(AuthenticateEvents.LOGIN_SUCCESS),
     ],
   },

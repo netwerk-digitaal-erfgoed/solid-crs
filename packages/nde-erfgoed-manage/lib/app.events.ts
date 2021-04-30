@@ -1,4 +1,5 @@
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
+import { SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 
@@ -40,7 +41,9 @@ export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGE
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN }
+export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN; session: SolidSession }
+
+export type AppEvent = LoggedInEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
 
 /**
  * Actions for the alerts component.
@@ -54,7 +57,7 @@ export const error = (err: Error | string) => send({ type: AppEvents.ERROR, data
 /**
  * Action which adds an alert to the machine's context, if it doesn't already exist.
  */
-export const addAlert = choose<AppContext, Event<AppEvents>>([
+export const addAlert = choose<AppContext, AddAlertEvent>([
   {
     cond: (context: AppContext, event: AddAlertEvent) => !event.alert,
     actions: [
@@ -63,7 +66,7 @@ export const addAlert = choose<AppContext, Event<AppEvents>>([
   },
   {
     actions: [
-      assign<AppContext, Event<AppEvents>>({
+      assign<AppContext, AddAlertEvent>({
         alerts: (context: AppContext, event: AddAlertEvent) => [
           ...context.alerts ? context.alerts.filter((alert: Alert) => alert.message !== event.alert.message) : [],
           event.alert,
@@ -76,7 +79,7 @@ export const addAlert = choose<AppContext, Event<AppEvents>>([
 /**
  * Action which dismisses an alert in the machine's context, if it doesn't already exist.
  */
-export const dismissAlert = choose<AppContext, Event<AppEvents>>([
+export const dismissAlert = choose<AppContext, DismissAlertEvent>([
   {
     cond: (context: AppContext, event: DismissAlertEvent) => (!event || !event.alert) ? true : false,
     actions: [
@@ -85,7 +88,7 @@ export const dismissAlert = choose<AppContext, Event<AppEvents>>([
   },
   {
     actions: [
-      assign<AppContext, Event<AppEvents>>({
+      assign<AppContext, DismissAlertEvent>({
         alerts: (context: AppContext, event: DismissAlertEvent) => [
           ...context.alerts ? context.alerts.filter((alert) => alert.message !== event.alert.message) : [],
         ],
