@@ -86,7 +86,7 @@ describe('FormMachine', () => {
     expect(machine.state.matches({
       [FormSubmissionStates.NOT_SUBMITTED]:{
         [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
-        [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
+        [FormRootStates.VALIDATION]: FormValidationStates.NOT_VALIDATED,
       },
     })).toBeTruthy();
   });
