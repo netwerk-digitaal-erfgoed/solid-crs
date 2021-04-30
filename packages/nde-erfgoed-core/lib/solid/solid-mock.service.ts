@@ -98,7 +98,7 @@ export class SolidMockService extends SolidService {
   /**
    * Redirects the user to their OIDC provider
    */
-  async login(webId: string): Promise<unknown> {
+  async login(webId: string): Promise<void> {
     this.logger.debug(SolidMockService.name, 'Logging in user');
 
     if (!webId) {
@@ -110,8 +110,6 @@ export class SolidMockService extends SolidService {
     if (!isWebIdValid) {
       throw new ArgumentError('nde.root.alerts.error', isWebIdValid);
     }
-
-    return true;
   }
 
   /**

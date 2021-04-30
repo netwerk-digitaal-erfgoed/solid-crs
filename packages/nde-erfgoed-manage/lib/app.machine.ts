@@ -1,6 +1,5 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
-import { map } from 'rxjs/operators';
+import { ConsoleLogger, LoggerLevel, SolidSDKService } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
@@ -16,7 +15,7 @@ import { collectionsMachine } from './features/collections/collections.machine';
  * - delays: DelayFunctionMap<CollectionsContext, CollectionsEvent>;
  */
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+const solid = new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The root context of the application.

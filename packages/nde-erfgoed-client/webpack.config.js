@@ -4,6 +4,7 @@ module.exports = {
   entry: './lib/index.ts',
   devtool: 'source-map',
   output: {
+    publicPath: '',
     libraryTarget: 'module',
     path: path.resolve(__dirname, 'dist'), 
     filename: 'index.js' 

@@ -8,15 +8,8 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, NdeLogoInverse, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { authn } from '@digita-ai/nde-erfgoed-client';
 import { AppEvents } from '../../app.events';
 import { AuthenticateContext } from './authenticate.machine';
-
-authn.login({
-  oidcIssuer: 'https://broker.pod.inrupt.com',
-  redirectUrl: window.location.href,
-  clientName: 'Getting started app',
-});
 
 /**
  * The root page of the authenticate feature.
