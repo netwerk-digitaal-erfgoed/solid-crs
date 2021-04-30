@@ -1,7 +1,7 @@
 {
   "name": "@digita-ai/nde-erfgoed-client",
   "version": "0.0.1",
-  "description": "Core logic of the NDE-project.",
+  "description": "Re-bundled version of the Solid client.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

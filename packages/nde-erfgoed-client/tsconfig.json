@@ -13,7 +13,6 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
-    // "outFile": "dist/nde-erfgoed-core.d.ts",
     "typeRoots": [
       "node_modules/@types"
     ],
