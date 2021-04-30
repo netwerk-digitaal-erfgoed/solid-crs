@@ -126,13 +126,4 @@ describe('AuthenticateMachine', () => {
 
     machine.start();
   });
-
-  // it('should emit login error event when cannot handle incoming redirect', () => {
-  //   machine.start();
-
-  //   machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
-  //   machine.send(FormEvents.FORM_SUBMITTED);
-
-  //   expect(machine.state.matches(FormSubmissionStates.SUBMITTED)).toBeTruthy();
-  // });
 });

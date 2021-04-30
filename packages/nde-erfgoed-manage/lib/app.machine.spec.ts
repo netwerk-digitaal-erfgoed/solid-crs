@@ -14,8 +14,6 @@ describe('AppMachine', () => {
       )
         .withContext({
           alerts: [],
-          session: null,
-          loggedIn: false,
         }),
     );
   });
@@ -109,5 +107,37 @@ describe('AppMachine', () => {
     }));
 
     machine.send(AppEvents.ERROR);
+  });
+
+  it('should assign session when logged in', async (done) => {
+    machine.onChange((context) => {
+      if(context.session?.webId === 'lorem') {
+        done();
+      }
+    });
+
+    machine.start();
+
+    machine.send({ type:AppEvents.LOGGED_IN, session: { webId: 'lorem' } });
+  });
+
+  it('should send logged in when authenticate machine is done', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
+
+    machine = interpret<AppContext>(
+      appMachine(solid)
+        .withContext({
+          alerts: [],
+        }),
+    );
+
+    machine.onEvent((event) => {
+      if(event.type === AppEvents.LOGGED_IN && event.session?.webId === 'lorem') {
+        done();
+      }
+    });
+
+    machine.start();
   });
 });

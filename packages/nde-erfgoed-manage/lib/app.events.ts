@@ -43,6 +43,9 @@ export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGE
  */
 export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN; session: SolidSession }
 
+/**
+ * Union type of app events.
+ */
 export type AppEvent = LoggedInEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
 
 /**

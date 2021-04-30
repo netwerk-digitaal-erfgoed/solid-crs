@@ -122,8 +122,11 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
           invoke: {
             id: AppActors.AUTHENTICATE_MACHINE,
             src: authenticateMachine(solid).withContext({ }),
+            /**
+             * Send logged in event when authenticate machine is done, and the user has authenticated.
+             */
             onDone: {
-              actions: send((_, event) => ({type: AppEvents.LOGGED_IN, session: event.data })),
+              actions: send((_, event) => ({type: AppEvents.LOGGED_IN, session: event.data.session })),
             },
             onError: {
               actions: send({ type: AppEvents.ERROR }),
