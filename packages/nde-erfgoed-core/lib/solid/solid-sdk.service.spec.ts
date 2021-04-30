@@ -1,25 +1,34 @@
-// import * as solid from '@inrupt/solid-client-authn-browser';
-// import { of } from 'rxjs';
-// import { ConsoleLogger } from '../logging/console-logger';
-// import { LoggerLevel } from '../logging/logger-level';
-// import { SolidSdkService } from './solid-sdk.service';
-// jest.mock('@inrupt/solid-client-authn-browser');
+import { authn } from '@digita-ai/nde-erfgoed-client';
+import { ConsoleLogger } from '../logging/console-logger';
+import { LoggerLevel } from '../logging/logger-level';
+import { SolidSDKService } from './solid-sdk.service';
 
+jest.mock('@digita-ai/nde-erfgoed-client');
 describe('SolidService', () => {
-  //   let service: SolidService;
+  let service: SolidSDKService;
 
-  //   beforeEach(async () => {
-  //     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
-  //     service = new SolidSdkService(logger);
-  //   });
+  beforeEach(async () => {
+    const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
+    service = new SolidSDKService(logger);
+  });
 
-  //   afterEach(() => {
-  //     // clear spies
-  //     jest.clearAllMocks();
-  //   });
+  // afterEach(() => {
+  //   // clear spies
+  //   jest.clearAllMocks();
+  // });
 
   it('should be correctly instantiated', () => {
     expect(true).toBeTruthy();
+  });
+
+  it.each([
+    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem'} ],
+    [ {webId: 'lorem', isLoggedIn: false}, null ],
+    [ null, null ],
+  ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
+    authn.handleIncomingRedirect.mockResolvedValue(resolved);
+
+    expect(await service.getSession()).toEqual(result);
   });
 
   //   describe('login()', () => {

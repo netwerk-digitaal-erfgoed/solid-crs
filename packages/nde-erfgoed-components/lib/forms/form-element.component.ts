@@ -63,7 +63,7 @@ export class FormElementComponent<T> extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')) {
+    if(changed.has('actor') && this.actor) {
       // Subscribes to the field's validation results.
       this.subscribe('validationResults', from(this.actor).pipe(
         map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
