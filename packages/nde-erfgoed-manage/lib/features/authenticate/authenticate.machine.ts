@@ -3,7 +3,7 @@ import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
 import { addAlert } from '../collections/collections.events';
-import { AuthenticateEvent, AuthenticateEvents, LoginStartedEvent } from './authenticate.events';
+import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate, LoginStartedEvent } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
@@ -55,8 +55,8 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Listen for redirects, and determine if a user is authenticated or not.
          */
         {
-          src: () => solid.handleIncomingRedirect(),
-          onDone: { actions: send(AuthenticateEvents.LOGIN_SUCCESS) },
+          src: () => solid.getSession(),
+          onDone: { actions: handleSessionUpdate },
           onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
         /**
