@@ -92,9 +92,6 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Redirects the user to the identity provider.
          */
         src: (_, event: LoginStartedEvent) => solid.login(event.webId),
-        onDone: {
-          target: AuthenticateStates.AUTHENTICATED,
-        },
         /**
          * Go back to unauthenticated when something goes wrong, and show an alert.
          */
