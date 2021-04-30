@@ -80,7 +80,7 @@ describe('FormMachine', () => {
   it('should not be submitted if form is invalid', () => {
     machine.start();
 
-    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: ''});
+    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: null});
     machine.send(FormEvents.FORM_SUBMITTED);
 
     expect(machine.state.matches({

@@ -41,13 +41,13 @@ export class SolidMockService extends SolidService {
     this.logger.debug(SolidMockService.name, 'Validating WebID', webId);
 
     if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
     try {
       new URL(webId);
     } catch {
-      throw new ArgumentError('nde.root.alerts.error', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
     }
 
     const issuer = await this.getIssuer(webId);
@@ -69,7 +69,7 @@ export class SolidMockService extends SolidService {
     this.logger.debug(SolidMockService.name, 'Retrieving issuer', webId);
 
     if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
     if (!this.profiles) {
@@ -102,7 +102,7 @@ export class SolidMockService extends SolidService {
     this.logger.debug(SolidMockService.name, 'Logging in user');
 
     if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
     const isWebIdValid = await this.validateWebId(webId);

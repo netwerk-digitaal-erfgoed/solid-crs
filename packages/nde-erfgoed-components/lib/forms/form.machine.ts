@@ -69,6 +69,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  */
 export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, Event<FormEvents>, State<FormStates, FormContext<T>>>(
   {
+    id: FormActors.FORM_MACHINE,
     initial: FormSubmissionStates.NOT_SUBMITTED,
     states: {
       /**
@@ -97,7 +98,6 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                     target: FormCleanlinessStates.CHECKING_CLEANLINESS,
                   },
                 },
-                // exit: [ update, validate(validator) ],
               },
               /**
                * Transient state while checking if form was changed.
@@ -123,7 +123,6 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                     target: FormCleanlinessStates.CHECKING_CLEANLINESS,
                   },
                 },
-                // exit: [ update, validate(validator) ],
               },
             },
           },
@@ -146,7 +145,6 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                     target: FormValidationStates.VALIDATING,
                   },
                 },
-                // exit: [ update, validate(validator) ],
               },
               /**
                * Transient state while validating.
@@ -190,7 +188,6 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                     target: FormValidationStates.VALIDATING,
                   },
                 },
-                // exit: [ update, validate(validator) ],
               },
               /**
                * The form is invalid, based on the provided validator function.
@@ -201,12 +198,10 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                     target: FormValidationStates.VALIDATING,
                   },
                 },
-                // exit: [ update, validate(validator) ],
               },
             },
           },
         },
-        // exit: [ validate(validator) ],
       },
       /**
        * Transient state while submitting form.

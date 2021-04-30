@@ -2,7 +2,7 @@ import { SolidService } from '@digita-ai/nde-erfgoed-core';
 import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvent, AuthenticateEvents, LoginStartedEvent } from './authenticate.events';
@@ -67,11 +67,12 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         {
           id: FormActors.FORM_MACHINE,
           src: formMachine<{webId: string}>(
-            validator,
-            // (context): Observable<FormValidatorResult[]> =>
-            // from(solid.validateWebId(context.data?.webId)).pipe(
-            //   map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
-            // )
+            // validator,
+            (context): Observable<FormValidatorResult[]> =>
+              from(solid.validateWebId(context.data?.webId)).pipe(
+                map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+                catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
+              ),
           ).withContext({
             data: { webId: ''},
             original: { webId: ''},
