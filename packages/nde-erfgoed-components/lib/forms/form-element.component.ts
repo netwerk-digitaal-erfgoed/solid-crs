@@ -1,12 +1,13 @@
 import { css, html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { map, tap } from 'rxjs/operators';
+import { Loading, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { Event } from '../state/event';
-import { FormContext } from './form.machine';
+import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -40,6 +41,12 @@ export class FormElementComponent<T> extends RxLitElement {
   public validationResults: FormValidatorResult[];
 
   /**
+   * The element's form validating state.
+   */
+  @internalProperty()
+  public validating = false;
+
+  /**
    * The element's data.
    */
   @internalProperty()
@@ -70,6 +77,15 @@ export class FormElementComponent<T> extends RxLitElement {
     // Subscribes to data in the actor's context.
     this.subscribe('data', from(this.actor).pipe(
       map((state) => state.context?.data),
+    ));
+
+    // Subscribes to data in the actor's context.
+    this.subscribe('validating', from(this.actor).pipe(
+      map((state) => state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+        },
+      })),
     ));
   }
 
@@ -130,7 +146,11 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input" @slotchange=${this.handleInputSlotchange}></slot>
           </div>
           <div class="icon">
-            <slot name="icon"></slot>
+            <slot name="icon" ?hidden="${this.validating}">
+            </slot>
+            <div class="loading" ?hidden="${!this.validating}">
+              ${ unsafeSVG(Loading) }
+            </div>
           </div>
         </div>
         <div class="action">
@@ -199,9 +219,11 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           align-items: center;
         }
-        .form-element .content .field .icon ::slotted(*)  {
+        .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
+          height: var(--gap-normal);
+          width: var(--gap-normal);
         }
         .form-element .results .result {
           background-color: var(--colors-status-warning);
@@ -212,5 +234,3 @@ export class FormElementComponent<T> extends RxLitElement {
     ];
   }
 }
-
-export default FormElementComponent;

@@ -3,12 +3,11 @@ import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita
 import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Login, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { Event } from '../state/event';
-import { FormValidatorResult } from '../forms/form-validator-result';
 import { FormEvents } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
 

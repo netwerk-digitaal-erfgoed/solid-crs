@@ -5,7 +5,7 @@ import { Event } from '../state/event';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvents } from './form.events';
-import { FormContext, formMachine } from './form.machine';
+import { FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormElementComponent', () => {
   let component: FormElementComponent<Collection>;
@@ -55,6 +55,8 @@ describe('FormElementComponent', () => {
     input.type = 'text';
     input.slot = 'input';
     component.appendChild(input);
+
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -106,5 +108,23 @@ describe('FormElementComponent', () => {
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.label slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.icon slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.action slot').assignedElements().length).toBe(1);
+  });
+
+  it('should show loading icon when validating is true', async () => {
+    component.validating = true;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.icon .loading').hidden).toEqual(false);
+  });
+
+  it('should not show loading icon when validating is false', async () => {
+    component.validating = false;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.icon .loading').hidden).toEqual(true);
   });
 });
