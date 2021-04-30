@@ -25,9 +25,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
-    "resolveJsonModule": true,
-    "types": ["jest", "vite/client"],
-    "emitDeclarationOnly": true,
+    "suppressImplicitAnyIndexErrors": true,
   },
   "include": ["lib"],
   "exclude": [

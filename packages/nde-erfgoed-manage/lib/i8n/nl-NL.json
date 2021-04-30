@@ -45,8 +45,18 @@
         "value": "Collectiebeheersysteem"
     },
     {
-        "key": "nde.features.authenticate.pages.login.search-placeholder",
+        "key": "nde.features.authenticate.pages.login.webid-placeholder",
         "locale": "nl-NL",
-        "value": "E.g. https://profile.janjanssens.nl/"
+        "value": "bv. https://profile.janjanssens.nl/"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.webid-label",
+        "locale": "nl-NL",
+        "value": "WebID"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.create-webid",
+        "locale": "nl-NL",
+        "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
     }
 ]

@@ -1,6 +1,5 @@
 import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
-import { map } from 'rxjs/operators';
+import { ConsoleLogger, LoggerLevel, SolidSDKService } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvents, dismissAlert } from './app.events';
@@ -16,7 +15,7 @@ import { collectionsMachine } from './features/collections/collections.machine';
  * - delays: DelayFunctionMap<CollectionsContext, CollectionsEvent>;
  */
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+const solid = new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The root context of the application.
@@ -96,13 +95,13 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
             })),
           ],
         },
-        [AppEvents.CLICKED_LOGIN]: {
+        [AppEvents.LOGGED_IN]: {
           target: [
             `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
           ],
         },
-        [AppEvents.CLICKED_LOGOUT]: {
+        [AppEvents.LOGGED_OUT]: {
           target: [
             `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
@@ -125,7 +124,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
             id: AppActors.AUTHENTICATE_MACHINE,
             src: authenticateMachine(solid).withContext({}),
             onDone: {
-              actions: send({type: AppEvents.CLICKED_LOGIN }),
+              actions: send({type: AppEvents.LOGGED_IN }),
             },
             onError: {
               actions: send({ type: AppEvents.ERROR }),
@@ -142,9 +141,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
         },
         [AppAuthenticateStates.UNAUTHENTICATED]: {
           invoke: {
-            src: () => solid.logout().pipe(
-              map(() => ({ type: '' })),
-            ),
+            src: () => solid.logout(),
           },
         },
       },
