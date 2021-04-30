@@ -1,4 +1,4 @@
-import { authn } from '@digita-ai/nde-erfgoed-client';
+import { authn, client } from '@digita-ai/nde-erfgoed-client';
 import { ArgumentError } from '../errors/argument-error';
 import { Logger } from '../logging/logger';
 import { NotImplementedError } from '../errors/not-implemented-error';
@@ -39,7 +39,30 @@ export class SolidSDKService extends SolidService {
   async getIssuer(webId: string): Promise<string> {
     this.logger.debug(SolidSDKService.name, 'Retrieving issuer', webId);
 
-    return 'https://broker.pod.inrupt.com';
+    if (!webId) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+    }
+
+    try {
+      const webIdUrl = new URL(webId);
+    } catch {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+    }
+
+    const profileDataset = await client.getSolidDataset(webId).catch(() => {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+    });
+
+    const profile = client.getThing(profileDataset, webId);
+
+    const issuer = client.getStringNoLocale(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
+
+    const openidConfig = await fetch(new URL('/.well-known/openid-configuration', webId).toString()).then((response) => response.json());
+
+    if (openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc') {
+      throw new ArgumentError('invalid openid config', openidConfig);
+    }
+    return issuer;
   }
 
   /**

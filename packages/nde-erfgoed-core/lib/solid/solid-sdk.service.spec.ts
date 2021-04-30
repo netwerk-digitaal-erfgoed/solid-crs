@@ -1,22 +1,21 @@
-// import * as solid from '@inrupt/solid-client-authn-browser';
-// import { of } from 'rxjs';
-// import { ConsoleLogger } from '../logging/console-logger';
-// import { LoggerLevel } from '../logging/logger-level';
-// import { SolidSdkService } from './solid-sdk.service';
-// jest.mock('@inrupt/solid-client-authn-browser');
+import { of } from 'rxjs';
+import { ConsoleLogger } from '../logging/console-logger';
+import { LoggerLevel } from '../logging/logger-level';
+import { SolidSDKService } from './solid-sdk.service';
+import { SolidService } from './solid.service';
 
 describe('SolidService', () => {
-  //   let service: SolidService;
+  let service: SolidService;
 
-  //   beforeEach(async () => {
-  //     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
-  //     service = new SolidSdkService(logger);
-  //   });
+  beforeEach(async () => {
+    const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
+    service = new SolidSDKService(logger);
+  });
 
-  //   afterEach(() => {
-  //     // clear spies
-  //     jest.clearAllMocks();
-  //   });
+  afterEach(() => {
+    // clear spies
+    jest.clearAllMocks();
+  });
 
   it('should be correctly instantiated', () => {
     expect(true).toBeTruthy();
@@ -58,4 +57,19 @@ describe('SolidService', () => {
   //       expect(loginSpy).toHaveBeenCalledTimes(1);
   //     });
   //   });
+
+  describe('getIssuer', () => {
+
+    it.each([ null, undefined ])('should error when webId is %s', async (value) => {
+      await expect(service.getIssuer(value)).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.no-webid');
+    });
+
+    it('should throw error when webId is an invalid URL', async () => {
+      await expect(service.getIssuer('invalid-url')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-url');
+    });
+
+    it('should throw error when webId does not have valid profile page', async () => {
+      await expect(service.getIssuer('https://nde.nl/')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.no-profile');
+    });
+  });
 });
