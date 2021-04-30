@@ -1,34 +1,30 @@
-const path = require("path");
+const path = require('path');
 module.exports = {
-   mode: "development",
-   entry: "./lib/index.ts",
-   output: {
-    // library: 'someLibName',
+  mode: 'production',
+  entry: './lib/index.ts',
+  devtool: 'source-map',
+  output: {
     libraryTarget: 'module',
-     path: path.resolve(__dirname, "dist"), 
-     filename: "index.js" 
-   },
+    path: path.resolve(__dirname, 'dist'), 
+    filename: 'index.js' 
+  },
   module: {
     rules: [
-        {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/,
-          },
       {
-        test: /\.css$/,
-        use: [ { loader: "style-loader" }, { loader: "css-loader" } ],
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
     ]
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-      fallback: { 
-         stream: require.resolve("stream-browserify") ,
-         crypto: require.resolve("crypto-browserify")
-      }
+    extensions: ['.ts', '.js'],
+    fallback: { 
+      stream: require.resolve('stream-browserify') ,
+      crypto: require.resolve('crypto-browserify')
+    }
   },
   experiments: {
-outputModule: true
+    outputModule: true
   }
 };
