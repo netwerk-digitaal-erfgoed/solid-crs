@@ -48,11 +48,16 @@ describe('FormMachine', () => {
     expect(machine.state.context.data).toEqual(data);
 
     // States should be updated
-    expect(machine.state.matches({
-      [FormRootStates.CLEANLINESS]: cleanliness,
-      [FormRootStates.VALIDATION]: validation,
-      [FormRootStates.SUBMISSION]: submission,
-    })).toBeTruthy();
+    expect(machine.state.matches(
+      submission === FormSubmissionStates.SUBMITTED ?
+        FormSubmissionStates.SUBMITTED :
+        {
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: cleanliness,
+            [FormRootStates.VALIDATION]: validation,
+          },
+        },
+    )).toBeTruthy();
   });
 
   it('should submit when form is valid', () => {
@@ -61,11 +66,7 @@ describe('FormMachine', () => {
     machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
     machine.send(FormEvents.FORM_SUBMITTED);
 
-    expect(machine.state.matches({
-      [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-      [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-      [FormRootStates.SUBMISSION]: FormSubmissionStates.SUBMITTED,
-    })).toBeTruthy();
+    expect(machine.state.matches(FormSubmissionStates.SUBMITTED)).toBeTruthy();
   });
 
   it('should not change original data when form is updated', () => {
@@ -83,9 +84,10 @@ describe('FormMachine', () => {
     machine.send(FormEvents.FORM_SUBMITTED);
 
     expect(machine.state.matches({
-      [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
-      [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-      [FormRootStates.SUBMISSION]: FormSubmissionStates.NOT_SUBMITTED,
+      [FormSubmissionStates.NOT_SUBMITTED]:{
+        [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
+        [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
+      },
     })).toBeTruthy();
   });
 });

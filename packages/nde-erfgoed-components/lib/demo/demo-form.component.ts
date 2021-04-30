@@ -88,9 +88,10 @@ export class DemoFormComponent extends RxLitElement {
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
       map((state) => state.matches({
-        [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-        [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-        [FormRootStates.SUBMISSION]: FormSubmissionStates.NOT_SUBMITTED,
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
       })),
     ));
   }

@@ -1,11 +1,11 @@
 import { SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents, FormValidator } from '@digita-ai/nde-erfgoed-components';
+import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
-import { map, switchMap } from 'rxjs/operators';
-import { Observable, of, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
-import { AuthenticateEvents } from './authenticate.events';
+import { AuthenticateEvent, AuthenticateEvents, LoginStartedEvent } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
@@ -43,7 +43,7 @@ const validator: FormValidator<{ webId: string }> = (context) =>
 /**
  * The authenticate machine.
  */
-export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
+export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, AuthenticateEvent, State<AuthenticateStates, AuthenticateContext>>({
   id: AuthenticateActors.AUTHENTICATE_MACHINE,
   initial: AuthenticateStates.UNAUTHENTICATED,
 
@@ -57,10 +57,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Listen for redirects, and determine if a user is authenticated or not.
          */
         {
-          src: () => solid.handleIncomingRedirect().pipe(
-            switchMap(() => throwError(new Error())),
-            map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
-          ),
+          src: () => solid.handleIncomingRedirect(),
           onDone: { actions: send(AuthenticateEvents.LOGIN_SUCCESS) },
           onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
@@ -69,18 +66,27 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          */
         {
           id: FormActors.FORM_MACHINE,
-          src: formMachine<{webId: string}>((context): Observable<FormValidatorResult[]> =>
-            solid.validateWebId(context.data?.webId).pipe(
-              map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
-            )).withContext({
+          src: formMachine<{webId: string}>(
+            validator,
+            // (context): Observable<FormValidatorResult[]> =>
+            // from(solid.validateWebId(context.data?.webId)).pipe(
+            //   map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+            // )
+          ).withContext({
             data: { webId: ''},
             original: { webId: ''},
           }),
-          onDone: { actions: send(AuthenticateEvents.LOGIN_STARTED) },
+          onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
         },
       ],
       on: {
+        /**
+         * Transition to redirecting state when the form was submitted.
+         */
         [AuthenticateEvents.LOGIN_STARTED]: AuthenticateStates.REDIRECTING,
+        /**
+         * Transition to authenticated when a redirect leads to a successful login.
+         */
         [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
       },
     },
@@ -93,18 +99,18 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         /**
          * Redirects the user to the identity provider.
          */
-        src: () => solid.login().pipe(
-          map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
-        ),
+        src: (_, event: LoginStartedEvent) => solid.login(event.webId),
+        onDone: {
+          target: AuthenticateStates.AUTHENTICATED,
+        },
         /**
          * Go back to unauthenticated when something goes wrong, and show an alert.
          */
         onError: {
-          actions: pure((_ctx, event) => addAlert({ message: event.data.toString().split('Error: ')[1], type: 'warning' })),
+          actions: pure((_ctx, event) => addAlert({ message: 'nde.root.alerts.error', type: 'warning' })),
           target: AuthenticateStates.UNAUTHENTICATED,
         },
       },
-      type: 'final',
     },
 
     /**
