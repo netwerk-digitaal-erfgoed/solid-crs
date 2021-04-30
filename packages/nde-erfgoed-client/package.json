@@ -12,9 +12,7 @@
     "build": "rimraf ./dist && webpack",
     "build:dev": "npm run build",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "test": "jest --passWithNoTests",
-    "test:ci": "npm run test -- --runInBand"
+    "lint:fix": "eslint --fix ."
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
