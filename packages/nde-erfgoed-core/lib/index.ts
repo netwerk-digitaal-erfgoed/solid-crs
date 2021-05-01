@@ -16,4 +16,5 @@ export * from './stores/resource';
 export * from './stores/store';
 export * from './solid/solid-mock.service';
 export * from './solid/solid-sdk.service';
+export * from './solid/solid-session';
 export * from './solid/solid.service';

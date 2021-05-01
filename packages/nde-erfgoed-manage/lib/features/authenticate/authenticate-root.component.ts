@@ -64,7 +64,7 @@ export class AuthenticateRootComponent extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')){
+    if(changed.has('actor') && this.actor){
       this.subscribe('formActor', from(this.actor).pipe(
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
@@ -75,7 +75,7 @@ export class AuthenticateRootComponent extends RxLitElement {
       }
     }
 
-    if(changed.has('formActor')){
+    if(changed.has('formActor') && this.formActor){
       this.subscribe('enableSubmit', from(this.formActor).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{

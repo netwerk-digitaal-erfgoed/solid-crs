@@ -1,8 +1,8 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { tap } from 'rxjs/operators';
+import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidSDKService, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
@@ -43,11 +43,14 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor: Interpreter<AppContext> = interpret(appMachine.withContext({
-    alerts: [],
-    loggedIn: false,
-    session: null,
-  }), { devTools: true});
+  actor: Interpreter<AppContext> = interpret(
+    appMachine(
+      new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+    )
+      .withContext({
+        alerts: [],
+      }), { devTools: true},
+  );
 
   /**
    * The state of this component.

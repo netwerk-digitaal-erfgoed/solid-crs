@@ -3,6 +3,7 @@ import { ArgumentError } from '../errors/argument-error';
 import { Logger } from '../logging/logger';
 import { NotImplementedError } from '../errors/not-implemented-error';
 import { SolidService } from './solid.service';
+import { SolidSession } from './solid-session';
 
 /**
  * An implementation of the Solid service which uses Solid Client.
@@ -69,10 +70,12 @@ export class SolidSDKService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async handleIncomingRedirect(): Promise<unknown> {
+  async getSession(): Promise<SolidSession> {
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
-    throw new NotImplementedError();
+    const session = await authn.handleIncomingRedirect();
+
+    return session && session.isLoggedIn ? { webId: session.webId } : null;
   }
 
   /**

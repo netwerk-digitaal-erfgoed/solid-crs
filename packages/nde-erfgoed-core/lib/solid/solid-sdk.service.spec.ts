@@ -1,11 +1,12 @@
 import { of } from 'rxjs';
+import { authn } from '@digita-ai/nde-erfgoed-client';
 import { ConsoleLogger } from '../logging/console-logger';
 import { LoggerLevel } from '../logging/logger-level';
 import { SolidSDKService } from './solid-sdk.service';
-import { SolidService } from './solid.service';
 
+jest.mock('@digita-ai/nde-erfgoed-client');
 describe('SolidService', () => {
-  let service: SolidService;
+  let service: SolidSDKService;
 
   beforeEach(async () => {
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
@@ -19,6 +20,16 @@ describe('SolidService', () => {
 
   it('should be correctly instantiated', () => {
     expect(true).toBeTruthy();
+  });
+
+  it.each([
+    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem'} ],
+    [ {webId: 'lorem', isLoggedIn: false}, null ],
+    [ null, null ],
+  ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
+    authn.handleIncomingRedirect.mockResolvedValue(resolved);
+
+    expect(await service.getSession()).toEqual(result);
   });
 
   //   describe('login()', () => {

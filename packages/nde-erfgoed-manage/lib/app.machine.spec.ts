@@ -1,4 +1,5 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
 import { AppContext, appMachine } from './app.machine';
@@ -7,11 +8,14 @@ describe('AppMachine', () => {
   let machine: Interpreter<AppContext>;
 
   beforeEach(() => {
-    machine = interpret<AppContext>(appMachine.withContext({
-      alerts: [],
-      session: null,
-      loggedIn: false,
-    }));
+    machine = interpret<AppContext>(
+      appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      )
+        .withContext({
+          alerts: [],
+        }),
+    );
   });
 
   it('should be correctly instantiated', () => {
@@ -30,7 +34,9 @@ describe('AppMachine', () => {
 
   it('should not add duplicate alert to context when sending addAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext>(appMachine.withContext({
+    machine = interpret<AppContext>(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+    ).withContext({
       alerts: [ alert ],
       session: null,
       loggedIn: false,
@@ -57,11 +63,14 @@ describe('AppMachine', () => {
 
   it('should dismiss alert in context when sending dismissAlert', () => {
     const alert: Alert = {type: 'success', message: 'foo'};
-    machine = interpret<AppContext>(appMachine.withContext({
-      alerts: [ alert ],
-      session: null,
-      loggedIn: false,
-    }));
+    machine = interpret<AppContext>(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+    )
+      .withContext({
+        alerts: [ alert ],
+        session: null,
+        loggedIn: false,
+      }));
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);
     machine.send(AppEvents.DISMISS_ALERT, { alert });
@@ -98,5 +107,37 @@ describe('AppMachine', () => {
     }));
 
     machine.send(AppEvents.ERROR);
+  });
+
+  it('should assign session when logged in', async (done) => {
+    machine.onChange((context) => {
+      if(context.session?.webId === 'lorem') {
+        done();
+      }
+    });
+
+    machine.start();
+
+    machine.send({ type:AppEvents.LOGGED_IN, session: { webId: 'lorem' } });
+  });
+
+  it('should send logged in when authenticate machine is done', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
+
+    machine = interpret<AppContext>(
+      appMachine(solid)
+        .withContext({
+          alerts: [],
+        }),
+    );
+
+    machine.onEvent((event) => {
+      if(event.type === AppEvents.LOGGED_IN && event.session?.webId === 'lorem') {
+        done();
+      }
+    });
+
+    machine.start();
   });
 });
