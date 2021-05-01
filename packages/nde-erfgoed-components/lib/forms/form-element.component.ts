@@ -145,11 +145,7 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input"></slot>
           </div>
           <div class="icon">
-            <slot name="icon" ?hidden="${this.validating}">
-            </slot>
-            <div class="loading" ?hidden="${!this.validating}">
-              ${ unsafeSVG(Loading) }
-            </div>
+            ${this.validating ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
         </div>
         <div class="action">

@@ -55,13 +55,13 @@ export class SolidMockService extends SolidService {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
     }
 
-    const issuer = await this.getIssuer(webId);
+    const issuer = this.profiles.find((profile) => profile.webId === webId)?.issuer;
 
     if (!issuer) {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
     }
 
-    return this.profiles.find((profile) => profile.webId === webId)?.issuer;
+    return issuer;
   }
 
   /**

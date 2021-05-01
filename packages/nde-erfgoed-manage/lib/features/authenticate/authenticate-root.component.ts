@@ -124,7 +124,6 @@ export class AuthenticateRootComponent extends RxLitElement {
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-            <div slot="icon"></div>
             <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
             <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
