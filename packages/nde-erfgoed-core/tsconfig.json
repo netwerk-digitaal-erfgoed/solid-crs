@@ -27,7 +27,7 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
     "suppressImplicitAnyIndexErrors": true,
-    "types": ["vite/client"],
+    "types": ["node", "vite/client"],
     "emitDeclarationOnly": true
   },
   "include": ["lib"],

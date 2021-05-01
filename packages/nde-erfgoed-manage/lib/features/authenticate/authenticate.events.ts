@@ -1,7 +1,7 @@
 import { Event } from '@digita-ai/nde-erfgoed-components';
-import { SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
+import { SolidSession } from '../../common/solid/solid-session';
 import { AuthenticateContext } from './authenticate.machine';
 
 /**

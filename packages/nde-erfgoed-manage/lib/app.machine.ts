@@ -1,8 +1,9 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvent, AppEvents, dismissAlert } from './app.events';
+import { SolidSession } from './common/solid/solid-session';
+import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionsMachine } from './features/collections/collections.machine';
 

@@ -1,9 +1,6 @@
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { CollectionsRootComponent } from './collections-root.component';
 import { CollectionsContext, collectionsMachine } from './collections.machine';
-
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 describe('CollectionsRootComponent', () => {
   let component: CollectionsRootComponent;

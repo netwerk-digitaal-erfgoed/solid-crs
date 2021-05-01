@@ -1,7 +1,7 @@
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
-import { SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
+import { SolidSession } from './common/solid/solid-session';
 
 /**
  * Event references for the application root, with readable log format.

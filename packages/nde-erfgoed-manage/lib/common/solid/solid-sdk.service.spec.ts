@@ -1,8 +1,6 @@
 import { getSolidDataset, handleIncomingRedirect } from '@digita-ai/nde-erfgoed-client';
+import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import fetchMock, {MockResponseInitFunction} from 'jest-fetch-mock';
-
-import { ConsoleLogger } from '../logging/console-logger';
-import { LoggerLevel } from '../logging/logger-level';
 import { SolidSDKService } from './solid-sdk.service';
 
 jest.mock('@digita-ai/nde-erfgoed-client');

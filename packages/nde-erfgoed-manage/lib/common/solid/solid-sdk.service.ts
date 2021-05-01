@@ -1,7 +1,5 @@
 import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl } from '@digita-ai/nde-erfgoed-client';
-import { ArgumentError } from '../errors/argument-error';
-import { Logger } from '../logging/logger';
-import { NotImplementedError } from '../errors/not-implemented-error';
+import { ArgumentError, Logger, NotImplementedError } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 

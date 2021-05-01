@@ -1,10 +1,11 @@
-import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { send } from 'xstate/lib/actions';
 import { catchError, map } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 import { addAlert } from '../../app.events';
+import { SolidSession } from '../../common/solid/solid-session';
+import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**
@@ -84,7 +85,10 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
              * https://wouteraj.inrupt.net/profile/card#me
              * https://pod.inrupt.com/wouteraj/profile/card#me
              */
-            (context) => solid.login(context.data.webId),
+            async (context) => {
+              await solid.login(context.data.webId);
+              return context.data;
+            },
           ).withContext({
             data: { webId: ''},
             original: { webId: ''},
@@ -94,7 +98,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
            * Go back to unauthenticated when something goes wrong, and show an alert.
            */
           onError: {
-            actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
+            // actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
             target: AuthenticateStates.UNAUTHENTICATED,
           },
         },

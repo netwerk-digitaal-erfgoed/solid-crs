@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from
 import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidSDKService, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
@@ -10,6 +10,7 @@ import { AppActors, AppContext, AppFeatureStates, appMachine, AppRootStates } fr
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { CollectionsRootComponent } from './features/collections/collections-root.component';
+import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**
  * The root page of the application.

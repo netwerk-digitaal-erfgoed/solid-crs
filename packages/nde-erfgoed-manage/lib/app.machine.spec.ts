@@ -1,8 +1,9 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
 import { AppContext, appMachine } from './app.machine';
+import { SolidMockService } from './common/solid/solid-mock.service';
 
 describe('AppMachine', () => {
   let machine: Interpreter<AppContext>;
@@ -38,8 +39,6 @@ describe('AppMachine', () => {
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
     ).withContext({
       alerts: [ alert ],
-      session: null,
-      loggedIn: false,
     }));
     machine.start();
     machine.send(AppEvents.ADD_ALERT, { alert });
@@ -68,8 +67,6 @@ describe('AppMachine', () => {
     )
       .withContext({
         alerts: [ alert ],
-        session: null,
-        loggedIn: false,
       }));
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);
