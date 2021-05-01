@@ -1,11 +1,10 @@
 import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
 import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { pure, send } from 'xstate/lib/actions';
+import { send } from 'xstate/lib/actions';
 import { catchError, map } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
-import { addAlert } from '../collections/collections.events';
-import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate, LoginStartedEvent } from './authenticate.events';
+import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
@@ -70,12 +69,21 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
         {
           id: FormActors.FORM_MACHINE,
           src: formMachine<{webId: string}>(
-            // validator,
+            /**
+             * Validates the form.
+             */
             (context): Observable<FormValidatorResult[]> =>
               from(solid.getIssuer(context.data?.webId)).pipe(
                 map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
                 catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
               ),
+            /**
+             * Redirects the user to the identity provider.
+             *
+             * https://wouteraj.inrupt.net/profile/card#me
+             * https://pod.inrupt.com/wouteraj/profile/card#me
+             */
+            (context) => solid.login(context.data.webId),
           ).withContext({
             data: { webId: ''},
             original: { webId: ''},
@@ -99,21 +107,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
      * The user is being redirected to his identity provider.
      */
     [AuthenticateStates.REDIRECTING]: {
-      invoke: {
-        /**
-         * Redirects the user to the identity provider.
-         * https://wouteraj.inrupt.net/profile/card#me
-         * https://pod.inrupt.com/wouteraj/profile/card#me
-         */
-        src: (_, event: LoginStartedEvent) => solid.login(event.webId),
-        /**
-         * Go back to unauthenticated when something goes wrong, and show an alert.
-         */
-        onError: {
-          actions: pure((_ctx, event) => addAlert({ message: event.data.message, type: 'warning' })),
-          target: AuthenticateStates.UNAUTHENTICATED,
-        },
-      },
+      type: 'final',
     },
 
     /**
