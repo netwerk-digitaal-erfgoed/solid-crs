@@ -56,13 +56,13 @@ export class AuthenticateRootComponent extends RxLitElement {
    * Indicates if the form can be submitted.
    */
   @internalProperty()
-  canSubmit?: boolean;
+  canSubmit? = false;
 
   /**
    * Indicates if the form is being submitted.
    */
   @internalProperty()
-  isSubitting?: boolean;
+  isSubitting? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.

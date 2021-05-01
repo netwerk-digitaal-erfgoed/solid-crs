@@ -4,6 +4,7 @@ import { createMachine } from 'xstate';
 import { send } from 'xstate/lib/actions';
 import { catchError, map } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
+import { addAlert } from '../../app.events';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**
@@ -89,6 +90,13 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
             original: { webId: ''},
           }),
           onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
+          /**
+           * Go back to unauthenticated when something goes wrong, and show an alert.
+           */
+          onError: {
+            actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
+            target: AuthenticateStates.UNAUTHENTICATED,
+          },
         },
       ],
       on: {
