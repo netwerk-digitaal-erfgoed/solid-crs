@@ -32,6 +32,11 @@ export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents
 export interface FormValidatedEvent extends Event<FormEvents> { type: FormEvents.FORM_VALIDATED; results: FormValidatorResult[] }
 
 /**
+ * Union type for all form events.
+ */
+export type FormEvent = FormUpdatedEvent | FormSubmittedEvent | FormValidatedEvent;
+
+/**
  * Actions for the form component.
  */
 
@@ -45,6 +50,6 @@ export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
 /**
  * Adds validation data to context.
  */
-export const addValidationResults: Action<FormContext<unknown>, Event<FormEvents>> = assign<FormContext<unknown>, Event<FormEvents>>({
+export const addValidationResults = assign<FormContext<unknown>, FormValidatedEvent>({
   validation: (context, event: FormValidatedEvent) => [ ...event.results ],
 });

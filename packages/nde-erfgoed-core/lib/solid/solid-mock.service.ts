@@ -33,34 +33,6 @@ export class SolidMockService extends SolidService {
   }
 
   /**
-   * Makes sure the profile document of a WebID contains
-   * the necessary triples for authentication, and whether they are correct
-   *
-   * @param webId The WebID to validate
-   */
-  async validateWebId(webId: string): Promise<boolean> {
-    this.logger.debug(SolidMockService.name, 'Validating WebID', webId);
-
-    if (!webId) {
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
-    }
-
-    try {
-      new URL(webId);
-    } catch {
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
-    }
-
-    const issuer = await this.getIssuer(webId);
-
-    if (!issuer) {
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
-    }
-
-    return this.profiles.find((profile) => profile.webId === webId) !== null;
-  }
-
-  /**
    * Retrieves the value of the oidcIssuer triple from a profile document
    * for a given WebID
    *
@@ -75,6 +47,18 @@ export class SolidMockService extends SolidService {
 
     if (!this.profiles) {
       throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
+    }
+
+    try {
+      new URL(webId);
+    } catch {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+    }
+
+    const issuer = await this.getIssuer(webId);
+
+    if (!issuer) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
     }
 
     return this.profiles.find((profile) => profile.webId === webId)?.issuer;
@@ -104,7 +88,7 @@ export class SolidMockService extends SolidService {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
-    const isWebIdValid = await this.validateWebId(webId);
+    const isWebIdValid = await this.getIssuer(webId);
 
     if (!isWebIdValid) {
       throw new ArgumentError('nde.root.alerts.error', isWebIdValid);

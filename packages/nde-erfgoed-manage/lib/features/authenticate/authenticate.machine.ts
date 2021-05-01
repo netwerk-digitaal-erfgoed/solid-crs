@@ -1,5 +1,5 @@
 import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormValidator, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
 import { catchError, map } from 'rxjs/operators';
@@ -72,7 +72,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
           src: formMachine<{webId: string}>(
             // validator,
             (context): Observable<FormValidatorResult[]> =>
-              from(solid.validateWebId(context.data?.webId)).pipe(
+              from(solid.getIssuer(context.data?.webId)).pipe(
                 map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
                 catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
               ),

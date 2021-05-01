@@ -1,10 +1,9 @@
-import { createMachine, send, sendParent } from 'xstate';
-import { map, tap } from 'rxjs/operators';
+import { createMachine } from 'xstate';
+import { map } from 'rxjs/operators';
 import { State } from '../state/state';
-import { Event } from '../state/event';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
-import { addValidationResults, FormEvents, update } from './form.events';
+import { addValidationResults, FormEvent, FormEvents, FormValidatedEvent, update } from './form.events';
 
 /**
  * The context of a form.
@@ -54,7 +53,6 @@ export enum FormCleanlinessStates {
 export enum FormValidationStates {
   NOT_VALIDATED = '[FormState: Not validated]',
   VALIDATING = '[FormState: Validating]',
-  CHECKING_VALIDATION = '[FormState: Checking validation]',
   VALID      = '[FormState: Valid]',
   INVALID    = '[FormState: Invalid]',
 }
@@ -67,7 +65,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
 /**
  * The form component machine.
  */
-export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, Event<FormEvents>, State<FormStates, FormContext<T>>>(
+export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
   {
     id: FormActors.FORM_MACHINE,
     initial: FormSubmissionStates.NOT_SUBMITTED,
@@ -159,25 +157,17 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
                 on: {
                   [FormEvents.FORM_VALIDATED]: [
                     {
+                      cond: (_, event: FormValidatedEvent) => !event.results || event.results.length === 0,
                       actions: addValidationResults,
-                      target: FormValidationStates.CHECKING_VALIDATION,
+                      target: FormValidationStates.VALID,
+                    },
+                    {
+                      cond: (_, event: FormValidatedEvent) => event.results && event.results.length > 0,
+                      actions: addValidationResults,
+                      target: FormValidationStates.INVALID,
                     },
                   ],
                 },
-              },
-              /**
-               * Transient state while checking validation.
-               */
-              [FormValidationStates.CHECKING_VALIDATION]: {
-                always: [
-                  {
-                    target: FormValidationStates.VALID,
-                    cond: (context: FormContext<T>) => !context.validation || context.validation.length === 0,
-                  },
-                  {
-                    target: FormValidationStates.INVALID,
-                  },
-                ],
               },
               /**
                * The form is valid, based on the provided validator function.

@@ -145,9 +145,9 @@ Create in '@digita-ai/nde-erfgoed-core' package under 'lib/solid/solid.service.t
 
 This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.  Take a look at the https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/#enable-session-restore[authentication in a browser environment example].
 
-For now, implement the `validateWebId()` and `getIssuer()` function.
+For now, implement the `getIssuer()` function.
 
-`validateWebId(webId: string): Observable<boolean>` will be used for validating the input field of the `AuthenticateLoginPageComponent`.  
+`getIssuer(webId: string): Observable<string>` will be used for validating the input field of the `AuthenticateLoginPageComponent`.  
 Test URL validity with `new URL()`. Retrieve the OIDC issuer using `this.getIssuer()`. Fetching '<issuer_url>/.well-known/openid-configuration' should return a JSON object containing a `solid_oidc_supported` key.
 
 The `getIssuer(webId: string): Observable<string>` should query a user's profile for the `oidcIssuer` triple and return its value.

@@ -1,8 +1,7 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
-import { Event } from '../state/event';
-import { FormEvents } from './form.events';
+import { FormEvent, FormEvents } from './form.events';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormMachine', () => {
@@ -11,7 +10,7 @@ describe('FormMachine', () => {
   beforeEach(() => {
     machine = interpret<FormContext<Collection>>(
       formMachine(
-        (context: FormContext<Collection>, event: Event<FormEvents>) => of([
+        (context: FormContext<Collection>, event: FormEvent) => of([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),

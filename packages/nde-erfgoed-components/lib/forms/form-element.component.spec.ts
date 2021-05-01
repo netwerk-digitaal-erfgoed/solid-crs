@@ -1,10 +1,9 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
-import { Event } from '../state/event';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents } from './form.events';
+import { FormEvent, FormEvents } from './form.events';
 import { FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormElementComponent', () => {
@@ -14,7 +13,7 @@ describe('FormElementComponent', () => {
   beforeEach(() => {
     machine = interpret(
       formMachine<Collection>(
-        (context: FormContext<Collection>, event: Event<FormEvents>): Observable<FormValidatorResult[]> => of([
+        (context: FormContext<Collection>, event: FormEvent): Observable<FormValidatorResult[]> => of([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),

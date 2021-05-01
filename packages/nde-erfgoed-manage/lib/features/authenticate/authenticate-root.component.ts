@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
+import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { ActorRef, Interpreter, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -44,7 +44,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActor: ActorRef<Event<FormEvents>>;
+  formActor: ActorRef<FormEvent>;
 
   /**
    * The state of this component.
