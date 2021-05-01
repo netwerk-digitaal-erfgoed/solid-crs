@@ -1,4 +1,4 @@
-import { authn } from '@digita-ai/nde-erfgoed-client';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl } from '@digita-ai/nde-erfgoed-client';
 import { ArgumentError } from '../errors/argument-error';
 import { Logger } from '../logging/logger';
 import { NotImplementedError } from '../errors/not-implemented-error';
@@ -28,7 +28,8 @@ export class SolidSDKService extends SolidService {
   async validateWebId(webId: string): Promise<boolean> {
     this.logger.debug(SolidSDKService.name, 'Validating WebID', webId);
 
-    throw new NotImplementedError();
+    await this.getIssuer(webId);
+    return true;
   }
 
   /**
@@ -40,7 +41,55 @@ export class SolidSDKService extends SolidService {
   async getIssuer(webId: string): Promise<string> {
     this.logger.debug(SolidSDKService.name, 'Retrieving issuer', webId);
 
-    return 'https://broker.pod.inrupt.com';
+    if (!webId) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+    }
+
+    // Parse the user's WebID as a url.
+    try {
+      const webIdUrl = new URL(webId);
+    } catch {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+    }
+
+    let profileDataset;
+
+    // Dereference the user's WebID to get the user's profile document.
+    try {
+      profileDataset = await getSolidDataset(webId);
+    } catch(e) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+    }
+
+    // Parses the profile document.
+    const profile = getThing(profileDataset, webId);
+
+    // Gets the issuer from the user's profile.
+    const issuer = getUrl(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
+
+    // Throw an error if there's no OIDC Issuer registered in the user's profile.
+    if(!issuer) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+    }
+
+    // Check if the issuer is a valid OIDC provider.
+    let openidConfigResponse;
+    try{
+      openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+    } catch(e) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfigResponse);
+    }
+    const openidConfig = await openidConfigResponse.json();
+
+    // Throw an error if the issuer is an invalid OIDC provider.
+    if (
+      !openidConfig
+      // Inrupt.net isn't (fully) Solid OIDC-compliant
+      // || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc'
+    ) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
+    }
+    return issuer;
   }
 
   /**
@@ -50,7 +99,7 @@ export class SolidSDKService extends SolidService {
   async getSession(): Promise<SolidSession> {
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
-    const session = await authn.handleIncomingRedirect();
+    const session = await handleIncomingRedirect();
 
     return session && session.isLoggedIn ? { webId: session.webId } : null;
   }
@@ -71,7 +120,7 @@ export class SolidSDKService extends SolidService {
       throw new ArgumentError('Argument issuer should be set.', issuer);
     }
 
-    await authn.login({
+    await login({
       oidcIssuer: issuer,
       redirectUrl: window.location.href,
       clientName: 'Getting started app',

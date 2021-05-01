@@ -1,9 +1,12 @@
-import { authn } from '@digita-ai/nde-erfgoed-client';
+import { getSolidDataset, handleIncomingRedirect } from '@digita-ai/nde-erfgoed-client';
+import fetchMock, {MockResponseInitFunction} from 'jest-fetch-mock';
+
 import { ConsoleLogger } from '../logging/console-logger';
 import { LoggerLevel } from '../logging/logger-level';
 import { SolidSDKService } from './solid-sdk.service';
 
 jest.mock('@digita-ai/nde-erfgoed-client');
+
 describe('SolidService', () => {
   let service: SolidSDKService;
 
@@ -11,11 +14,6 @@ describe('SolidService', () => {
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
   });
-
-  // afterEach(() => {
-  //   // clear spies
-  //   jest.clearAllMocks();
-  // });
 
   it('should be correctly instantiated', () => {
     expect(true).toBeTruthy();
@@ -26,7 +24,8 @@ describe('SolidService', () => {
     [ {webId: 'lorem', isLoggedIn: false}, null ],
     [ null, null ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
-    authn.handleIncomingRedirect.mockResolvedValue(resolved);
+
+    handleIncomingRedirect.mockResolvedValue(resolved);
 
     expect(await service.getSession()).toEqual(result);
   });
@@ -67,4 +66,27 @@ describe('SolidService', () => {
   //       expect(loginSpy).toHaveBeenCalledTimes(1);
   //     });
   //   });
+
+  describe('getIssuer', () => {
+
+    const validOpenIdConfig = JSON.stringify({solid_oidc_supported: 'https://solidproject.org/TR/solid-oidc'});
+    const validProfileDataset = {};
+
+    it.each([
+      [ null, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
+      [ undefined, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
+      [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.invalid-url' ],
+      [ 'https://nde.nl/', null, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-profile' ],
+    ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
+      if(profile) {
+        getSolidDataset.mockResolvedValue(profile);
+      } else {
+        getSolidDataset.mockRejectedValue(new Error('bla'));
+      }
+
+      fetchMock.mockResponses(openId);
+
+      await expect(service.getIssuer(webId)).rejects.toThrowError(message);
+    });
+  });
 });

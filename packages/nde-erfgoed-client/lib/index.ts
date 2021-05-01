@@ -1,2 +1,2 @@
-export * as authn from '@inrupt/solid-client-authn-browser';
-export * as client from '@inrupt/solid-client';
+export { login, handleIncomingRedirect } from '@inrupt/solid-client-authn-browser';
+export { getSolidDataset, getThing, getStringNoLocale, getUrl } from '@inrupt/solid-client';
