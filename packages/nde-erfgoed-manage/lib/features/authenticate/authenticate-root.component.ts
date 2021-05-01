@@ -53,10 +53,16 @@ export class AuthenticateRootComponent extends RxLitElement {
   state?: State<AuthenticateContext>;
 
   /**
-   * The state of this component.
+   * Indicates if the form can be submitted.
    */
   @internalProperty()
-  enableSubmit?: boolean;
+  canSubmit? = false;
+
+  /**
+   * Indicates if the form is being submitted.
+   */
+  @internalProperty()
+  isSubitting? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -76,13 +82,17 @@ export class AuthenticateRootComponent extends RxLitElement {
     }
 
     if(changed.has('formActor') && this.formActor){
-      this.subscribe('enableSubmit', from(this.formActor).pipe(
+      this.subscribe('canSubmit', from(this.formActor).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
             [FormRootStates.VALIDATION]: FormValidationStates.VALID,
           },
         })),
+      ));
+
+      this.subscribe('isSubitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
       ));
     }
   }
@@ -124,8 +134,8 @@ export class AuthenticateRootComponent extends RxLitElement {
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-            <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+            <input type="text" slot="input" ?disabled="${this.isSubitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+            <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
        

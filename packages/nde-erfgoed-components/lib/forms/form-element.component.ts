@@ -4,9 +4,8 @@ import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@digita-ai/nde-erfgoed-theme';
-import { Event } from '../state/event';
 import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
@@ -15,6 +14,12 @@ import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
  * A component which shows the details of a single collection.
  */
 export class FormElementComponent<T> extends RxLitElement {
+
+  /**
+   * All input elements slotted in the form element.
+   */
+  @internalProperty()
+  inputs: HTMLInputElement[];
 
   /**
    * The slot element which contains the input field.
@@ -47,10 +52,16 @@ export class FormElementComponent<T> extends RxLitElement {
   public validationResults: FormValidatorResult[];
 
   /**
-   * The element's form validating state.
+   * Indicates if the element's loading icon should be shown.
    */
   @internalProperty()
-  public validating = false;
+  public showLoading = false;
+
+  /**
+   * Indicates if the form's input should be locked.
+   */
+  @internalProperty()
+  public lockInput = false;
 
   /**
    * The element's data.
@@ -82,15 +93,27 @@ export class FormElementComponent<T> extends RxLitElement {
       ));
 
       // Subscribes to data in the actor's context.
-      this.subscribe('validating', from(this.actor).pipe(
-        map((state) => state.matches({
+      this.subscribe('showLoading', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
           },
         })),
       ));
 
+      // Subscribes to data in the actor's context.
+      this.subscribe('lockInput', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches(FormSubmissionStates.SUBMITTED)),
+      ));
+
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+    }
+
+    /**
+     * Update the disabled state of the input elements.
+     */
+    if(changed.has('lockInput')) {
+      this.inputs?.forEach((element) => element.disabled = this.lockInput);
     }
   }
 
@@ -114,17 +137,15 @@ export class FormElementComponent<T> extends RxLitElement {
       throw new ArgumentError('Argument data should be set.', data);
     }
 
-    const childNodes: Node[] = slot.assignedNodes({flatten: true});
+    this.inputs = slot.assignedNodes({flatten: true})?.filter((element) => element instanceof HTMLInputElement).map((element) => element as HTMLInputElement);
 
-    childNodes.forEach((node) => {
-      if(node && node instanceof HTMLInputElement) {
-        // Set the input field's default value.
-        const fieldData = data[this.field];
-        node.value = typeof fieldData === 'string' ? fieldData : '';
+    this.inputs?.forEach((element) => {
+      // Set the input field's default value.
+      const fieldData = data[this.field];
+      element.value = typeof fieldData === 'string' ? fieldData : '';
 
-        // Send event when input field's value changes.
-        node.addEventListener('input', () => actor.send({type: FormEvents.FORM_UPDATED, value: node.value, field} as FormUpdatedEvent));
-      }
+      // Send event when input field's value changes.
+      element.addEventListener('input', () => actor.send({type: FormEvents.FORM_UPDATED, value: element.value, field} as FormUpdatedEvent));
     });
   }
 
@@ -145,7 +166,7 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input"></slot>
           </div>
           <div class="icon">
-            ${this.validating ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
+            ${this.showLoading ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
         </div>
         <div class="action">

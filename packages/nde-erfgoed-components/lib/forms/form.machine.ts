@@ -4,6 +4,7 @@ import { State } from '../state/state';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
 import { addValidationResults, FormEvent, FormEvents, FormValidatedEvent, update } from './form.events';
+import { FormSubmitter } from './form-submitter';
 
 /**
  * The context of a form.
@@ -63,9 +64,15 @@ export enum FormValidationStates {
 export type FormStates = FormRootStates | FormSubmissionStates | FormCleanlinessStates | FormValidationStates;
 
 /**
- * The form component machine.
+ * Function which generates a form machine.
+ *
+ * @param validator A function which validates the form.
+ * @param submitter A function which submits the form.
+ * @returns A form machine.
  */
-export const formMachine = <T>(validator: FormValidator<T>) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
+export const formMachine = <T>(
+  validator: FormValidator<T>,
+  submitter: FormSubmitter<T> = async (context) => context.data) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
   {
     id: FormActors.FORM_MACHINE,
     initial: FormSubmissionStates.NOT_SUBMITTED,
@@ -194,19 +201,19 @@ export const formMachine = <T>(validator: FormValidator<T>) => createMachine<For
         },
       },
       /**
-       * Transient state while submitting form.
+       * Transient state while submitting form. Invokes the machine's submitter.
        */
       [FormSubmissionStates.SUBMITTING]: {
         entry: update,
-        always: [
-          {
+        invoke: {
+          src: (context, event) => submitter(context, event),
+          onDone: {
             target: FormSubmissionStates.SUBMITTED,
-            cond: (context: FormContext<T>) => context.validation === null || context.validation.length === 0,
           },
-          {
+          onError: {
             target: FormSubmissionStates.NOT_SUBMITTED,
           },
-        ],
+        },
       },
       /**
        * The form has been submitted.
