@@ -57,7 +57,7 @@ export class CollectionsRootComponent extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')){
+    if(changed.has('actor') && this.actor){
       if(this.actor.parent){
         this.subscribe('alerts', from(this.actor.parent)
           .pipe(map((state) => state.context.alerts)));

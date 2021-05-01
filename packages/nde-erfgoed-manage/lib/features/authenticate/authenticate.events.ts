@@ -1,4 +1,8 @@
 import { Event } from '@digita-ai/nde-erfgoed-components';
+import { SolidSession } from '@digita-ai/nde-erfgoed-core';
+import { DoneInvokeEvent } from 'xstate';
+import { assign, choose, send } from 'xstate/lib/actions';
+import { AuthenticateContext } from './authenticate.machine';
 
 /**
  * Event references for the authenticate component, with readable log format.
@@ -32,3 +36,21 @@ export interface LoginErrorEvent extends Event<AuthenticateEvents> { type: Authe
  * Union type of all authenticate events
  */
 export type AuthenticateEvent = LoginStartedEvent | LoginSuccessEvent | LoginStartedEvent;
+
+/**
+ * Handles an update of the active session.
+ */
+export const handleSessionUpdate = choose<AuthenticateContext, DoneInvokeEvent<SolidSession>>([
+  {
+    cond: (context: AuthenticateContext, event: DoneInvokeEvent<SolidSession>) => !event.data,
+    actions: [
+      send(AuthenticateEvents.LOGIN_ERROR),
+    ],
+  },
+  {
+    actions: [
+      assign({session: (context, event) => event.data}),
+      send(AuthenticateEvents.LOGIN_SUCCESS),
+    ],
+  },
+]);

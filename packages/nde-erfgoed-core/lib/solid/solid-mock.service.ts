@@ -1,5 +1,6 @@
 import { ArgumentError } from '../errors/argument-error';
 import { Logger } from '../logging/logger';
+import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';
 
 /**
@@ -83,22 +84,20 @@ export class SolidMockService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async handleIncomingRedirect(): Promise<unknown> {
+  async getSession(): Promise<SolidSession> {
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
 
     if (!this.profiles) {
       throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
     }
 
-    throw new Error();
-
-    return { isLoggedIn: true, webId: this.profiles[0].webId };
+    return null;
   }
 
   /**
    * Redirects the user to their OIDC provider
    */
-  async login(webId: string): Promise<unknown> {
+  async login(webId: string): Promise<void> {
     this.logger.debug(SolidMockService.name, 'Logging in user');
 
     if (!webId) {
@@ -110,8 +109,6 @@ export class SolidMockService extends SolidService {
     if (!isWebIdValid) {
       throw new ArgumentError('nde.root.alerts.error', isWebIdValid);
     }
-
-    return true;
   }
 
   /**

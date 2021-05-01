@@ -3,6 +3,8 @@ import type {Config} from '@jest/types';
 const config: Config.InitialOptions = {
   preset: 'ts-jest/presets/js-with-ts',
   testMatch: ['**/+(*.)+(spec).+(ts)'],
+  setupFiles: ['<rootDir>/tests/setup.ts'],
+  automock: false,
   transformIgnorePatterns: ['node_modules/(?!(lit-element|lit-html|rx-lit)/)'],
   moduleNameMapper: {
     '~(.*)': '<rootDir>/lib/$1',

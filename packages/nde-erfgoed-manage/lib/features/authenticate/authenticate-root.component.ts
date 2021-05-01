@@ -64,7 +64,7 @@ export class AuthenticateRootComponent extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')){
+    if(changed.has('actor') && this.actor){
       this.subscribe('formActor', from(this.actor).pipe(
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
@@ -75,7 +75,7 @@ export class AuthenticateRootComponent extends RxLitElement {
       }
     }
 
-    if(changed.has('formActor')){
+    if(changed.has('formActor') && this.formActor){
       this.subscribe('enableSubmit', from(this.formActor).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
@@ -120,16 +120,16 @@ export class AuthenticateRootComponent extends RxLitElement {
       </div>
       <div class="form-container">
         ${ alerts }
-        ${ this.formActor ? html`
+        
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
             <div slot="icon"></div>
             <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-            <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+            <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
-        ` : html``}
+       
       </div>
       <div class="webid-container">
         <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>

@@ -1,3 +1,5 @@
+import { SolidSession } from './solid-session';
+
 /**
  * Service for interacting with Solid pods
  */
@@ -23,12 +25,12 @@ export abstract class SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  public abstract handleIncomingRedirect(): Promise<unknown>;
+  public abstract getSession(): Promise<SolidSession>;
 
   /**
    * Redirects the user to their OIDC provider
    */
-  public abstract login(webId: string): Promise<unknown>;
+  public abstract login(webId: string): Promise<void>;
 
   /**
    * Deauthenticates the user from their OIDC issuer
