@@ -93,13 +93,15 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
       invoke: {
         /**
          * Redirects the user to the identity provider.
+         * https://wouteraj.inrupt.net/profile/card#me
+         * https://pod.inrupt.com/wouteraj/profile/card#me
          */
         src: (_, event: LoginStartedEvent) => solid.login(event.webId),
         /**
          * Go back to unauthenticated when something goes wrong, and show an alert.
          */
         onError: {
-          actions: pure((_ctx, event) => addAlert({ message: 'nde.root.alerts.error', type: 'warning' })),
+          actions: pure((_ctx, event) => addAlert({ message: event.data.message, type: 'warning' })),
           target: AuthenticateStates.UNAUTHENTICATED,
         },
       },
