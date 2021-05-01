@@ -20,19 +20,6 @@ export class SolidSDKService extends SolidService {
   }
 
   /**
-   * Makes sure the profile document of a WebID contains
-   * the necessary triples for authentication, and whether they are correct
-   *
-   * @param webId The WebID to validate
-   */
-  async validateWebId(webId: string): Promise<boolean> {
-    this.logger.debug(SolidSDKService.name, 'Validating WebID', webId);
-
-    await this.getIssuer(webId);
-    return true;
-  }
-
-  /**
    * Retrieves the value of the oidcIssuer triple from a profile document
    * for a given WebID
    *
@@ -63,6 +50,10 @@ export class SolidSDKService extends SolidService {
 
     // Parses the profile document.
     const profile = getThing(profileDataset, webId);
+
+    if(!profile) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+    }
 
     // Gets the issuer from the user's profile.
     const issuer = getUrl(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');

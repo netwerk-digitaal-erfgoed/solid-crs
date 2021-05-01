@@ -1,10 +1,10 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
-import { Event } from '../state/event';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents } from './form.events';
-import { FormContext, formMachine } from './form.machine';
+import { FormEvent, FormEvents } from './form.events';
+import { FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormElementComponent', () => {
   let component: FormElementComponent<Collection>;
@@ -13,10 +13,10 @@ describe('FormElementComponent', () => {
   beforeEach(() => {
     machine = interpret(
       formMachine<Collection>(
-        (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+        (context: FormContext<Collection>, event: FormEvent): Observable<FormValidatorResult[]> => of([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ],
+        ]),
       )
         .withContext({
           data: { uri: '', name: 'Test' },
@@ -54,6 +54,8 @@ describe('FormElementComponent', () => {
     input.type = 'text';
     input.slot = 'input';
     component.appendChild(input);
+
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -105,5 +107,23 @@ describe('FormElementComponent', () => {
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.label slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.icon slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.action slot').assignedElements().length).toBe(1);
+  });
+
+  it('should show loading icon when validating is true', async () => {
+    component.validating = true;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.icon .loading').hidden).toEqual(false);
+  });
+
+  it('should not show loading icon when validating is false', async () => {
+    component.validating = false;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.icon .loading').hidden).toEqual(true);
   });
 });

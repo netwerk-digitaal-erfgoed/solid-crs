@@ -1,14 +1,15 @@
 import { css, html, internalProperty, property, PropertyValues, query, unsafeCSS } from 'lit-element';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { map, tap } from 'rxjs/operators';
+import { Loading, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { Event } from '../state/event';
-import { FormContext } from './form.machine';
+import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
@@ -46,6 +47,12 @@ export class FormElementComponent<T> extends RxLitElement {
   public validationResults: FormValidatorResult[];
 
   /**
+   * The element's form validating state.
+   */
+  @internalProperty()
+  public validating = false;
+
+  /**
    * The element's data.
    */
   @internalProperty()
@@ -55,7 +62,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
+  public actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -74,6 +81,15 @@ export class FormElementComponent<T> extends RxLitElement {
         map((state) => state.context?.data),
       ));
 
+      // Subscribes to data in the actor's context.
+      this.subscribe('validating', from(this.actor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+          },
+        })),
+      ));
+
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
     }
   }
@@ -81,7 +97,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * Binds default data and event listener for input form.
    */
-  bindActorToInput(slot: HTMLSlotElement, actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>, field: keyof T, data: T) {
+  bindActorToInput(slot: HTMLSlotElement, actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>, field: keyof T, data: T) {
     if (!slot) {
       throw new ArgumentError('Argument slot should be set.', slot);
     }
@@ -129,7 +145,7 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input"></slot>
           </div>
           <div class="icon">
-            <slot name="icon"></slot>
+            ${this.validating ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
         </div>
         <div class="action">
@@ -198,9 +214,11 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           align-items: center;
         }
-        .form-element .content .field .icon ::slotted(*)  {
+        .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
+          height: var(--gap-normal);
+          width: var(--gap-normal);
         }
         .form-element .results .result {
           background-color: var(--colors-status-warning);
@@ -211,5 +229,3 @@ export class FormElementComponent<T> extends RxLitElement {
     ];
   }
 }
-
-export default FormElementComponent;

@@ -1,4 +1,4 @@
-import { FormActors, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { FormActors, FormContext, FormEvents, FormRootStates, FormSubmissionStates, FormValidationStates } from '@digita-ai/nde-erfgoed-components';
 import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AuthenticateEvents } from './authenticate.events';
@@ -34,13 +34,24 @@ describe('AuthenticateMachine', () => {
     }));
 
     machine.start();
+    const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
 
-    const formActor = machine.children.get(FormActors.FORM_MACHINE);
+    // submit when form is valid
+    formActor.onTransition((state) => {
+      if (state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
+      })) {
+        formActor.send(FormEvents.FORM_SUBMITTED);
+      }
+    });
+
     formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
-    formActor.send(FormEvents.FORM_SUBMITTED);
   });
 
   it('should transition to redirecting when login started was emitted', async (done) => {
+
     machine.onTransition((state) => {
       if(state.matches(AuthenticateStates.REDIRECTING)) {
         done();
@@ -48,10 +59,21 @@ describe('AuthenticateMachine', () => {
     });
 
     machine.start();
+    const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
 
-    const formActor = machine.children.get(FormActors.FORM_MACHINE);
+    // submit when form is valid
+    formActor.onTransition((state) => {
+      if (state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
+      })) {
+        formActor.send(FormEvents.FORM_SUBMITTED);
+      }
+    });
+
     formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
-    formActor.send(FormEvents.FORM_SUBMITTED);
+
   });
 
   it('should transition to authenticated when login success was emitted', async (done) => {

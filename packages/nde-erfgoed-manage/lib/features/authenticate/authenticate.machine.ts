@@ -1,7 +1,9 @@
 import { SolidService, SolidSession } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { pure, send } from 'xstate/lib/actions';
+import { catchError, map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
 import { addAlert } from '../collections/collections.events';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate, LoginStartedEvent } from './authenticate.events';
 
@@ -38,8 +40,8 @@ export enum AuthenticateStates {
  * @param event The even which triggered the validation.
  * @returns Validation results, or an empty array when valid.
  */
-const validator = (context: FormContext<{ webId: string }>, event: Event<FormEvents>): FormValidatorResult[] =>
-  context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ];
+const validator: FormValidator<{ webId: string }> = (context) =>
+  of(context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]);
 
 /**
  * The authenticate machine.
@@ -67,7 +69,14 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          */
         {
           id: FormActors.FORM_MACHINE,
-          src: formMachine(validator).withContext({
+          src: formMachine<{webId: string}>(
+            // validator,
+            (context): Observable<FormValidatorResult[]> =>
+              from(solid.getIssuer(context.data?.webId)).pipe(
+                map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+                catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
+              ),
+          ).withContext({
             data: { webId: ''},
             original: { webId: ''},
           }),
