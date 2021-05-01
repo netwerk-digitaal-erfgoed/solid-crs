@@ -50,7 +50,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The element's form validating state.
    */
   @internalProperty()
-  public validating = false;
+  public showLoading = false;
 
   /**
    * The element's data.
@@ -82,8 +82,8 @@ export class FormElementComponent<T> extends RxLitElement {
       ));
 
       // Subscribes to data in the actor's context.
-      this.subscribe('validating', from(this.actor).pipe(
-        map((state) => state.matches({
+      this.subscribe('showLoading', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
           },
@@ -145,7 +145,7 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input"></slot>
           </div>
           <div class="icon">
-            ${this.validating ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
+            ${this.showLoading ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
         </div>
         <div class="action">
