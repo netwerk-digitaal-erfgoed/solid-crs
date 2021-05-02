@@ -1,6 +1,6 @@
 import { css, html, internalProperty, property, PropertyValues, query, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Translator, debounce } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
@@ -62,6 +62,12 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   @internalProperty()
   public lockInput = false;
+
+  /**
+   * Timeout to use when debouncing input.
+   */
+  @property()
+  public debounceTimeout = 500;
 
   /**
    * The element's data.
@@ -145,7 +151,7 @@ export class FormElementComponent<T> extends RxLitElement {
       element.value = typeof fieldData === 'string' ? fieldData : '';
 
       // Send event when input field's value changes.
-      element.addEventListener('input', () => actor.send({type: FormEvents.FORM_UPDATED, value: element.value, field} as FormUpdatedEvent));
+      element.addEventListener('input', debounce(() => actor.send({type: FormEvents.FORM_UPDATED, value: element.value, field} as FormUpdatedEvent), this.debounceTimeout));
     });
   }
 
