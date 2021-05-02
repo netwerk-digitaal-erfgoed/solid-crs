@@ -46,6 +46,10 @@ export class SolidSDKService extends SolidService {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
     }
 
+    if(!profileDataset) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+    }
+
     // Parses the profile document.
     const profile = getThing(profileDataset, webId);
 
@@ -89,6 +93,7 @@ export class SolidSDKService extends SolidService {
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
     const session = await handleIncomingRedirect();
+    console.log('session received', session);
 
     return session && session.isLoggedIn ? { webId: session.webId } : null;
   }

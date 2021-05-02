@@ -1,20 +1,26 @@
-import { getSolidDataset, handleIncomingRedirect } from '@digita-ai/nde-erfgoed-client';
+import * as client from '@digita-ai/nde-erfgoed-client';
 import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import fetchMock, {MockResponseInitFunction} from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
-
-jest.mock('@digita-ai/nde-erfgoed-client');
 
 describe('SolidService', () => {
   let service: SolidSDKService;
 
   beforeEach(async () => {
+    const nodeCrypto = require('crypto');
+
+    window.crypto = {
+      getRandomValues (buffer) {
+        return nodeCrypto.randomFillSync(buffer);
+      },
+    };
+
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
   });
 
   it('should be correctly instantiated', () => {
-    expect(true).toBeTruthy();
+    expect(service).toBeTruthy();
   });
 
   it.each([
@@ -22,8 +28,7 @@ describe('SolidService', () => {
     [ {webId: 'lorem', isLoggedIn: false}, null ],
     [ null, null ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
-
-    handleIncomingRedirect.mockResolvedValue(resolved);
+    client.handleIncomingRedirect = jest.fn(async () => resolved);
 
     expect(await service.getSession()).toEqual(result);
   });
@@ -76,11 +81,7 @@ describe('SolidService', () => {
       [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.invalid-url' ],
       [ 'https://nde.nl/', null, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-profile' ],
     ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
-      if(profile) {
-        getSolidDataset.mockResolvedValue(profile);
-      } else {
-        getSolidDataset.mockRejectedValue(new Error('bla'));
-      }
+      client.getSolidDataset = jest.fn(async () => profile);
 
       fetchMock.mockResponses(openId);
 
