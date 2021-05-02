@@ -1,6 +1,7 @@
 import { FormActors } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { AuthenticateRootComponent } from './authenticate-root.component';
 import { AuthenticateContext, authenticateMachine } from './authenticate.machine';
 

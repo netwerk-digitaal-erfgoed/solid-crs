@@ -1,5 +1,4 @@
-import { ArgumentError } from '../errors/argument-error';
-import { Logger } from '../logging/logger';
+import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
 import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';
 

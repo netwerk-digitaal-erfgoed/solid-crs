@@ -1,7 +1,5 @@
 import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl } from '@digita-ai/nde-erfgoed-client';
-import { ArgumentError } from '../errors/argument-error';
-import { Logger } from '../logging/logger';
-import { NotImplementedError } from '../errors/not-implemented-error';
+import { ArgumentError, Logger, NotImplementedError } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 
@@ -45,6 +43,10 @@ export class SolidSDKService extends SolidService {
     try {
       profileDataset = await getSolidDataset(webId);
     } catch(e) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+    }
+
+    if(!profileDataset) {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
     }
 
