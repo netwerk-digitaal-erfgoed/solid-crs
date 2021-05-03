@@ -1,6 +1,7 @@
 import { FormActors } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidMockService } from '@digita-ai/nde-erfgoed-core';
+import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { AuthenticateRootComponent } from './authenticate-root.component';
 import { AuthenticateContext, authenticateMachine } from './authenticate.machine';
 
@@ -12,6 +13,7 @@ describe('AuthenticateRootComponent', () => {
 
   beforeEach(() => {
     machine = interpret(authenticateMachine(solid));
+    machine.start();
     component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
 
     component.actor = machine;
@@ -52,4 +54,16 @@ describe('AuthenticateRootComponent', () => {
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);
   });
+
+  it.each([ true, false ])('should disable button when can not submit', async (canSubmit) => {
+    component.canSubmit = canSubmit;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector('button[slot="action"]');
+
+    expect(button.disabled).toBe(!canSubmit);
+  });
+
 });

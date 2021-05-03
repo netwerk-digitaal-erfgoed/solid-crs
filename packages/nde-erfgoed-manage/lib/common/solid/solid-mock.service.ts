@@ -1,5 +1,5 @@
-import { ArgumentError } from '../errors/argument-error';
-import { Logger } from '../logging/logger';
+import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
+import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';
 
 /**
@@ -32,34 +32,6 @@ export class SolidMockService extends SolidService {
   }
 
   /**
-   * Makes sure the profile document of a WebID contains
-   * the necessary triples for authentication, and whether they are correct
-   *
-   * @param webId The WebID to validate
-   */
-  async validateWebId(webId: string): Promise<boolean> {
-    this.logger.debug(SolidMockService.name, 'Validating WebID', webId);
-
-    if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
-    }
-
-    try {
-      new URL(webId);
-    } catch {
-      throw new ArgumentError('nde.root.alerts.error', webId);
-    }
-
-    const issuer = await this.getIssuer(webId);
-
-    if (!issuer) {
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
-    }
-
-    return this.profiles.find((profile) => profile.webId === webId) !== null;
-  }
-
-  /**
    * Retrieves the value of the oidcIssuer triple from a profile document
    * for a given WebID
    *
@@ -69,30 +41,40 @@ export class SolidMockService extends SolidService {
     this.logger.debug(SolidMockService.name, 'Retrieving issuer', webId);
 
     if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
     if (!this.profiles) {
       throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
     }
 
-    return this.profiles.find((profile) => profile.webId === webId)?.issuer;
+    try {
+      new URL(webId);
+    } catch {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+    }
+
+    const issuer = this.profiles.find((profile) => profile.webId === webId)?.issuer;
+
+    if (!issuer) {
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+    }
+
+    return issuer;
   }
 
   /**
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async handleIncomingRedirect(): Promise<unknown> {
+  async getSession(): Promise<SolidSession> {
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
 
     if (!this.profiles) {
       throw new ArgumentError('Argument this.profiles should be set.', this.profiles);
     }
 
-    throw new Error();
-
-    return { isLoggedIn: true, webId: this.profiles[0].webId };
+    return null;
   }
 
   /**
@@ -102,10 +84,10 @@ export class SolidMockService extends SolidService {
     this.logger.debug(SolidMockService.name, 'Logging in user');
 
     if (!webId) {
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
     }
 
-    const isWebIdValid = await this.validateWebId(webId);
+    const isWebIdValid = await this.getIssuer(webId);
 
     if (!isWebIdValid) {
       throw new ArgumentError('nde.root.alerts.error', isWebIdValid);

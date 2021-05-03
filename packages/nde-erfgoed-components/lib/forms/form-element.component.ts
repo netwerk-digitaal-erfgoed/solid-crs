@@ -1,19 +1,25 @@
 import { css, html, internalProperty, property, PropertyValues, query, unsafeCSS } from 'lit-element';
-import { ArgumentError, Translator } from '@digita-ai/nde-erfgoed-core';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { ArgumentError, Translator, debounce } from '@digita-ai/nde-erfgoed-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Theme } from '@digita-ai/nde-erfgoed-theme';
-import { Event } from '../state/event';
-import { FormContext } from './form.machine';
+import { Loading, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
  */
 export class FormElementComponent<T> extends RxLitElement {
+
+  /**
+   * All input elements slotted in the form element.
+   */
+  @internalProperty()
+  inputs: HTMLInputElement[];
 
   /**
    * The slot element which contains the input field.
@@ -46,6 +52,24 @@ export class FormElementComponent<T> extends RxLitElement {
   public validationResults: FormValidatorResult[];
 
   /**
+   * Indicates if the element's loading icon should be shown.
+   */
+  @internalProperty()
+  public showLoading = false;
+
+  /**
+   * Indicates if the form's input should be locked.
+   */
+  @internalProperty()
+  public lockInput = false;
+
+  /**
+   * Timeout to use when debouncing input.
+   */
+  @property()
+  public debounceTimeout = 500;
+
+  /**
    * The element's data.
    */
   @internalProperty()
@@ -55,7 +79,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({type: Object})
-  public actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>;
+  public actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -63,7 +87,7 @@ export class FormElementComponent<T> extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')) {
+    if(changed.has('actor') && this.actor) {
       // Subscribes to the field's validation results.
       this.subscribe('validationResults', from(this.actor).pipe(
         map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
@@ -74,14 +98,35 @@ export class FormElementComponent<T> extends RxLitElement {
         map((state) => state.context?.data),
       ));
 
+      // Subscribes to data in the actor's context.
+      this.subscribe('showLoading', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+          },
+        })),
+      ));
+
+      // Subscribes to data in the actor's context.
+      this.subscribe('lockInput', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches(FormSubmissionStates.SUBMITTED)),
+      ));
+
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+    }
+
+    /**
+     * Update the disabled state of the input elements.
+     */
+    if(changed.has('lockInput')) {
+      this.inputs?.forEach((element) => element.disabled = this.lockInput);
     }
   }
 
   /**
    * Binds default data and event listener for input form.
    */
-  bindActorToInput(slot: HTMLSlotElement, actor: SpawnedActorRef<Event<FormEvents>, State<FormContext<T>>>, field: keyof T, data: T) {
+  bindActorToInput(slot: HTMLSlotElement, actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>, field: keyof T, data: T) {
     if (!slot) {
       throw new ArgumentError('Argument slot should be set.', slot);
     }
@@ -98,17 +143,15 @@ export class FormElementComponent<T> extends RxLitElement {
       throw new ArgumentError('Argument data should be set.', data);
     }
 
-    const childNodes: Node[] = slot.assignedNodes({flatten: true});
+    this.inputs = slot.assignedNodes({flatten: true})?.filter((element) => element instanceof HTMLInputElement).map((element) => element as HTMLInputElement);
 
-    childNodes.forEach((node) => {
-      if(node && node instanceof HTMLInputElement) {
-        // Set the input field's default value.
-        const fieldData = data[this.field];
-        node.value = typeof fieldData === 'string' ? fieldData : '';
+    this.inputs?.forEach((element) => {
+      // Set the input field's default value.
+      const fieldData = data[this.field];
+      element.value = typeof fieldData === 'string' ? fieldData : '';
 
-        // Send event when input field's value changes.
-        node.addEventListener('input', () => actor.send({type: FormEvents.FORM_UPDATED, value: node.value, field} as FormUpdatedEvent));
-      }
+      // Send event when input field's value changes.
+      element.addEventListener('input', debounce(() => actor.send({type: FormEvents.FORM_UPDATED, value: element.value, field} as FormUpdatedEvent), this.debounceTimeout));
     });
   }
 
@@ -129,7 +172,7 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="input"></slot>
           </div>
           <div class="icon">
-            <slot name="icon"></slot>
+            ${this.showLoading ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
         </div>
         <div class="action">
@@ -198,9 +241,11 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           align-items: center;
         }
-        .form-element .content .field .icon ::slotted(*)  {
+        .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
+          height: var(--gap-normal);
+          width: var(--gap-normal);
         }
         .form-element .results .result {
           background-color: var(--colors-status-warning);
@@ -211,5 +256,3 @@ export class FormElementComponent<T> extends RxLitElement {
     ];
   }
 }
-
-export default FormElementComponent;

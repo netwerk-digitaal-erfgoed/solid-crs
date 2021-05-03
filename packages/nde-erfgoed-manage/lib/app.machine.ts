@@ -1,21 +1,11 @@
-import { Alert, Event, State } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel, SolidSDKService } from '@digita-ai/nde-erfgoed-core';
+import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvents, dismissAlert } from './app.events';
+import { assign, log, send } from 'xstate/lib/actions';
+import { addAlert, AppEvent, AppEvents, dismissAlert } from './app.events';
+import { SolidSession } from './common/solid/solid-session';
+import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionsMachine } from './features/collections/collections.machine';
-
-/**
- * These are the possible functions that can be referenced from a machine config (preferably put each kind in its own file):
- * - guards: Record<string, ConditionPredicate<CollectionsContext, CollectionsEvent>>;
- * - actions: ActionFunctionMap<CollectionsContext, CollectionsEvent>;
- * - activities: Record<string, ActivityConfig<CollectionsContext, CollectionsEvent>>;
- * - services: Record<string, ServiceConfig<CollectionsContext, CollectionsEvent>>;
- * - delays: DelayFunctionMap<CollectionsContext, CollectionsEvent>;
- */
-
-const solid = new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 /**
  * The root context of the application.
@@ -25,15 +15,12 @@ export interface AppContext {
    * App-wide alerts.
    */
   alerts: Alert[];
-  session: unknown;
-  loggedIn: boolean;
-}
 
-export const initialAppContext = {
-  alerts: [] as Alert[],
-  session: {},
-  loggedIn: false,
-};
+  /**
+   * The session of the current user.
+   */
+  session?: SolidSession;
+}
 
 /**
  * Actor references for this machine config.
@@ -68,15 +55,21 @@ export enum AppAuthenticateStates {
   UNAUTHENTICATED  = '[AppAuthenticateState: Unauthenticated]',
 }
 
+/**
+ * Union type of all app events.
+ */
 export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
 
 /**
  * The application root machine and its configuration.
  */
-export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppStates, AppContext>>({
+export const appMachine = (solid: SolidService) => createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
   id: AppActors.APP_MACHINE,
   type: 'parallel',
   states: {
+    /**
+     * Determines which feature is currently active.
+     */
     [AppRootStates.FEATURE]: {
       initial: AppFeatureStates.AUTHENTICATE,
       on: {
@@ -100,6 +93,7 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
             `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
           ],
+          actions: assign({session: (context, event) => event.session}),
         },
         [AppEvents.LOGGED_OUT]: {
           target: [
@@ -109,6 +103,9 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
         },
       },
       states: {
+        /**
+         * The collection feature is shown.
+         */
         [AppFeatureStates.COLLECTIONS]: {
           invoke: {
             id: AppActors.COLLECTIONS_MACHINE,
@@ -119,12 +116,18 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
             },
           },
         },
+        /**
+         * The authenticate feature is active.
+         */
         [AppFeatureStates.AUTHENTICATE]: {
           invoke: {
             id: AppActors.AUTHENTICATE_MACHINE,
-            src: authenticateMachine(solid).withContext({}),
+            src: authenticateMachine(solid).withContext({ }),
+            /**
+             * Send logged in event when authenticate machine is done, and the user has authenticated.
+             */
             onDone: {
-              actions: send({type: AppEvents.LOGGED_IN }),
+              actions: send((_, event) => ({type: AppEvents.LOGGED_IN, session: event.data.session })),
             },
             onError: {
               actions: send({ type: AppEvents.ERROR }),
@@ -133,12 +136,22 @@ export const appMachine = createMachine<AppContext, Event<AppEvents>, State<AppS
         },
       },
     },
+    /**
+     * Determines if the current user is authenticated or not.
+     */
     [AppRootStates.AUTHENTICATE]: {
       initial: AppAuthenticateStates.UNAUTHENTICATED,
       states: {
+        /**
+         * The user is authenticated.
+         */
         [AppAuthenticateStates.AUTHENTICATED]: {
 
         },
+
+        /**
+         * The user has not been authenticated.
+         */
         [AppAuthenticateStates.UNAUTHENTICATED]: {
           invoke: {
             src: () => solid.logout(),

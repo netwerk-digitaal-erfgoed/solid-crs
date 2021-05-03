@@ -20,9 +20,14 @@
         "value": "Collecties"
     },
     {
+        "key": "nde.features.authenticate.error.invalid-webid.no-webid",
+        "locale": "nl-NL",
+        "value": "Gelieve een WebID in te voeren."
+    },
+    {
         "key": "nde.features.authenticate.error.invalid-webid.invalid-url",
         "locale": "nl-NL",
-        "value": "Gelieve een geldig WebID in te voeren. Een WebID start met https://."
+        "value": "Gelieve een geldig WebID in te voeren."
     },
     {
         "key": "nde.features.authenticate.error.invalid-webid.no-profile",

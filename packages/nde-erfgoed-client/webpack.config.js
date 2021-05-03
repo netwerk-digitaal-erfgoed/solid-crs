@@ -1,4 +1,6 @@
 const path = require('path');
+const webpack = require('webpack');
+
 module.exports = {
   mode: 'production',
   entry: './lib/index.ts',
@@ -25,6 +27,11 @@ module.exports = {
       crypto: require.resolve('crypto-browserify')
     }
   },
+  plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
+    }),
+  ],
   experiments: {
     outputModule: true
   }

@@ -2,15 +2,14 @@ import { html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit
 import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { Login, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
-import { Event } from '../state/event';
-import { FormValidatorResult } from '../forms/form-validator-result';
-import { FormEvents } from '../forms/form.events';
+import { FormEvents, FormEvent } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
+import { FormSubmitter } from 'lib/forms/form-submitter';
 
 /**
  * Validates the form and returns its results.
@@ -19,10 +18,21 @@ import { FormValidator } from '../forms/form-validator';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+export const validator: FormValidator<Collection> = (context, event) => of([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-];
+]);
+
+/**
+ * A submitter which resolves after two seconds.
+ *
+ * @param context The form machine state's context.
+ * @param event The event which triggered the validation.
+ * @returns Returns a promise.
+ */
+export const submitter: FormSubmitter<Collection> = (context, event) => new Promise((resolve) => {
+  setTimeout(resolve, 2000);
+});
 
 /**
  * A component which shows the details of a single collection.
@@ -66,7 +76,7 @@ export class DemoFormComponent extends RxLitElement {
     super();
 
     this.actor = interpret(
-      formMachine<Collection>(validator).withContext({
+      formMachine<Collection>(validator, submitter).withContext({
         data: { uri: '', name: 'Test' },
         original: { uri: '', name: 'Test' },
       }),

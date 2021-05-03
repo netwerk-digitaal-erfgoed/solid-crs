@@ -1,16 +1,22 @@
-import { SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, formMachine, State, FormActors, FormContext, FormValidatorResult, FormEvents } from '@digita-ai/nde-erfgoed-components';
+import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
-import { pure, send } from 'xstate/lib/actions';
-import { addAlert } from '../collections/collections.events';
-import { AuthenticateEvent, AuthenticateEvents, LoginStartedEvent } from './authenticate.events';
+import { send } from 'xstate/lib/actions';
+import { catchError, map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { addAlert } from '../../app.events';
+import { SolidSession } from '../../common/solid/solid-session';
+import { SolidService } from '../../common/solid/solid.service';
+import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
  */
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AuthenticateContext { }
+export interface AuthenticateContext {
+  /**
+   * Session of the current user.
+   */
+  session?: SolidSession;
+}
 
 /**
  * Actor references for this machine config.
@@ -35,8 +41,8 @@ export enum AuthenticateStates {
  * @param event The even which triggered the validation.
  * @returns Validation results, or an empty array when valid.
  */
-const validator = (context: FormContext<{ webId: string }>, event: Event<FormEvents>): FormValidatorResult[] =>
-  context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ];
+const validator: FormValidator<{ webId: string }> = (context) =>
+  of(context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]);
 
 /**
  * The authenticate machine.
@@ -55,8 +61,8 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Listen for redirects, and determine if a user is authenticated or not.
          */
         {
-          src: () => solid.handleIncomingRedirect(),
-          onDone: { actions: send(AuthenticateEvents.LOGIN_SUCCESS) },
+          src: () => solid.getSession(),
+          onDone: { actions: handleSessionUpdate },
           onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
         /**
@@ -64,11 +70,37 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          */
         {
           id: FormActors.FORM_MACHINE,
-          src: formMachine(validator).withContext({
+          src: formMachine<{webId: string}>(
+            /**
+             * Validates the form.
+             */
+            (context): Observable<FormValidatorResult[]> =>
+              from(solid.getIssuer(context.data?.webId)).pipe(
+                map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+                catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
+              ),
+            /**
+             * Redirects the user to the identity provider.
+             *
+             * https://wouteraj.inrupt.net/profile/card#me
+             * https://pod.inrupt.com/wouteraj/profile/card#me
+             */
+            async (context) => {
+              await solid.login(context.data.webId);
+              return context.data;
+            },
+          ).withContext({
             data: { webId: ''},
             original: { webId: ''},
           }),
           onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
+          /**
+           * Go back to unauthenticated when something goes wrong, and show an alert.
+           */
+          onError: {
+            // actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
+            target: AuthenticateStates.UNAUTHENTICATED,
+          },
         },
       ],
       on: {
@@ -87,25 +119,16 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
      * The user is being redirected to his identity provider.
      */
     [AuthenticateStates.REDIRECTING]: {
-      invoke: {
-        /**
-         * Redirects the user to the identity provider.
-         */
-        src: (_, event: LoginStartedEvent) => solid.login(event.webId),
-        /**
-         * Go back to unauthenticated when something goes wrong, and show an alert.
-         */
-        onError: {
-          actions: pure((_ctx, event) => addAlert({ message: 'nde.root.alerts.error', type: 'warning' })),
-          target: AuthenticateStates.UNAUTHENTICATED,
-        },
-      },
+      type: 'final',
     },
 
     /**
      * The user has been authenticated.
      */
     [AuthenticateStates.AUTHENTICATED]: {
+      data: {
+        session: (context: AuthenticateContext) => context.session,
+      },
       type: 'final',
     },
   },
