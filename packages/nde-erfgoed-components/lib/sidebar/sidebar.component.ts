@@ -4,7 +4,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**
- * A component which shows the details of a single collection.
+ * A component which represents a sidebar.
  */
 export class SidebarComponent extends RxLitElement {
 
