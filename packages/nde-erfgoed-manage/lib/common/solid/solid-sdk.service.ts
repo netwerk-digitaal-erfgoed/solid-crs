@@ -1,4 +1,4 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl } from '@digita-ai/nde-erfgoed-client';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout } from '@digita-ai/nde-erfgoed-client';
 import { ArgumentError, Logger, NotImplementedError } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
@@ -94,7 +94,7 @@ export class SolidSDKService extends SolidService {
 
     const session = await handleIncomingRedirect();
 
-    return session && session.isLoggedIn ? { webId: session.webId } : null;
+    return session && session.isLoggedIn ? { webId: session.webId, logout } : null;
   }
 
   /**

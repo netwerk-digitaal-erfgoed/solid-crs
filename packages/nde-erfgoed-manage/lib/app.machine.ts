@@ -95,9 +95,8 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
           ],
           actions: assign({session: (context, event) => event.session}),
         },
-        [AppEvents.LOGGED_OUT]: {
+        [AppEvents.LOGGING_OUT]: {
           target: [
-            `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
           ],
         },
@@ -141,6 +140,9 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      */
     [AppRootStates.AUTHENTICATE]: {
       initial: AppAuthenticateStates.UNAUTHENTICATED,
+      on: {
+        [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+      },
       states: {
         /**
          * The user is authenticated.
@@ -154,7 +156,10 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
          */
         [AppAuthenticateStates.UNAUTHENTICATED]: {
           invoke: {
-            src: () => solid.logout(),
+            src: (context) => context.session?.logout(),
+            onDone: {
+              actions: send({ type: AppEvents.LOGGED_OUT }),
+            },
           },
         },
       },
