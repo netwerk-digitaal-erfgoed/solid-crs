@@ -5,3 +5,26 @@ Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedin
 
 * xref:docs/modules/ROOT/nav.adoc[Project documentation]
 * xref:docs/modules/manual/nav.adoc[User manual]
+
+== Running locally
+
+When running the app locally for the first time, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
+
+[source,bash]
+----
+$ npm run bootstrap:no-ci
+----
+
+Once the dependencies have installed, you can start the app by executing the following command.
+
+[source,bash]
+----
+$ npm run start
+----
+
+The `start` command automatically builds the necessary dependencies before starting the application. However, you can also build the app and its dependencies separately from the `start` command as follows.
+
+[source,bash]
+----
+$ npm run build
+----
