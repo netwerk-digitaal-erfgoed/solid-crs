@@ -10,8 +10,9 @@ export enum AppEvents {
   ADD_ALERT = '[AppEvent: Add alert]',
   DISMISS_ALERT = '[AppEvent: Dismiss alert]',
   ERROR = 'xstate.error',
-  LOGGED_OUT = '[AppEvent: Logged out]',
   LOGGED_IN = '[AppEvent: Logged in]',
+  LOGGING_OUT = '[AppEvent: Logging out]',
+  LOGGED_OUT = '[AppEvent: Logged out]',
 }
 
 /**
@@ -36,7 +37,12 @@ export interface ErrorEvent extends Event<AppEvents> { type: AppEvents.ERROR; da
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGED_OUT }
+export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGING_OUT }
+
+/**
+ * An event which is dispatched when an error occurs.
+ */
+export interface LoggingOutEvent extends Event<AppEvents> { type: AppEvents.LOGGED_OUT }
 
 /**
  * An event which is dispatched when an error occurs.
@@ -46,7 +52,7 @@ export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED
 /**
  * Union type of app events.
  */
-export type AppEvent = LoggedInEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
+export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
 
 /**
  * Actions for the alerts component.

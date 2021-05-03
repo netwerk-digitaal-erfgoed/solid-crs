@@ -1,5 +1,5 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl } from '@digita-ai/nde-erfgoed-client';
-import { ArgumentError, Logger, NotImplementedError } from '@digita-ai/nde-erfgoed-core';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout } from '@digita-ai/nde-erfgoed-client';
+import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 
@@ -126,9 +126,9 @@ export class SolidSDKService extends SolidService {
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  async logout(): Promise<unknown> {
+  async logout(): Promise<void> {
     this.logger.debug(SolidSDKService.name, 'Logging out user');
 
-    throw new NotImplementedError();
+    return await logout();
   }
 }
