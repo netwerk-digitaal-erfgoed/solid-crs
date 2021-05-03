@@ -13,7 +13,10 @@ export class SolidSDKService extends SolidService {
    *
    * @param logger The logger used in the service.
    */
-  constructor(private logger: Logger) {
+  constructor(
+    private logger: Logger,
+    private clientName = 'NDE Collectiebeheersysteem',
+  ) {
     super();
   }
 
@@ -66,19 +69,20 @@ export class SolidSDKService extends SolidService {
     }
 
     // Check if the issuer is a valid OIDC provider.
-    let openidConfigResponse;
+    let openidConfig;
+    let poweredByHeader;
     try{
-      openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+      const openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+      openidConfig = await openidConfigResponse.json();
+      poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
     } catch(e) {
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfigResponse);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', issuer);
     }
-    const openidConfig = await openidConfigResponse.json();
 
     // Throw an error if the issuer is an invalid OIDC provider.
     if (
-      !openidConfig
-      // Inrupt.net isn't (fully) Solid OIDC-compliant
-      // || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc'
+      // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
+      !openidConfig && (poweredByHeader.includes('solid') || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
     ) {
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
     }
@@ -116,7 +120,7 @@ export class SolidSDKService extends SolidService {
     await login({
       oidcIssuer: issuer,
       redirectUrl: window.location.href,
-      clientName: 'Getting started app',
+      clientName: this.clientName,
     });
   }
 
