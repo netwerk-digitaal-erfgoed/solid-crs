@@ -53,6 +53,7 @@ export enum AppFeatureStates {
 export enum AppAuthenticateStates {
   AUTHENTICATED = '[AppAuthenticateState: Authenticated]',
   UNAUTHENTICATED  = '[AppAuthenticateState: Unauthenticated]',
+  UNAUTHENTICATING  = '[AppAuthenticateState: Unauthenticating]',
 }
 
 /**
@@ -97,7 +98,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
         },
         [AppEvents.LOGGING_OUT]: {
           target: [
-            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATING}`,
           ],
         },
       },
@@ -141,7 +142,12 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
     [AppRootStates.AUTHENTICATE]: {
       initial: AppAuthenticateStates.UNAUTHENTICATED,
       on: {
-        [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+        [AppEvents.LOGGED_OUT]: {
+          target: [
+            `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
+          ],
+        },
       },
       states: {
         /**
@@ -152,15 +158,21 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
         },
 
         /**
-         * The user has not been authenticated.
+         * The user is logging out.
          */
-        [AppAuthenticateStates.UNAUTHENTICATED]: {
+        [AppAuthenticateStates.UNAUTHENTICATING]: {
           invoke: {
-            src: (context) => context.session?.logout(),
+            src: () => solid.logout(),
             onDone: {
               actions: send({ type: AppEvents.LOGGED_OUT }),
             },
           },
+        },
+
+        /**
+         * The user has not been authenticated.
+         */
+        [AppAuthenticateStates.UNAUTHENTICATED]: {
         },
       },
     },

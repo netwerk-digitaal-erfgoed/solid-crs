@@ -1,5 +1,5 @@
 import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout } from '@digita-ai/nde-erfgoed-client';
-import { ArgumentError, Logger, NotImplementedError } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 
@@ -94,7 +94,7 @@ export class SolidSDKService extends SolidService {
 
     const session = await handleIncomingRedirect();
 
-    return session && session.isLoggedIn ? { webId: session.webId, logout } : null;
+    return session && session.isLoggedIn ? { webId: session.webId } : null;
   }
 
   /**
@@ -126,6 +126,6 @@ export class SolidSDKService extends SolidService {
   async logout(): Promise<unknown> {
     this.logger.debug(SolidSDKService.name, 'Logging out user');
 
-    throw new NotImplementedError();
+    return await logout();
   }
 }

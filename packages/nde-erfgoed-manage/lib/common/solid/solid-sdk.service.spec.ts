@@ -23,7 +23,7 @@ describe('SolidService', () => {
   });
 
   it.each([
-    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem', logout: expect.any(Function)} ],
+    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem' } ],
     [ {webId: 'lorem', isLoggedIn: false}, null ],
     [ null, null ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {

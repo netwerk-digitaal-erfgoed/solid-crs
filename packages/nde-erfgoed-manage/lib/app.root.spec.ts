@@ -12,7 +12,7 @@ describe('AppRootComponent', () => {
   let machine: Interpreter<AppContext>;
 
   beforeEach(() => {
-    machine = interpret(appMachine(solid).withContext({ session: { logout: jest.fn() } }));
+    machine = interpret(appMachine(solid));
     machine.start();
     component = window.document.createElement('nde-app-root') as AppRootComponent;
 
