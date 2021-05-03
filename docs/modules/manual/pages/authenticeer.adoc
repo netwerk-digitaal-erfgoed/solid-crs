@@ -3,3 +3,33 @@
 :sectanchors:
 :url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
 :imagesdir: ../images
+
+== Hoe log ik in op het Collectiebeheersysteem van mijn erfgoedinstelling?
+
+Dit document toont je hoe je inlogt op het collectiebeheersysteem en wat je moet doen wanneer er een foutmelding optreedt. 
+
+
+=== Vereisten
+Om te kunnen inloggen is een *WebID* vereist. Heb je nog geen WebID, dan vind je link:url[hier] de nodige info om er een aan te maken.
+
+=== Stap 1: Geef je WebID in
+Wanneer de WebID correct is ingevoerd en correct werd gelinkt aan een profielpagina, zal de verbindknop rechts van het kadertje actief worden. 
+
+Mogelijke foutmeldingen: 
+
+* `Gelieve een geldig WebID in te voeren. Een WebID start met https://`
+* `Er werd geen actieve profielpagina gevonden voor deze WebID.`
+* `De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ.`
+* `De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ.`
+
+
+=== Stap 2: Klik op de verbindknop
+Je wordt nu doorgestuurd naar de authenticatieomgeving van jouw OIDC-provider. 
+
+=== Stap 3: Verleen het collectiebeheersysteem toegang tot jouw pod
+Log in bij jouw OIDC-provider en verleen de applicatie van het collectiebeheersysteem toegang tot jouw pod. Nadien word je teruggestuurd naar het collectiebeheersysteem.
+
+Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je worden teruggestuurd naar loginpagina van het collectiebeheersysteem. Er zal een foutmelding op het scherm komen. Probeer opnieuw. Wanneer de fout blijft terugkomen, neem je best contact op met de link:url[beheerders].
+
+=== Stap 4: Succesvolle authenticatie
+Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem en ben je ingelogd bij jouw erfgoedinstelling. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 

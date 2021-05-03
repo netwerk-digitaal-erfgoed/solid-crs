@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@digita-ai/nde-erfgoed-components": "0.0.1",
+    "@digita-ai/nde-erfgoed-client": "0.0.1",
     "@digita-ai/nde-erfgoed-core": "0.0.1",
     "@digita-ai/nde-erfgoed-theme": "0.0.1",
     "@digita-ai/semcom-core": "0.3.4",
@@ -45,6 +46,7 @@
     "eslint": "^7.16.0",
     "jest": "26.6.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
+    "jest-fetch-mock": "3.0.3",
     "rimraf": "^3.0.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "ts-jest": "26.5.4",

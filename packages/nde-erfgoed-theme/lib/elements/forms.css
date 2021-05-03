@@ -24,6 +24,11 @@ form nde-form-element input {
   width: 100%;
 }
 
+form nde-form-element input:disabled {
+  color: var(--colors-foreground-light);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

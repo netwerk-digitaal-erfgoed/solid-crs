@@ -1,8 +1,7 @@
 import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter, StateValueMap } from 'xstate';
-import { Event } from '../state/event';
-import { FormValidatorResult } from './form-validator-result';
-import { FormEvents } from './form.events';
+import { of } from 'rxjs';
+import { interpret, Interpreter } from 'xstate';
+import { FormEvent, FormEvents } from './form.events';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 
 describe('FormMachine', () => {
@@ -11,10 +10,10 @@ describe('FormMachine', () => {
   beforeEach(() => {
     machine = interpret<FormContext<Collection>>(
       formMachine(
-        (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+        (context: FormContext<Collection>, event: FormEvent) => of([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ],
+        ]),
       )
         .withContext({
           data: { uri: '', name: 'Test' },
@@ -60,13 +59,17 @@ describe('FormMachine', () => {
     )).toBeTruthy();
   });
 
-  it('should submit when form is valid', () => {
+  it('should submit when form is valid', async (done) => {
     machine.start();
+
+    machine.onTransition((state) => {
+      if(state.matches(FormSubmissionStates.NOT_SUBMITTED)){
+        done();
+      }
+    });
 
     machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'foo'});
     machine.send(FormEvents.FORM_SUBMITTED);
-
-    expect(machine.state.matches(FormSubmissionStates.SUBMITTED)).toBeTruthy();
   });
 
   it('should not change original data when form is updated', () => {
@@ -77,16 +80,48 @@ describe('FormMachine', () => {
     expect(machine.state.context.original).toEqual({ uri: '', name: 'Test' });
   });
 
-  it('should not be submitted if form is invalid', () => {
+  it('should not be submitted if form is invalid', async (done) => {
     machine.start();
 
-    machine.send(FormEvents.FORM_SUBMITTED);
+    machine.onTransition((state) => {
+      if(state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
+          [FormRootStates.VALIDATION]: FormValidationStates.NOT_VALIDATED,
+        },
+      })){
+        done();
+      }
+    });
 
-    expect(machine.state.matches({
-      [FormSubmissionStates.NOT_SUBMITTED]:{
-        [FormRootStates.CLEANLINESS]: FormCleanlinessStates.PRISTINE,
-        [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-      },
-    })).toBeTruthy();
+    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: null});
+    machine.send(FormEvents.FORM_SUBMITTED);
+  });
+
+  it('should run submitter when submitting', async (done) => {
+    const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
+    machine = interpret<FormContext<Collection>>(
+      formMachine(
+        (context: FormContext<Collection>, event: FormEvent) => of([]),
+        submitter,
+      )
+        .withContext({
+          data: { uri: '', name: 'Test' },
+          original: { uri: '', name: 'Test' },
+          validation: [],
+        }),
+    );
+
+    machine.start();
+
+    machine.onTransition((state) => {
+      if(state.matches(FormSubmissionStates.SUBMITTED)){
+        expect(submitter).toHaveBeenCalledTimes(1);
+        done();
+      }
+    });
+
+    machine.send(FormEvents.FORM_UPDATED, {field: 'uri', value: 'bla'});
+    machine.send(FormEvents.FORM_SUBMITTED);
   });
 });

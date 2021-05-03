@@ -1,9 +1,9 @@
-import { Event } from '../state/event';
+import { Observable } from 'rxjs';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents } from './form.events';
+import { FormEvent } from './form.events';
 import { FormContext } from './form.machine';
 
 /**
  * Validates the form and returns validator results.
  */
-export type FormValidator<TData> = (context: FormContext<TData>, event: Event<FormEvents>) => FormValidatorResult[];
+export type FormValidator<TData> = (context: FormContext<TData>, event: FormEvent) => Observable<FormValidatorResult[]>;

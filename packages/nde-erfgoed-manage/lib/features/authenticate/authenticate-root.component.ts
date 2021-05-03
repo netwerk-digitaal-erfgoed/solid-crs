@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
+import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { ActorRef, Interpreter, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -44,7 +44,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActor: ActorRef<Event<FormEvents>>;
+  formActor: ActorRef<FormEvent>;
 
   /**
    * The state of this component.
@@ -53,10 +53,16 @@ export class AuthenticateRootComponent extends RxLitElement {
   state?: State<AuthenticateContext>;
 
   /**
-   * The state of this component.
+   * Indicates if the form can be submitted.
    */
   @internalProperty()
-  enableSubmit?: boolean;
+  canSubmit? = false;
+
+  /**
+   * Indicates if the form is being submitted.
+   */
+  @internalProperty()
+  isSubitting? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -64,25 +70,29 @@ export class AuthenticateRootComponent extends RxLitElement {
   updated(changed: PropertyValues) {
     super.updated(changed);
 
-    if(changed.has('actor')){
+    if(changed.has('actor') && this.actor){
       this.subscribe('formActor', from(this.actor).pipe(
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
       if(this.actor.parent) {
         this.subscribe('alerts', from(this.actor.parent)
-          .pipe(map((state) => state.context.alerts)));
+          .pipe(map((state) => state.context?.alerts)));
       }
     }
 
-    if(changed.has('formActor')){
-      this.subscribe('enableSubmit', from(this.formActor).pipe(
+    if(changed.has('formActor') && this.formActor){
+      this.subscribe('canSubmit', from(this.formActor).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
             [FormRootStates.VALIDATION]: FormValidationStates.VALID,
           },
         })),
+      ));
+
+      this.subscribe('isSubitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
       ));
     }
   }
@@ -120,16 +130,15 @@ export class AuthenticateRootComponent extends RxLitElement {
       </div>
       <div class="form-container">
         ${ alerts }
-        ${ this.formActor ? html`
+        
         <form>
           <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
             <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-            <div slot="icon"></div>
-            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-            <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+            <input type="text" slot="input" ?disabled="${this.isSubitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+            <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
           </nde-form-element>
         </form>
-        ` : html``}
+       
       </div>
       <div class="webid-container">
         <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
@@ -150,8 +159,8 @@ export class AuthenticateRootComponent extends RxLitElement {
           justify-content: center;
           align-items: center;
           gap: var(--gap-huge);
+          background-color: var(--colors-primary-dark);
         }
-
         
         .title-container {
           height: 50px;
