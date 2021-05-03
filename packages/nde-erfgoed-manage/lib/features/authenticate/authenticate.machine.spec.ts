@@ -35,20 +35,26 @@ describe('AuthenticateMachine', () => {
     }));
 
     machine.start();
-    const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
 
-    // submit when form is valid
-    formActor.onTransition((state) => {
-      if (state.matches({
-        [FormSubmissionStates.NOT_SUBMITTED]:{
-          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-        },
-      })) {
-        formActor.send(FormEvents.FORM_SUBMITTED);
+    machine.onTransition(async (machineState) => {
+      if (machineState.matches(AuthenticateStates.UNAUTHENTICATED)) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
+
+        // submit when form is valid
+        formActor.onTransition((formState) => {
+          if (formState.matches({
+            [FormSubmissionStates.NOT_SUBMITTED]:{
+              [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+            },
+          })) {
+            formActor.send(FormEvents.FORM_SUBMITTED);
+          }
+        });
+
+        formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
       }
     });
-
-    formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
   });
 
   it('should transition to redirecting when login started was emitted', async (done) => {
@@ -60,21 +66,25 @@ describe('AuthenticateMachine', () => {
     });
 
     machine.start();
-    const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
+    machine.onTransition(async (machineState) => {
+      if (machineState.matches(AuthenticateStates.UNAUTHENTICATED)) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const formActor = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<{webId: string}>>;
 
-    // submit when form is valid
-    formActor.onTransition((state) => {
-      if (state.matches({
-        [FormSubmissionStates.NOT_SUBMITTED]:{
-          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-        },
-      })) {
-        formActor.send(FormEvents.FORM_SUBMITTED);
+        // submit when form is valid
+        formActor.onTransition((state) => {
+          if (state.matches({
+            [FormSubmissionStates.NOT_SUBMITTED]:{
+              [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+            },
+          })) {
+            formActor.send(FormEvents.FORM_SUBMITTED);
+          }
+        });
+
+        formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
       }
     });
-
-    formActor.send({ type: FormEvents.FORM_UPDATED, field: 'webId', value: 'https://pod.inrupt.com/digitatestpod1/profile/card#me' });
-
   });
 
   it('should transition to authenticated when login success was emitted', async (done) => {

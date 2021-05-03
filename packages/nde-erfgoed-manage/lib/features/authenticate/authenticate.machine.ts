@@ -126,7 +126,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
      */
     [AuthenticateStates.AUTHENTICATED]: {
       data: {
-        session: (context: AuthenticateContext) => context.session,
+        session: (context: AuthenticateContext) => context?.session,
       },
       type: 'final',
     },
