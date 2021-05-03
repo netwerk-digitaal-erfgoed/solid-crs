@@ -1,60 +1,104 @@
-= Scope
+= Scope 
 :description: A description of the scope used in the NDE erfgoedinstellingen project.
 :sectanchors:
 :url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
 :page-tags: nde-erfgoed
 :imagesdir: ../images
+:sectnums:
+
+*Solid voor kleine erfgoedinstellingen:*
+Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website. Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers.
 
 == Definities
+[horizontal]
+`Gebruiker`:: Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
+`Collectiebeheersysteem`:: Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
+`Beheerder`:: `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
+`Bezoeker`:: `Gebruiker` die de publieke website van NDE bezoekt.
+`Pod`:: Container waarin data van een kleine ergfoedinstelling is opgeslaan.
+`Erfgoedobject`:: Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
+`Digitaal object`:: Digitale representatie van een `erfgoedobject`.
+`Objectbeschrijving`:: Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
+`Term`:: Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
 
-[options="header",]
-|===
-|Term                       | Definition
-|`Gebruiker`                | Persoon die het `collectiebeheersysteem` gebruikt als `beheerder` of `bezoeker`.
-|`Collectiebeheersysteem`   | Systeem om collecties bestaande uit `digitale objecten` van kleine erfgoedinstellingen te beheren en presenteren.
-|`Beheerder`                | `Gebruiker` die de `pod` en daarbij horende collecties en objecten van de ergfoedinstelling beheert.
-|`Bezoeker`                 | `Gebruiker` die de publieke website van NDE bezoekt.
-|`Pod`                      | Container waarin data van een kleine ergfoedinstelling is opgeslaan.
-|`Erfgoedobject`            | Werkelijk object, te bezichtigen bij de kleine erfgoedinstelling.
-|`Digitaal object`          | Digitale representatie van een `erfgoedobject`.
-|`Objectbeschrijving`       | Beschrijving, bestaande uit metadata, van een `erfgoedobject`.
-|`Term`                     | Paraplubegrip om 'dingen' aan te duiden en te beschrijven, zoals een persoon, plaats, onderwerp, tijdsperiode of gebeurtenis ('wie', 'wat', 'waar', 'wanneer').
-|`Digita Connect`           | Middleware applicatie om makkelijk van en naar pods te lezen en schrijven.
-|===
+Om dit project snel te kunnen implementeren wordt er gewerkt in twee fasen: een Proof of Concept (PoC) en een Minimum Viable Product (MVP). 
+De PoC bevat de functionele vereisten met de hoogste prioriteit. De functies die in de MVP worden toegevoegd zijn belangrijk, maar niet van vitaal belang om tot een Proof of Concept te komen die de kleine erfgoedinstellingen kunnen gebruiken.
+Het systeem bestaat uit vier componenten: twee front-end applicaties, een pod server (en pods) en een identity provider. De eerste front-end applicatie maakt een directe connectie met de pod van de erfgoedinstelling om objecten en collecties te beheren (beheerder). De tweede applicatie staat in voor de presentatie naar de bezoeker toe. 
+De objecten en collecties worden opgeslagen in pods, die moeten voldoen aan de open standaarden van de Solid specificatie. Daarom is het mogelijk dat derde partijen applicaties ontwikkelen die gebruik maken van dezelfde gegevens.
+
+De objecten en collecties worden opgeslagen in pods, die moeten voldoen aan de open standaarden van de link:https://solid.github.io/specification/[Solid specificatie]. Daarom is het mogelijk dat derde partijen applicaties ontwikkelen die gebruik maken van dezelfde gegevens.
+
+Voor de identity provider wordt er beroep gedaan op de standaard identity provider van de Community Solid Server, welke momenteel in ontwikkeling is. Belangrijk om hierbij op te merken, is dat deze identity provider en Solid server niet klaar zijn om naar productie te gaan.
+Beide front-end applicaties zullen bovendien beroep doen op de verschillende onderdelen van het SemCom onderzoeksproject. Deze technologie zal de applicaties toelaten om op dynamische wijze platform-agnostische componenten te laden vanaf een repository, gebaseerd op de aanwezige objecten in de collecties. Daarnaast maakt SemCom het eenvoudig deze componenten later in meerdere andere applicaties te hergebruiken en ze indien nodig in één vlotte beweging te updaten.
 
 == Assumpties
-
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
- * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en  begraafplaatsen worden verstaan.
- * Een `term` kan worden gekozen uit een reeds bestaande lijst met termen, of kan nieuw worden aangemaakt.
+ * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
+ * Een term wordt gekozen uit een reeds bestaande lijst met termen, maar kan niet nieuw worden aangemaakt.
 
 == Functionele vereisten
+=== Proof of Concept
 
-.Onboarding
- * Als `beheerder` wil ik een WebID en pod kunnen aanmaken, bekijken, bewerken en verwijderen in het `collectiebeheersysteem`.
- * Als `beheerder` wil ik toegang geven tot mijn pod aan het `collectiebeheersysteem`.
+De Proof of Concept moet illustreren hoe de gekozen use case in de praktijk zal werken. De PoC zal dienen om extra duiding te geven bij de functionele werking alsook de technische haalbaarheid. In deze demo-applicatie kunnen kleine erfgoedinstellingen al aan de slag om collecties en objecten te beheren. De metadata die wordt toegevoegd aan de collecties en objecten is echter beperkt tot het minimum. 
+De PoC omvat drie delen die de belangrijkste componenten vormen voor de demo-applicatie in deze fase. 
 
-.Presentatie
- * Als `bezoeker` wil ik erfgoedobjecten kunnen terugvinden in het collectiebeheersysteem door te browsen.
- * Als `bezoeker` wil ik per instelling de collectie(s) kunnen bekijken.
- * Als `bezoeker` wil ik het beeldmateriaal van een object kunnen bekijken (en downloaden).
+:sectnums!:
+==== Authenticeer de erfgoedinstelling
+Digita creëert een user interface voor de erfgoedinstellingen. Na registratie van de WebID en pod van de erfgoedinstelling, kan de gebruiker zich authenticeren in het collectiebeheersysteem. Digita staat niet in voor de registratie van de WebID en pod van de erfgoedinstelling.
+Een gebruiker logt in d.m.v. Solid-OIDC authenticatie. De gebruikersbeleving bestaat uit volgende stappen:  
 
-.Beheer
- * Als `beheerder` wil ik een collectie toevoegen, bekijken, bewerken, publiceren en verwijderen in het `collectiebeheersysteem`.
- * Als `beheerder` wil ik nieuwe digitale objecten toevoegen aan een collectie.
- * Als `beheerder` wil ik digitale objecten bekijken, bewerken, publiceren en verwijderen.
- * Als `beheerder` wil ik collecties en objecten importeren en exporteren.
- * Als `beheerder` wil ik browsen door collecties en digitale objecten van mijn erfgoedinstelling.
- * Als `beheerder` wil ik termen toevoegen aan objecten en collecties.
+* Gebruiker voert WebID in op de startpagina van het collectiebeheersysteem.
+* Gebruiker wordt omgeleid van het collectiebeheersysteem naar de loginpagina van de Solid server. 
+* Gebruiker logt in met e-mailadres en paswoord.
+* Gebruiker verleent toegang aan het collectiebeheersysteem .
+* Gebruiker wordt omgeleid van de Solid server, terug naar het collectiebeheersysteem.
 
+Als onderdeel van de laatste omleiding wordt een toegangstoken naar de demo-applicatie gestuurd. Dit toegangstoken kan door de demo-applicatie worden gebruikt om te communiceren met de Solid-pod van de gebruiker.
+
+==== Beheer collecties
+Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier collecties kunnen toevoegen, bekijken en bewerken in het collectiebeheersysteem. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een collectie, noch voor het sorteren of filteren van collecties. Zoeken naar collecties zal wel mogelijk zijn, maar de zoekopdracht zal op de front-end worden uitgevoerd.
+
+==== Beheer objecten
+Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier digitale objecten kunnen toevoegen, bekijken, bewerken en toewijzen aan een collectie. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een object, noch voor het sorteren en filteren van objecten. Verder wordt er enkel de mogelijkheid voorzien om bestaand beeldmateriaal te hergebruiken door het opgeven van de uri, en niet door het uploaden van nieuw beeldmateriaal.
+
+:sectnums:
+=== Minimum Viable Product
+De Minimum Viable Product (MVP) bouwt verder op de PoC en voegt meer functionaliteiten toe. Naast een beheerapplicatie zal er nu ook een presentatie-applicatie zijn waarop bezoekers erfgoedobjecten kunnen raadplegen.
+
+:sectnums!:
+==== Authenticeer de beheerders 
+Het collectiebeheersysteem is nu in staat om, naast de erfgoedinstelling, ook afzonderlijke beheerders te authenticeren. Om dit te bewerkstelligen, zullen de toegangsrechten op de pod van de Erfgoedinstelling manueel worden aangepast. Er werd geen tijd voorzien om toegangsrechten in te stellen via de beheermodule.
+
+
+==== Implementeer termen en het termennetwerk
+Aan de objecten en collecties kunnen termen worden toegewezen. Een term kan worden gekozen uit een reeds bestaande lijst met termen en is gelinkt aan het bestaande Termennetwerk. Het Termennetwerk kan worden bevraagd aan de hand van GraphQL. Er is geen testomgeving voor het Termennetwerk, dus er wordt direct getest op het bestaande Termennetwerk.
+
+==== Presentatie
+Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per erfgoedinstelling. Daarnaast kunnen ze beeldmateriaal downloaden. Erfgoedobjecten zoeken en filteren per erfgoedinstelling zal mogelijk zijn. Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdrachten op de front-end worden uitgevoerd. 
+
+:sectnums:
 == Niet-functionele vereisten
 
- * De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn. 
- * De software artefacten zullen worden getest op een gelimiteerd aantal moderne web browsers zoals Chrome en Firefox.
- * De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
+* De architectuur en kwaliteit van de software artefacten moet geschikt zijn voor productie, afgezien van de elementen omschreven in “Out-of-scope”. 
+* De uitvoering van de software artefacten moet een goede user experience opleveren, maar moet niet op grote schaal uitvoerbaar zijn.
+* De software artefacten zullen worden getest op een gelimiteerd aantal moderne web browsers zoals Chrome en Firefox.
+* De software artefacten worden gebouwd met technologieën gekozen door Digita en kunnen eigen software-ontwikkelingskits bevatten.
+* De front-end applicaties zullen gebouwd worden in een reactieve component- en event- gebaseerde architectuur. Deze wordt geïmplementeerd door gebruik te maken van een combinatie van Lit-Element Web Components, XState, RxJs en Components.js. Waar mogelijk wordt gebruik gemaakt van Typescript om de onderhoudbaarheid te bevorderen.
+* Waar opportuun zullen front-end components worden gebouwd door gebruik te maken van Semcom.
+* De software artefacten mogen door de klant open-source beschikbaar worden gemaakt onder de link:https://ec.europa.eu/info/european-union-public-licence_en[European Union Public Licence].
+* Alle documentatie, inclusief projectdocumentatie, codedocumentatie en gebruikershandleiding, worden overgedragen aan de klant.
+
 
 == Out-of-scope
 
- * Het hosten van pods voor erfgoedinstellingen.
- * Het verbeteren of doorontwikkelen van een Solid-opslagserver of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
- * Technische aansluiting op andere NDE-voorzieningen zoals het Termennetwerk en de registerfunctie.
+* Digita staat niet in voor het hosten van pods of de voornoemde applicaties.
+* Digita staat niet in voor de registratie van de WebID en registratie van de pods voor erfgoedinstellingen of beheerders.
+* Digita staat niet in voor het verbeteren of doorontwikkelen van een Solid-opslagserver, identity provider of implementatie van andere gedistribueerde technieken zoals IPFS of blockchain.
+* Digita zal geen security-gerelateerde testen uitvoeren op de code of de demo-omgeving.
+* Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdracht op de front-end worden uitgevoerd.
+* Vertalingen worden bijgehouden in een afzonderlijk tekstbestand, maar er is geen functionaliteit voorzien om meerdere talen te ondersteunen of hiertussen te wisselen.
+* Importeren en exporteren van objecten en collecties als functionaliteit.
+* Het beheren en gebruiken van eigen termen.
+* Objecten delen op sociale media als functionaliteit in de presentatielaag.
+* Opmerkingen plaatsen als functionaliteit in de presentatielaag.
+* Het beheren van toegangsrechten van beheerders vanuit de beheer-module.
