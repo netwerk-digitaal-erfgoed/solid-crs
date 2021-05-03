@@ -77,7 +77,7 @@ export class AuthenticateRootComponent extends RxLitElement {
 
       if(this.actor.parent) {
         this.subscribe('alerts', from(this.actor.parent)
-          .pipe(map((state) => state.context.alerts)));
+          .pipe(map((state) => state.context?.alerts)));
       }
     }
 
