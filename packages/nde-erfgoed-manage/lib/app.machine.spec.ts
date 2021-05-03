@@ -1,7 +1,7 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from './app.events';
+import { AppEvents, LoggedInEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
 
@@ -115,7 +115,7 @@ describe('AppMachine', () => {
 
     machine.start();
 
-    machine.send({ type:AppEvents.LOGGED_IN, session: { webId: 'lorem' } });
+    machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'lorem' } });
   });
 
   it('should send logged in when authenticate machine is done', async (done) => {
@@ -130,7 +130,7 @@ describe('AppMachine', () => {
     );
 
     machine.onEvent((event) => {
-      if(event.type === AppEvents.LOGGED_IN && event.session?.webId === 'lorem') {
+      if(event.type === AppEvents.LOGGED_IN && (event as LoggedInEvent).session?.webId === 'lorem') {
         done();
       }
     });
