@@ -123,7 +123,7 @@ export class SolidSDKService extends SolidService {
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  async logout(): Promise<unknown> {
+  async logout(): Promise<void> {
     this.logger.debug(SolidSDKService.name, 'Logging out user');
 
     return await logout();
