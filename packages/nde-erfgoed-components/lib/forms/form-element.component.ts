@@ -241,7 +241,7 @@ export class FormElementComponent<T> extends RxLitElement {
           align-items: center;
         }
         .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
-          padding: 0 var(--gap-normal);
+          padding-right: var(--gap-normal);
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
           height: var(--gap-normal);
