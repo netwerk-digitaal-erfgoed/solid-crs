@@ -41,7 +41,7 @@ export class SidebarComponent extends RxLitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          width: 300px;
+          width: var(--size-sidebar);
           display: flex;
           flex-direction: column;
         }
