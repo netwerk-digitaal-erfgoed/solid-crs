@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/nde-erfgoed-manage",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/nde-erfgoed-manage.umd.js",
@@ -26,10 +26,10 @@
     "test:ci": "npm run test -- --runInBand"
   },
   "dependencies": {
-    "@digita-ai/nde-erfgoed-components": "0.0.1",
-    "@digita-ai/nde-erfgoed-client": "0.0.1",
-    "@digita-ai/nde-erfgoed-core": "0.0.1",
-    "@digita-ai/nde-erfgoed-theme": "0.0.1",
+    "@digita-ai/nde-erfgoed-client": "0.1.0",
+    "@digita-ai/nde-erfgoed-components": "0.1.0",
+    "@digita-ai/nde-erfgoed-core": "0.1.0",
+    "@digita-ai/nde-erfgoed-theme": "0.1.0",
     "@digita-ai/semcom-core": "0.3.4",
     "@xstate/inspect": "^0.4.1",
     "lit-element": "2.4.0",

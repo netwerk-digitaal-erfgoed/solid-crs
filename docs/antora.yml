@@ -1,6 +1,6 @@
 name: nde-erfgoed
 title: Solid voor kleine erfgoedinstellingen
-version: master
+version: 0.1.0
 nav:
 - modules/ROOT/nav.adoc
 - modules/manual/nav.adoc
