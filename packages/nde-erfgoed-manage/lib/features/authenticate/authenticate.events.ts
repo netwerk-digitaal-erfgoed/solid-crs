@@ -1,14 +1,16 @@
 import { Event } from '@digita-ai/nde-erfgoed-components';
+import { DoneInvokeEvent } from 'xstate';
+import { assign, choose, send } from 'xstate/lib/actions';
+import { SolidSession } from '../../common/solid/solid-session';
+import { AuthenticateContext } from './authenticate.machine';
 
 /**
  * Event references for the authenticate component, with readable log format.
  */
 export enum AuthenticateEvents {
-  CLICKED_LOGIN     = '[AuthenticateEvent: Clicked Login]',
-  CLICKED_LOGOUT    = '[AuthenticateEvent: Clicked Logout]',
+  LOGIN_STARTED     = '[AuthenticateEvent: Login started]',
   LOGIN_SUCCESS     = '[AuthenticateEvent: Login Success]',
   LOGIN_ERROR       = '[AuthenticateEvent: Login Error]',
-  SESSION_RESTORED  = '[AuthenticateEvent: Session Restored]',
 }
 
 /**
@@ -18,12 +20,7 @@ export enum AuthenticateEvents {
 /**
  * An event which is dispatched when a user clicks the login button.
  */
-export interface ClickedLoginEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.CLICKED_LOGIN; webId: string }
-
-/**
- * An event which is dispatched when a user clicks the logout button.
- */
-export interface ClickedLogoutEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.CLICKED_LOGOUT }
+export interface LoginStartedEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_STARTED; webId: string }
 
 /**
  * An event which is dispatched when a user login was successful.
@@ -36,6 +33,24 @@ export interface LoginSuccessEvent extends Event<AuthenticateEvents> { type: Aut
 export interface LoginErrorEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_ERROR; message: string }
 
 /**
- * An event which is dispatched when a session was able to be restored.
+ * Union type of all authenticate events
  */
-export interface SessionRestoredEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.SESSION_RESTORED }
+export type AuthenticateEvent = LoginStartedEvent | LoginSuccessEvent | LoginStartedEvent;
+
+/**
+ * Handles an update of the active session.
+ */
+export const handleSessionUpdate = choose<AuthenticateContext, DoneInvokeEvent<SolidSession>>([
+  {
+    cond: (context: AuthenticateContext, event: DoneInvokeEvent<SolidSession>) => !event.data,
+    actions: [
+      send(AuthenticateEvents.LOGIN_ERROR),
+    ],
+  },
+  {
+    actions: [
+      assign({session: (context, event) => event.data}),
+      send(AuthenticateEvents.LOGIN_SUCCESS),
+    ],
+  },
+]);

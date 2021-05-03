@@ -1,14 +1,15 @@
-import BellIcon from './icons/Bell.svg';
-export const Bell = BellIcon;
+/**
+ * Export icons
+ */
+export { default as Bell } from './icons/Bell.svg?raw';
+export { default as Dismiss } from './icons/Dismiss.svg?raw';
+export { default as Search } from './icons/Search.svg?raw';
+export { default as Login } from './icons/Login.svg?raw';
+export { default as Logout } from './icons/Logout.svg?raw';
+export { default as NdeLogoInverse } from './icons/NdeLogoInverse.svg?raw';
+export { default as Loading } from './icons/Loading.svg?raw';
 
-import DismissIcon from './icons/Dismiss.svg';
-export const Dismiss = DismissIcon;
-
-import SearchIcon from './icons/Search.svg';
-export const Search = SearchIcon;
-
-import LoginIcon from './icons/Login.svg';
-export const Login = LoginIcon;
-
-import ThemeCss from './theme.css';
-export const Theme = ThemeCss;
+/**
+ * Export theme
+ */
+export { default as Theme } from './theme.css';

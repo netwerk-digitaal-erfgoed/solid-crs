@@ -1,16 +1,15 @@
-import { css, html, internalProperty, property, PropertyValues } from 'lit-element';
+import { html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
 import { ArgumentError, Collection, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter, StateValueMap } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { Login, Search } from '@digita-ai/nde-erfgoed-theme';
+import { Login, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
-import { Event } from '../state/event';
-import { FormValidatorResult } from '../forms/form-validator-result';
-import { FormEvents } from '../forms/form.events';
+import { FormEvents, FormEvent } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
+import { FormSubmitter } from 'lib/forms/form-submitter';
 
 /**
  * Validates the form and returns its results.
@@ -19,10 +18,21 @@ import { FormValidator } from '../forms/form-validator';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = (context: FormContext<Collection>, event: Event<FormEvents>): FormValidatorResult[] => [
+export const validator: FormValidator<Collection> = (context, event) => of([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-];
+]);
+
+/**
+ * A submitter which resolves after two seconds.
+ *
+ * @param context The form machine state's context.
+ * @param event The event which triggered the validation.
+ * @returns Returns a promise.
+ */
+export const submitter: FormSubmitter<Collection> = (context, event) => new Promise((resolve) => {
+  setTimeout(resolve, 2000);
+});
 
 /**
  * A component which shows the details of a single collection.
@@ -36,15 +46,15 @@ export class DemoFormComponent extends RxLitElement {
   public translator: Translator = new MemoryTranslator([
     {
       key: 'demo-form.name.required',
-      locale: 'nl-BE',
+      locale: 'nl-NL',
       value: 'Name is required.',
     },
     {
       key: 'demo-form.uri.required',
-      locale: 'nl-BE',
+      locale: 'nl-NL',
       value: 'URI is required.',
     },
-  ], 'nl-BE');
+  ], 'nl-NL');
 
   /**
    * The actor controlling this component.
@@ -66,7 +76,7 @@ export class DemoFormComponent extends RxLitElement {
     super();
 
     this.actor = interpret(
-      formMachine<Collection>(validator).withContext({
+      formMachine<Collection>(validator, submitter).withContext({
         data: { uri: '', name: 'Test' },
         original: { uri: '', name: 'Test' },
       }),
@@ -88,9 +98,10 @@ export class DemoFormComponent extends RxLitElement {
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
       map((state) => state.matches({
-        [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-        [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-        [FormRootStates.SUBMISSION]: FormSubmissionStates.NOT_SUBMITTED,
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
       })),
     ));
   }
@@ -100,7 +111,7 @@ export class DemoFormComponent extends RxLitElement {
    */
   static get styles() {
     return [
-      css``,
+      unsafeCSS(Theme),
     ];
   }
 
@@ -111,7 +122,6 @@ export class DemoFormComponent extends RxLitElement {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <form>
       <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
         <label slot="label" for="example">URI</label>

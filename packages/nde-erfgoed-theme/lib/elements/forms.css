@@ -18,11 +18,17 @@ form nde-form-element input {
   padding: 0;
   border: none;
   font-size: var(--font-size-small);
+  font-family: var(--font-family);
   outline: none;
   display: block;
   width: 100%;
 }
 
+form nde-form-element input:disabled {
+  color: var(--colors-foreground-light);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

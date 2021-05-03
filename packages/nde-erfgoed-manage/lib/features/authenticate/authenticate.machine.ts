@@ -1,18 +1,21 @@
-import { ConsoleLogger, LoggerLevel, SolidMockService, SolidService } from '@digita-ai/nde-erfgoed-core';
-import { Event, State } from '@digita-ai/nde-erfgoed-components';
-import { assign, createMachine, MachineConfig, StateNodeConfig } from 'xstate';
-import { log } from 'xstate/lib/actions';
-import { map, switchMap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { AuthenticateEvents } from './authenticate.events';
+import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
+import { createMachine } from 'xstate';
+import { send } from 'xstate/lib/actions';
+import { catchError, map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { addAlert } from '../../app.events';
+import { SolidSession } from '../../common/solid/solid-session';
+import { SolidService } from '../../common/solid/solid.service';
+import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**
  * The context of th authenticate feature.
  */
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AuthenticateContext {
-
+  /**
+   * Session of the current user.
+   */
+  session?: SolidSession;
 }
 
 /**
@@ -27,52 +30,105 @@ export enum AuthenticateActors {
  */
 export enum AuthenticateStates {
   AUTHENTICATED    = '[AuthenticateState: Authenticated]',
-  AUTHENTICATING = '[AuthenticateState: Authenticating]',
+  REDIRECTING = '[AuthenticateState: Redirecting]',
   UNAUTHENTICATED  = '[AuthenticateState: Unauthenticated]',
 }
 
 /**
+ * Validated the WebID form.
+ *
+ * @param context The form's context, which includes the data to validate.
+ * @param event The even which triggered the validation.
+ * @returns Validation results, or an empty array when valid.
+ */
+const validator: FormValidator<{ webId: string }> = (context) =>
+  of(context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]);
+
+/**
  * The authenticate machine.
  */
-export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, Event<AuthenticateEvents>, State<AuthenticateStates, AuthenticateContext>>({
+export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, AuthenticateEvent, State<AuthenticateStates, AuthenticateContext>>({
   id: AuthenticateActors.AUTHENTICATE_MACHINE,
   initial: AuthenticateStates.UNAUTHENTICATED,
+
   states: {
-
+    /**
+     * The user is not authenticated.
+     */
     [AuthenticateStates.UNAUTHENTICATED]: {
-      entry: [
-        assign({ session: null }),
-      ],
-      invoke: {
-        src: () => solid.handleIncomingRedirect().pipe(
-          switchMap(() => throwError(new Error())),
-          map(() => ({ type: AuthenticateEvents.SESSION_RESTORED, webId: ''})),
-        ),
-        onDone: {
-          target: AuthenticateStates.AUTHENTICATED,
+      invoke: [
+        /**
+         * Listen for redirects, and determine if a user is authenticated or not.
+         */
+        {
+          src: () => solid.getSession(),
+          onDone: { actions: handleSessionUpdate },
+          onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
-        onError: { actions: log('Could not restore session.')},
-      },
+        /**
+         * Invoke a form machine which controls the login form.
+         */
+        {
+          id: FormActors.FORM_MACHINE,
+          src: formMachine<{webId: string}>(
+            /**
+             * Validates the form.
+             */
+            (context): Observable<FormValidatorResult[]> =>
+              from(solid.getIssuer(context.data?.webId)).pipe(
+                map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
+                catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
+              ),
+            /**
+             * Redirects the user to the identity provider.
+             *
+             * https://wouteraj.inrupt.net/profile/card#me
+             * https://pod.inrupt.com/wouteraj/profile/card#me
+             */
+            async (context) => {
+              await solid.login(context.data.webId);
+              return context.data;
+            },
+          ).withContext({
+            data: { webId: ''},
+            original: { webId: ''},
+          }),
+          onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
+          /**
+           * Go back to unauthenticated when something goes wrong, and show an alert.
+           */
+          onError: {
+            // actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
+            target: AuthenticateStates.UNAUTHENTICATED,
+          },
+        },
+      ],
       on: {
-        [AuthenticateEvents.CLICKED_LOGIN]: AuthenticateStates.AUTHENTICATING,
-        [AuthenticateEvents.SESSION_RESTORED]: AuthenticateStates.AUTHENTICATED,
+        /**
+         * Transition to redirecting state when the form was submitted.
+         */
+        [AuthenticateEvents.LOGIN_STARTED]: AuthenticateStates.REDIRECTING,
+        /**
+         * Transition to authenticated when a redirect leads to a successful login.
+         */
+        [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
       },
     },
 
-    [AuthenticateStates.AUTHENTICATING]: {
-      invoke: {
-        src: () => solid.login().pipe(
-          map(() => ({ type: AuthenticateEvents.LOGIN_SUCCESS, webId: ''})),
-        ),
-        onDone: AuthenticateStates.AUTHENTICATED,
-        onError: AuthenticateStates.UNAUTHENTICATED,
-      },
-      on: {
-        [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
-        [AuthenticateEvents.LOGIN_ERROR]: AuthenticateStates.UNAUTHENTICATED,
-      },
+    /**
+     * The user is being redirected to his identity provider.
+     */
+    [AuthenticateStates.REDIRECTING]: {
+      type: 'final',
     },
+
+    /**
+     * The user has been authenticated.
+     */
     [AuthenticateStates.AUTHENTICATED]: {
+      data: {
+        session: (context: AuthenticateContext) => context.session,
+      },
       type: 'final',
     },
   },

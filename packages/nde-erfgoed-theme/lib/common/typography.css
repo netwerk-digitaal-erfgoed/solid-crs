@@ -3,15 +3,22 @@
 :root {
   --font-size-small: 14px;
   --font-size-normal: 16.5px;
+  --font-size-header-normal: 24px;
   --font-weight-bold: bold;
+  --font-family: 'Poppins', sans-serif;
 }
 
 body {
   color: var(--colors-foreground-normal);
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--font-family);
   font-size: var(--font-size-normal);
 }
 
 svg {
   fill: var(--colors-foreground-normal);
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 4px;
 }

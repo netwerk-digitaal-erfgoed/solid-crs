@@ -13,6 +13,7 @@
     "sourceMap": true,
     "declaration": true,
     "outDir": "dist",
+    // "outFile": "dist/nde-erfgoed-core.d.ts",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -26,9 +27,12 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
     "suppressImplicitAnyIndexErrors": true,
+    "types": ["node", "vite/client"],
+    "emitDeclarationOnly": true
   },
   "include": ["lib"],
   "exclude": [
+    "**/*.spec.ts",
     "node_modules",
     "dist"
   ]

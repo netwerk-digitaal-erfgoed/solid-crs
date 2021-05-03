@@ -1,6 +1,7 @@
-import { css, html, property, LitElement } from 'lit-element';
+import { html, property, LitElement, unsafeCSS } from 'lit-element';
 import type { Component } from '@digita-ai/semcom-core';
 import { Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**
  * A component which shows an summary of multiple collections.
@@ -30,9 +31,7 @@ export class CollectionsComponent extends LitElement implements Component {
    */
   static get styles() {
     return [
-      css`
-        .collection { }
-      `,
+      unsafeCSS(Theme),
     ];
   }
 
@@ -61,7 +60,6 @@ export class CollectionsComponent extends LitElement implements Component {
    */
   render() {
     return html`
-    <link href="./dist/bundles/styles.css" rel="stylesheet">
     <div class="collections">
     ${this.collections?.map((collection) => html`<nde-collection .collection='${collection}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection>`)}
     </div>
