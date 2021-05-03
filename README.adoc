@@ -1,8 +1,8 @@
 = Solid voor kleine erfgoedinstellingen
 ifdef::env-github,env-browser[:relfilesuffix: .adoc]
-ifdef::env-github,env-browser[:relfileprefix: docs/modules/ROOT/pages/]
 
 Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedinstellingen. Het systeem bestaat uit drie lagen: onboarding, beheer en presentatie. Beheerders kunnen collecties en objecten toevoegen, bezoekers kunnen deze browsen op de publieke website.Het systeem is beperkt tot collecties van beeldmateriaal en heeft beperkte functies voor gebruikers. 
 
-* xref:scope.adoc[Scope]
-* xref:architecture.adoc[Architecture]
+* xref:docs/modules/ROOT/pages/scope.adoc[Scope]
+* xref:docs/modules/ROOT/pages/architecture.adoc[Architecture]
+* xref:docs/modules/ROOT/pages/architecture.adoc[Architecture]
