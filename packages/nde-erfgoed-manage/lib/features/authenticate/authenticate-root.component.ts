@@ -176,7 +176,6 @@ export class AuthenticateRootComponent extends RxLitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          height: 100%;
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -186,6 +185,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         
         :host > * {
           margin-bottom: var(--gap-huge);
+          width: 400px;
         }
 
         .title-container {
@@ -195,7 +195,6 @@ export class AuthenticateRootComponent extends RxLitElement {
           justify-content: space-between;
           align-items: center;
           color: var(--colors-foreground-inverse);
-          width: 400px;
         }
         
         .title-container svg {
@@ -226,7 +225,6 @@ export class AuthenticateRootComponent extends RxLitElement {
         }
 
         .form-container {
-          width: 400px;
           display: flex;
           flex-direction: column;
           justify-content: center;
