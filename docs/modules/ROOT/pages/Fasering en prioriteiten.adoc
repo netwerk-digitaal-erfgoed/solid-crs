@@ -12,11 +12,11 @@ Beheerders krijgen toegang tot het collectiebeheersysteem, kunnen een account ma
 [options=header]
 |===
 |Prioriteit |Functie |Code 
-|A |WebID aanmaken |G3
 |A |Inloggen |G1
 |A |Uitloggen |G2
-|A |Bewerken van organisatie |G4
-|A |Verwijderen van organisatie |G5
+|B |WebID aanmaken |G3
+|B |Bewerken van organisatie |G4
+|B |Verwijderen van organisatie |G5
 |B |Toevoegen van medebeheerder |G7
 |B |Bekijken van medebeheerder |G8
 |B |Bewerken van medebeheerder |G9
@@ -35,8 +35,8 @@ Beheerders kunnen collecties toevoegen aan het collectiebeheersysteem. Wanneer e
 |A |Toevoegen van nieuwe collectie |C2
 |A |Bekijken van collectie |C3
 |A |Bewerken van collectie |C4
-|A |Publiceren van collectie |C5
 |A |Verwijderen van collectie |C6
+|B |Publiceren van collectie |C5
 |===
 
 === Beheer objecten
@@ -48,9 +48,8 @@ Beheerders kunnen digitale objecten toevoegen. Deze objecten kunnen worden toege
 |A |Toevoegen van nieuw object |O2
 |A |Bekijken van object |O4
 |A |Bewerken van object |O6
-|A |Publiceren van object |O8
 |A |Verwijderen van object |O9
-|A |Wijs objecten toe aan collectie | -
+|B |Publiceren van object |O8
 |B |Importeren van objecten |O10
 |B |Exporteren van objecten |O11
 |B |Opmerkingen plaatsen bij object |O7
@@ -62,7 +61,7 @@ Beheerders kunnen termen zoeken, bekijken, toevoegen aan objecten.
 [options=header]
 |===
 |Prioriteit |Functie |Code 
-|B |Browsen van termen
+|A |Zoeken & toewijzen van termen
 |B |Toevoegen van nieuwe term 
 |B |Bekijken van term
 |B |Bewerken van term
@@ -77,7 +76,7 @@ Beheerders kunnen termen zoeken, bekijken, toevoegen aan objecten.
 
 [options=header]
 |===
-|Prioriteit |Functie |Code 
+|Prioriteit |Functie
 |B |Browsen van objecten
 |B |Bekijken van object
 |B |Delen van object via socials
