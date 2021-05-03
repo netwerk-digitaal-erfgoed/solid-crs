@@ -112,15 +112,13 @@ export class AppRootComponent extends RxLitElement {
       unsafeCSS(Theme),
       css`
         :host {
-          height: 100%;
           background-color: var(--colors-background-normal);
           display: flex;
           flex-direction: row;
-          align-items: stretch;
         }
 
         :host * {
-          flex: 1 0;
+          flex: 1 1;
         }
 
         :host nde-sidebar {
