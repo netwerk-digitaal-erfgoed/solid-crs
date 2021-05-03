@@ -10,7 +10,7 @@
     "lint:fix": "lerna run lint:fix --parallel",
     "postinstall": "husky install",
     "release": "lerna version --exact --conventional-commits -m 'chore: release %s' --force-publish --tag-version-prefix='' --no-granular-pathspec",
-    "start": "lerna run start --parallel",
+    "start": "npm run build -- --ignore @digita-ai/nde-erfgoed-manage && lerna run start --parallel",
     "start:watch": "npm run build -- --ignore @digita-ai/nde-erfgoed-manage && lerna run start:watch --parallel",
     "test": "lerna run test --parallel",
     "test:ci": "lerna run test:ci"
