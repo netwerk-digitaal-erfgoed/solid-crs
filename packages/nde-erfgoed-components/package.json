@@ -16,6 +16,7 @@
     "dist"
   ],
   "scripts": {
+    "start": "npm run start:watch",
     "start:watch": "vite --config vite.serve.config.ts",
     "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
     "build:dev": "npm run build",
