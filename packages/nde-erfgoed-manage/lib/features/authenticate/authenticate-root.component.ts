@@ -158,10 +158,13 @@ export class AuthenticateRootComponent extends RxLitElement {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          gap: var(--gap-huge);
           background-color: var(--colors-primary-dark);
         }
         
+        :host > * {
+          margin-bottom: var(--gap-huge);
+        }
+
         .title-container {
           height: 50px;
           display: flex;
@@ -205,9 +208,12 @@ export class AuthenticateRootComponent extends RxLitElement {
           flex-direction: column;
           justify-content: center;
           align-items: stretch;
-          gap: var(--gap-large);
         }
-      `,
+
+        .form-container > * {
+          margin-bottom: var(--gap-large);
+        }
+        `,
     ];
   }
 
