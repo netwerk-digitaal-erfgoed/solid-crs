@@ -16,6 +16,8 @@ describe('SolidService', () => {
 
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
+
+    fetchMock.mockClear();
   });
 
   it('should be correctly instantiated', () => {
@@ -23,7 +25,7 @@ describe('SolidService', () => {
   });
 
   it.each([
-    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem'} ],
+    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem' } ],
     [ {webId: 'lorem', isLoggedIn: false}, null ],
     [ null, null ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
@@ -73,6 +75,7 @@ describe('SolidService', () => {
 
     const validOpenIdConfig = JSON.stringify({solid_oidc_supported: 'https://solidproject.org/TR/solid-oidc'});
     const validProfileDataset = {};
+    const validProfileThing = {};
 
     it.each([
       [ null, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
@@ -85,6 +88,16 @@ describe('SolidService', () => {
       fetchMock.mockResponses(openId);
 
       await expect(service.getIssuer(webId)).rejects.toThrowError(message);
+    });
+
+    it('should error when oidcIssuer openid config is not found', async () => {
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(async () => validProfileThing);
+      client.getUrl = jest.fn(async () => 'https://google.com/');
+
+      fetchMock.mockResponseOnce('<!DOCTYPE html>', { status: 404 });
+
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
     });
   });
 });

@@ -53,6 +53,7 @@ export enum AppFeatureStates {
 export enum AppAuthenticateStates {
   AUTHENTICATED = '[AppAuthenticateState: Authenticated]',
   UNAUTHENTICATED  = '[AppAuthenticateState: Unauthenticated]',
+  UNAUTHENTICATING  = '[AppAuthenticateState: Unauthenticating]',
 }
 
 /**
@@ -95,10 +96,9 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
           ],
           actions: assign({session: (context, event) => event.session}),
         },
-        [AppEvents.LOGGED_OUT]: {
+        [AppEvents.LOGGING_OUT]: {
           target: [
-            `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
-            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATING}`,
           ],
         },
       },
@@ -141,6 +141,14 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      */
     [AppRootStates.AUTHENTICATE]: {
       initial: AppAuthenticateStates.UNAUTHENTICATED,
+      on: {
+        [AppEvents.LOGGED_OUT]: {
+          target: [
+            `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+            `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
+          ],
+        },
+      },
       states: {
         /**
          * The user is authenticated.
@@ -150,12 +158,21 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
         },
 
         /**
+         * The user is logging out.
+         */
+        [AppAuthenticateStates.UNAUTHENTICATING]: {
+          invoke: {
+            src: () => solid.logout(),
+            onDone: {
+              actions: send({ type: AppEvents.LOGGED_OUT }),
+            },
+          },
+        },
+
+        /**
          * The user has not been authenticated.
          */
         [AppAuthenticateStates.UNAUTHENTICATED]: {
-          invoke: {
-            src: () => solid.logout(),
-          },
         },
       },
     },

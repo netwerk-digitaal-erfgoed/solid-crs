@@ -27,6 +27,6 @@ export abstract class SolidService {
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  public abstract logout(): Promise<unknown>;
+  public abstract logout(): Promise<void>;
 
 }

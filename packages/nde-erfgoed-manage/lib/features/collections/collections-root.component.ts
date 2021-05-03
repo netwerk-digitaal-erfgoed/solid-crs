@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { ArgumentError, Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
@@ -116,6 +116,11 @@ export class CollectionsRootComponent extends RxLitElement {
   static get styles() {
     return [
       unsafeCSS(Theme),
+      css`
+        :host {
+          padding: var(--gap-large);
+        }
+      `,
     ];
   }
 
