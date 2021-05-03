@@ -97,8 +97,7 @@ export class SolidMockService extends SolidService {
   /**
    * Deauthenticates the user from their OIDC issuer
    */
-  async logout(): Promise<unknown> {
+  async logout(): Promise<void> {
     this.logger.debug(SolidMockService.name, 'Logging out user');
-    return true;
   }
 }
