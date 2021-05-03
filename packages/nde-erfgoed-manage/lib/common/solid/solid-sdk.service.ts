@@ -13,7 +13,10 @@ export class SolidSDKService extends SolidService {
    *
    * @param logger The logger used in the service.
    */
-  constructor(private logger: Logger) {
+  constructor(
+    private logger: Logger,
+    private clientName = 'NDE Collectiebeheersysteem',
+  ) {
     super();
   }
 
@@ -117,7 +120,7 @@ export class SolidSDKService extends SolidService {
     await login({
       oidcIssuer: issuer,
       redirectUrl: window.location.href,
-      clientName: 'Getting started app',
+      clientName: this.clientName,
     });
   }
 
