@@ -5,7 +5,6 @@ import { CollectionsEvents } from './collections.events';
 /**
  * Services for the collections component.
  */
-
 const storedCollections = [
   {
     uri: 'test',

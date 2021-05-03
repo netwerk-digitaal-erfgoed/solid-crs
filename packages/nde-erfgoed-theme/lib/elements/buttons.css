@@ -1,7 +1,28 @@
 button {
-  background-color: var(--colors-primary-normal);
-  color: var(--colors-background-light);
   border: none;
-  padding: var(--gap-small);
+  background-color: var(--colors-primary-dark);
   text-transform: uppercase;
+  padding: var(--gap-small);
+  color: var(--colors-foreground-inverse);
+  cursor: pointer;
+  outline: none;
+}
+
+button.primary {
+  background-color: var(--colors-primary-normal);
+}
+
+button svg {
+  fill: var(--colors-foreground-inverse);
+  max-height: 100%;
+}
+
+button:disabled {
+  background-color: var(--colors-background-normal);
+  color: var(--colors-foreground-light);
+  cursor: inherit;
+}
+
+button:disabled svg {
+  fill: var(--colors-foreground-light);
 }

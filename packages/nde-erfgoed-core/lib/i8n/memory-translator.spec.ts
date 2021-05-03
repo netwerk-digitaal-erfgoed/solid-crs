@@ -12,7 +12,7 @@ describe('MemoryTranslator', () => {
         value: 'Foo in English',
       },
       {
-        locale: 'nl-BE',
+        locale: 'nl-NL',
         key: 'foo',
         value: 'Foo in Dutch',
       },
@@ -43,13 +43,13 @@ describe('MemoryTranslator', () => {
     });
 
     it('Should translate return null with an existing key in an non-existing locale.', () => {
-      const value = service.translate('foo.bar', 'nl-BE');
+      const value = service.translate('foo.bar', 'nl-NL');
 
       expect(value).toBeFalsy();
     });
 
     it('Should translate return null with an non-existing key in an existing locale.', () => {
-      const value = service.translate('lorem', 'nl-BE');
+      const value = service.translate('lorem', 'nl-NL');
 
       expect(value).toBeFalsy();
     });

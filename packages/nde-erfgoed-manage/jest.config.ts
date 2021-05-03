@@ -5,6 +5,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'jest-environment-jsdom-sixteen',
   setupFiles: ['<rootDir>/tests/setup.ts'],
   testMatch: ['**/+(*.)+(spec).+(ts)'],
+  automock: false,
   transformIgnorePatterns: ['node_modules/(?!(lit-element|lit-html|rx-lit)/)'],
   moduleNameMapper: {
     '~(.*)': '<rootDir>/lib/$1',
@@ -16,6 +17,9 @@ const config: Config.InitialOptions = {
         warnOnly: true,
       },
     },
+  },
+  transform: {
+    '^.+\\.ts?$': 'ts-jest'
   },
 };
 
