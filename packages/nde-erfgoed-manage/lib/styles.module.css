@@ -11,5 +11,5 @@ body {
 }
 
 body > * {
-  flex: 1 0;
+  flex: 1 1;
 }
