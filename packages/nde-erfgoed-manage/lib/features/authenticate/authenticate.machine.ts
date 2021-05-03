@@ -35,16 +35,6 @@ export enum AuthenticateStates {
 }
 
 /**
- * Validated the WebID form.
- *
- * @param context The form's context, which includes the data to validate.
- * @param event The even which triggered the validation.
- * @returns Validation results, or an empty array when valid.
- */
-const validator: FormValidator<{ webId: string }> = (context) =>
-  of(context.data?.webId && context.data?.webId.length > 0 ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]);
-
-/**
  * The authenticate machine.
  */
 export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, AuthenticateEvent, State<AuthenticateStates, AuthenticateContext>>({
@@ -75,7 +65,7 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
              * Validates the form.
              */
             (context): Observable<FormValidatorResult[]> =>
-              from(solid.getIssuer(context.data?.webId)).pipe(
+              from(solid.getIssuer(context.data?.webId.match(/^https?:\/\//i) ? context.data.webId : `https://${context.data.webId}`)).pipe(
                 map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
                 catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
               ),
@@ -86,14 +76,14 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
              * https://pod.inrupt.com/wouteraj/profile/card#me
              */
             async (context) => {
-              await solid.login(context.data.webId);
+              await solid.login(context.data.webId.match(/^https?:\/\//i) ? context.data.webId : `https://${context.data.webId}`);
               return context.data;
             },
           ).withContext({
             data: { webId: ''},
             original: { webId: ''},
           }),
-          onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId})) },
+          onDone: { actions: send((_, event) => ({type: AuthenticateEvents.LOGIN_STARTED, webId: event.data.data.webId}))},
           /**
            * Go back to unauthenticated when something goes wrong, and show an alert.
            */
