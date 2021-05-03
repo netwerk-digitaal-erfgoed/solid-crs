@@ -5,11 +5,11 @@ import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanl
 import { ActorRef, Interpreter, State} from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, NdeLogoInverse, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Login, NdeLogoInverse, Theme, Loading } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { AppEvents } from '../../app.events';
-import { AuthenticateContext } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateStates } from './authenticate.machine';
 
 /**
  * The root page of the authenticate feature.
@@ -65,6 +65,18 @@ export class AuthenticateRootComponent extends RxLitElement {
   isSubitting? = false;
 
   /**
+   * Indicates if the form is being initialized.
+   */
+  @internalProperty()
+  isInitializing? = false;
+
+  /**
+   * Indicates if the user is being redirected.
+   */
+  @internalProperty()
+  isRedirecting? = false;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues) {
@@ -79,6 +91,14 @@ export class AuthenticateRootComponent extends RxLitElement {
         this.subscribe('alerts', from(this.actor.parent)
           .pipe(map((state) => state.context?.alerts)));
       }
+
+      this.subscribe('isInitializing', from(this.actor).pipe(
+        map((state) => state.matches(AuthenticateStates.INITIAL)),
+      ));
+
+      this.subscribe('isRedirecting', from(this.actor).pipe(
+        map((state) => state.matches(AuthenticateStates.REDIRECTING)),
+      ));
     }
 
     if(changed.has('formActor') && this.formActor){
@@ -128,21 +148,24 @@ export class AuthenticateRootComponent extends RxLitElement {
         ${ unsafeSVG(NdeLogoInverse) }
         <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
-      <div class="form-container">
-        ${ alerts }
+      ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`
+        <div class="form-container">
+          ${ alerts }
+          
+          <form>
+            <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+              <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
+              <input type="text" slot="input" ?disabled="${this.isSubitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+              <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+            </nde-form-element>
+          </form>
         
-        <form>
-          <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
-            <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-            <input type="text" slot="input" ?disabled="${this.isSubitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-            <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
-          </nde-form-element>
-        </form>
-       
-      </div>
-      <div class="webid-container">
-        <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
-      </div>`;
+        </div>
+        <div class="webid-container">
+          <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+        </div>
+      `}
+      `;
   }
 
   /**

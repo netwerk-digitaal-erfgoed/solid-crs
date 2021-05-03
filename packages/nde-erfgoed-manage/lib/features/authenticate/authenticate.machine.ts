@@ -1,9 +1,8 @@
-import { formMachine, State, FormActors, FormValidatorResult, FormValidator } from '@digita-ai/nde-erfgoed-components';
+import { formMachine, State, FormActors, FormValidatorResult } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { send } from 'xstate/lib/actions';
 import { catchError, map } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
-import { addAlert } from '../../app.events';
 import { SolidSession } from '../../common/solid/solid-session';
 import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
@@ -29,6 +28,7 @@ export enum AuthenticateActors {
  * State references for the collection component, with readable log format.
  */
 export enum AuthenticateStates {
+  INITIAL    = '[AuthenticateState: Initial]',
   AUTHENTICATED    = '[AuthenticateState: Authenticated]',
   REDIRECTING = '[AuthenticateState: Redirecting]',
   UNAUTHENTICATED  = '[AuthenticateState: Unauthenticated]',
@@ -39,22 +39,37 @@ export enum AuthenticateStates {
  */
 export const authenticateMachine = (solid: SolidService) => createMachine<AuthenticateContext, AuthenticateEvent, State<AuthenticateStates, AuthenticateContext>>({
   id: AuthenticateActors.AUTHENTICATE_MACHINE,
-  initial: AuthenticateStates.UNAUTHENTICATED,
+  initial: AuthenticateStates.INITIAL,
 
   states: {
+    /**
+     * We don't know if the user is authenticated or not, but we're checking.
+     */
+    [AuthenticateStates.INITIAL]: {
+      /**
+       * Get the current session, and determine if a user is authenticated or not.
+       */
+      invoke: {
+        src: () => solid.getSession(),
+        onDone: { actions: handleSessionUpdate },
+        onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
+      },
+      on: {
+        /**
+         * Transition to authenticated when there is an active session.
+         */
+        [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
+        /**
+         * Transition to unauthenticated when there is no active session.
+         */
+        [AuthenticateEvents.LOGIN_ERROR]: AuthenticateStates.UNAUTHENTICATED,
+      },
+    },
     /**
      * The user is not authenticated.
      */
     [AuthenticateStates.UNAUTHENTICATED]: {
       invoke: [
-        /**
-         * Listen for redirects, and determine if a user is authenticated or not.
-         */
-        {
-          src: () => solid.getSession(),
-          onDone: { actions: handleSessionUpdate },
-          onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
-        },
         /**
          * Invoke a form machine which controls the login form.
          */
@@ -98,26 +113,20 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
          * Transition to redirecting state when the form was submitted.
          */
         [AuthenticateEvents.LOGIN_STARTED]: AuthenticateStates.REDIRECTING,
-        /**
-         * Transition to authenticated when a redirect leads to a successful login.
-         */
-        [AuthenticateEvents.LOGIN_SUCCESS]: AuthenticateStates.AUTHENTICATED,
       },
     },
 
     /**
      * The user is being redirected to his identity provider.
      */
-    [AuthenticateStates.REDIRECTING]: {
-      type: 'final',
-    },
+    [AuthenticateStates.REDIRECTING]: { },
 
     /**
      * The user has been authenticated.
      */
     [AuthenticateStates.AUTHENTICATED]: {
       data: {
-        session: (context: AuthenticateContext) => context.session,
+        session: (context: AuthenticateContext) => context?.session,
       },
       type: 'final',
     },

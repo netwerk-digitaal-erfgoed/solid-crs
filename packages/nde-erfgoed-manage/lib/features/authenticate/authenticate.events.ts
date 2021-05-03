@@ -35,7 +35,7 @@ export interface LoginErrorEvent extends Event<AuthenticateEvents> { type: Authe
 /**
  * Union type of all authenticate events
  */
-export type AuthenticateEvent = LoginStartedEvent | LoginSuccessEvent | LoginStartedEvent;
+export type AuthenticateEvent = LoginStartedEvent | LoginSuccessEvent | LoginStartedEvent | LoginErrorEvent;
 
 /**
  * Handles an update of the active session.
