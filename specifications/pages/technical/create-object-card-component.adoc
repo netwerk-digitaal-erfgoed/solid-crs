@@ -1,0 +1,74 @@
+= Technical Documentation: Create object card component
+
+== Author(s)
+
+* Stijn Taelemans
+
+== References
+
+
+* https://www.wrike.com/open.htm?id=684057264[Wrike task]
+* Branch: `feat/create-object-card-component`
+* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-components]
+
+
+== Introduction
+
+=== Overview
+
+This document is about the creation of a reusable object card, which will be displayed in the collection overview page.
+
+
+=== Assumptions
+
+All components are to be made in the '@digita-ai/nde-erfgoed-components' package.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Collection model
+
+Edit 'collection.ts' under 'lib/collections/' in the 'nde-erfgoed-core' package.
+
+[source, ts]
+----
+{
+  uri: string,
+  name: string,
+  description: string,
+}
+----
+
+
+==== CollectionObject model
+
+Create 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core' package.
+
+[source, ts]
+----
+{
+  uri: string,
+  name: string,
+  description: string,
+  image: string,
+}
+----
+
+
+==== CollectionObjectCardComponent 
+
+The finished component should look like this:
+
+image::../../assets/collections/collection-object-component.svg[CollectionObjectCardComponent]
+
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/collection-object/collection-object-card.component.ts', with tag `<nde-collection-object-card>`
+
+The name and description should go in the title and subtitle of the component. The image is the top part of the component and should fit the whole area. This component is a Semantic Component, which means it should fetch its own data. The component should fetch data for a single collection object. Fill in the data() function so that the name, description and image are able to be displayed. Develop the component without thinking about SemCom first, then integrate the fetching of data.
+
+Hovering over the component should change the cursor as if the component is clickable.
+
+Export the component in 'lib/index.ts'.
+
+To preview the component while developing: register the component in 'lib/demo.ts', then add the component's tag to the 'index.html' file in the 'lib' directory. Running `npm run start:watch` in the 'nde-erfgoed-components' package will serve the 'index.html' file you just edited.
