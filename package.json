@@ -5,7 +5,6 @@
     "bootstrap": "npm ci && lerna bootstrap --ignore-prepublish",
     "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci --ignore-prepublish",
     "build": "lerna run build",
-    "build:dev": "lerna run build:dev",
     "lint": "lerna run lint --parallel",
     "lint:fix": "lerna run lint:fix --parallel",
     "postinstall": "husky install",

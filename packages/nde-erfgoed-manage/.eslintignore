@@ -1,5 +1,4 @@
 node_modules
 dist
 jest.config.ts
-vite.build.config.ts
-vite.serve.config.ts
+vite.config.ts

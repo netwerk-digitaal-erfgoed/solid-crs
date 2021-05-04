@@ -17,7 +17,6 @@
   ],
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc",
-    "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",

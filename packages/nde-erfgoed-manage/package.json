@@ -16,10 +16,9 @@
     "dist"
   ],
   "scripts": {
-    "start": "npm run start:watch",
-    "start:watch": "vite --config vite.serve.config.ts",
-    "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
-    "build:dev": "npm run build",
+    "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
+    "start:watch": "vite --config vite.config.ts",
+    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "test": "jest --passWithNoTests",
@@ -45,6 +44,7 @@
     "@typescript-eslint/parser": "^4.10.0",
     "esbuild": "^0.11.6",
     "eslint": "^7.16.0",
+    "http-server": "^0.12.3",
     "jest": "26.6.3",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
