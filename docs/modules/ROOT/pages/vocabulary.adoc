@@ -11,3 +11,4 @@ The following table describes the properties that are used in the Solid CBS proj
 |===
 |Property |Expected type |Description |Example
 |  |  |  |  
+|===
