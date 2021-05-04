@@ -31,7 +31,9 @@ export const validator: FormValidator<Collection> = (context, event) => of([
  * @returns Returns a promise.
  */
 export const submitter: FormSubmitter<Collection> = (context, event) => new Promise((resolve) => {
+
   setTimeout(resolve, 2000);
+
 });
 
 /**
@@ -42,7 +44,7 @@ export class DemoFormComponent extends RxLitElement {
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator = new MemoryTranslator([
     {
       key: 'demo-form.name.required',
@@ -59,7 +61,7 @@ export class DemoFormComponent extends RxLitElement {
   /**
    * The actor controlling this component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   public actor: Interpreter<FormContext<Collection>>;
 
   /**
@@ -73,6 +75,7 @@ export class DemoFormComponent extends RxLitElement {
    * which starts the root machine actor.
    */
   constructor() {
+
     super();
 
     this.actor = interpret(
@@ -83,6 +86,7 @@ export class DemoFormComponent extends RxLitElement {
     );
 
     this.actor.start();
+
   }
 
   /**
@@ -90,10 +94,13 @@ export class DemoFormComponent extends RxLitElement {
    * It subscribes to the actor and pipes state to the properties.
    */
   firstUpdated(changed: PropertyValues) {
+
     super.firstUpdated(changed);
 
     if (!this.actor) {
+
       throw new ArgumentError('Argument this.actor should be set.', this.actor);
+
     }
 
     this.subscribe('enableSubmit', from(this.actor).pipe(
@@ -104,15 +111,18 @@ export class DemoFormComponent extends RxLitElement {
         },
       })),
     ));
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
     ];
+
   }
 
   /**
@@ -121,6 +131,7 @@ export class DemoFormComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <form>
       <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="uri">
@@ -140,7 +151,9 @@ export class DemoFormComponent extends RxLitElement {
       <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>
     </form>
   `;
+
   }
+
 }
 
 export default DemoFormComponent;

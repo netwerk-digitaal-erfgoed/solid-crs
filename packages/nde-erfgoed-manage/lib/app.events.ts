@@ -52,7 +52,13 @@ export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED
 /**
  * Union type of app events.
  */
-export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
+export type AppEvent =
+  | LoggedInEvent
+  | LoggingOutEvent
+  | LoggedOutEvent
+  | ErrorEvent
+  | DismissAlertEvent
+  | AddAlertEvent;
 
 /**
  * Actions for the alerts component.

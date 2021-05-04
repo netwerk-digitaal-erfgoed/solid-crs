@@ -21,13 +21,13 @@ export class AppRootComponent extends RxLitElement {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({ type: Logger })
   public logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator = new MemoryTranslator(nlNL, 'nl-NL');
 
   /**
@@ -35,8 +35,10 @@ export class AppRootComponent extends RxLitElement {
    * which starts the root machine actor.
    */
   constructor() {
+
     super();
     this.actor.start();
+
   }
 
   /**
@@ -51,7 +53,7 @@ export class AppRootComponent extends RxLitElement {
     )
       .withContext({
         alerts: [],
-      }), { devTools: true},
+      }), { devTools: true },
   );
 
   /**
@@ -66,17 +68,23 @@ export class AppRootComponent extends RxLitElement {
    * @param event The event fired when dismissing an alert.
    */
   dismiss(event: CustomEvent<Alert>) {
+
     this.logger.debug(AppRootComponent.name, 'Dismiss', event);
 
     if (!event) {
+
       throw new ArgumentError('Argument event should be set.', event);
+
     }
 
     if (!event.detail) {
+
       throw new ArgumentError('Argument event.detail should be set.', event.detail);
+
     }
 
     this.actor.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
   }
 
   /**
@@ -84,11 +92,13 @@ export class AppRootComponent extends RxLitElement {
    * It subscribes to the actor, logs state changes, and pipes state to the properties.
    */
   firstUpdated(changed: PropertyValues) {
+
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
+      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', { actor: this.actor, state })),
     ));
+
   }
 
   /**
@@ -97,17 +107,20 @@ export class AppRootComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
-    ${ this.state?.matches({[AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED}) ? html`<nde-sidebar><button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></nde-sidebar>` : '' }  
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`<nde-sidebar><button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></nde-sidebar>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS }) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
     `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -126,6 +139,7 @@ export class AppRootComponent extends RxLitElement {
         }
       `,
     ];
+
   }
 
 }
