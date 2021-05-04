@@ -16,7 +16,7 @@
 
 === Overview
 
-This document is about the creation of a reusable content header component.
+This document is about the creation of a reusable sidebar list component.
 
 
 === Assumptions
