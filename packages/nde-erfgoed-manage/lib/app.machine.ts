@@ -1,7 +1,7 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -94,12 +94,13 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
             `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
           ],
-          actions: assign({session: (context, event) => event.session}),
+          actions: setSession,
         },
         [AppEvents.LOGGING_OUT]: {
           target: [
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATING}`,
           ],
+          actions: removeSession,
         },
       },
       states: {
