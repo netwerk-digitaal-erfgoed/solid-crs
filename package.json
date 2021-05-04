@@ -6,8 +6,11 @@
     "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci --ignore-prepublish",
     "build": "lerna run build",
     "build:dev": "lerna run build:dev",
-    "lint": "lerna run lint --parallel",
-    "lint:fix": "lerna run lint:fix --parallel",
+    "lint": "lerna run lint --since HEAD --parallel",
+    "lint:all": "lerna run lint --parallel",
+    "lint:fix": "lerna run lint:fix --since HEAD --parallel",
+    "lint:fix:all": "lerna run lint:fix --parallel",
+    "lint:staged": "lerna run lint:staged --since HEAD --stream --concurrency 1",
     "postinstall": "husky install",
     "release": "lerna version --exact --conventional-commits -m 'chore: release %s' --force-publish --tag-version-prefix='' --no-granular-pathspec",
     "start": "npm run build -- --ignore @digita-ai/nde-erfgoed-manage && lerna run start --parallel",
@@ -16,23 +19,36 @@
     "test:ci": "lerna run test:ci"
   },
   "devDependencies": {
-    "@angular-eslint/eslint-plugin": "^1.2.0",
-    "@angular-eslint/eslint-plugin-template": "^1.2.0",
-    "@angular-eslint/template-parser": "^1.2.0",
-    "@angular/compiler": "^7.2.7",
     "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
-    "@commitlint/config-lerna-scopes": "^11.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
+    "@digita-ai/commitlint-config": "^0.2.2",
+    "@digita-ai/eslint-config": "^0.2.2",
+    "@typescript-eslint/eslint-plugin": "^4.22.1",
     "eslint": "^7.16.0",
     "eslint-import-resolver-typescript": "^2.4.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jasmine": "^4.1.2",
     "eslint-plugin-jsdoc": "^32.2.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "husky": "^5.0.6",
     "lerna": "^3.22.1",
+    "lint-staged": "^10.5.4",
     "typescript": "3.8.3"
+  },
+  "commitlint": {
+    "extends": [
+      "@digita-ai/commitlint-config"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "@digita-ai/eslint-config"
+    ]
+  },
+  "lint-staged": {
+    "**/*.(js|ts)": [
+      "eslint --fix"
+    ],
+    "**/*.(css)": [
+      "stylelint --fix"
+    ]
   }
 }

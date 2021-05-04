@@ -20,6 +20,7 @@
     "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
+    "lint:staged": "lint-staged",
     "test": "jest --passWithNoTests",
     "test:ci": "npm run test -- --runInBand"
   },
