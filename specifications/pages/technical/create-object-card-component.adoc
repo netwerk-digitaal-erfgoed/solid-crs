@@ -35,7 +35,7 @@ Edit 'collection.ts' under 'lib/collections/' in the 'nde-erfgoed-core' package.
 [source, ts]
 ----
 {
-  uri: string,
+  uri: string, // identifier
   name: string,
   description: string,
 }
@@ -49,10 +49,13 @@ Create 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core'
 [source, ts]
 ----
 {
-  uri: string,
+  uri: string, // identifier
   name: string,
   description: string,
   image: string,
+  subject: string, // e.g. Molen
+  type: string, // icon
+  updated: string, // unix timestamp
 }
 ----
 
@@ -63,11 +66,11 @@ The finished component should look like this:
 
 image::../../assets/collections/collection-object-component.svg[CollectionObjectCardComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/collection-object/collection-object-card.component.ts', with tag `<nde-collection-object-card>`
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/collection-object/collection-object-card.component.ts', with tag `<nde-collection-object-card>`
 
-The name and description should go in the title and subtitle of the component. The image is the top part of the component and should fit the whole area. This component is a Semantic Component, which means it should fetch its own data. The component should fetch data for a single collection object. Fill in the data() function so that the name, description and image are able to be displayed. Develop the component without thinking about SemCom first, then integrate the fetching of data.
+The component should feature an input property for a `CollectionObject`. The `name` and `description` should go in the title and subtitle of the component. The `image` is the top part of the component and should fit the whole area. 
 
-Hovering over the component should change the cursor as if the component is clickable.
+Hovering over the component should change the cursor as if the component is clickable. The actual onclick functionality should be implemented by the page that uses the component.
 
 Export the component in 'lib/index.ts'.
 
