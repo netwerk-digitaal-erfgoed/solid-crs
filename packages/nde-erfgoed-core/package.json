@@ -26,15 +26,16 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "devDependencies": {
+    "@digita-ai/typescript-config": "^0.3.2",
     "@types/jest": "^26.0.23",
-    "@types/node": "^14.14.14",
+    "@types/node": "^14.14.44",
     "eslint": "^7.16.0",
     "jest": "^26.6.3",
     "jest-coverage-thresholds-bumper": "0.0.4",
     "lint-staged": "^10.5.4",
     "rimraf": "^3.0.2",
-    "ts-node": "9.1.1",
-    "typescript": "^4.1.3",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
     "vite": "2.2.3"
   },
   "publishConfig": {
@@ -54,14 +55,18 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 70,
+        "branches": 69.64,
         "functions": 68.42,
-        "lines": 63.87,
-        "statements": 63.64
+        "lines": 70.37,
+        "statements": 70
       }
     },
+    "coveragePathIgnorePatterns": [
+      "./dist/",
+      "./node_modules/",
+      "./lib/index.ts"
+    ],
     "displayName": "core",
-    "preset": "@digita-ai/jest-config",
-    "rootDir": "lib"
+    "preset": "@digita-ai/jest-config"
   }
 }

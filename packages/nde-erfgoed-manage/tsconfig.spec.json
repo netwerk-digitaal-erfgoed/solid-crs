@@ -1,13 +1,15 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "@digita-ai/typescript-config/tsconfig.spec.json",
   "compilerOptions": {
-    "types": ["jest", "vite/client"],
-    "declaration": false,
-    "inlineSources": false,
+    "baseUrl": "lib",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "strict": false
   },
-  "include": ["lib", "tests/setup.ts"],
+  "files": [ "test/setup.ts" ],
+  "include": [ "lib" ],
   "exclude": [
     "dist",
     "node_modules"
-  ],
+  ]
 }

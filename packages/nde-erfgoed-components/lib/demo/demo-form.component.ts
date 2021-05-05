@@ -9,7 +9,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { FormEvents, FormEvent } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
-import { FormSubmitter } from 'lib/forms/form-submitter';
+import { FormSubmitter } from '../forms/form-submitter';
 
 /**
  * Validates the form and returns its results.
