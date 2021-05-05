@@ -115,7 +115,28 @@ describe('AppMachine', () => {
 
     machine.start();
 
-    machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'lorem' } });
+    machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'lorem' } } as LoggedInEvent);
+  });
+
+  it('should remove session when logged out', async (done) => {
+    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    machine = interpret<AppContext>(
+      appMachine(solid)
+        .withContext({
+          alerts: [],
+          session: { webId: 'lorem' },
+        }),
+    );
+
+    machine.onChange((context) => {
+      if(!context.session) {
+        done();
+      }
+    });
+
+    machine.start();
+
+    machine.send({ type: AppEvents.LOGGING_OUT });
   });
 
   it('should send logged in when authenticate machine is done', async (done) => {
