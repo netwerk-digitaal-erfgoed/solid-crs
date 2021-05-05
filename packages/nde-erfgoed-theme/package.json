@@ -23,7 +23,6 @@
     "lint:staged": "lint-staged"
   },
   "devDependencies": {
-    "esbuild": "^0.11.6",
     "normalize.css": "8.0.1",
     "rimraf": "^3.0.2",
     "stylelint": "^13.12.0",
