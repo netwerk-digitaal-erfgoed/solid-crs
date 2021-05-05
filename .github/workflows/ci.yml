@@ -126,7 +126,7 @@ jobs:
         with:
           context: packages/nde-erfgoed-pods/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
+          tags: ghcr.io/digita-ai/nde-erfgoed-pods:latest,ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GA_TOKEN}}
 
@@ -136,7 +136,7 @@ jobs:
         with:
           context: packages/nde-erfgoed-manage/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
+          tags: ghcr.io/digita-ai/nde-erfgoed-manage:latest,ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GA_TOKEN}}
 
