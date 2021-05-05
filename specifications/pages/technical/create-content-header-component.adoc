@@ -35,7 +35,7 @@ The finished component should look like this:
 image::../../assets/collections/content-header.svg[ContentHeaderComponent]
 
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/header/content-header.component.ts', with tag `<nde-content-header>`
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/header/content-header.component.ts', with tag `<nde-content-header>`
 
 Make use of https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots] for the icon on the left, the title, subtitle and actions to the right. The component should be able to switch colors (see image) based on an 'inverse' property. Take a look at `FormElementComponent`, where it is used to disable the blue border. This component also makes use of slots.
 
