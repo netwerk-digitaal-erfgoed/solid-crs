@@ -62,7 +62,7 @@
   "jest": {
     "preset": "@digita-ai/jest-config",
     "projects": [
-      "<rootDir>/packages/*/"
+      "./packages/*/package.json"
     ]
   }
 }
