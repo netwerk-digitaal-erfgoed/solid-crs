@@ -9,6 +9,6 @@
     "start:watch": "npm run start"
   },
   "dependencies": {
-    "@solid/community-server": "0.8.1"
+    "@solid/community-server": "0.9.0"
   }
 }
