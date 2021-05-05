@@ -115,9 +115,9 @@ export const dismissAlert = choose<AppContext, DismissAlertEvent>([
 /**
  * Action which sets a session in the machine's context.
  */
-export const setSession = assign({session: (context, event: LoggedInEvent) => event.session});
+export const setSession = assign({ session: (context, event: LoggedInEvent) => event.session });
 
 /**
  * Action which removes a session in the machine's context.
  */
-export const removeSession = assign({session: (context, event) => undefined});
+export const removeSession = assign({ session: (context, event) => undefined });

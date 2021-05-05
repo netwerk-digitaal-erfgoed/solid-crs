@@ -16,7 +16,7 @@
     "lint:staged": "lint-staged"
   },
   "devDependencies": {
-    "@digita-ai/typescript-config": "^0.3.2",
+    "@digita-ai/typescript-config": "^0.3.3",
     "@types/node": "^15.0.2",
     "eslint": "^7.16.0",
     "lint-staged": "^10.5.4",
