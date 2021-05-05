@@ -29,7 +29,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/digita-ai/nde-erfgoedinstellingen.git",
-    "directory": "packages/nde-erfgoed-core"
+    "directory": "packages/nde-erfgoed-client"
   },
   "bugs": {
     "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"

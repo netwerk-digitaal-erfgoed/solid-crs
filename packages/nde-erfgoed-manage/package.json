@@ -1,7 +1,7 @@
 {
   "name": "@digita-ai/nde-erfgoed-manage",
   "version": "0.1.0",
-  "description": "Collection of Semantic Components for the NDE-project.",
+  "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/nde-erfgoed-manage.umd.js",
   "types": "./dist/index.d.ts",
