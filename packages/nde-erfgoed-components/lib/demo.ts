@@ -4,7 +4,7 @@ import { CollectionComponent } from './collections/collection.component';
 import { CollectionsComponent } from './collections/collections.component';
 import { AlertComponent } from './alerts/alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { ContentHeaderComponent } from './common/header/content-header.component';
+import { ContentHeaderComponent } from './header/content-header.component';
 
 /**
  * Register tags for components.

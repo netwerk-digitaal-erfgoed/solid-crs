@@ -18,7 +18,19 @@
   
   <div class="content">
     <p>Content Header Component</p>
-    <nde-content-header></nde-content-header>
+    <nde-content-header>
+      <div slot="icon">&#xFE19;</div>
+      <div slot="title">Title</div>
+      <div slot="subtitle">Subtitle</div>
+      <div slot="actions">&#xFE19;</div>
+    </nde-content-header>
+    <br>
+    <nde-content-header inverse>
+      <div slot="icon">&#xFE19;</div>
+      <div slot="title">Title</div>
+      <div slot="subtitle">Subtitle</div>
+      <div slot="actions">&#xFE19;</div>
+    </nde-content-header>
     <p>Collection Component</p>
     <nde-collection collection='{"uri": "test", "name": "Foo"}'></nde-collection>
 
