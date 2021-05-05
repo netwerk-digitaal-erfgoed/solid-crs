@@ -2,7 +2,7 @@ import { CollectionComponent } from '../lib/collections/collection.component';
 import { CollectionsComponent } from '../lib/collections/collections.component';
 import { AlertComponent } from '../lib/alerts/alert.component';
 import { FormElementComponent } from '../lib/forms/form-element.component';
-import { ContentHeaderComponent } from '../lib/common/header/content-header.component';
+import { ContentHeaderComponent } from '../lib/header/content-header.component';
 
 /**
  * Register tags for components.
