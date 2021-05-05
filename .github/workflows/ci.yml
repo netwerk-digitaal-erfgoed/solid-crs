@@ -131,7 +131,7 @@ jobs:
             NPM_TOKEN=${{secrets.GA_TOKEN}}
 
       - name: Build and push manage
-        id: docker_build_pods
+        id: docker_build_manage
         uses: docker/build-push-action@v2
         with:
           context: packages/nde-erfgoed-manage/
