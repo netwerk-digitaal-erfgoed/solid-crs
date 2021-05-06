@@ -9,7 +9,7 @@ export class ContentHeaderComponent extends LitElement {
   /**
    * Decides the color variant of this component (dark/light)
    */
-  @property({type: Boolean})
+  @property({ type: Boolean })
   public inverse = false;
 
   /**
@@ -18,6 +18,7 @@ export class ContentHeaderComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div class="header ${this.inverse ? '' : 'inverse'}">
 
@@ -36,12 +37,14 @@ export class ContentHeaderComponent extends LitElement {
 
     </div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -103,7 +106,9 @@ export class ContentHeaderComponent extends LitElement {
         }
       `,
     ];
+
   }
+
 }
 
 export default ContentHeaderComponent;
