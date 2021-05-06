@@ -7,31 +7,30 @@ import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AppEvents } from '../../app.events';
-import { CollectionsEvents } from './collections.events';
-import { CollectionsContext, CollectionsStates } from './collections.machine';
+import { CollectionContext } from './collection.machine';
 
 /**
  * The root page of the collections feature.
  */
-export class CollectionsRootComponent extends RxLitElement {
+export class CollectionRootComponent extends RxLitElement {
 
   /**
    * The component's logger.
    */
-  @property({ type: Logger })
+  @property({ type: Object })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
+  @property({ type: Object })
   public translator: Translator;
 
   /**
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<CollectionsContext>;
+  public actor: Interpreter<CollectionContext>;
 
   /**
    * The component's alerts.
@@ -43,7 +42,7 @@ export class CollectionsRootComponent extends RxLitElement {
    * The state of this component.
    */
   @internalProperty()
-  state?: State<CollectionsContext>;
+  state?: State<CollectionContext>;
 
   /**
    * The collections which will be summarized by the component.
@@ -68,11 +67,7 @@ export class CollectionsRootComponent extends RxLitElement {
       }
 
       this.subscribe('state', from(this.actor).pipe(
-        tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
-      ));
-
-      this.subscribe('collections', from(this.actor).pipe(
-        map((state) => state.context?.collections),
+        tap((state) => this.logger.debug(CollectionRootComponent.name, 'CollectionState change:', state)),
       ));
 
     }
@@ -112,14 +107,14 @@ export class CollectionsRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = this.state?.matches(CollectionsStates.LOADING) ?? false;
+    const loading = false;
 
     return html`
     <p>${this.translator?.translate('nde.collections.root.title')}</p>
     ${ alerts }
     <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
-    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
-    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
+    <button  ?disabled="${loading}">Load some</button>
+    <button  ?disabled="${loading}">Add one</button>
     <div></div>
   `;
 
