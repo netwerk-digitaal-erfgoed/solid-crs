@@ -1,14 +1,14 @@
 import { interpret, Interpreter } from 'xstate';
-import { CollectionsRootComponent } from './collections-root.component';
-import { CollectionsContext, collectionsMachine } from './collections.machine';
+import { CollectionRootComponent } from './collection-root.component';
+import { CollectionContext, collectionMachine } from './collection.machine';
 
-describe('CollectionsRootComponent', () => {
-  let component: CollectionsRootComponent;
-  let machine: Interpreter<CollectionsContext>;
+describe('CollectionRootComponent', () => {
+  let component: CollectionRootComponent;
+  let machine: Interpreter<CollectionContext>;
 
   beforeEach(() => {
-    machine = interpret(collectionsMachine);
-    component = window.document.createElement('nde-collections-root') as CollectionsRootComponent;
+    machine = interpret(collectionMachine);
+    component = window.document.createElement('nde-collections-root') as CollectionRootComponent;
 
     component.actor = machine;
   });

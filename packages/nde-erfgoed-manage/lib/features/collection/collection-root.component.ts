@@ -12,7 +12,7 @@ import { CollectionContext } from './collection.machine';
 /**
  * The root page of the collections feature.
  */
-export class CollectionsRootComponent extends RxLitElement {
+export class CollectionRootComponent extends RxLitElement {
 
   /**
    * The component's logger.
@@ -63,7 +63,7 @@ export class CollectionsRootComponent extends RxLitElement {
       }
 
       this.subscribe('state', from(this.actor).pipe(
-        tap((state) => this.logger.debug(CollectionsRootComponent.name, 'CollectionState change:', state)),
+        tap((state) => this.logger.debug(CollectionRootComponent.name, 'CollectionState change:', state)),
       ));
 
       // this.subscribe('collections', from(this.actor).pipe(

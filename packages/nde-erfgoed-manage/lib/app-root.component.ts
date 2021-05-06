@@ -10,7 +10,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
-import { CollectionsRootComponent } from './features/collection/collection-root.component';
+import { CollectionRootComponent } from './features/collection/collection-root.component';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { AuthenticateContext } from './features/authenticate/authenticate.machine';
 
@@ -93,7 +93,7 @@ export class AppRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
+      tap((state) => this.logger.debug(CollectionRootComponent.name, 'AppState change:', {actor: this.actor, state})),
       map((state) => state),
     ));
 

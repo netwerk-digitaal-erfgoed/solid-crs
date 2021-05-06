@@ -2,7 +2,7 @@ import { AlertComponent, CollectionsComponent, CollectionComponent, FormElementC
 import { inspect } from '@xstate/inspect';
 import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
-import { CollectionsRootComponent } from './features/collection/collection-root.component';
+import { CollectionRootComponent } from './features/collection/collection-root.component';
 import './index';
 
 /**
@@ -20,7 +20,7 @@ inspect({
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-collection', CollectionComponent);
 customElements.define('nde-collections', CollectionsComponent);
-customElements.define('nde-collections-root', CollectionsRootComponent);
+customElements.define('nde-collections-root', CollectionRootComponent);
 customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
