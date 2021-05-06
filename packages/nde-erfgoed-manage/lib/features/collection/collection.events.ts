@@ -15,10 +15,18 @@ export enum CollectionsEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
-export interface ClickedDeleteEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_DELETE }
-export interface ClickedEditEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_EDIT }
-export interface CancelledEditEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CANCELLED_EDIT }
-export interface ClickedCreateObjectEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_CREATE_OBJECT }
+export interface ClickedDeleteEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_DELETE;
+}
+export interface ClickedEditEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_EDIT;
+}
+export interface CancelledEditEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CANCELLED_EDIT;
+}
+export interface ClickedCreateObjectEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_CREATE_OBJECT;
+}
 
 /**
  * Actions for the collections component.

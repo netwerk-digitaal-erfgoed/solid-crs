@@ -1,36 +1,19 @@
 {
+  "extends": "@digita-ai/typescript-config/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": "lib",
+    "outDir": "dist",
+    "emitDeclarationOnly": true,
     // Recommended by Lit Element
     "module": "es2015",
     "target": "es2017",
-    "lib": [
-      "es2017",
-      "dom"
-    ],
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    // Others
-    "sourceMap": true,
-    "declaration": true,
-    "outDir": "dist",
-    // "outFile": "dist/nde-erfgoed-core.d.ts",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "baseUrl": "./",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
+    // Strict should actually be true
+    "strict": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "types": ["node", "vite/client"],
-    "emitDeclarationOnly": true
   },
-  "include": ["lib"],
+  "files": [ "node_modules/vite/client.d.ts" ],
+  "include": [ "lib" ],
   "exclude": [
     "**/*.spec.ts",
     "node_modules",

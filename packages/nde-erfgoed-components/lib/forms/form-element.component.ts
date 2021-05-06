@@ -36,13 +36,13 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator;
 
   /**
    * The name of the data attribute edited by the form element.
    */
-  @property({type: String})
+  @property({ type: String })
   public field: keyof T;
 
   /**
@@ -78,16 +78,18 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * The actor controlling this component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   public actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>;
 
   /**
    * Hook called on every update after connection to the DOM.
    */
   updated(changed: PropertyValues) {
+
     super.updated(changed);
 
     if(changed.has('actor') && this.actor) {
+
       // Subscribes to the field's validation results.
       this.subscribe('validationResults', from(this.actor).pipe(
         map((state) => state.context?.validation?.filter((result) => result.field === this.field)),
@@ -113,46 +115,69 @@ export class FormElementComponent<T> extends RxLitElement {
       ));
 
       this.bindActorToInput(this.inputSlot, this.actor, this.field, this.data);
+
     }
 
     /**
      * Update the disabled state of the input elements.
      */
     if(changed.has('lockInput')) {
+
       this.inputs?.forEach((element) => element.disabled = this.lockInput);
+
     }
+
   }
 
   /**
    * Binds default data and event listener for input form.
    */
-  bindActorToInput(slot: HTMLSlotElement, actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>, field: keyof T, data: T) {
+  bindActorToInput(
+    slot: HTMLSlotElement,
+    actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>,
+    field: keyof T,
+    data: T
+  ) {
+
     if (!slot) {
+
       throw new ArgumentError('Argument slot should be set.', slot);
+
     }
 
     if (!actor) {
+
       throw new ArgumentError('Argument actor should be set.', actor);
+
     }
 
     if (!field) {
+
       throw new ArgumentError('Argument field should be set.', field);
+
     }
 
     if (!data) {
+
       throw new ArgumentError('Argument data should be set.', data);
+
     }
 
-    this.inputs = slot.assignedNodes({flatten: true})?.filter((element) => element instanceof HTMLInputElement).map((element) => element as HTMLInputElement);
+    this.inputs = slot.assignedNodes({ flatten: true })?.filter(
+      (element) => element instanceof HTMLInputElement
+    ).map((element) => element as HTMLInputElement);
 
     this.inputs?.forEach((element) => {
+
       // Set the input field's default value.
       const fieldData = data[this.field];
       element.value = typeof fieldData === 'string' ? fieldData : '';
 
       // Send event when input field's value changes.
-      element.addEventListener('input', debounce(() => actor.send({type: FormEvents.FORM_UPDATED, value: element.value, field} as FormUpdatedEvent), this.debounceTimeout));
+      element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
+
     });
+
   }
 
   /**
@@ -161,6 +186,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div class="form-element">
       <div class="label">
@@ -187,12 +213,14 @@ export class FormElementComponent<T> extends RxLitElement {
       </div>
     </div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -254,5 +282,7 @@ export class FormElementComponent<T> extends RxLitElement {
         }
       `,
     ];
+
   }
+
 }

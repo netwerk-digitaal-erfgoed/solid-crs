@@ -37,32 +37,51 @@ export interface DismissAlertEvent extends Event<AppEvents> { type: AppEvents.DI
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface ErrorEvent extends Event<AppEvents> { type: AppEvents.ERROR; data?: { error?: Error | string } }
+export interface ErrorEvent extends Event<AppEvents> {
+  type: AppEvents.ERROR; data?: { error?: Error | string };
+}
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGING_OUT }
+export interface LoggedOutEvent extends Event<AppEvents> {
+  type: AppEvents.LOGGING_OUT;
+}
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggingOutEvent extends Event<AppEvents> { type: AppEvents.LOGGED_OUT }
+export interface LoggingOutEvent extends Event<AppEvents> {
+  type: AppEvents.LOGGED_OUT;
+}
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN; session: SolidSession }
+export interface LoggedInEvent extends Event<AppEvents> {
+  type: AppEvents.LOGGED_IN;
+  session: SolidSession;
+}
 
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export interface CollectionsLoadedEvent extends Event<AppEvents> { type: AppEvents.COLLECTIONS_LOADED; collections: Collection[] }
+export interface CollectionsLoadedEvent extends Event<AppEvents> {
+  type: AppEvents.COLLECTIONS_LOADED;
+  collections: Collection[];
+}
 
 /**
  * Union type of app events.
  */
-export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent | CollectionsLoadedEvent;
+export type AppEvent =
+  | LoggedInEvent
+  | LoggingOutEvent
+  | LoggedOutEvent
+  | ErrorEvent
+  | DismissAlertEvent
+  | AddAlertEvent
+  | CollectionsLoadedEvent;
 
 /**
  * Actions for the alerts component.
@@ -119,14 +138,14 @@ export const dismissAlert = choose<AppContext, DismissAlertEvent>([
 /**
  * Action which sets a session in the machine's context.
  */
-export const setSession = assign({session: (context, event: LoggedInEvent) => event.session});
+export const setSession = assign({ session: (context, event: LoggedInEvent) => event.session });
 
 /**
  * Action which removes a session in the machine's context.
  */
-export const removeSession = assign({session: (context, event) => undefined});
+export const removeSession = assign({ session: (context, event) => undefined });
 
 /**
  * Action which saves a list of collections to the machine's context.
  */
-export const setCollections = assign({collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data});
+export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });

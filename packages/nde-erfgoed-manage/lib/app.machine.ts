@@ -145,7 +145,8 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
                   id: AppActors.COLLECTION_MACHINE,
                   src: collectionMachine(collectionStore),
                   data: {
-                    currentCollection: (context: AppContext) => context.collections ? context.collections[0] : undefined,
+                    currentCollection: (context: AppContext) => context.collections ?
+                      context.collections[0] : undefined,
                   },
                   // onDone:  `${AppActors.APP_MACHINE}.${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
                   onError: {
@@ -167,7 +168,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
              * Send logged in event when authenticate machine is done, and the user has authenticated.
              */
             onDone: {
-              actions: send((_, event) => ({type: AppEvents.LOGGED_IN, session: event.data.session })),
+              actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
             },
             onError: {
               actions: send({ type: AppEvents.ERROR }),

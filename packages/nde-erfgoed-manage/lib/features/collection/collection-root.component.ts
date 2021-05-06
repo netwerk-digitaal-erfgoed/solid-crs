@@ -3,7 +3,7 @@ import { ArgumentError, Collection, Logger, Translator } from '@digita-ai/nde-er
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { Interpreter, State} from 'xstate';
+import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AppEvents } from '../../app.events';
@@ -17,25 +17,25 @@ export class CollectionRootComponent extends RxLitElement {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({ type: Object })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Object })
   public translator: Translator;
 
   /**
    * The actor controlling this component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   public actor: Interpreter<CollectionContext>;
 
   /**
    * The component's alerts.
    */
-  @property({type: Array})
+  @property({ type: Array })
   public alerts: Alert[];
 
   /**
@@ -54,22 +54,24 @@ export class CollectionRootComponent extends RxLitElement {
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues) {
+
     super.updated(changed);
 
     if(changed.has('actor') && this.actor){
+
       if(this.actor.parent){
+
         this.subscribe('alerts', from(this.actor.parent)
           .pipe(map((state) => state.context?.alerts)));
+
       }
 
       this.subscribe('state', from(this.actor).pipe(
         tap((state) => this.logger.debug(CollectionRootComponent.name, 'CollectionState change:', state)),
       ));
 
-      // this.subscribe('collections', from(this.actor).pipe(
-      //   map((state) => state.context?.collections),
-      // ));
     }
+
   }
 
   /**
@@ -78,15 +80,21 @@ export class CollectionRootComponent extends RxLitElement {
    * @param event Dismiss event dispatched by an alert componet.
    */
   handleDismiss(event: CustomEvent<Alert>) {
+
     if (!event || !event.detail) {
+
       throw new ArgumentError('Argument event || event.detail should be set.', event && event.detail);
+
     }
 
     if (!this.actor || !this.actor.parent) {
+
       throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor || !this.actor.parent);
+
     }
 
     this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
   }
 
   /**
@@ -95,10 +103,12 @@ export class CollectionRootComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
     const loading = false;
+
     return html`
     <p>${this.translator?.translate('nde.collections.root.title')}</p>
     ${ alerts }
@@ -107,12 +117,14 @@ export class CollectionRootComponent extends RxLitElement {
     <button  ?disabled="${loading}">Add one</button>
     <div></div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -121,6 +133,7 @@ export class CollectionRootComponent extends RxLitElement {
         }
       `,
     ];
+
   }
 
 }
