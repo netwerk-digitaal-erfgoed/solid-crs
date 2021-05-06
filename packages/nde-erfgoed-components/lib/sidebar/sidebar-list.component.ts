@@ -12,13 +12,21 @@ export class SidebarListComponent extends RxLitElement {
    *
    */
   select(event: MouseEvent){
+
     const element = event.composedPath().find((el: Element) => el.localName === 'nde-sidebar-list-item') as Element;
+
     if(element && !element.hasAttribute('isTitle')){
+
       for(let i = 0; i < this.children.length; i++) {
+
         this.children.item(i).removeAttribute('selected');
+
       }
+
       element.setAttribute('selected', '');
+
     }
+
   }
 
   /**
@@ -27,20 +35,25 @@ export class SidebarListComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div class="list">
       <slot name="item" @click="${this.select}"></slot>
     </div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css``,
     ];
+
   }
+
 }

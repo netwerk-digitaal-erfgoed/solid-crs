@@ -8,13 +8,13 @@ import { classMap } from 'lit-html/directives/class-map';
  */
 export class SidebarListItemComponent extends RxLitElement {
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   public inverse = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   public selected = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   public isTitle = false;
 
   @internalProperty()
@@ -26,6 +26,7 @@ export class SidebarListItemComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <li class="item ${classMap(this.classes())}">
       <slot name="title"></slot>
@@ -34,12 +35,14 @@ export class SidebarListItemComponent extends RxLitElement {
       </div>
     </li>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -100,5 +103,7 @@ export class SidebarListItemComponent extends RxLitElement {
       }
       `,
     ];
+
   }
+
 }

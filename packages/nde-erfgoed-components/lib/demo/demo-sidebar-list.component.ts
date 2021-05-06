@@ -16,6 +16,7 @@ export class DemoSidebarListComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <nde-sidebar-list>
       <nde-sidebar-list-item slot="item" isTitle inverse>
@@ -25,15 +26,19 @@ export class DemoSidebarListComponent extends RxLitElement {
       ${this.items?.map((item) => html`<nde-sidebar-list-item slot="item" inverse><p slot="title">${item}</p></nde-sidebar-list-item>`)}
     </nde-sidebar-list>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css``,
     ];
+
   }
+
 }
