@@ -19,3 +19,4 @@ export * from './demo/demo-sidebar-list.component';
 export * from './state/event';
 export * from './state/schema';
 export * from './state/state';
+export * from './header/content-header.component';

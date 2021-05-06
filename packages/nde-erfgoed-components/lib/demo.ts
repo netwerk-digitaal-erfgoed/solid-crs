@@ -7,6 +7,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { SidebarListItemComponent } from './sidebar/sidebar-list-item.component';
 import { SidebarListComponent } from './sidebar/sidebar-list.component';
 import { DemoSidebarListComponent } from './demo/demo-sidebar-list.component';
+import { ContentHeaderComponent } from './header/content-header.component';
+import { DemoContentHeaderComponent } from './demo/demo-content-header.component';
 
 /**
  * Register tags for components.
@@ -20,4 +22,5 @@ customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
 customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-demo-sidebar-list', DemoSidebarListComponent);
-
+customElements.define('nde-content-header', ContentHeaderComponent);
+customElements.define('nde-demo-content-header', DemoContentHeaderComponent);
