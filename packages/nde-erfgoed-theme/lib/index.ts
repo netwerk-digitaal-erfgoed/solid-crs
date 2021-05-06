@@ -19,6 +19,7 @@ export { default as Loading } from './icons/Loading.svg?raw';
 export { default as Dots } from './icons/Dots.svg?raw';
 export { default as Connect } from './icons/Connect.svg?raw';
 export { default as Edit } from './icons/Edit.svg?raw';
+export { default as Empty } from './icons/Empty.svg?raw';
 
 /**
  * Export theme
