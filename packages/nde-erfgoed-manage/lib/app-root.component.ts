@@ -21,13 +21,13 @@ export class AppRootComponent extends RxLitElement {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({type: Object})
   public logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({type: Object})
   public translator: Translator = new MemoryTranslator(nlNL, 'nl-NL');
 
   /**

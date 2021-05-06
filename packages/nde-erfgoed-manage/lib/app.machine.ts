@@ -139,8 +139,8 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
               },
             },
             'loaded': {
+              // Then invoke the collection machine
               invoke: [
-                // Then invoke the collection machine
                 {
                   id: AppActors.COLLECTION_MACHINE,
                   src: collectionMachine,

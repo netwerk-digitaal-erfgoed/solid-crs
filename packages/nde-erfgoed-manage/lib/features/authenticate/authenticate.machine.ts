@@ -103,7 +103,6 @@ export const authenticateMachine = (solid: SolidService) => createMachine<Authen
            * Go back to unauthenticated when something goes wrong, and show an alert.
            */
           onError: {
-            // actions: (_ctx, event) => addAlert({ message: event.data.message, type: 'warning' }),
             target: AuthenticateStates.UNAUTHENTICATED,
           },
         },

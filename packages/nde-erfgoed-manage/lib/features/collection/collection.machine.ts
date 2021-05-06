@@ -1,6 +1,8 @@
-import { createMachine } from 'xstate';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { createMachine, sendParent } from 'xstate';
+import { Collection, Store } from '@digita-ai/nde-erfgoed-core';
 import { Event, FormEvents, State } from '@digita-ai/nde-erfgoed-components';
+import { of } from 'rxjs';
+import { AppEvents } from '../../app.events';
 import { CollectionsEvents  } from './collection.events';
 
 /**
@@ -33,7 +35,7 @@ export enum CollectionStates {
 /**
  * The collection component machine.
  */
-export const collectionMachine = createMachine<CollectionContext, Event<CollectionsEvents>, State<CollectionStates, CollectionContext>>({
+export const collectionMachine = (collectionStore: Store<Collection>) => createMachine<CollectionContext, Event<CollectionsEvents>, State<CollectionStates, CollectionContext>>({
   id: CollectionActors.COLLECTION_MACHINE,
   initial: CollectionStates.IDLE,
   on: {
@@ -46,18 +48,31 @@ export const collectionMachine = createMachine<CollectionContext, Event<Collecti
 
     },
     [CollectionStates.SAVING]: {
-
+      invoke: {
+        src: () => of('store.save').toPromise(),
+        onDone: {
+          target: CollectionStates.IDLE,
+        },
+        onError: {
+          actions: sendParent(AppEvents.ERROR),
+        },
+      },
     },
     [CollectionStates.EDITING]: {
-      // invoke: {
-      //   // form machine
-      //   src: null,
-      //   onDone: CollectionStates.SAVING,
-      // },
-
+      on: {
+        [FormEvents.FORM_SUBMITTED as any]: CollectionStates.SAVING,
+      },
     },
     [CollectionStates.DELETING]: {
-
+      invoke: {
+        src: () => of('store.delete').toPromise(),
+        onDone: {
+          target: CollectionStates.IDLE,
+        },
+        onError: {
+          actions: sendParent(AppEvents.ERROR),
+        },
+      },
     },
   },
 });
