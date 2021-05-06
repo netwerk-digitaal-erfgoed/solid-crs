@@ -1,4 +1,6 @@
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
@@ -15,6 +17,7 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   SELECTED_COLLECTION = '[AppEvent: Selected collection]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
+  COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
 }
 
 /**
@@ -52,9 +55,14 @@ export interface LoggingOutEvent extends Event<AppEvents> { type: AppEvents.LOGG
 export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN; session: SolidSession }
 
 /**
+ * An event which is dispatched when the collections were successfully retrieved
+ */
+export interface CollectionsLoadedEvent extends Event<AppEvents> { type: AppEvents.COLLECTIONS_LOADED; collections: Collection[] }
+
+/**
  * Union type of app events.
  */
-export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
+export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent | CollectionsLoadedEvent;
 
 /**
  * Actions for the alerts component.
@@ -117,3 +125,8 @@ export const setSession = assign({session: (context, event: LoggedInEvent) => ev
  * Action which removes a session in the machine's context.
  */
 export const removeSession = assign({session: (context, event) => undefined});
+
+/**
+ * Action which saves a list of collections to the machine's context.
+ */
+export const setCollections = assign({collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data});

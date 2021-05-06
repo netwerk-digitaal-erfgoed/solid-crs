@@ -1,14 +1,23 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { of } from 'rxjs';
+import { Collection, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setSession } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
-import { loadCollectionsService } from './features/collection/collection.services';
+
+const collectionStore = new MemoryStore<Collection>([
+  {
+    uri: 'test',
+    name: 'Foo',
+  },
+  {
+    uri: 'test',
+    name: 'Bar',
+  },
+]);
 
 /**
  * The root context of the application.
@@ -80,7 +89,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      * Determines which feature is currently active.
      */
     [AppRootStates.FEATURE]: {
-      initial: AppFeatureStates.AUTHENTICATE,
+      initial: AppFeatureStates.COLLECTION,
       on: {
         [AppEvents.DISMISS_ALERT]: {
           actions: dismissAlert,
@@ -117,16 +126,18 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
          */
         [AppFeatureStates.COLLECTION]: {
           invoke: [
-            // {
-            //   src: (c, e) => loadCollectionsService.toPromise(),
-            //   onDone: {
-            //     actions: null, // add to context
-            //   },
-            // },
+            // Load collections first
+            {
+              src: () => collectionStore.all().toPromise(),
+              onDone: {
+                actions: setCollections,
+              },
+            },
+            // Then invoke the collection machine
             {
               id: AppActors.COLLECTION_MACHINE,
-              src: collectionMachine.withContext({
-                currentCollection: null,
+              src: () => collectionMachine.withContext({
+                currentCollection: undefined,
               }),
               onDone: AppFeatureStates.AUTHENTICATE,
               onError: {
@@ -159,7 +170,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      * Determines if the current user is authenticated or not.
      */
     [AppRootStates.AUTHENTICATE]: {
-      initial: AppAuthenticateStates.UNAUTHENTICATED,
+      initial: AppAuthenticateStates.AUTHENTICATED,
       on: {
         [AppEvents.LOGGED_OUT]: {
           target: [

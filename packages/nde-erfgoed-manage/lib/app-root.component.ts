@@ -1,8 +1,8 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { ArgumentError, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
+import { map, tap } from 'rxjs/operators';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout } from '@digita-ai/nde-erfgoed-theme';
@@ -61,6 +61,12 @@ export class AppRootComponent extends RxLitElement {
   state: State<AppContext>;
 
   /**
+   * The state of this component.
+   */
+  @internalProperty()
+  collections: Collection[];
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -89,6 +95,10 @@ export class AppRootComponent extends RxLitElement {
     this.subscribe('state', from(this.actor).pipe(
       tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
     ));
+
+    this.subscribe('collections', from(this.actor).pipe(
+      map((state) => state.context?.collections),
+    ));
   }
 
   /**
@@ -98,7 +108,12 @@ export class AppRootComponent extends RxLitElement {
    */
   render() {
     return html`
-    ${ this.state?.matches({[AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED}) ? html`<nde-sidebar><button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></nde-sidebar>` : '' }  
+    ${ this.state?.matches({[AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED}) ? html`
+    <nde-sidebar>
+      <button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button>
+      ${this.collections?.map((collection) => collection.uri)}
+    </nde-sidebar>
+    ` : '' }  
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTION}) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
     `;
