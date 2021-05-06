@@ -89,7 +89,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      * Determines which feature is currently active.
      */
     [AppRootStates.FEATURE]: {
-      initial: AppFeatureStates.COLLECTION,
+      initial: AppFeatureStates.AUTHENTICATE,
       on: {
         [AppEvents.DISMISS_ALERT]: {
           actions: dismissAlert,
@@ -145,7 +145,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
                   id: AppActors.COLLECTION_MACHINE,
                   src: collectionMachine(collectionStore),
                   data: {
-                    currentCollection: (context: AppContext) => context.collections[0],
+                    currentCollection: (context: AppContext) => context.collections ? context.collections[0] : undefined,
                   },
                   // onDone:  `${AppActors.APP_MACHINE}.${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
                   onError: {
@@ -180,7 +180,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
      * Determines if the current user is authenticated or not.
      */
     [AppRootStates.AUTHENTICATE]: {
-      initial: AppAuthenticateStates.AUTHENTICATED,
+      initial: AppAuthenticateStates.UNAUTHENTICATED,
       on: {
         [AppEvents.LOGGED_OUT]: {
           target: [
