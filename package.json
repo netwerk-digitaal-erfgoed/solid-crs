@@ -15,8 +15,8 @@
     "lint:staged": "lerna run lint:staged --since HEAD --stream --concurrency 1",
     "postinstall": "husky install",
     "release": "lerna version",
-    "start": "npm run build -- --ignore @digita-ai/nde-erfgoed-manage && lerna run start --parallel",
-    "start:watch": "npm run build -- --ignore @digita-ai/nde-erfgoed-manage && lerna run start:watch --parallel",
+    "start": "lerna run start --parallel",
+    "start:watch": "lerna run start:watch --parallel",
     "test": "lerna run test --since HEAD --parallel",
     "test:all": "lerna run test --parallel",
     "test:ci": "lerna run test:ci"
