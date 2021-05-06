@@ -60,3 +60,20 @@ I suggest the following names:
 Loading's exising svg should be replaced with the new icon. Ideally, it should turn clockwise in increments of 15%. I'm not sure how this is best done. The styling and animation of this icon should happen in the 'nde-erfgoed-theme' package, be it in the svg itself or, if necessary, in a new 'icons.css' file under 'lib/elements/'.
 
 Export the icons from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=1%3A3[these Figma assets] to svg files in 'nde-erfgoed-theme'. Test them out in 'nde-erfgoed-components' to make sure they render properly. The https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=361%3A375[image from the empty collection page] should also be exported and kept in 'nde-erfgoed-theme'.
+
+The exported svgs come with a default `fill`, `height` and `width` attributes, e.g.: 
+
+[source, html]
+----
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+...
+----
+
+Remove these, as they mess up the styling. (but keep the viewBox -- it makes sure the aspect ratio is set)
+
+
+[source, html]
+----
+<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+...
+----
