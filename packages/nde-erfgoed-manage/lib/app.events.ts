@@ -1,6 +1,4 @@
 import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
-import { Collection } from '@digita-ai/nde-erfgoed-core';
-import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
@@ -15,9 +13,6 @@ export enum AppEvents {
   LOGGED_IN = '[AppEvent: Logged in]',
   LOGGING_OUT = '[AppEvent: Logging out]',
   LOGGED_OUT = '[AppEvent: Logged out]',
-  SELECTED_COLLECTION = '[AppEvent: Selected collection]',
-  CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
-  COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
 }
 
 /**
@@ -37,39 +32,22 @@ export interface DismissAlertEvent extends Event<AppEvents> { type: AppEvents.DI
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface ErrorEvent extends Event<AppEvents> {
-  type: AppEvents.ERROR; data?: { error?: Error | string };
-}
+export interface ErrorEvent extends Event<AppEvents> { type: AppEvents.ERROR; data?: { error?: Error | string } }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedOutEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGING_OUT;
-}
+export interface LoggedOutEvent extends Event<AppEvents> { type: AppEvents.LOGGING_OUT }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggingOutEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGED_OUT;
-}
+export interface LoggingOutEvent extends Event<AppEvents> { type: AppEvents.LOGGED_OUT }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedInEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGED_IN;
-  session: SolidSession;
-}
-
-/**
- * An event which is dispatched when the collections were successfully retrieved
- */
-export interface CollectionsLoadedEvent extends Event<AppEvents> {
-  type: AppEvents.COLLECTIONS_LOADED;
-  collections: Collection[];
-}
+export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED_IN; session: SolidSession }
 
 /**
  * Union type of app events.
@@ -80,8 +58,7 @@ export type AppEvent =
   | LoggedOutEvent
   | ErrorEvent
   | DismissAlertEvent
-  | AddAlertEvent
-  | CollectionsLoadedEvent;
+  | AddAlertEvent;
 
 /**
  * Actions for the alerts component.
@@ -144,8 +121,3 @@ export const setSession = assign({ session: (context, event: LoggedInEvent) => e
  * Action which removes a session in the machine's context.
  */
 export const removeSession = assign({ session: (context, event) => undefined });
-
-/**
- * Action which saves a list of collections to the machine's context.
- */
-export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });
