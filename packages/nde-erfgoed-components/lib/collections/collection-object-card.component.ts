@@ -3,7 +3,7 @@ import { CollectionObject, getFormattedTimeAgo, Translator } from '@digita-ai/nd
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**
- * A component which shows the details of a single collection.
+ * A component which shows the details of a single collection object.
  */
 export class CollectionObjectCardComponent extends LitElement {
   /** The object which will be rendered by the component */
