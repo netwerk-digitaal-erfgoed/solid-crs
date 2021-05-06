@@ -43,7 +43,7 @@ The component contains a `ContentHeaderComponent` at the top, followed by a http
 
 Every `CollectionObject` in the current `Collection` should be displayed using a grid of `CollectionObjectCardComponents`. Clicking these should not do anything, yet. Try to adjust the grid dimensions based on window width. With default view widths, three cards should be displayed next to eachother.
 
-image::../../assets/collections/collection-detail-no-objects.svg[CollectionRootComponent without CollectionObjects]
+image::../../assets/collections/collection-root-no-objects.svg[CollectionRootComponent without CollectionObjects]
 
 If the component does not contain any `CollectionObjects`, the page should display a large icon. (see image)  
 The svg for this icon can be found on Figma, export it and add it to the theme package. 
