@@ -9,7 +9,7 @@ button {
 }
 
 button.primary {
-  background-color: var(--colors-primary-normal);
+  background-color: var(--colors-primary-light);
 }
 
 button svg {

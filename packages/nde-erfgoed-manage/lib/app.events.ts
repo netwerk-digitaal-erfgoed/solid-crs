@@ -52,7 +52,13 @@ export interface LoggedInEvent extends Event<AppEvents> { type: AppEvents.LOGGED
 /**
  * Union type of app events.
  */
-export type AppEvent = LoggedInEvent | LoggingOutEvent | LoggedOutEvent | ErrorEvent | DismissAlertEvent | AddAlertEvent;
+export type AppEvent =
+  | LoggedInEvent
+  | LoggingOutEvent
+  | LoggedOutEvent
+  | ErrorEvent
+  | DismissAlertEvent
+  | AddAlertEvent;
 
 /**
  * Actions for the alerts component.
@@ -105,3 +111,13 @@ export const dismissAlert = choose<AppContext, DismissAlertEvent>([
     ],
   },
 ]);
+
+/**
+ * Action which sets a session in the machine's context.
+ */
+export const setSession = assign({ session: (context, event: LoggedInEvent) => event.session });
+
+/**
+ * Action which removes a session in the machine's context.
+ */
+export const removeSession = assign({ session: (context, event) => undefined });

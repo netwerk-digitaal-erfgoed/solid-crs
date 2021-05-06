@@ -27,15 +27,21 @@ export abstract class Logger {
    * @param data Any relevant data that should be logged
    */
   info(typeName: string, message: string, data?: unknown) {
+
     if (!typeName) {
+
       throw new ArgumentError('Typename should be set', typeName);
+
     }
 
     if (!message) {
+
       throw new ArgumentError('Message should be set', message);
+
     }
 
     this.log(LoggerLevel.info, typeName, message, data);
+
   }
 
   /**
@@ -46,15 +52,21 @@ export abstract class Logger {
    * @param data Any relevant data that should be logged
    */
   debug(typeName: string, message: string, data?: unknown) {
+
     if (!typeName) {
+
       throw new ArgumentError('Typename should be set', typeName);
+
     }
 
     if (!message) {
+
       throw new ArgumentError('Message should be set', message);
+
     }
 
     this.log(LoggerLevel.debug, typeName, message, data);
+
   }
 
   /**
@@ -65,15 +77,21 @@ export abstract class Logger {
    * @param data Any relevant data that should be logged
    */
   warn(typeName: string, message: string, data?: unknown) {
+
     if (!typeName) {
+
       throw new ArgumentError('Typename should be set', typeName);
+
     }
 
     if (!message) {
+
       throw new ArgumentError('Message should be set', message);
+
     }
 
     this.log(LoggerLevel.warn, typeName, message, data);
+
   }
 
   /**
@@ -85,15 +103,21 @@ export abstract class Logger {
    * @param caught The error that was caught
    */
   error(typeName: string, message: string, error?: Error | unknown, caught?: unknown) {
+
     if (!typeName) {
+
       throw new ArgumentError('Typename should be set', typeName);
+
     }
 
     if (!message) {
+
       throw new ArgumentError('Message should be set', message);
+
     }
 
     this.log(LoggerLevel.error, typeName, message, { error, caught });
+
   }
 
   /**

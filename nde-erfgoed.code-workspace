@@ -13,6 +13,10 @@
       "path": "packages/nde-erfgoed-components"
     },
     {
+      "name": "client",
+      "path": "packages/nde-erfgoed-client"
+    },
+    {
       "name": "core",
       "path": "packages/nde-erfgoed-core"
     },

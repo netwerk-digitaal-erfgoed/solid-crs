@@ -11,13 +11,13 @@ export class SidebarComponent extends RxLitElement {
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator;
 
   /**
    * The component's translator.
    */
-  @property({type: Logger})
+  @property({ type: Logger })
   public logger: Logger;
 
   /**
@@ -26,17 +26,20 @@ export class SidebarComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div class="sidebar primary">
       <slot></slot>
     </div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -54,5 +57,7 @@ export class SidebarComponent extends RxLitElement {
         }
       `,
     ];
+
   }
+
 }
