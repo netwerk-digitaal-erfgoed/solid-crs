@@ -6,6 +6,7 @@ import { AlertComponent } from './alerts/alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ContentHeaderComponent } from './header/content-header.component';
 import { DemoContentHeaderComponent } from './demo/demo-content-header.component';
+import { DemoSVGComponent } from './demo/demo-svg.component';
 
 /**
  * Register tags for components.
@@ -18,3 +19,4 @@ customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-demo-content-header', DemoContentHeaderComponent);
+customElements.define('nde-demo-svg', DemoSVGComponent);

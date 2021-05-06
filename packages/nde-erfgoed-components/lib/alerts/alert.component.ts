@@ -1,6 +1,6 @@
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Bell, Dismiss, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Bell, Cross, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
@@ -101,7 +101,7 @@ export class AlertComponent extends LitElement {
     <div class="alert ${ type }">
       <div class="icon">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Dismiss) }</div>
+      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
     </div>
   `;
   }
