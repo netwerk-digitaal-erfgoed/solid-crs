@@ -10,12 +10,12 @@ import { collectionMachine } from './features/collection/collection.machine';
 
 const collectionStore = new MemoryStore<Collection>([
   {
-    uri: 'test',
-    name: 'Foo',
+    uri: 'test1',
+    name: 'Collection 1',
   },
   {
-    uri: 'test',
-    name: 'Bar',
+    uri: 'test1',
+    name: 'Collection 1',
   },
 ]);
 
@@ -125,26 +125,36 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
          * The collection feature is shown.
          */
         [AppFeatureStates.COLLECTION]: {
-          invoke: [
-            // Load collections first
-            {
-              src: () => collectionStore.all().toPromise(),
-              onDone: {
-                actions: setCollections,
+          initial: 'loading',
+          states: {
+            'loading': {
+              // Load collections first
+              invoke: {
+                src: () => collectionStore.all().toPromise(),
+                onDone: {
+                  actions: setCollections,
+                  target: `loaded`,
+                  internal: true,
+                },
               },
             },
-            // Then invoke the collection machine
-            {
-              id: AppActors.COLLECTION_MACHINE,
-              src: () => collectionMachine.withContext({
-                currentCollection: undefined,
-              }),
-              onDone: AppFeatureStates.AUTHENTICATE,
-              onError: {
-                actions: send({ type: AppEvents.ERROR }),
-              },
+            'loaded': {
+              invoke: [
+                // Then invoke the collection machine
+                {
+                  id: AppActors.COLLECTION_MACHINE,
+                  src: collectionMachine,
+                  data: {
+                    currentCollection: (context: AppContext) => context.collections[0],
+                  },
+                  // onDone:  `${AppActors.APP_MACHINE}.${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
+                  onError: {
+                    actions: send({ type: AppEvents.ERROR }),
+                  },
+                },
+              ],
             },
-          ],
+          },
         },
         /**
          * The authenticate feature is active.
