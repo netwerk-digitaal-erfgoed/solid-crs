@@ -18,11 +18,20 @@ export enum CollectionsEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
-export interface ClickedLoadEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_LOAD }
-export interface ClickedAddEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_ADD }
-export interface ClickedLogoutEvent extends Event<CollectionsEvents> { type: CollectionsEvents.CLICKED_LOGOUT }
-export interface LoadedCollectionsEvent extends Event<CollectionsEvents> { type: CollectionsEvents.LOADED_COLLECTIONS; collections: Collection[] }
-export interface CreatedTestCollection extends Event<CollectionsEvents> { type: CollectionsEvents.CREATED_TEST_COLLECTION; collections: Collection[] }
+export interface ClickedLoadEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_LOAD;
+}
+export interface ClickedAddEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_ADD;
+}
+export interface ClickedLogoutEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CLICKED_LOGOUT;
+}
+export interface LoadedCollectionsEvent extends Event<CollectionsEvents> {
+  type: CollectionsEvents.LOADED_COLLECTIONS; collections: Collection[];
+}
+export interface CreatedTestCollection extends Event<CollectionsEvents> {
+  type: CollectionsEvents.CREATED_TEST_COLLECTION; collections: Collection[]; }
 
 /**
  * Actions for the collections component.
@@ -36,10 +45,12 @@ export const addCollections = assign<CollectionsContext, Event<CollectionsEvents
   collections: (context, event) => [ ... context.collections ?? [], ... event.collections ],
 });
 
-export const addTestCollection = send((context: CollectionsContext) => ({ type: CollectionsEvents.CREATED_TEST_COLLECTION, collections: [ {
-  name: `Test Collection ${ 1 + (context.collections?.length ?? 0) }`,
-  uri: 'urn:example:nde:collections:test',
-} ] }));
+export const addTestCollection = send(
+  (context: CollectionsContext) => ({ type: CollectionsEvents.CREATED_TEST_COLLECTION, collections: [ {
+    name: `Test Collection ${ 1 + (context.collections?.length ?? 0) }`,
+    uri: 'urn:example:nde:collections:test',
+  } ] })
+);
 
 /**
  * Adds an alert to the machine's parent.

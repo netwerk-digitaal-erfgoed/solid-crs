@@ -7,11 +7,13 @@ import { FormEvent, FormEvents } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 describe('FormElementComponent', () => {
+
   let component: FormElementComponent<Collection>;
   let machine: Interpreter<FormContext<Collection>>;
   let input;
 
   beforeEach(() => {
+
     machine = interpret(
       formMachine<Collection>(
         (context: FormContext<Collection>, event: FormEvent): Observable<FormValidatorResult[]> => of([
@@ -25,6 +27,7 @@ describe('FormElementComponent', () => {
           validation: [],
         }),
     );
+
     component = window.document.createElement('nde-form-element') as FormElementComponent<Collection>;
 
     component.actor = machine;
@@ -57,28 +60,40 @@ describe('FormElementComponent', () => {
     component.appendChild(input);
 
     jest.clearAllMocks();
+
   });
 
   afterEach(() => {
+
     document.getElementsByTagName('html')[0].innerHTML = '';
+
   });
 
   it('should be correctly instantiated', () => {
+
     expect(component).toBeTruthy();
+
   });
 
   it('should set default value on slotted input field', async () => {
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+
   });
 
   xit('should send event when updating slotted input field', async (done) => {
+
     machine.onEvent(((event) => {
+
       if(event.type === FormEvents.FORM_UPDATED) {
+
         done();
+
       }
+
     }));
 
     window.document.body.appendChild(component);
@@ -88,19 +103,23 @@ describe('FormElementComponent', () => {
 
     input.value = 'Lorem';
     input.dispatchEvent(new Event('input'));
+
   });
 
   it('should show validation results', async () => {
-    component.validationResults = [ {field: 'name', message: 'lorem'} ];
+
+    component.validationResults = [ { field: 'name', message: 'lorem' } ];
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.results .result').length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.help[hidden]').length).toBe(1);
+
   });
 
   it('should show static slotted content', async () => {
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -108,59 +127,73 @@ describe('FormElementComponent', () => {
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.label slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.icon slot').assignedElements().length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.action slot').assignedElements().length).toBe(1);
+
   });
 
   it('should show loading when validating is true', async () => {
+
     component.showLoading = true;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(1);
+
   });
 
   it('should not show loading when validating is false', async () => {
+
     component.showLoading = false;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon .loading').length).toEqual(0);
+
   });
 
   it('should show icon when not loading', async () => {
+
     component.showLoading = false;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(1);
+
   });
 
   it('should not show icon when loading', async () => {
+
     component.showLoading = true;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLDivElement>('.icon slot[name="icon"]').length).toEqual(0);
+
   });
 
   it('should disable input when locked', async () => {
+
     component.lockInput = true;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(input.disabled).toBeTruthy();
+
   });
 
   it('should enable input when not locked', async () => {
+
     component.lockInput = false;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(input.disabled).toBeFalsy();
+
   });
+
 });

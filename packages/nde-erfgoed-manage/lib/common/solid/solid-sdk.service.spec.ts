@@ -1,12 +1,14 @@
 import * as client from '@digita-ai/nde-erfgoed-client';
 import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
-import fetchMock, {MockResponseInitFunction} from 'jest-fetch-mock';
+import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 
 describe('SolidService', () => {
+
   let service: SolidSDKService;
 
   beforeEach(async () => {
+
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const nodeCrypto = require('crypto');
 
@@ -18,20 +20,25 @@ describe('SolidService', () => {
     service = new SolidSDKService(logger);
 
     fetchMock.mockClear();
+
   });
 
   it('should be correctly instantiated', () => {
+
     expect(service).toBeTruthy();
+
   });
 
   it.each([
-    [ {webId: 'lorem', isLoggedIn: true}, {webId: 'lorem' } ],
-    [ {webId: 'lorem', isLoggedIn: false}, null ],
+    [ { webId: 'lorem', isLoggedIn: true }, { webId: 'lorem' } ],
+    [ { webId: 'lorem', isLoggedIn: false }, null ],
     [ null, null ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
+
     client.handleIncomingRedirect = jest.fn(async () => resolved);
 
     expect(await service.getSession()).toEqual(result);
+
   });
 
   //   describe('login()', () => {
@@ -73,7 +80,7 @@ describe('SolidService', () => {
 
   describe('getIssuer', () => {
 
-    const validOpenIdConfig = JSON.stringify({solid_oidc_supported: 'https://solidproject.org/TR/solid-oidc'});
+    const validOpenIdConfig = JSON.stringify({ solid_oidc_supported: 'https://solidproject.org/TR/solid-oidc' });
     const validProfileDataset = {};
     const validProfileThing = {};
 
@@ -83,14 +90,17 @@ describe('SolidService', () => {
       [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.invalid-url' ],
       [ 'https://nde.nl/', null, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-profile' ],
     ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
+
       client.getSolidDataset = jest.fn(async () => profile);
 
       fetchMock.mockResponses(openId);
 
       await expect(service.getIssuer(webId)).rejects.toThrowError(message);
+
     });
 
     it('should error when oidcIssuer openid config is not found', async () => {
+
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(async () => validProfileThing);
       client.getUrl = jest.fn(async () => 'https://google.com/');
@@ -98,6 +108,9 @@ describe('SolidService', () => {
       fetchMock.mockResponseOnce('<!DOCTYPE html>', { status: 404 });
 
       await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
     });
+
   });
+
 });

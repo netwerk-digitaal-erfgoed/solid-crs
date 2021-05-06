@@ -19,17 +19,25 @@ export enum FormEvents {
 /**
  * Event dispatched when a form element was updated.
  */
-export interface FormUpdatedEvent extends Event<FormEvents> { type: FormEvents.FORM_UPDATED; field: string; value: string }
+export interface FormUpdatedEvent extends Event<FormEvents> {
+  type: FormEvents.FORM_UPDATED;
+  field: string; value: string;
+}
 
 /**
  * Event dispatched when a form was submitted.
  */
-export interface FormSubmittedEvent extends Event<FormEvents> { type: FormEvents.FORM_SUBMITTED }
+export interface FormSubmittedEvent extends Event<FormEvents> {
+  type: FormEvents.FORM_SUBMITTED;
+}
 
 /**
  * Event dispatched when a form was validated.
  */
-export interface FormValidatedEvent extends Event<FormEvents> { type: FormEvents.FORM_VALIDATED; results: FormValidatorResult[] }
+export interface FormValidatedEvent extends Event<FormEvents> {
+  type: FormEvents.FORM_VALIDATED;
+  results: FormValidatorResult[];
+}
 
 /**
  * Union type for all form events.
@@ -44,7 +52,8 @@ export type FormEvent = FormUpdatedEvent | FormSubmittedEvent | FormValidatedEve
  * Updates the data in context.
  */
 export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
-  data: (context: FormContext<unknown>, event: FormUpdatedEvent) => (typeof context.data === 'object' ? {...context.data ? context.data : {}, [event.field]: event.value} : event.value),
+  data: (context: FormContext<unknown>, event: FormUpdatedEvent) =>
+    (typeof context.data === 'object' ? { ...context.data ? context.data : {}, [event.field]: event.value } : event.value),
 });
 
 /**
