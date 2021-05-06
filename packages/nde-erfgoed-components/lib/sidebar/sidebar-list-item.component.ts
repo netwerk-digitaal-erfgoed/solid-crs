@@ -1,6 +1,7 @@
-import { css, html, property, unsafeCSS } from 'lit-element';
+import { css, html, internalProperty, property, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { classMap } from 'lit-html/directives/class-map';
 
 /**
  * A component which represents a sidebar list item.
@@ -16,6 +17,9 @@ export class SidebarListItemComponent extends RxLitElement {
   @property({type: Boolean})
   public isTitle = false;
 
+  @internalProperty()
+  private classes = () => ({ inverse: this.inverse, selected: this.selected, title: this.isTitle });
+
   /**
    * Renders the component as HTML.
    *
@@ -23,7 +27,7 @@ export class SidebarListItemComponent extends RxLitElement {
    */
   render() {
     return html`
-    <li class="item${this.inverse ? ' inverse' : ''}${this.selected ? ' selected' : ''}${this.isTitle ? ' title' : ''}">
+    <li class="item ${classMap(this.classes())}">
       <slot name="title"></slot>
       <div class="actions">
         <slot name="actions"></slot>
