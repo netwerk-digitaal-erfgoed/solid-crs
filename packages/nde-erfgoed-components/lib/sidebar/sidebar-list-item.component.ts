@@ -55,7 +55,7 @@ export class SidebarListItemComponent extends RxLitElement {
         align-items: center;
         cursor: pointer;
         justify-content: space-between;
-        padding: 0 var(--gap-normal);
+        padding: 0 var(--gap-large);
       }
 
       .item.selected, .item:hover:not(.title) {
