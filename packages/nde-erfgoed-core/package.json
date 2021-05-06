@@ -49,6 +49,7 @@
     "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"
   },
   "dependencies": {
+    "moment": "^2.29.1",
     "rxjs": "^6.6.7"
   }
 }

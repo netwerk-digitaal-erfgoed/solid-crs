@@ -23,6 +23,32 @@
     <p>Collections Component</p>
     <nde-collections collections='[{"uri": "test", "name": "Foo"}, {"uri": "test", "name": "Bar"}]'></nde-collections>
 
+    <p>Collection Object Card examples</p>
+    <div style="display: flex; justify-content: space-evenly;">
+      <div style='width: 400px; height: 300px;'>
+        <nde-collection-object-card object='{
+          "uri": "nde.nl",
+          "name": "Mandje Van Tichelaar",
+          "description": "Een heel mooi mandje gemaakt door de firma Tichelaar. Het werd gebruikt op tafel als versiering en fruitmandje.",
+          "image": "https://i.ytimg.com/vi/ypSKDY4Jp3g/maxresdefault.jpg",
+          "subject": "Tafeldecoratie",
+          "type": "type",
+          "updated": 1620216600000
+        }'></nde-collection-object-card>
+      </div>
+      <div style='width: 400px; height: 700px;'>
+        <nde-collection-object-card object='{
+          "uri": "",
+          "name": "Random screenshot van het internet",
+          "description": "",
+          "image": "https://i.pinimg.com/236x/2e/00/d6/2e00d61127764e2f4313f76b08b56160.jpg",
+          "subject": "Screenshot",
+          "type": "type",
+          "updated": 1620018600000
+        }'></nde-collection-object-card>
+      </div>  
+    </div>
+
     <p>Alert Component</p>
     <nde-alert alert='{"type": "success", "message": "Lorem ipsum"}'></nde-alert>
     <nde-alert alert='{"type": "warning", "message": "Lorem ipsum"}'></nde-alert>

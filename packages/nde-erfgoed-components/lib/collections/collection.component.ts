@@ -48,7 +48,7 @@ export class CollectionComponent extends LitElement implements Component {
     return myFetch(entry)
       .then((response) => response.text())
       .then(() => {
-        this.collection = {uri:'test', name: 'Test'};
+        this.collection = {uri:'test', name: 'Test', description: 'Test desc'};
       });
 
   }

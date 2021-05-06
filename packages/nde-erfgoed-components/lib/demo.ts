@@ -4,12 +4,14 @@ import { CollectionComponent } from './collections/collection.component';
 import { CollectionsComponent } from './collections/collections.component';
 import { AlertComponent } from './alerts/alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { CollectionObjectCardComponent } from './collections/collection-object-card.component';
 
 /**
  * Register tags for components.
  */
 customElements.define('nde-collection', CollectionComponent);
 customElements.define('nde-collections', CollectionsComponent);
+customElements.define('nde-collection-object-card', CollectionObjectCardComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-demo-form', DemoFormComponent);
 customElements.define('nde-alert', AlertComponent);

@@ -5,6 +5,8 @@
   --font-size-normal: 16.5px;
   --font-size-header-normal: 24px;
   --font-weight-bold: bold;
+  --line-height-normal: 1.15;
+  --line-height-large: 1.6;
   --font-family: 'Poppins', sans-serif;
 }
 
@@ -12,6 +14,7 @@ body {
   color: var(--colors-foreground-normal);
   font-family: var(--font-family);
   font-size: var(--font-size-normal);
+  line-height: var(--line-height-normal);
 }
 
 svg {
