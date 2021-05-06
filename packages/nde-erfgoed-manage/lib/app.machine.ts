@@ -143,7 +143,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
               invoke: [
                 {
                   id: AppActors.COLLECTION_MACHINE,
-                  src: collectionMachine,
+                  src: collectionMachine(collectionStore),
                   data: {
                     currentCollection: (context: AppContext) => context.collections[0],
                   },

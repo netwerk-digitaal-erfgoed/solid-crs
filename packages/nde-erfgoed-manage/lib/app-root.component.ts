@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
-import { interpret, Interpreter, State } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
@@ -7,11 +7,12 @@ import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
+import { AppActors, AppAuthenticateStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { CollectionsRootComponent } from './features/collection/collection-root.component';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
+import { AuthenticateContext } from './features/authenticate/authenticate.machine';
 
 /**
  * The root page of the application.
@@ -45,20 +46,19 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor: Interpreter<AppContext> = interpret(
-    appMachine(
-      new SolidSDKService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-    )
-      .withContext({
-        alerts: [],
-      }), { devTools: true},
+  actor = interpret(
+    (appMachine(
+      new SolidSDKService(this.logger),
+    ) as any).withContext({
+      alerts: [],
+    }), { devTools: true},
   );
 
   /**
    * The state of this component.
    */
   @internalProperty()
-  state: State<AppContext>;
+  state: any;
 
   /**
    * The state of this component.
@@ -94,6 +94,7 @@ export class AppRootComponent extends RxLitElement {
 
     this.subscribe('state', from(this.actor).pipe(
       tap((state) => this.logger.debug(CollectionsRootComponent.name, 'AppState change:', {actor: this.actor, state})),
+      map((state) => state),
     ));
 
     this.subscribe('collections', from(this.actor).pipe(
@@ -114,7 +115,7 @@ export class AppRootComponent extends RxLitElement {
       ${this.collections?.map((collection) => collection.uri)}
     </nde-sidebar>
     ` : '' }  
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE) as Interpreter<AuthenticateContext>}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTION}) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
     `;
   }
