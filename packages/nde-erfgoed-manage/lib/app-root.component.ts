@@ -10,7 +10,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
-import { CollectionsRootComponent } from './features/collections/collections-root.component';
+import { CollectionsRootComponent } from './features/collection/collections-root.component';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**

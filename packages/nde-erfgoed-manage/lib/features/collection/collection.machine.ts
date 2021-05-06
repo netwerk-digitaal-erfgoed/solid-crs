@@ -11,7 +11,7 @@ export interface CollectionsContext {
   /**
    * The list of collections available to the feature.
    */
-  collections?: Collection[];
+  currentCollection: Collection;
 }
 
 /**
@@ -27,7 +27,6 @@ export enum CollectionsActors {
 export enum CollectionsStates {
   IDLE    = '[CollectionsState: Idle]',
   LOADING = '[CollectionsState: Loading]',
-  EXITED  = '[CollectionsState: Logout]',
 }
 
 /**
@@ -37,33 +36,7 @@ export const collectionsMachine = createMachine<CollectionsContext, Event<Collec
   id: CollectionsActors.COLLECTIONS_MACHINE,
   initial: CollectionsStates.IDLE,
   on: {
-    [CollectionsEvents.LOADED_COLLECTIONS]: {
-      actions: replaceCollections,
-    },
-    [CollectionsEvents.CREATED_TEST_COLLECTION]: {
-      actions: addCollections,
-    },
-    [CollectionsEvents.CLICKED_ADD]: {
-      actions: [
-        addTestCollection,
-        addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
-      ],
-    },
   },
   states: {
-    [CollectionsStates.IDLE]: {
-      on: {
-        [CollectionsEvents.CLICKED_LOAD]: CollectionsStates.LOADING,
-      },
-    },
-    [CollectionsStates.LOADING]: {
-      invoke: {
-        src: loadCollectionsService,
-        onDone: CollectionsStates.IDLE,
-      },
-    },
-    [CollectionsStates.EXITED]: {
-      type: 'final',
-    },
   },
 });
