@@ -23,7 +23,7 @@ export class SidebarListItemComponent extends RxLitElement {
    */
   render() {
     return html`
-    <li class="item${this.inverse ? '' : ' dark'}${this.selected ? ' selected' : ''}${this.isTitle ? ' title' : ''}">
+    <li class="item${this.inverse ? ' inverse' : ''}${this.selected ? ' selected' : ''}${this.isTitle ? ' title' : ''}">
       <slot name="title"></slot>
       <div class="actions">
         <slot name="actions"></slot>
@@ -39,8 +39,16 @@ export class SidebarListItemComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+      .item.inverse {
+        background-color: var(--colors-primary-dark);
+        color: var(--colors-foreground-inverse);
+        fill: var(--colors-foreground-inverse);
+      }
+
       .item {
         background-color: var( --colors-background-light);
+        color: var(--colors-foreground-normal);
+        fill: var(--colors-foreground-normal);
         height: 45px;
         display: flex;
         flex-direction: row;
@@ -48,35 +56,6 @@ export class SidebarListItemComponent extends RxLitElement {
         cursor: pointer;
         justify-content: space-between;
         padding: 0 var(--gap-normal);
-
-      }
-
-      .item .actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        gap: var(--gap-small);
-        font-size: 25px;
-        height: 25px;
-      }
-
-      .item slot[name="title"]::slotted(*) {
-        user-select: none;
-        font-size: var(--font-size-normal);
-        color: var( --colors-foreground-normal);
-      }
-
-      .item.dark {
-        background-color: var(--colors-primary-dark);
-        display: flex;
-      }
-
-      .item.dark slot[name="title"]::slotted(*) {
-        color: var(--colors-foreground-inverse);
-      }
-
-      .item.dark .actions slot[name="actions"]::slotted(*) {
-        color: var(--colors-foreground-inverse);
       }
 
       .item.selected, .item:hover:not(.title) {
@@ -94,8 +73,26 @@ export class SidebarListItemComponent extends RxLitElement {
       .item.title {
         cursor: default;
       }
-      .item slot[name="actions"]::slotted(*) {
+
+      .actions {
+        margin-right: var(--gap-small);
+        display: flex;
+        flex-direction: row;
+        gap: var(--gap-normal);
+      }
+
+      .actions ::slotted(*) {
+        max-height: var(--gap-normal);
+        max-width: var(--gap-normal);
+        height: var(--gap-normal);
+        width: var(--gap-normal);
+        fill: var(--colors-primary-normal);
+        color: var(--colors-primary-normal);
         cursor: pointer;
+      }
+      .item.inverse .actions ::slotted(*) {
+        fill: var(--colors-foreground-inverse);
+        color: var(--colors-foreground-inverse);
       }
       `,
     ];
