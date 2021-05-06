@@ -10,7 +10,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
-import { CollectionsRootComponent } from './features/collection/collections-root.component';
+import { CollectionsRootComponent } from './features/collection/collection-root.component';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**
@@ -100,7 +100,7 @@ export class AppRootComponent extends RxLitElement {
     return html`
     ${ this.state?.matches({[AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED}) ? html`<nde-sidebar><button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></nde-sidebar>` : '' }  
     ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE}) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
-    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTIONS}) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTIONS_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
+    ${ this.state?.matches({[AppRootStates.FEATURE]: AppFeatureStates.COLLECTION}) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
     `;
   }
 

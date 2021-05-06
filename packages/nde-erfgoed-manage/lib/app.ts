@@ -1,8 +1,8 @@
 import { AlertComponent, CollectionsComponent, CollectionComponent, FormElementComponent, SidebarComponent } from '@digita-ai/nde-erfgoed-components';
 import { inspect } from '@xstate/inspect';
-import { AppRootComponent } from './app.root';
+import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
-import { CollectionsRootComponent } from './features/collections/collections-root.component';
+import { CollectionsRootComponent } from './features/collection/collection-root.component';
 import './index';
 
 /**

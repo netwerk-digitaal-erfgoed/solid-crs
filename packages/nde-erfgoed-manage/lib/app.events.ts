@@ -13,6 +13,8 @@ export enum AppEvents {
   LOGGED_IN = '[AppEvent: Logged in]',
   LOGGING_OUT = '[AppEvent: Logging out]',
   LOGGED_OUT = '[AppEvent: Logged out]',
+  SELECTED_COLLECTION = '[AppEvent: Selected collection]',
+  CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
 }
 
 /**

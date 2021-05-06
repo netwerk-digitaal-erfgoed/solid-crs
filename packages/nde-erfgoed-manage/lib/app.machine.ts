@@ -1,11 +1,14 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { of } from 'rxjs';
 import { createMachine } from 'xstate';
-import { assign, log, send } from 'xstate/lib/actions';
+import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
-import { collectionsMachine } from './features/collections/collections.machine';
+import { collectionMachine } from './features/collection/collection.machine';
+import { loadCollectionsService } from './features/collection/collection.services';
 
 /**
  * The root context of the application.
@@ -20,6 +23,11 @@ export interface AppContext {
    * The session of the current user.
    */
   session?: SolidSession;
+
+  /**
+   * The collections retrieved from the user's pod
+   */
+  collections?: Collection[];
 }
 
 /**
@@ -27,7 +35,7 @@ export interface AppContext {
  */
 export enum AppActors {
   APP_MACHINE = 'AppMachine',
-  COLLECTIONS_MACHINE = 'CollectionMachine',
+  COLLECTION_MACHINE = 'CollectionMachine',
   AUTHENTICATE_MACHINE = 'AuthenticateMachine',
 }
 
@@ -44,7 +52,7 @@ export enum AppRootStates {
  */
 export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
-  COLLECTIONS  = '[AppFeatureState: Collections]',
+  COLLECTION  = '[AppFeatureState: Collection]',
 }
 
 /**
@@ -91,7 +99,7 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
         },
         [AppEvents.LOGGED_IN]: {
           target: [
-            `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTIONS}`,
+            `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTION}`,
             `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
           ],
           actions: setSession,
@@ -107,15 +115,25 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
         /**
          * The collection feature is shown.
          */
-        [AppFeatureStates.COLLECTIONS]: {
-          invoke: {
-            id: AppActors.COLLECTIONS_MACHINE,
-            src: collectionsMachine.withContext({}),
-            onDone: AppFeatureStates.AUTHENTICATE,
-            onError: {
-              actions: send({ type: AppEvents.ERROR }),
+        [AppFeatureStates.COLLECTION]: {
+          invoke: [
+            // {
+            //   src: (c, e) => loadCollectionsService.toPromise(),
+            //   onDone: {
+            //     actions: null, // add to context
+            //   },
+            // },
+            {
+              id: AppActors.COLLECTION_MACHINE,
+              src: collectionMachine.withContext({
+                currentCollection: null,
+              }),
+              onDone: AppFeatureStates.AUTHENTICATE,
+              onError: {
+                actions: send({ type: AppEvents.ERROR }),
+              },
             },
-          },
+          ],
         },
         /**
          * The authenticate feature is active.
