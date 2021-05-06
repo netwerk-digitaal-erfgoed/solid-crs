@@ -17,3 +17,4 @@ export * from './sidebar/sidebar.component';
 export * from './state/event';
 export * from './state/schema';
 export * from './state/state';
+export * from './header/content-header.component';
