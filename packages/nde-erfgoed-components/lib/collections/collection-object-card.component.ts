@@ -9,7 +9,7 @@ export class CollectionObjectCardComponent extends LitElement {
 
   /** The object which will be rendered by the component */
   @property({ type: Object })
-  private object: CollectionObject = null;
+  public object: CollectionObject = null;
 
   /** Translator used to display last updated time */
   @property({ type: Object })
