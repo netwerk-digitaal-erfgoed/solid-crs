@@ -12,6 +12,7 @@ export class DemoSVGComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div>
       ${ unsafeSVG(Login) }
@@ -33,12 +34,14 @@ export class DemoSVGComponent extends LitElement {
       ${ unsafeSVG(Edit) }
     </div>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       css`
       div {
@@ -52,7 +55,9 @@ export class DemoSVGComponent extends LitElement {
       }
       `,
     ];
+
   }
+
 }
 
 export default DemoSVGComponent;
