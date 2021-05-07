@@ -73,10 +73,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 59.49,
-        "functions": 52.31,
-        "lines": 65.26,
-        "statements": 63.77
+        "branches": 68.49,
+        "functions": 69.35,
+        "lines": 86.93,
+        "statements": 86.6
       }
     },
     "coveragePathIgnorePatterns": [
@@ -84,7 +84,8 @@
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
-      "<rootDir>/lib/demo.ts"
+      "<rootDir>/lib/demo.ts",
+      "<rootDir>/lib/demo/"
     ],
     "globals": {
       "ts-jest": {
