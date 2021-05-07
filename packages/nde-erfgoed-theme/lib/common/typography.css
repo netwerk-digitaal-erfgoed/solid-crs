@@ -17,10 +17,6 @@ body {
   line-height: var(--line-height-normal);
 }
 
-svg {
-  fill: var(--colors-foreground-normal);
-}
-
 a {
   color: inherit;
   text-underline-offset: 4px;
