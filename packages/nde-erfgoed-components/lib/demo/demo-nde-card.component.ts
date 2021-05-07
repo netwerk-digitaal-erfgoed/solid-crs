@@ -2,7 +2,9 @@ import { Collection, CollectionObject, MemoryTranslator } from '@digita-ai/nde-e
 import { css, html, LitElement } from 'lit-element';
 
 export class DemoNDECardComponent extends LitElement {
+
   render() {
+
     const translator = new MemoryTranslator(
       [
         {
@@ -68,6 +70,7 @@ export class DemoNDECardComponent extends LitElement {
       ],
       'nl-NL',
     );
+
     const obj1 = {
       uri: 'nde.nl',
       name: 'Object nummertje 1',
@@ -77,6 +80,7 @@ export class DemoNDECardComponent extends LitElement {
       type: 'type',
       updated: 1620216600000,
     } as CollectionObject;
+
     const obj2 = { ...obj1, name: undefined } as CollectionObject;
     const obj3 = { ...obj2, subject: undefined } as CollectionObject;
     const obj4 = { ...obj3, updated: undefined } as CollectionObject;
@@ -86,6 +90,7 @@ export class DemoNDECardComponent extends LitElement {
       name: 'Collectie nummertje 1',
       description: 'Beschrijving eerste collectie',
     } as Collection;
+
     const col2 = { ...col1, name: undefined } as Collection;
     const col3 = { ...col2, description: undefined } as Collection;
 
@@ -118,9 +123,11 @@ export class DemoNDECardComponent extends LitElement {
         ></nde-collection-card>
       </div>
     `;
+
   }
 
   static get styles() {
+
     return [ css`
       .grid {
         display: grid;
@@ -131,7 +138,9 @@ export class DemoNDECardComponent extends LitElement {
         height: 227px;
       }
     ` ];
+
   }
+
 }
 
 export default DemoNDECardComponent;

@@ -32,7 +32,7 @@ export class ConsoleLogger extends Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  log(level: LoggerLevel, typeName: string, message: string, data?: unknown) {
+  log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
 
     if (level === null || level === undefined) {
 

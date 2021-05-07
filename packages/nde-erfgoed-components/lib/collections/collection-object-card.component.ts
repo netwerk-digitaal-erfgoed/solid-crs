@@ -6,16 +6,18 @@ import { Theme } from '@digita-ai/nde-erfgoed-theme';
  * A component which shows the details of a single collection object.
  */
 export class CollectionObjectCardComponent extends LitElement {
+
   /** The object which will be rendered by the component */
   @property({ type: Object })
   private object: CollectionObject = null;
 
   /** Translator used to display last updated time */
-  @property({type: Object})
+  @property({ type: Object })
   public translator: Translator;
 
   /** The styles associated with the component */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -24,6 +26,7 @@ export class CollectionObjectCardComponent extends LitElement {
         }
       `,
     ];
+
   }
 
   /**
@@ -32,6 +35,7 @@ export class CollectionObjectCardComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     const timeAgo = getFormattedTimeAgo(this.object.updated, this.translator);
 
     return html`
@@ -49,7 +53,9 @@ export class CollectionObjectCardComponent extends LitElement {
         </span>
       </nde-card>
     `;
+
   }
+
 }
 
 export default CollectionObjectCardComponent;

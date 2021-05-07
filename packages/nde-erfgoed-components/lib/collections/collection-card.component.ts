@@ -6,23 +6,27 @@ import { Theme } from '@digita-ai/nde-erfgoed-theme';
  * A component which shows the details of a single collection.
  */
 export class CollectionCardComponent extends LitElement {
+
   /** The collection which will be rendered by the component */
   @property({ type: Object })
   private collection: Collection = null;
 
   /** Translator used to display last updated time */
-  @property({type: Object})
+  @property({ type: Object })
   public translator: Translator;
 
   /** The styles associated with the component */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css``,
     ];
+
   }
 
   render() {
+
     return html`
       <nde-card>
         <span slot='title'>
@@ -35,7 +39,9 @@ export class CollectionCardComponent extends LitElement {
         </span>
       </nde-card>
     `;
+
   }
+
 }
 
 export default CollectionCardComponent;
