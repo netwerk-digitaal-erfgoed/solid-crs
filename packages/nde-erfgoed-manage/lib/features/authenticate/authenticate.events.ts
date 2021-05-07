@@ -20,17 +20,23 @@ export enum AuthenticateEvents {
 /**
  * An event which is dispatched when a user clicks the login button.
  */
-export interface LoginStartedEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_STARTED; webId: string }
+export interface LoginStartedEvent extends Event<AuthenticateEvents> {
+  type: AuthenticateEvents.LOGIN_STARTED; webId: string;
+}
 
 /**
  * An event which is dispatched when a user login was successful.
  */
-export interface LoginSuccessEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_SUCCESS }
+export interface LoginSuccessEvent extends Event<AuthenticateEvents> {
+  type: AuthenticateEvents.LOGIN_SUCCESS;
+}
 
 /**
  * An event which is dispatched when a user login failed.
  */
-export interface LoginErrorEvent extends Event<AuthenticateEvents> { type: AuthenticateEvents.LOGIN_ERROR; message: string }
+export interface LoginErrorEvent extends Event<AuthenticateEvents> {
+  type: AuthenticateEvents.LOGIN_ERROR; message: string;
+}
 
 /**
  * Union type of all authenticate events
@@ -49,7 +55,7 @@ export const handleSessionUpdate = choose<AuthenticateContext, DoneInvokeEvent<S
   },
   {
     actions: [
-      assign({session: (context, event) => event.data}),
+      assign({ session: (context, event) => event.data }),
       send(AuthenticateEvents.LOGIN_SUCCESS),
     ],
   },

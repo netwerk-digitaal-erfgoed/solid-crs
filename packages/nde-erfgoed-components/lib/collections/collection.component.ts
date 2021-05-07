@@ -11,28 +11,30 @@ export class CollectionComponent extends LitElement implements Component {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({ type: Logger })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator;
 
   /**
    * The collection which will be rendered by the component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   private collection: Collection = null;
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
     ];
+
   }
 
   /**
@@ -43,12 +45,15 @@ export class CollectionComponent extends LitElement implements Component {
    * @returns A promise when the data has been loaded.
    */
   data (entry: string, customFetch?: (input: RequestInfo, init?: RequestInit) => Promise<Response>): Promise<void> {
+
     const myFetch = customFetch ? customFetch : fetch;
 
     return myFetch(entry)
       .then((response) => response.text())
       .then(() => {
-        this.collection = {uri:'test', name: 'Test', description: 'Test desc'};
+
+        this.collection = { uri:'test', name: 'Test', description: 'Test desc' };
+
       });
 
   }
@@ -59,12 +64,15 @@ export class CollectionComponent extends LitElement implements Component {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <div class="collection">
       <div>${this.collection ? this.collection.name : 'Unknown'}</div>
     </div>
   `;
+
   }
+
 }
 
 export default CollectionComponent;

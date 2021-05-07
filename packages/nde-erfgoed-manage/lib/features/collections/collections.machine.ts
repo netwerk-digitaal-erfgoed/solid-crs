@@ -33,37 +33,38 @@ export enum CollectionsStates {
 /**
  * The collection component machine.
  */
-export const collectionsMachine = createMachine<CollectionsContext, Event<CollectionsEvents>, State<CollectionsStates, CollectionsContext>>({
-  id: CollectionsActors.COLLECTIONS_MACHINE,
-  initial: CollectionsStates.IDLE,
-  on: {
-    [CollectionsEvents.LOADED_COLLECTIONS]: {
-      actions: replaceCollections,
-    },
-    [CollectionsEvents.CREATED_TEST_COLLECTION]: {
-      actions: addCollections,
-    },
-    [CollectionsEvents.CLICKED_ADD]: {
-      actions: [
-        addTestCollection,
-        addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
-      ],
-    },
-  },
-  states: {
-    [CollectionsStates.IDLE]: {
-      on: {
-        [CollectionsEvents.CLICKED_LOAD]: CollectionsStates.LOADING,
+export const collectionsMachine =
+  createMachine<CollectionsContext, Event<CollectionsEvents>, State<CollectionsStates, CollectionsContext>>({
+    id: CollectionsActors.COLLECTIONS_MACHINE,
+    initial: CollectionsStates.IDLE,
+    on: {
+      [CollectionsEvents.LOADED_COLLECTIONS]: {
+        actions: replaceCollections,
+      },
+      [CollectionsEvents.CREATED_TEST_COLLECTION]: {
+        actions: addCollections,
+      },
+      [CollectionsEvents.CLICKED_ADD]: {
+        actions: [
+          addTestCollection,
+          addAlert({ type: 'success', message: 'nde.collections.alerts.created-collection' }),
+        ],
       },
     },
-    [CollectionsStates.LOADING]: {
-      invoke: {
-        src: loadCollectionsService,
-        onDone: CollectionsStates.IDLE,
+    states: {
+      [CollectionsStates.IDLE]: {
+        on: {
+          [CollectionsEvents.CLICKED_LOAD]: CollectionsStates.LOADING,
+        },
+      },
+      [CollectionsStates.LOADING]: {
+        invoke: {
+          src: loadCollectionsService,
+          onDone: CollectionsStates.IDLE,
+        },
+      },
+      [CollectionsStates.EXITED]: {
+        type: 'final',
       },
     },
-    [CollectionsStates.EXITED]: {
-      type: 'final',
-    },
-  },
-});
+  });

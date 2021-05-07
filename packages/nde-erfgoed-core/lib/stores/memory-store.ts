@@ -6,6 +6,7 @@ import { Store } from './store';
  * An implementation of a generic store which stores resources in-memory. Useful for mocking.
  */
 export class MemoryStore<T extends Resource> implements Store<T> {
+
   /**
    * Instantiates a memory store.
    *
@@ -19,6 +20,9 @@ export class MemoryStore<T extends Resource> implements Store<T> {
    * @returns All resources stores in-memory.
    */
   all(): Observable<T[]> {
+
     return of(this.resources);
+
   }
+
 }
