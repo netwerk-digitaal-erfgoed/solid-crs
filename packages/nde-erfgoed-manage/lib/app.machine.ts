@@ -1,8 +1,8 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, MemoryStore } from '@digita-ai/nde-erfgoed-core';
-import { createMachine } from 'xstate';
+import { createMachine, DoneInvokeEvent } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -10,12 +10,12 @@ import { collectionMachine } from './features/collection/collection.machine';
 
 const collectionStore = new MemoryStore<Collection>([
   {
-    uri: 'test1',
+    uri: 'collection-uri-1',
     name: 'Collection 1',
   },
   {
-    uri: 'test1',
-    name: 'Collection 1',
+    uri: 'collection-uri-2',
+    name: 'Collection 2',
   },
 ]);
 
@@ -125,6 +125,9 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
          * The collection feature is shown.
          */
         [AppFeatureStates.COLLECTION]: {
+          on: {
+            [AppEvents.SELECTED_COLLECTION]: `${AppFeatureStates.COLLECTION}.loaded`,
+          },
           initial: 'loading',
           states: {
             'loading': {
@@ -132,9 +135,10 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
               invoke: {
                 src: () => collectionStore.all().toPromise(),
                 onDone: {
-                  actions: setCollections,
-                  target: `loaded`,
-                  internal: true,
+                  actions: [
+                    setCollections,
+                    send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
+                  ],
                 },
               },
             },
@@ -145,8 +149,8 @@ export const appMachine = (solid: SolidService) => createMachine<AppContext, App
                   id: AppActors.COLLECTION_MACHINE,
                   src: collectionMachine(collectionStore),
                   data: {
-                    currentCollection: (context: AppContext) => context.collections ?
-                      context.collections[0] : undefined,
+                    currentCollection:
+                    (context: AppContext, event: SelectedCollectionEvent) => event.collection,
                   },
                   // onDone:  `${AppActors.APP_MACHINE}.${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
                   onError: {

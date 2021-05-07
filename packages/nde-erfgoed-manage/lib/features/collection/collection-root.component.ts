@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
@@ -7,7 +7,8 @@ import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AppEvents } from '../../app.events';
-import { CollectionContext } from './collection.machine';
+import { CollectionContext, CollectionStates } from './collection.machine';
+import { CollectionsEvents } from './collection.events';
 
 /**
  * The root page of the collections feature.
@@ -48,12 +49,12 @@ export class CollectionRootComponent extends RxLitElement {
    * The collections which will be summarized by the component.
    */
   @property({ type: Array })
-  collections?: Collection[];
+  collection?: Collection;
 
   /**
    * Hook called on at every update after connection to the DOM.
    */
-  updated(changed: PropertyValues) {
+  updated(changed: PropertyValues): void {
 
     super.updated(changed);
 
@@ -70,6 +71,9 @@ export class CollectionRootComponent extends RxLitElement {
         tap((state) => this.logger.debug(CollectionRootComponent.name, 'CollectionState change:', state)),
       ));
 
+      this.subscribe('collection', from(this.actor)
+        .pipe(map((state) => state.context?.currentCollection)));
+
     }
 
   }
@@ -79,7 +83,7 @@ export class CollectionRootComponent extends RxLitElement {
    *
    * @param event Dismiss event dispatched by an alert componet.
    */
-  handleDismiss(event: CustomEvent<Alert>) {
+  handleDismiss(event: CustomEvent<Alert>): void {
 
     if (!event || !event.detail) {
 
@@ -102,28 +106,38 @@ export class CollectionRootComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = false;
+    const loading = this.state||false;
 
-    return html`
+    return loading ? html`
     <p>${this.translator?.translate('nde.collections.root.title')}</p>
     ${ alerts }
-    <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
-    <button  ?disabled="${loading}">Load some</button>
-    <button  ?disabled="${loading}">Add one</button>
-    <div></div>
-  `;
+    <br>
+    actions for content header
+    <br>
+    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_DELETE)}">Delete</button>
+    <button .hidden="${this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionsEvents.CLICKED_EDIT)}">edit</button>
+    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}">save</button>
+    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionsEvents.CANCELLED_EDIT)}">cancel</button>
+    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_CREATE_OBJECT)}">Create object</button>
+    <br>
+    <br>
+    input collection
+    <br>
+    ${this.collection.name}
+    ${this.collection.uri}
+  ` : html``;
 
   }
 
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

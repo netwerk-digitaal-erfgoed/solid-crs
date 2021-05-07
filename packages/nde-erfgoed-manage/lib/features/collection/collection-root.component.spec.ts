@@ -10,7 +10,7 @@ describe('CollectionRootComponent', () => {
   beforeEach(() => {
 
     machine = interpret(collectionMachine);
-    component = window.document.createElement('nde-collections-root') as CollectionRootComponent;
+    component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
 
@@ -38,10 +38,10 @@ describe('CollectionRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alerts = window.document.body.getElementsByTagName('nde-collections-root')[0].shadowRoot.querySelectorAll('nde-alert');
+    const alerts = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelectorAll('nde-alert');
 
     expect(alerts).toBeTruthy();
-    expect(alerts.length).toBe(1);
+    expect(alerts.length).toBe(0);
 
   });
 
@@ -52,7 +52,7 @@ describe('CollectionRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alerts = window.document.body.getElementsByTagName('nde-collections-root')[0].shadowRoot.querySelectorAll('nde-alert');
+    const alerts = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelectorAll('nde-alert');
 
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);

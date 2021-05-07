@@ -72,6 +72,14 @@ export interface CollectionsLoadedEvent extends Event<AppEvents> {
 }
 
 /**
+ * An event which is dispatched when the collections were successfully retrieved
+ */
+export interface SelectedCollectionEvent extends Event<AppEvents> {
+  type: AppEvents.SELECTED_COLLECTION;
+  collection: Collection;
+}
+
+/**
  * Union type of app events.
  */
 export type AppEvent =
@@ -81,6 +89,7 @@ export type AppEvent =
   | ErrorEvent
   | DismissAlertEvent
   | AddAlertEvent
+  | SelectedCollectionEvent
   | CollectionsLoadedEvent;
 
 /**
@@ -148,4 +157,4 @@ export const removeSession = assign({ session: (context, event) => undefined });
 /**
  * Action which saves a list of collections to the machine's context.
  */
-export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });
+export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<AppContext>) => event.data });

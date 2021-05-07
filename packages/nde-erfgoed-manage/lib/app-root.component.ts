@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { interpret, Interpreter } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -73,7 +73,7 @@ export class AppRootComponent extends RxLitElement {
    *
    * @param event The event fired when dismissing an alert.
    */
-  dismiss(event: CustomEvent<Alert>) {
+  dismiss(event: CustomEvent<Alert>): void {
 
     this.logger.debug(AppRootComponent.name, 'Dismiss', event);
 
@@ -97,7 +97,7 @@ export class AppRootComponent extends RxLitElement {
    * Hook called after first update after connection to the DOM.
    * It subscribes to the actor, logs state changes, and pipes state to the properties.
    */
-  firstUpdated(changed: PropertyValues) {
+  firstUpdated(changed: PropertyValues): void {
 
     super.firstUpdated(changed);
 
@@ -117,17 +117,17 @@ export class AppRootComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
     <nde-sidebar>
       <button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button>
-      ${this.collections?.map((collection) => collection.uri)}
+      ${this.collections?.map((collection) => html`${collection.name}<br>`)}
     </nde-sidebar>
     ` : '' }  
-    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE) as Interpreter<AuthenticateContext>}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
-    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collections-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     `;
 
   }
@@ -135,7 +135,7 @@ export class AppRootComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

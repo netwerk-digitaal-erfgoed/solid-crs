@@ -11,7 +11,7 @@ import { ContentHeaderComponent } from './header/content-header.component';
 import { DemoContentHeaderComponent } from './demo/demo-content-header.component';
 
 /**
- * Register tags for components.
+ * Register tags for conde-collection-root
  */
 customElements.define('nde-collection', CollectionComponent);
 customElements.define('nde-collections', CollectionsComponent);

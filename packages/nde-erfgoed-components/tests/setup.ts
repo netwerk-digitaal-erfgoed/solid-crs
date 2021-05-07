@@ -8,7 +8,7 @@ import { DemoSidebarListComponent } from '../lib/demo/demo-sidebar-list.componen
 import { ContentHeaderComponent } from '../lib/header/content-header.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
 
-/**
+/** nde-collection-root
  * Register tags for components.
  */
 customElements.define('nde-collection', CollectionComponent);
