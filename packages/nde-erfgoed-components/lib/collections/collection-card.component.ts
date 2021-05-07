@@ -9,7 +9,7 @@ export class CollectionCardComponent extends LitElement {
 
   /** The collection which will be rendered by the component */
   @property({ type: Object })
-  private collection: Collection = null;
+  public collection: Collection = null;
 
   /** Translator used to display last updated time */
   @property({ type: Object })
@@ -30,11 +30,11 @@ export class CollectionCardComponent extends LitElement {
     return html`
       <nde-card>
         <span slot='title'>
-          ${this.collection.name ?? this.translator.translate('nde.collections.card.name-unavailable')}
+          ${this.collection?.name ?? this.translator.translate('nde.collections.card.name-unavailable')}
         </span>
         <span slot='subtitle'>
           <span>
-            ${this.collection.description ?? ''}
+            ${this.collection?.description ?? ''}
           </span>
         </span>
       </nde-card>
