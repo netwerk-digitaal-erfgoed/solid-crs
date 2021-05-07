@@ -1,0 +1,27 @@
+#!/bin/sh
+
+. "$(dirname $0)/_/husky.sh"
+
+REGEX="^(master|develop|(release|feat|fix|docs|test|chore|build|docs)\/[a-zA-Z0-9\-]+)$"
+
+REMOTE="$1"
+URL="$2"
+
+while read L_REF L_SHA R_REF R_SHA
+do
+
+    BRANCH=$(git rev-parse --abbrev-ref "$L_REF")
+
+    if [[ "$R_SHA" = "$(printf "%040d")" ]] ; then
+
+        # Check branch name convention
+        if ! (echo "$BRANCH" | grep -qE "$REGEX") ; then
+
+            echo "[PRE-PUSH Hook] Please name your new branch in accordance with the coding conventions" >&2
+            exit 1
+
+        fi
+
+    fi
+
+done

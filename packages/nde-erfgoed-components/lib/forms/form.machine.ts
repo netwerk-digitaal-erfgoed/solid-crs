@@ -72,7 +72,8 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  */
 export const formMachine = <T>(
   validator: FormValidator<T>,
-  submitter: FormSubmitter<T> = async (context) => context.data) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
+  submitter: FormSubmitter<T> = async (context) => context.data
+) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
   {
     id: FormActors.FORM_MACHINE,
     initial: FormSubmissionStates.NOT_SUBMITTED,
@@ -112,7 +113,8 @@ export const formMachine = <T>(
                 always: [
                   {
                     target: FormCleanlinessStates.PRISTINE,
-                    cond: (context: FormContext<T>) => JSON.stringify(context.data) === JSON.stringify(context.original),
+                    cond: (context: FormContext<T>) =>
+                      JSON.stringify(context.data) === JSON.stringify(context.original),
                   },
                   {
                     target: FormCleanlinessStates.DIRTY,

@@ -33,9 +33,9 @@ jobs:
 
       - run: npm run bootstrap
 
-      - run: npm run build
+      - run: npm run build:all
 
-      - run: npm run lint
+      - run: npm run lint:all
 
       - run: npm run test:ci
 
