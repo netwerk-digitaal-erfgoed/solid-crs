@@ -11,7 +11,7 @@ export class CollectionObjectCardComponent extends LitElement {
   private object: CollectionObject = null;
 
   /** Translator used to display last updated time */
-  @property({type: Translator})
+  @property({type: Object})
   public translator: Translator;
 
   /** The styles associated with the component */
@@ -19,39 +19,8 @@ export class CollectionObjectCardComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
-        .collection-object-card:hover {
-          cursor: pointer;
-          border: 1px solid var(--colors-foreground-normal);
-          transform: scale(1.1);
-        }
-        .collection-object-card {
-          height: 100%;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          transition: all .2s ease-in-out;
-          line-height: var(--line-height-large);
-        }
-        .information-pane {
-          background-color: var(--colors-foreground-inverse);
-          padding: var(--gap-normal);
-        }
-        .information-pane-name, .information-pane-subject-time-ago-wrapper {
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-        .information-pane-subject {
-          color: var(--colors-accent-primary);
-        }
-        .information-pane-time-ago {
-          font-size: var(--font-size-small);
+        .time-ago {
           color: var(--colors-foreground-light);
-        }
-        img {
-          width: 100%;
-          height: calc(100% - 2 * (var(--gap-normal) + var(--line-height-large) * var(--font-size-normal)));
-          object-fit: cover;
         }
       `,
     ];
@@ -64,17 +33,21 @@ export class CollectionObjectCardComponent extends LitElement {
    */
   render() {
     const timeAgo = getFormattedTimeAgo(this.object.updated, this.translator);
+
     return html`
-      <div class='collection-object-card'>
-        <img src='${this.object.image}'/>
-        <div class='information-pane'>
-          <div class='information-pane-subject-time-ago-wrapper'>
-            <span class='information-pane-subject'>${this.object.subject ?? this.translator.translate('nde.collections.card.subject-unavailable')}</span>
-            <span class='information-pane-time-ago'> - ${timeAgo}</span>
-          </div>
-          <div class='information-pane-name'>${this.object.name ?? this.translator.translate('nde.collections.card.name-unavailable')}</div>
-        </div>
-      </div>
+      <nde-card image='${this.object.image}'>
+        <span slot='title'>
+          ${this.object.name ?? this.translator.translate('nde.collections.card.name-unavailable')}
+        </span>
+        <span slot='subtitle'>
+          <span class='subject'>
+            ${this.object.subject ?? this.translator.translate('nde.collections.card.subject-unavailable')}
+          </span>
+          <span class='time-ago'>
+             ${this.object.updated ? ` - ${timeAgo}` : ''}
+          </span>
+        </span>
+      </nde-card>
     `;
   }
 }
