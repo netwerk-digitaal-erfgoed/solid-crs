@@ -1,4 +1,6 @@
 #!/bin/sh
+
 . "$(dirname $0)/_/husky.sh"
 
-npm run lint && npm run bootstrap
+## Run specified linters on staged files, automatically adding fixes
+npm run lint:staged

@@ -4,6 +4,7 @@ import { BaseError } from './base-error';
  * An error thrown when a function is called with invalid arguments.
  */
 export class NotImplementedError extends BaseError {
+
   public readonly name = NotImplementedError.name;
 
   /**
@@ -14,8 +15,11 @@ export class NotImplementedError extends BaseError {
    * @param cause The underlying error.
    */
   constructor(cause?: Error) {
+
     super('Not implemented', cause);
 
     Object.setPrototypeOf(this, NotImplementedError.prototype);
+
   }
+
 }

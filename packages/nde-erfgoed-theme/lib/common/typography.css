@@ -14,10 +14,6 @@ body {
   font-size: var(--font-size-normal);
 }
 
-svg {
-  fill: var(--colors-foreground-normal);
-}
-
 a {
   color: inherit;
   text-underline-offset: 4px;

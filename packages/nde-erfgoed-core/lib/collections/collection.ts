@@ -1,4 +1,4 @@
-import {Resource} from '../stores/resource';
+import { Resource } from '../stores/resource';
 
 /**
  * Represents a collection of digitally archived objects.

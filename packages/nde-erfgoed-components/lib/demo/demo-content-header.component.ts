@@ -13,6 +13,7 @@ export class DemoContentHeaderComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     return html`
     <nde-content-header>
       <div slot="icon">${ unsafeSVG(Search) }</div>
@@ -29,18 +30,22 @@ export class DemoContentHeaderComponent extends LitElement {
       <div slot="actions">${ unsafeSVG(Logout) }</div>
     </nde-content-header>
   `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       css`
       
       `,
     ];
+
   }
+
 }
 
 export default DemoContentHeaderComponent;

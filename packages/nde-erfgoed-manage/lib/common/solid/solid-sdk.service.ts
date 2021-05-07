@@ -17,7 +17,9 @@ export class SolidSDKService extends SolidService {
     private logger: Logger,
     private clientName = 'NDE Collectiebeheersysteem',
   ) {
+
     super();
+
   }
 
   /**
@@ -27,37 +29,52 @@ export class SolidSDKService extends SolidService {
    * @param webId The WebID for which to retrieve the OIDC issuer
    */
   async getIssuer(webId: string): Promise<string> {
+
     this.logger.debug(SolidSDKService.name, 'Retrieving issuer', webId);
 
     if (!webId) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+
     }
 
     // Parse the user's WebID as a url.
     try {
+
       const webIdUrl = new URL(webId);
+
     } catch {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+
     }
 
     let profileDataset;
 
     // Dereference the user's WebID to get the user's profile document.
     try {
+
       profileDataset = await getSolidDataset(webId);
+
     } catch(e) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
     }
 
     if(!profileDataset) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
     }
 
     // Parses the profile document.
     const profile = getThing(profileDataset, webId);
 
     if(!profile) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
     }
 
     // Gets the issuer from the user's profile.
@@ -65,18 +82,25 @@ export class SolidSDKService extends SolidService {
 
     // Throw an error if there's no OIDC Issuer registered in the user's profile.
     if(!issuer) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+
     }
 
     // Check if the issuer is a valid OIDC provider.
     let openidConfig;
     let poweredByHeader;
+
     try{
+
       const openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
       openidConfig = await openidConfigResponse.json();
       poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
+
     } catch(e) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', issuer);
+
     }
 
     // Throw an error if the issuer is an invalid OIDC provider.
@@ -84,9 +108,13 @@ export class SolidSDKService extends SolidService {
       // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
       !openidConfig && (poweredByHeader.includes('solid') || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
     ) {
+
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
+
     }
+
     return issuer;
+
   }
 
   /**
@@ -94,27 +122,34 @@ export class SolidSDKService extends SolidService {
    * of sessions on page refreshes
    */
   async getSession(): Promise<SolidSession> {
+
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
     const session = await handleIncomingRedirect();
 
     return session && session.isLoggedIn ? { webId: session.webId } : null;
+
   }
 
   /**
    * Redirects the user to their OIDC provider
    */
   async login(webId: string): Promise<void> {
+
     this.logger.debug(SolidSDKService.name, 'Logging in user');
 
     if (!webId) {
+
       throw new ArgumentError('Argument webId should be set.', webId);
+
     }
 
     const issuer = await this.getIssuer(webId);
 
     if (!issuer) {
+
       throw new ArgumentError('Argument issuer should be set.', issuer);
+
     }
 
     await login({
@@ -122,14 +157,18 @@ export class SolidSDKService extends SolidService {
       redirectUrl: window.location.href,
       clientName: this.clientName,
     });
+
   }
 
   /**
    * Deauthenticates the user from their OIDC issuer
    */
   async logout(): Promise<void> {
+
     this.logger.debug(SolidSDKService.name, 'Logging out user');
 
     return await logout();
+
   }
+
 }

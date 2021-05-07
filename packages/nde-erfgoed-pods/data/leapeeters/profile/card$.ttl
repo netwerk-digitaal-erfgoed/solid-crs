@@ -3,12 +3,13 @@
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <https://pods.nde.digita.ai/leapeeters/profile/card#me>;
-    foaf:primaryTopic <https://pods.nde.digita.ai/leapeeters/profile/card#me>.
+    foaf:maker <http://localhost:3000/leapeeters/profile/card#me>;
+    foaf:primaryTopic <http://localhost:3000/leapeeters/profile/card#me>.
 
-<https://pods.nde.digita.ai/leapeeters/profile/card#me>
+<http://localhost:3000/leapeeters/profile/card#me>
     a foaf:Person;
     foaf:name "Lea Peeters";
-    solid:oidcIssuer <https://idp.lorem.ipsum>;
-    solid:privateTypeIndex <https://pods.nde.digita.ai/leapeeters/settings/privateTypeIndex.ttl>;
-    solid:publicTypeIndex <https://pods.nde.digita.ai/leapeeters/settings/publicTypeIndex.ttl>.
+    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuerRegistrationToken "JNLqmggwKoXTRuLeUooc5";
+    solid:privateTypeIndex <http://localhost:3000/leapeeters/settings/privateTypeIndex.ttl>;
+    solid:publicTypeIndex <http://localhost:3000/leapeeters/settings/publicTypeIndex.ttl>.
