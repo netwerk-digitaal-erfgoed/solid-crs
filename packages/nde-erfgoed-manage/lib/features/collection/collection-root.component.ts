@@ -163,6 +163,10 @@ export class CollectionRootComponent extends RxLitElement {
         nde-object-card, nde-collection-card {
           height: 227px;
         }
+        button svg {
+          max-width: var(--gap-normal);
+          height: var(--gap-normal);
+        }
       `,
     ];
 

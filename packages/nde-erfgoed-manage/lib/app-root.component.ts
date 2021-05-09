@@ -182,11 +182,11 @@ export class AppRootComponent extends RxLitElement {
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>
-      <nde-sidebar-list-item slot="item" isTitle inverse>
-          <p slot="title">Collecties</p>
+        <nde-sidebar-list-item slot="item" isTitle inverse>
+          <div slot="title">Collecties</div>
           <div slot="actions">${ unsafeSVG(Plus) }</div>
         </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse><p slot="title">${collection.name}</p></nde-sidebar-list-item>`)}
+        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
       </nde-sidebar-list>
     </nde-sidebar>
     ` : '' }  
@@ -210,7 +210,7 @@ export class AppRootComponent extends RxLitElement {
           flex-direction: row;
         }
 
-        :host * {
+        :host > * {
           flex: 1 1;
         }
 
@@ -218,8 +218,27 @@ export class AppRootComponent extends RxLitElement {
           flex: 0 0 var(--size-sidebar);
         }
 
+        nde-sidebar {
+          display: flex;
+          flex-direction: column;
+        }
+
+        nde-sidebar > * {
+          margin-bottom: var(--gap-normal);
+          display: block;
+        }
+
+        nde-sidebar > *:last-child {
+          margin-bottom: 0px;
+        }
+
         nde-content-header div[slot="icon"] svg {
           fill: var(--colors-foreground-inverse);
+        }
+
+        div[slot="actions"] svg {
+          max-height: var(--gap-normal);
+          width: var(--gap-normal);
         }
       `,
     ];
