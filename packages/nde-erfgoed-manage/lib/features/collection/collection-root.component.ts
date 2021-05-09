@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { ArgumentError, Collection, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -8,7 +8,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
-import { CollectionsEvents } from './collection.events';
+import { CollectionEvents } from './collection.events';
 
 /**
  * The root page of the collections feature.
@@ -52,6 +52,12 @@ export class CollectionRootComponent extends RxLitElement {
   collection?: Collection;
 
   /**
+   * The list of objects in the current collection.
+   */
+  @internalProperty()
+  objects?: CollectionObject[];
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -72,7 +78,10 @@ export class CollectionRootComponent extends RxLitElement {
       ));
 
       this.subscribe('collection', from(this.actor)
-        .pipe(map((state) => state.context?.currentCollection)));
+        .pipe(map((state) => state.context?.collection)));
+
+      this.subscribe('objects', from(this.actor)
+        .pipe(map((state) => state.context?.objects)));
 
     }
 
@@ -119,17 +128,18 @@ export class CollectionRootComponent extends RxLitElement {
     <br>
     actions for content header
     <br>
-    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_DELETE)}">Delete</button>
-    <button .hidden="${this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionsEvents.CLICKED_EDIT)}">edit</button>
+    <button @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE)}">Delete</button>
+    <button .hidden="${this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">edit</button>
     <button .hidden="${!this.state.matches(CollectionStates.EDITING)}">save</button>
-    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionsEvents.CANCELLED_EDIT)}">cancel</button>
-    <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_CREATE_OBJECT)}">Create object</button>
+    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">cancel</button>
+    <button @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">Create object</button>
     <br>
     <br>
     input collection
     <br>
     ${this.collection.name}
     ${this.collection.uri}
+    ${this.objects?.map((object) => object.uri)}
   ` : html``;
 
   }

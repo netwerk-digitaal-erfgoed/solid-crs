@@ -1,4 +1,5 @@
-import { NotImplementedError } from '../errors/not-implemented-error';
+import { Observable, of } from 'rxjs';
+import { ArgumentError } from '../errors/argument-error';
 import { MemoryStore } from '../stores/memory-store';
 import { Collection } from './collection';
 import { CollectionObject } from './collection-object';
@@ -22,9 +23,21 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
    *
    * @param collection The collection for which to retrieve objects.
    */
-  getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
+  getObjectsForCollection(collection: Collection): Observable<CollectionObject[]> {
 
-    throw new NotImplementedError();
+    if (!collection) {
+
+      throw new ArgumentError('Argument collection should be set.', collection);
+
+    }
+
+    if (!this.resources) {
+
+      throw new ArgumentError('Argument this.resources should be set.', this.resources);
+
+    }
+
+    return of(this.resources.filter((resource) => resource.collection === collection.uri));
 
   }
 

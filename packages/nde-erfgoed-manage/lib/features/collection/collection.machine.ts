@@ -1,18 +1,23 @@
-import { createMachine, sendParent, StateMachine } from 'xstate';
-import { Collection, Store } from '@digita-ai/nde-erfgoed-core';
-import { Event, FormEvents, State } from '@digita-ai/nde-erfgoed-components';
+import { assign, createMachine, sendParent } from 'xstate';
+import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { of } from 'rxjs';
 import { AppEvents } from '../../app.events';
-import { CollectionsEvents  } from './collection.events';
+import { CollectionEvent, CollectionEvents  } from './collection.events';
 
 /**
  * The context of a collections feature.
  */
 export interface CollectionContext {
   /**
-   * The list of collections available to the feature.
+   * The currently selected collection.
    */
-  currentCollection: Collection;
+  collection: Collection;
+
+  /**
+   * The list of objects in the current collection.
+   */
+  objects?: CollectionObject[];
 }
 
 /**
@@ -26,27 +31,43 @@ export enum CollectionActors {
  * State references for the collection component, with readable log format.
  */
 export enum CollectionStates {
-  IDLE    = '[CollectionsState: Idle]',
-  SAVING = '[CollectionsState: Saving]',
-  EDITING = '[CollectionsState: Editing]',
-  DELETING = '[CollectionsState: Deleting]',
+  IDLE      = '[CollectionsState: Idle]',
+  LOADING   = '[CollectionsState: Loading]',
+  SAVING    = '[CollectionsState: Saving]',
+  EDITING   = '[CollectionsState: Editing]',
+  DELETING  = '[CollectionsState: Deleting]',
 }
 
 /**
  * The collection component machine.
  */
-export const collectionMachine = (collectionStore: Store<Collection>) =>
-  createMachine<CollectionContext, Event<CollectionsEvents>, State<CollectionStates, CollectionContext>>({
+export const collectionMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
+  createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
     id: CollectionActors.COLLECTION_MACHINE,
-    initial: CollectionStates.IDLE,
+    initial: CollectionStates.LOADING,
     on: {
-      [CollectionsEvents.CLICKED_EDIT]: CollectionStates.EDITING,
-      [CollectionsEvents.CLICKED_DELETE]: CollectionStates.DELETING,
-      [CollectionsEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
+      [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
+      [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+      [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
+      [AppEvents.SELECTED_COLLECTION]: CollectionStates.LOADING,
     },
     states: {
       [CollectionStates.IDLE]: {
 
+      },
+      [CollectionStates.LOADING]: {
+        invoke: {
+          src: (context) => objectStore.getObjectsForCollection(context.collection).toPromise(),
+          onDone: {
+            actions: assign({
+              objects: (context, event) => event.data,
+            }),
+            target: CollectionStates.IDLE,
+          },
+          onError: {
+            actions: sendParent(AppEvents.ERROR),
+          },
+        },
       },
       [CollectionStates.SAVING]: {
         invoke: {
@@ -61,7 +82,7 @@ export const collectionMachine = (collectionStore: Store<Collection>) =>
       },
       [CollectionStates.EDITING]: {
         on: {
-          [FormEvents.FORM_SUBMITTED as any]: CollectionStates.SAVING,
+          [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
         },
       },
       [CollectionStates.DELETING]: {

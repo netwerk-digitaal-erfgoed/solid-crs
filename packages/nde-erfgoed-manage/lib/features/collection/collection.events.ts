@@ -1,36 +1,44 @@
-import { Alert, Event } from '@digita-ai/nde-erfgoed-components';
+import { Alert, Event, FormSubmittedEvent } from '@digita-ai/nde-erfgoed-components';
 import { sendParent } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, SelectedCollectionEvent } from '../../app.events';
 
 /**
  * Event references for the collection component, with readable log format.
  */
-export enum CollectionsEvents {
+export enum CollectionEvents {
   CLICKED_DELETE              = '[CollectionsEvent: Clicked Delete]',
   CLICKED_EDIT                = '[CollectionsEvent: Clicked Edit]',
   CANCELLED_EDIT              = '[CollectionsEvent: Cancelled Edit]',
   CLICKED_CREATE_OBJECT       = '[CollectionsEvent: Clicked Create Object]',
+  SELECTED_COLLECTION         = '[CollectionsEvent: Selected collection]',
 }
 
 /**
  * Event interfaces for the collection component, with their payloads.
  */
-export interface ClickedDeleteEvent extends Event<CollectionsEvents> {
-  type: CollectionsEvents.CLICKED_DELETE;
+export interface ClickedDeleteEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.CLICKED_DELETE;
 }
-export interface ClickedEditEvent extends Event<CollectionsEvents> {
-  type: CollectionsEvents.CLICKED_EDIT;
+export interface ClickedEditEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.CLICKED_EDIT;
 }
-export interface CancelledEditEvent extends Event<CollectionsEvents> {
-  type: CollectionsEvents.CANCELLED_EDIT;
+export interface CancelledEditEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.CANCELLED_EDIT;
 }
-export interface ClickedCreateObjectEvent extends Event<CollectionsEvents> {
-  type: CollectionsEvents.CLICKED_CREATE_OBJECT;
+export interface ClickedCreateObjectEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.CLICKED_CREATE_OBJECT;
 }
 
 /**
- * Actions for the collections component.
+ * Actions for the collections machine.
  */
+export type CollectionEvent =
+  ClickedDeleteEvent
+  | ClickedEditEvent
+  | CancelledEditEvent
+  | ClickedCreateObjectEvent
+  | SelectedCollectionEvent
+  | FormSubmittedEvent;
 
 /**
  * Adds an alert to the machine's parent.

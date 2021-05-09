@@ -33,7 +33,7 @@ Under 'lib/features', in the existing 'authenticate' directory, edit following f
 
 ==== App Machine
 
-The list of collections should be stored in the `AppContext`. Retrieve them using a local `MemoryStore<Collection>`. We'll implement a new `Store` later that makes use of Solid pods. The list of collections should be retrieved and its first item passed to the context of the `CollectionsMachine`, when it is invoked. (`currentCollection`)  
+The list of collections should be stored in the `AppContext`. Retrieve them using a local `MemoryStore<Collection>`. We'll implement a new `Store` later that makes use of Solid pods. The list of collections should be retrieved and its first item passed to the context of the `CollectionsMachine`, when it is invoked. (`collection`)  
 
 
 ==== App Events
@@ -68,9 +68,9 @@ The `CollectionMachine` has three possible states:
 
 The `CollectionStates.IDLE` state is the initial state of the machine. Take a look at the state chart and the events described below for a better picture of how the machine can transition.
 
-When `CollectionEvents.CLICKED_DELETE` is fired, `currentCollection` should be removed from the `AppContext.collections`. The `CollectionMachine` should be reinvoked as to retrieve a new `currentCollection`.
+When `CollectionEvents.CLICKED_DELETE` is fired, `collection` should be removed from the `AppContext.collections`. The `CollectionMachine` should be reinvoked as to retrieve a new `collection`.
 
-`CollectionsEvents.CLICKED_EDIT` is should transition the `CollectionMachine` to `CollectionStates.EDITING`. It can exit this state if the `CollectionStates.CANCELLED_EDIT` event is fired while `EDITING`.
+`CollectionEvents.CLICKED_EDIT` is should transition the `CollectionMachine` to `CollectionStates.EDITING`. It can exit this state if the `CollectionStates.CANCELLED_EDIT` event is fired while `EDITING`.
 
 `CollectionEvents.CLICKED_SAVED` transitions to `CollectionStates.SAVING`, where the store will save the edited collection. When saved, return to `CollectionStates.IDLE`.
 
@@ -83,7 +83,7 @@ The context of the `CollectionMachine` consists of one item: the current collect
 [source, js]
 ----
 {
-  currentCollection: Collection,
+  collection: Collection,
 }
 ----
 

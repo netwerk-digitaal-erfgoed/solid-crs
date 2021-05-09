@@ -33,4 +33,9 @@ export interface CollectionObject extends Resource {
    * The timestamp representing when the object was updated.
    */
   updated: number;
+
+  /**
+   * The collection to which the object belongs.
+   */
+  collection: string;
 }

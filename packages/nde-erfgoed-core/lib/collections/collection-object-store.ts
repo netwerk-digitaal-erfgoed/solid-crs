@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { Store } from '../stores/store';
 import { Collection } from './collection';
 import { CollectionObject } from './collection-object';
@@ -11,5 +12,5 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
    *
    * @param collection The collection for which to retrieve objects.
    */
-  getObjectsForCollection(collection: Collection): Promise<CollectionObject[]>;
+  getObjectsForCollection(collection: Collection): Observable<CollectionObject[]>;
 }
