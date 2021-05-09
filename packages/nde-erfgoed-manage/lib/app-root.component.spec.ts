@@ -1,7 +1,7 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
-import { ArgumentError, ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from './app.events';
+import { AppEvents } from './app.events';
 import { AppAuthenticateStates, AppContext, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app.root';
 import { SolidMockService } from './common/solid/solid-mock.service';
@@ -15,7 +15,32 @@ describe('AppRootComponent', () => {
 
   beforeEach(() => {
 
-    machine = interpret(appMachine(solid));
+    machine = interpret(appMachine(solid,
+      new MemoryStore<Collection>([
+        {
+          uri: 'collection-uri-1',
+          name: 'Collection 1',
+          description: 'This is collection 1',
+        },
+        {
+          uri: 'collection-uri-2',
+          name: 'Collection 2',
+          description: 'This is collection 2',
+        },
+      ]),
+      new CollectionObjectMemoryStore([
+        {
+          uri: 'object-uri-1',
+          name: 'Object 1',
+          description: 'This is object 1',
+          image: null,
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+      ])));
+
     machine.start();
     component = window.document.createElement('nde-app-root') as AppRootComponent;
 

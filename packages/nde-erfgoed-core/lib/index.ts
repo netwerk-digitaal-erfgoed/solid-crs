@@ -3,6 +3,8 @@
  */
 export * from './collections/collection';
 export * from './collections/collection-object';
+export * from './collections/collection-object-memory-store';
+export * from './collections/collection-object-store';
 export * from './errors/argument-error';
 export * from './errors/base-error';
 export * from './errors/not-implemented-error';

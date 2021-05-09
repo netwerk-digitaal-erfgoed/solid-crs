@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { ArgumentError } from '../errors/argument-error';
 import { Resource } from './resource';
 import { Store } from './store';
 
@@ -12,16 +12,75 @@ export class MemoryStore<T extends Resource> implements Store<T> {
    *
    * @param resources An array of resources to initially populate the store.
    */
-  constructor(private resources: T[]) { }
+  constructor(protected resources: T[]) { }
 
   /**
    * Returns all resources stored in-memory.
    *
    * @returns All resources stores in-memory.
    */
-  all(): Observable<T[]> {
+  async all(): Promise<T[]> {
 
-    return of(this.resources);
+    if (!this.resources) {
+
+      throw new ArgumentError('Argument this.resources should be set.', this.resources);
+
+    }
+
+    return this.resources;
+
+  }
+
+  /**
+   * Either deletes the given resource.
+   *
+   * @param resource Resource to be deleted.
+   */
+  async delete(resource: T): Promise<T> {
+
+    if (!this.resources) {
+
+      throw new ArgumentError('Argument this.resources should be set.', this.resources);
+
+    }
+
+    if (!resource) {
+
+      throw new ArgumentError('Argument resource should be set.', resource);
+
+    }
+
+    this.resources = this.resources.filter((existingResource) => resource.uri !== existingResource.uri);
+
+    return resource;
+
+  }
+
+  /**
+   * Either creates or updates the given resource.
+   *
+   * @param resource Resource to be saved.
+   */
+  async save(resource: T): Promise<T> {
+
+    if (!this.resources) {
+
+      throw new ArgumentError('Argument this.resources should be set.', this.resources);
+
+    }
+
+    if (!resource) {
+
+      throw new ArgumentError('Argument resource should be set.', resource);
+
+    }
+
+    this.resources = [
+      ...this.resources.filter((existingResource) => resource.uri !== existingResource.uri),
+      resource,
+    ];
+
+    return resource;
 
   }
 

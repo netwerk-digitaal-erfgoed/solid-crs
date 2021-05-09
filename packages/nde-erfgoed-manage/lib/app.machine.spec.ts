@@ -1,5 +1,5 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
-import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
@@ -14,6 +14,30 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        new MemoryStore<Collection>([
+          {
+            uri: 'collection-uri-1',
+            name: 'Collection 1',
+            description: 'This is collection 1',
+          },
+          {
+            uri: 'collection-uri-2',
+            name: 'Collection 2',
+            description: 'This is collection 2',
+          },
+        ]),
+        new CollectionObjectMemoryStore([
+          {
+            uri: 'object-uri-1',
+            name: 'Object 1',
+            description: 'This is object 1',
+            image: null,
+            subject: null,
+            type: null,
+            updated: 0,
+            collection: 'collection-uri-1',
+          },
+        ])
       )
         .withContext({
           alerts: [],
@@ -46,6 +70,30 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      new MemoryStore<Collection>([
+        {
+          uri: 'collection-uri-1',
+          name: 'Collection 1',
+          description: 'This is collection 1',
+        },
+        {
+          uri: 'collection-uri-2',
+          name: 'Collection 2',
+          description: 'This is collection 2',
+        },
+      ]),
+      new CollectionObjectMemoryStore([
+        {
+          uri: 'object-uri-1',
+          name: 'Object 1',
+          description: 'This is object 1',
+          image: null,
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+      ])
     ).withContext({
       alerts: [ alert ],
     }));
@@ -83,6 +131,30 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      new MemoryStore<Collection>([
+        {
+          uri: 'collection-uri-1',
+          name: 'Collection 1',
+          description: 'This is collection 1',
+        },
+        {
+          uri: 'collection-uri-2',
+          name: 'Collection 2',
+          description: 'This is collection 2',
+        },
+      ]),
+      new CollectionObjectMemoryStore([
+        {
+          uri: 'object-uri-1',
+          name: 'Object 1',
+          description: 'This is object 1',
+          image: null,
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+      ])
     )
       .withContext({
         alerts: [ alert ],
@@ -164,7 +236,31 @@ describe('AppMachine', () => {
     const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
     machine = interpret<AppContext>(
-      appMachine(solid)
+      appMachine(solid,
+        new MemoryStore<Collection>([
+          {
+            uri: 'collection-uri-1',
+            name: 'Collection 1',
+            description: 'This is collection 1',
+          },
+          {
+            uri: 'collection-uri-2',
+            name: 'Collection 2',
+            description: 'This is collection 2',
+          },
+        ]),
+        new CollectionObjectMemoryStore([
+          {
+            uri: 'object-uri-1',
+            name: 'Object 1',
+            description: 'This is object 1',
+            image: null,
+            subject: null,
+            type: null,
+            updated: 0,
+            collection: 'collection-uri-1',
+          },
+        ]))
         .withContext({
           alerts: [],
           session: { webId: 'lorem' },
@@ -193,7 +289,31 @@ describe('AppMachine', () => {
     solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
 
     machine = interpret<AppContext>(
-      appMachine(solid)
+      appMachine(solid,
+        new MemoryStore<Collection>([
+          {
+            uri: 'collection-uri-1',
+            name: 'Collection 1',
+            description: 'This is collection 1',
+          },
+          {
+            uri: 'collection-uri-2',
+            name: 'Collection 2',
+            description: 'This is collection 2',
+          },
+        ]),
+        new CollectionObjectMemoryStore([
+          {
+            uri: 'object-uri-1',
+            name: 'Object 1',
+            description: 'This is object 1',
+            image: null,
+            subject: null,
+            type: null,
+            updated: 0,
+            collection: 'collection-uri-1',
+          },
+        ]))
         .withContext({
           alerts: [],
         }),

@@ -251,6 +251,10 @@ export class AuthenticateRootComponent extends RxLitElement {
         .form-container > * {
           margin-bottom: var(--gap-large);
         }
+
+        svg {
+          stroke: var(--colors-foreground-light) !important;
+        }
         `,
     ];
 
