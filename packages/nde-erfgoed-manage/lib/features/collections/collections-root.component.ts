@@ -117,7 +117,7 @@ export class CollectionsRootComponent extends RxLitElement {
     return html`
     <p>${this.translator?.translate('nde.collections.root.title')}</p>
     ${ alerts }
-    <nde-collections .collections='${this.collections}' .logger='${this.logger}' .translator='${this.translator}'></nde-collections>
+    ${ this.collections?.map((collection) => collection.name)}
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_LOAD)}" ?disabled="${loading}">Load some</button>
     <button @click="${() => this.actor.send(CollectionsEvents.CLICKED_ADD)}" ?disabled="${loading}">Add one</button>
     <div></div>

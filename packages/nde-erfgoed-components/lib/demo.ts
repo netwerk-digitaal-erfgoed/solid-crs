@@ -1,7 +1,5 @@
 import { DemoFormComponent } from './demo/demo-form.component';
 import { FormElementComponent } from './forms/form-element.component';
-import { CollectionComponent } from './collections/collection.component';
-import { CollectionsComponent } from './collections/collections.component';
 import { AlertComponent } from './alerts/alert.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ObjectCardComponent } from './collections/object-card.component';
@@ -19,8 +17,6 @@ import { CollectionCardComponent } from './collections/collection-card.component
  * Register tags for components.
  */
 customElements.define('nde-card', CardComponent);
-customElements.define('nde-collection', CollectionComponent);
-customElements.define('nde-collections', CollectionsComponent);
 customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
 customElements.define('nde-demo-nde-card', DemoNDECardComponent);

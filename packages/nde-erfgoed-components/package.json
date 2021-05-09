@@ -19,7 +19,6 @@
     "start": "npm run start:watch",
     "start:watch": "vite --config vite.serve.config.ts",
     "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
-    "build:dev": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
@@ -73,10 +72,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 73.56,
-        "functions": 73.24,
-        "lines": 88.56,
-        "statements": 88.29
+        "branches": 79.01,
+        "functions": 85.96,
+        "lines": 93.6,
+        "statements": 93.16
       }
     },
     "coveragePathIgnorePatterns": [

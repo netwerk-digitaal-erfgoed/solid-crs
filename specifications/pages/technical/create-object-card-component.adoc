@@ -59,7 +59,6 @@ Create 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core'
 }
 ----
 
-
 ==== ObjectCardComponent 
 
 The finished component should look like this:
