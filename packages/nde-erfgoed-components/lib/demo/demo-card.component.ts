@@ -126,6 +126,9 @@ export class DemoNDECardComponent extends LitElement {
 
   }
 
+  /**
+   * The styles associated with the component.
+   */
   static get styles() {
 
     return [ css`

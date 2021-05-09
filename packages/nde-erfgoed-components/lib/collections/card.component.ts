@@ -1,4 +1,4 @@
-import { css, html, property, LitElement, unsafeCSS } from 'lit-element';
+import { css, html, LitElement, unsafeCSS } from 'lit-element';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**
@@ -6,6 +6,9 @@ import { Theme } from '@digita-ai/nde-erfgoed-theme';
  */
 export class CardComponent extends LitElement {
 
+  /**
+   * The styles associated with the component.
+   */
   static get styles() {
 
     return [
