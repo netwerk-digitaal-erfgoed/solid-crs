@@ -54,6 +54,7 @@ export class ContentHeaderComponent extends LitElement {
           fill: var(--colors-foreground-inverse);
         }
         .header {
+          padding: 0px var(--gap-large);
           background-color: var( --colors-background-light);
           color: var(--colors-foreground-normal);
           fill: var(--colors-foreground-normal);
@@ -64,7 +65,6 @@ export class ContentHeaderComponent extends LitElement {
           align-items: center;
         }
         .header .icon {
-          margin-left: var(--gap-large);
           font-size: 25px;
         }
         .header.inverse .icon ::slotted(svg) {
@@ -89,10 +89,12 @@ export class ContentHeaderComponent extends LitElement {
           height: var(--gap-normal);
         }
         .header .actions {
-          margin-right: var(--gap-large);
+          margin-right: var(--gap-normal);
           display: flex;
           flex-direction: row;
-          gap: var(--gap-normal);
+        }
+        .header .actions:last-child {
+          margin-right: 0px;
         }
         .header .actions ::slotted(*) {
           max-height: var(--gap-normal);
@@ -102,6 +104,7 @@ export class ContentHeaderComponent extends LitElement {
           fill: var(--colors-primary-light);
           color: var(--colors-primary-light);
           cursor: pointer;
+          margin-left: var(--gap-normal);
         }
         .header.inverse .actions ::slotted(*) {
           fill: var(--colors-foreground-inverse);
