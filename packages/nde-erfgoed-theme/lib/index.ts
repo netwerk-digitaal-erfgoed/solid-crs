@@ -6,7 +6,6 @@ export { default as Cross } from './icons/Cross.svg?raw';
 export { default as Search } from './icons/Search.svg?raw';
 export { default as Login } from './icons/Login.svg?raw';
 export { default as Logout } from './icons/Logout.svg?raw';
-export { default as NdeLogoInverse } from './icons/NdeLogoInverse.svg?raw';
 export { default as Save } from './icons/Save.svg?raw';
 export { default as Object } from './icons/Object.svg?raw';
 export { default as Trash } from './icons/Trash.svg?raw';
@@ -20,6 +19,9 @@ export { default as Dots } from './icons/Dots.svg?raw';
 export { default as Connect } from './icons/Connect.svg?raw';
 export { default as Edit } from './icons/Edit.svg?raw';
 export { default as Empty } from './icons/Empty.svg?raw';
+export { default as Logo } from './icons/Logo.svg?raw';
+export { default as Loading } from './icons/Loading.svg?raw';
+export { default as Picture } from './icons/Picture.svg?raw';
 
 /**
  * Export theme

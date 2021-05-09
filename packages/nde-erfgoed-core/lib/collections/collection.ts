@@ -8,4 +8,9 @@ export interface Collection extends Resource {
    * The name of the collection.
    */
   name: string;
+
+  /**
+   * The description of the collection.
+   */
+  description: string;
 }

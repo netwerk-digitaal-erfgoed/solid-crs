@@ -80,8 +80,8 @@ export class DemoFormComponent extends RxLitElement {
 
     this.actor = interpret(
       formMachine<Collection>(validator, submitter).withContext({
-        data: { uri: '', name: 'Test' },
-        original: { uri: '', name: 'Test' },
+        data: { uri: '', name: 'Test', description: 'Test desc' },
+        original: { uri: '', name: 'Test', description: 'Test desc' },
       }),
     );
 
