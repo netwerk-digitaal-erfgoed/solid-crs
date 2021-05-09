@@ -9,7 +9,7 @@ import { CollectionCardComponent } from '../lib/collections/collection-card.comp
 import { ObjectCardComponent } from '../lib/collections/object-card.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
 
-/** nde-collection-root
+/**
  * Register tags for components.
  */
 customElements.define('nde-alert', AlertComponent);

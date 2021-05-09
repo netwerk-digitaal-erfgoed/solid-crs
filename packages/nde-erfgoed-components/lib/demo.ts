@@ -14,7 +14,7 @@ import { CardComponent } from './collections/card.component';
 import { CollectionCardComponent } from './collections/collection-card.component';
 
 /**
- * Register tags for conde-collection-root
+ * Register tags for components.
  */
 customElements.define('nde-card', CardComponent);
 customElements.define('nde-object-card', ObjectCardComponent);

@@ -1,4 +1,3 @@
-import { Observable, of } from 'rxjs';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryStore } from '../stores/memory-store';
 import { Collection } from './collection';
@@ -23,7 +22,7 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
    *
    * @param collection The collection for which to retrieve objects.
    */
-  getObjectsForCollection(collection: Collection): Observable<CollectionObject[]> {
+  async getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
 
     if (!collection) {
 
@@ -37,7 +36,7 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
 
     }
 
-    return of(this.resources.filter((resource) => resource.collection === collection.uri));
+    return this.resources.filter((resource) => resource.collection === collection.uri);
 
   }
 
