@@ -127,7 +127,7 @@ export const appMachine = (
               'loading': {
               // Load collections first
                 invoke: {
-                  src: () => collectionStore.all().toPromise(),
+                  src: () => collectionStore.all(),
                   onDone: {
                     actions: [
                       setCollections,

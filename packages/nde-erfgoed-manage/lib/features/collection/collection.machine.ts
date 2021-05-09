@@ -52,26 +52,41 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
       [AppEvents.SELECTED_COLLECTION]: CollectionStates.LOADING,
     },
     states: {
-      [CollectionStates.IDLE]: {
-
-      },
+      /**
+       * Loads the objects associated with the current collection.
+       */
       [CollectionStates.LOADING]: {
         invoke: {
-          src: (context) => objectStore.getObjectsForCollection(context.collection).toPromise(),
+          src: (context) => objectStore.getObjectsForCollection(context.collection),
           onDone: {
+            /**
+             * When done, assign objects to the context and transition to idle.
+             */
             actions: assign({
               objects: (context, event) => event.data,
             }),
             target: CollectionStates.IDLE,
           },
           onError: {
+            /**
+             * Notify the parent machine when something goes wrong.
+             */
             actions: sendParent(AppEvents.ERROR),
           },
         },
       },
+      /**
+       * Objects for the current collection are loaded.
+       */
+      [CollectionStates.IDLE]: {
+
+      },
+      /**
+       * Saving changesto the collection's metadata.
+       */
       [CollectionStates.SAVING]: {
         invoke: {
-          src: () => of('store.save').toPromise(),
+          src: (context) => collectionStore.save(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
           },
@@ -80,14 +95,20 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
           },
         },
       },
+      /**
+       * Editing the collection metadata.
+       */
       [CollectionStates.EDITING]: {
         on: {
           [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
         },
       },
+      /**
+       * Deleting the current collection.
+       */
       [CollectionStates.DELETING]: {
         invoke: {
-          src: () => of('store.delete').toPromise(),
+          src: (context) => collectionStore.delete(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
           },

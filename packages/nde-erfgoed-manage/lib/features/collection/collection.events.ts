@@ -16,15 +16,31 @@ export enum CollectionEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
+
+/**
+ * Fired when the user clicks the delete collection button.
+ */
 export interface ClickedDeleteEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_DELETE;
 }
+
+/**
+ * Fired when the user clicks the edit button.
+ */
 export interface ClickedEditEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_EDIT;
 }
+
+/**
+ * Fired when the user clicks the cancel button when editing.
+ */
 export interface CancelledEditEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CANCELLED_EDIT;
 }
+
+/**
+ * Fired when the user clicks the add object button.
+ */
 export interface ClickedCreateObjectEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_CREATE_OBJECT;
 }
