@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -73,9 +73,7 @@ export class CollectionRootComponent extends RxLitElement {
 
       }
 
-      this.subscribe('state', from(this.actor).pipe(
-        tap((state) => this.logger.debug(CollectionRootComponent.name, 'CollectionState change:', state)),
-      ));
+      this.subscribe('state', from(this.actor));
 
       this.subscribe('collection', from(this.actor)
         .pipe(map((state) => state.context?.collection)));
@@ -96,13 +94,13 @@ export class CollectionRootComponent extends RxLitElement {
 
     if (!event || !event.detail) {
 
-      throw new ArgumentError('Argument event || event.detail should be set.', event && event.detail);
+      throw new ArgumentError('Argument event || event.detail should be set.', event);
 
     }
 
     if (!this.actor || !this.actor.parent) {
 
-      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor || !this.actor.parent);
+      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor);
 
     }
 
