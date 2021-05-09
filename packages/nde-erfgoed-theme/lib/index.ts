@@ -14,7 +14,6 @@ export { default as Identity } from './icons/Identity.svg?raw';
 export { default as Plus } from './icons/Plus.svg?raw';
 export { default as Collection } from './icons/Collection.svg?raw';
 export { default as Image } from './icons/Image.svg?raw';
-export { default as Loading } from './icons/Loading.svg?raw';
 export { default as Dots } from './icons/Dots.svg?raw';
 export { default as Connect } from './icons/Connect.svg?raw';
 export { default as Edit } from './icons/Edit.svg?raw';

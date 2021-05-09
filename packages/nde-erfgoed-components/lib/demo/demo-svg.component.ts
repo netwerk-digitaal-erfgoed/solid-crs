@@ -49,9 +49,10 @@ export class DemoSVGComponent extends LitElement {
         flex-direction: row;
         align-items: center;
       }
-      div svg{
-        margin: 10px;
-        height: 30px;
+      div svg {
+        margin-right: var(--gap-normal);
+        height: var(--gap-large);
+        fill: var(--colors-foreground-normal);
       }
       `,
     ];
