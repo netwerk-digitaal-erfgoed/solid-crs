@@ -12,7 +12,7 @@ export class MemoryStore<T extends Resource> implements Store<T> {
    *
    * @param resources An array of resources to initially populate the store.
    */
-  constructor(private resources: T[]) { }
+  constructor(protected resources: T[]) { }
 
   /**
    * Returns all resources stored in-memory.
