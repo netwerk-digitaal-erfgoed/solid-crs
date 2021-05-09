@@ -63,35 +63,38 @@ export class ContentHeaderComponent extends LitElement {
           flex-direction: row;
           align-items: center;
         }
-        .icon {
+        .header .icon {
           margin-left: var(--gap-large);
           font-size: 25px;
         }
-        .icon ::slotted(*) {
+        .header.inverse .icon ::slotted(svg) {
+          fill: var(--colors-foreground-inverse);
+        }
+        .header .icon ::slotted(*) {
           height: 25px;
           width: 25px;
         }
-        .content {
+        .header .content {
           flex: 1 0;
           margin: 0 var(--gap-normal);
         }
-        .content slot[name="title"]::slotted(*) {
+        .header .content slot[name="title"]::slotted(*) {
           font-weight: var(--font-weight-bold);
           font-size: var(--font-size-normal);
           height: var(--gap-normal);
         }
-        .content slot[name="subtitle"]::slotted(*) {
+        .header .content slot[name="subtitle"]::slotted(*) {
           margin-top: var(--gap-tiny);
           font-size: var(--font-size-small);
           height: var(--gap-normal);
         }
-        .actions {
+        .header .actions {
           margin-right: var(--gap-large);
           display: flex;
           flex-direction: row;
           gap: var(--gap-normal);
         }
-        .actions ::slotted(*) {
+        .header .actions ::slotted(*) {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
           height: var(--gap-normal);

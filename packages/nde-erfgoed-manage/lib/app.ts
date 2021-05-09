@@ -1,4 +1,4 @@
-import { AlertComponent, FormElementComponent, SidebarComponent } from '@digita-ai/nde-erfgoed-components';
+import { AlertComponent, CardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, SidebarListComponent, SidebarListItemComponent } from '@digita-ai/nde-erfgoed-components';
 import { inspect } from '@xstate/inspect';
 import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
@@ -23,3 +23,8 @@ customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-form-element', FormElementComponent);
+customElements.define('nde-content-header', ContentHeaderComponent);
+customElements.define('nde-card', CardComponent);
+customElements.define('nde-object-card', ObjectCardComponent);
+customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
+customElements.define('nde-sidebar-list', SidebarListComponent);
