@@ -2,6 +2,7 @@
  * Exports the modules of the package.
  */
 export * from './collections/collection';
+export * from './collections/collection-object';
 export * from './errors/argument-error';
 export * from './errors/base-error';
 export * from './errors/not-implemented-error';
@@ -15,3 +16,4 @@ export * from './stores/memory-store';
 export * from './stores/resource';
 export * from './stores/store';
 export * from './utils/functions';
+export * from './utils/date-parser';

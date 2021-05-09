@@ -22,8 +22,8 @@ describe('FormElementComponent', () => {
         ]),
       )
         .withContext({
-          data: { uri: '', name: 'Test' },
-          original: { uri: '', name: 'Test' },
+          data: { uri: '', name: 'Test', description: 'description' },
+          original: { uri: '', name: 'Test', description: 'description' },
           validation: [],
         }),
     );
@@ -32,7 +32,7 @@ describe('FormElementComponent', () => {
 
     component.actor = machine;
     component.field = 'name';
-    component.data = { uri: '', name: 'Test' };
+    component.data = { uri: '', name: 'Test', description: 'description' };
 
     const label = window.document.createElement('label');
     label.innerHTML = 'Foo';

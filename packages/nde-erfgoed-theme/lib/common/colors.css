@@ -21,6 +21,9 @@
   --colors-background-normal: #e8e9ee;
   --colors-background-dark: #e8e9ee;
 
+  /** Accent colors */
+  --colors-accent-primary: #fa5200;
+
   /**
         Status colors
     */
