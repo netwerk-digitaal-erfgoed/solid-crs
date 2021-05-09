@@ -20,6 +20,16 @@
         "value": "Collecties"
     },
     {
+        "key": "nde.collections.card.name-unavailable",
+        "locale": "nl-NL",
+        "value": "Naam onbekend"
+    },
+    {
+        "key": "nde.collections.card.subject-unavailable",
+        "locale": "nl-NL",
+        "value": "Onderwerp onbekend"
+    },
+    {
         "key": "nde.features.authenticate.error.invalid-webid.no-webid",
         "locale": "nl-NL",
         "value": "Gelieve een WebID in te voeren."
@@ -63,5 +73,58 @@
         "key": "nde.features.authenticate.pages.login.create-webid",
         "locale": "nl-NL",
         "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
+    },
+
+
+
+    {
+        "key": "nde.common.date.just-now",
+        "locale": "nl-NL",
+        "value": "enkele ogenblikken geleden"
+    },
+    {
+        "key": "nde.common.date.minutes-ago",
+        "locale": "nl-NL",
+        "value": "minuten geleden"
+    },
+    {
+        "key": "nde.common.date.hour-ago",
+        "locale": "nl-NL",
+        "value": "uur geleden"
+    },
+    {
+        "key": "nde.common.date.hours-ago",
+        "locale": "nl-NL",
+        "value": "uur geleden"
+    },
+    {
+        "key": "nde.common.date.day-ago",
+        "locale": "nl-NL",
+        "value": "dag geleden"
+    },
+    {
+        "key": "nde.common.date.days-ago",
+        "locale": "nl-NL",
+        "value": "dagen geleden"
+    },
+    {
+        "key": "nde.common.date.month-ago",
+        "locale": "nl-NL",
+        "value": "maand geleden"
+    },
+    {
+        "key": "nde.common.date.months-ago",
+        "locale": "nl-NL",
+        "value": "maanden geleden"
+    },
+    {
+        "key": "nde.common.date.year-ago",
+        "locale": "nl-NL",
+        "value": "jaar geleden"
+    },
+    {
+        "key": "nde.common.date.years-ago",
+        "locale": "nl-NL",
+        "value": "jaar geleden"
     }
 ]

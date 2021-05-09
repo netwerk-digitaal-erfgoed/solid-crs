@@ -227,6 +227,11 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
+
+        .loading svg .loadCircle {
+          stroke: var(--colors-primary-normal);
+        }
+
         .no-border, .no-border ::slotted(*) {
           border: none !important;
         }

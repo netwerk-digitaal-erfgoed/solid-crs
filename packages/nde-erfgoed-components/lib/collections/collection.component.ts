@@ -52,7 +52,7 @@ export class CollectionComponent extends LitElement implements Component {
       .then((response) => response.text())
       .then(() => {
 
-        this.collection = { uri:'test', name: 'Test' };
+        this.collection = { uri:'test', name: 'Test', description: 'Test desc' };
 
       });
 

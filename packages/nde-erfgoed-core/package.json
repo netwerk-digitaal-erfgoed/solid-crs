@@ -49,15 +49,16 @@
     "url": "https://github.com/digita-ai/nde-erfgoedinstellingen/issues"
   },
   "dependencies": {
+    "moment": "^2.29.1",
     "rxjs": "^6.6.7"
   },
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 69.64,
-        "functions": 68.42,
-        "lines": 72.38,
-        "statements": 71.96
+        "branches": 77.63,
+        "functions": 70,
+        "lines": 77.34,
+        "statements": 77.1
       }
     },
     "coveragePathIgnorePatterns": [
