@@ -6,9 +6,9 @@ import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.compo
 import { SidebarListComponent } from '../lib/sidebar/sidebar-list.component';
 import { DemoSidebarListComponent } from '../lib/demo/demo-sidebar-list.component';
 import { ContentHeaderComponent } from '../lib/header/content-header.component';
-import { NDECard } from '../lib/collections/nde-card.component';
+import { CardComponent } from '../lib/collections/card.component';
 import { CollectionCardComponent } from '../lib/collections/collection-card.component';
-import { CollectionObjectCardComponent } from '../lib/collections/collection-object-card.component';
+import { ObjectCardComponent } from '../lib/collections/object-card.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
 
 /**
@@ -23,6 +23,6 @@ customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-demo-sidebar-list', DemoSidebarListComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
-customElements.define('nde-collection-object-card', CollectionObjectCardComponent);
+customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
-customElements.define('nde-card', NDECard);
+customElements.define('nde-card', CardComponent);

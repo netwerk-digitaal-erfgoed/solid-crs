@@ -5,7 +5,7 @@ import { Theme } from '@digita-ai/nde-erfgoed-theme';
 /**
  * A component which shows the details of a single collection object.
  */
-export class CollectionObjectCardComponent extends LitElement {
+export class ObjectCardComponent extends LitElement {
 
   /** The object which will be rendered by the component */
   @property({ type: Object })
@@ -58,4 +58,4 @@ export class CollectionObjectCardComponent extends LitElement {
 
 }
 
-export default CollectionObjectCardComponent;
+export default ObjectCardComponent;

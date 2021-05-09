@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { ArgumentError } from '../errors/argument-error';
 import { getFormattedTimeAgo } from './date-parser';
 
 describe('getFormattedTimeAgo()', () => {
@@ -11,6 +12,12 @@ describe('getFormattedTimeAgo()', () => {
 
     const result = getFormattedTimeAgo(+moment(new Date()), mockedTranslator);
     expect(result).toBe('just-now');
+
+  });
+
+  it('should throw error when no translator is given', () => {
+
+    expect(() => getFormattedTimeAgo(+moment(new Date()), null)).toThrow(ArgumentError);
 
   });
 

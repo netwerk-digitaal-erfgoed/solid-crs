@@ -1,5 +1,5 @@
 import { css, html, property, LitElement, unsafeCSS } from 'lit-element';
-import { Collection, getFormattedTimeAgo, Translator } from '@digita-ai/nde-erfgoed-core';
+import { Collection, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**

@@ -97,18 +97,18 @@ export class DemoNDECardComponent extends LitElement {
     return html`
       <p>Collection Objects</p>
       <div class='grid'>
-        <nde-collection-object-card .translator=${translator} .object=${obj1}
-        ></nde-collection-object-card>
-        <nde-collection-object-card .translator=${translator} .object=${obj2}
-        ></nde-collection-object-card>
-        <nde-collection-object-card .translator=${translator} .object=${obj3}
-        ></nde-collection-object-card>
-        <nde-collection-object-card .translator=${translator} .object=${obj4}
-        ></nde-collection-object-card>
-        <nde-collection-object-card .translator=${translator} .object=${obj1}
-        ></nde-collection-object-card>
-        <nde-collection-object-card .translator=${translator} .object=${obj5}
-        ></nde-collection-object-card>
+        <nde-object-card .translator=${translator} .object=${obj1}
+        ></nde-object-card>
+        <nde-object-card .translator=${translator} .object=${obj2}
+        ></nde-object-card>
+        <nde-object-card .translator=${translator} .object=${obj3}
+        ></nde-object-card>
+        <nde-object-card .translator=${translator} .object=${obj4}
+        ></nde-object-card>
+        <nde-object-card .translator=${translator} .object=${obj1}
+        ></nde-object-card>
+        <nde-object-card .translator=${translator} .object=${obj5}
+        ></nde-object-card>
       </div>
 
       <p>Collections</p>
@@ -134,7 +134,7 @@ export class DemoNDECardComponent extends LitElement {
         grid-template-columns: repeat(3, 1fr);
         grid-gap: var(--gap-normal);
       }
-      nde-collection-object-card, nde-collection-card {
+      nde-object-card, nde-collection-card {
         height: 227px;
       }
     ` ];

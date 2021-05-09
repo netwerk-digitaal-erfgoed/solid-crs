@@ -1,10 +1,10 @@
 import { CollectionObject, MemoryTranslator } from '@digita-ai/nde-erfgoed-core';
-import { CollectionObjectCardComponent } from './collection-object-card.component';
+import { ObjectCardComponent } from './object-card.component';
 
-describe('CollectionObjectCardComponent', () => {
+describe('ObjectCardComponent', () => {
 
-  let component: CollectionObjectCardComponent;
-  const tag = 'nde-collection-object-card';
+  let component: ObjectCardComponent;
+  const tag = 'nde-object-card';
 
   const testObject = {
     uri: 'test uri',
@@ -17,7 +17,7 @@ describe('CollectionObjectCardComponent', () => {
 
   beforeEach(() => {
 
-    component = window.document.createElement('nde-collection-object-card') as CollectionObjectCardComponent;
+    component = window.document.createElement('nde-object-card') as ObjectCardComponent;
 
     component.translator = new MemoryTranslator([
       {

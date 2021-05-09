@@ -1,13 +1,32 @@
 import moment from 'moment';
+import { ArgumentError } from '../errors/argument-error';
 import { Translator } from '../i8n/translator';
 
+/**
+ * Formats a label which describes the time between the given timestamp and now.
+ *
+ * @param timestamp The unix time stamp to format.
+ * @param translator A translator, which is used to translate the formatted time ago label.
+ * @returns A formatted label of the time ago.
+ */
 export const getFormattedTimeAgo = (timestamp: number, translator: Translator): string => {
 
+  if (!translator) {
+
+    throw new ArgumentError('Argument translator should be set.', translator);
+
+  }
+
+  // Gets the current date and time.
   const now = moment(new Date());
-  const duration = moment.duration(now.diff(timestamp));
-  const minutes = Math.round(duration.asMinutes());
+
+  // Difference between now and the given timestamp.
+  const difference = moment.duration(now.diff(timestamp));
+  const minutes = Math.round(difference.asMinutes());
 
   if (minutes < 60) {
+
+    // Less than an hour ago.
 
     if (minutes < 2) {
 
@@ -21,9 +40,13 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
 
   } else {
 
-    const hours = Math.round(duration.asHours());
+    // More than an hour ago.
+
+    const hours = Math.round(difference.asHours());
 
     if (hours < 24) {
+
+      // Less than a day ago.
 
       return `${hours} ${hours === 1
         ? translator.translate('nde.common.date.hour-ago')
@@ -31,9 +54,11 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
 
     } else {
 
-      const days = Math.round(duration.asDays());
+      const days = Math.round(difference.asDays());
 
       if (days < 31) {
+
+        // Less than a month ago.
 
         return `${days} ${days === 1
           ? translator.translate('nde.common.date.day-ago')
@@ -41,9 +66,11 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
 
       } else {
 
-        const months = Math.round(duration.asMonths());
+        const months = Math.round(difference.asMonths());
 
         if (months < 12) {
+
+          // Less than a year ago.
 
           return `${months} ${months === 1
             ? translator.translate('nde.common.date.month-ago')
@@ -51,7 +78,9 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
 
         } else {
 
-          const years = Math.round(duration.asYears());
+          // More than a year ago.
+
+          const years = Math.round(difference.asYears());
 
           return `${years} ${years === 1
             ? translator.translate('nde.common.date.year-ago')
