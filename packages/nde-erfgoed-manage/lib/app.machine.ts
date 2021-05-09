@@ -146,7 +146,6 @@ export const appMachine = (
                       collection:
                     (context: AppContext, event: SelectedCollectionEvent) => event.collection,
                     },
-                    // onDone:  `${AppActors.APP_MACHINE}.${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
                     onError: {
                       actions: send({ type: AppEvents.ERROR }),
                     },
