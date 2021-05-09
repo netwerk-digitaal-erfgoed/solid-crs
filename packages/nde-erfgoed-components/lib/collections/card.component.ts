@@ -1,14 +1,10 @@
 import { css, html, property, LitElement, unsafeCSS } from 'lit-element';
-import { Theme, Picture } from '@digita-ai/nde-erfgoed-theme';
-import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { Theme } from '@digita-ai/nde-erfgoed-theme';
 
 /**
  * A card component
  */
 export class CardComponent extends LitElement {
-
-  @property({})
-  public image: string = undefined;
 
   static get styles() {
 
@@ -50,12 +46,12 @@ export class CardComponent extends LitElement {
           justify-content: center;
           background-color: var(--colors-foreground-inverse);
         }
-        .card .image img {
+        .card .image slot[name="image"]::slotted(*) {
           height: 135px;
           width: 100%;
           object-fit: cover;
         }
-        .card .image svg {
+        .card .image slot[name="image"]::slotted(*) {
           fill: var(--colors-foreground-light);
         }
       `,
@@ -68,7 +64,7 @@ export class CardComponent extends LitElement {
     return html`
       <div class='card'>
         <div class="image">
-          ${this.image && this.image !== 'undefined' ? html`<img src='${this.image}' alt='card image'/>` : unsafeSVG(Picture)}
+          <slot name='image'></slot>
         </div>
 
         <div class='content'>

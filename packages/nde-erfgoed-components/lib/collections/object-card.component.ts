@@ -1,6 +1,7 @@
 import { css, html, property, LitElement, unsafeCSS } from 'lit-element';
 import { CollectionObject, getFormattedTimeAgo, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Picture, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 /**
  * A component which shows the details of a single collection object.
@@ -24,6 +25,15 @@ export class ObjectCardComponent extends LitElement {
         .time-ago {
           color: var(--colors-foreground-light);
         }
+        div[slot="image"] {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+        div[slot="image"] svg {
+          fill: var(--colors-foreground-light);
+        }
       `,
     ];
 
@@ -39,7 +49,8 @@ export class ObjectCardComponent extends LitElement {
     const timeAgo = getFormattedTimeAgo(this.object.updated, this.translator);
 
     return html`
-      <nde-card image='${this.object.image}'>
+      <nde-card>
+        ${this.object.image && this.object.image !== 'undefined' ? html`<img slot="image" src="${this.object.image}" alt="card image"/>` : html`<div slot="image">${unsafeSVG(Picture)}</div>`}
         <span slot='title'>
           ${this.object.name ?? this.translator.translate('nde.collections.card.name-unavailable')}
         </span>
