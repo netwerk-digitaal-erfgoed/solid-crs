@@ -178,7 +178,6 @@ export class AppRootComponent extends RxLitElement {
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">Lorem Ipsum</div>
-        <div slot="subtitle">Wouter Janssens</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>
