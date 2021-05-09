@@ -5,7 +5,7 @@ import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanl
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, NdeLogoInverse, Theme, Loading } from '@digita-ai/nde-erfgoed-theme';
+import { Login, Logo, Theme, Loading } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { AppEvents } from '../../app.events';
@@ -160,7 +160,7 @@ export class AuthenticateRootComponent extends RxLitElement {
 
     return html`
       <div class="title-container">
-        ${ unsafeSVG(NdeLogoInverse) }
+        ${ unsafeSVG(Logo) }
         <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
       ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`

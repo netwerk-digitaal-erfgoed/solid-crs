@@ -26,7 +26,7 @@ export abstract class Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  info(typeName: string, message: string, data?: unknown) {
+  info(typeName: string, message: string, data?: unknown): void {
 
     if (!typeName) {
 
@@ -51,7 +51,7 @@ export abstract class Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  debug(typeName: string, message: string, data?: unknown) {
+  debug(typeName: string, message: string, data?: unknown): void {
 
     if (!typeName) {
 
@@ -76,7 +76,7 @@ export abstract class Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  warn(typeName: string, message: string, data?: unknown) {
+  warn(typeName: string, message: string, data?: unknown): void {
 
     if (!typeName) {
 
@@ -102,7 +102,7 @@ export abstract class Logger {
    * @param error The error that was thrown
    * @param caught The error that was caught
    */
-  error(typeName: string, message: string, error?: Error | unknown, caught?: unknown) {
+  error(typeName: string, message: string, error?: Error | unknown, caught?: unknown): void {
 
     if (!typeName) {
 

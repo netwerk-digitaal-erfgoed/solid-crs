@@ -1,6 +1,6 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, MemoryStore } from '@digita-ai/nde-erfgoed-core';
-import { createMachine, DoneInvokeEvent } from 'xstate';
+import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
@@ -12,10 +12,12 @@ const collectionStore = new MemoryStore<Collection>([
   {
     uri: 'collection-uri-1',
     name: 'Collection 1',
+    description: 'This is collection 1',
   },
   {
     uri: 'collection-uri-2',
     name: 'Collection 2',
+    description: 'This is collection 2',
   },
 ]);
 

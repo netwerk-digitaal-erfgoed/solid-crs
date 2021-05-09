@@ -59,14 +59,13 @@ Create 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core'
 }
 ----
 
-
-==== CollectionObjectCardComponent 
+==== ObjectCardComponent 
 
 The finished component should look like this:
 
-image::../../assets/collections/collection-object-component.svg[CollectionObjectCardComponent]
+image::../../assets/collections/collection-object-component.svg[ObjectCardComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/collection-object/collection-object-card.component.ts', with tag `<nde-collection-object-card>`
+Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/collection-object/object-card.component.ts', with tag `<nde-object-card>`
 
 The component should feature an input property for a `CollectionObject`. The `name` and `description` should go in the title and subtitle of the component. The `image` is the top part of the component and should fit the whole area. 
 

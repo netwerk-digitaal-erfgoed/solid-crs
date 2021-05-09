@@ -1,7 +1,7 @@
 {
   "name": "@digita-ai/nde-erfgoed-manage",
   "version": "0.1.0",
-  "description": "Collection of Semantic Components for the NDE-project.",
+  "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/nde-erfgoed-manage.umd.js",
   "types": "./dist/index.d.ts",
@@ -16,10 +16,9 @@
     "dist"
   ],
   "scripts": {
-    "start": "npm run start:watch",
-    "start:watch": "vite --config vite.serve.config.ts",
-    "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
-    "build:dev": "npm run build",
+    "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
+    "start:watch": "vite --config vite.config.ts",
+    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
@@ -45,6 +44,7 @@
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.44",
     "eslint": "^7.16.0",
+    "http-server": "^0.12.3",
     "jest": "26.6.3",
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-environment-jsdom-sixteen": "^1.0.3",
@@ -78,10 +78,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 61.9,
+        "branches": 62.5,
         "functions": 81.11,
-        "lines": 79.81,
-        "statements": 80.53
+        "lines": 85.08,
+        "statements": 85.49
       }
     },
     "automock": false,
@@ -89,7 +89,8 @@
       "<rootDir>/dist/",
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
-      "<rootDir>/lib/index.ts"
+      "<rootDir>/lib/index.ts",
+      "<rootDir>/lib/app.ts"
     ],
     "globals": {
       "ts-jest": {

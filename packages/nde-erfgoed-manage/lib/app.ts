@@ -1,4 +1,4 @@
-import { AlertComponent, CollectionsComponent, CollectionComponent, FormElementComponent, SidebarComponent } from '@digita-ai/nde-erfgoed-components';
+import { AlertComponent, FormElementComponent, SidebarComponent } from '@digita-ai/nde-erfgoed-components';
 import { inspect } from '@xstate/inspect';
 import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
@@ -18,7 +18,6 @@ inspect({
  * Register tags for components.
  */
 customElements.define('nde-sidebar', SidebarComponent);
-customElements.define('nde-collection', CollectionsComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);

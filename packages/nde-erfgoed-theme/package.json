@@ -17,7 +17,6 @@
   ],
   "scripts": {
     "build": "rimraf ./dist && vite build && tsc",
-    "build:dev": "npm run build",
     "lint": "stylelint \"lib/**/*.css\"",
     "lint:fix": "stylelint \"lib/**/*.css\" --fix",
     "lint:staged": "lint-staged"
