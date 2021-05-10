@@ -65,7 +65,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     super.updated(changed);
 
-    if(changed.has('actor') && this.actor){
+    if(changed && changed.has('actor') && this.actor){
 
       if(this.actor.parent){
 
