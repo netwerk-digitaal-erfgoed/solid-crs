@@ -3,7 +3,7 @@ import { formMachine,
   FormValidatorResult,
   FormContext,
   FormEvents, State } from '@digita-ai/nde-erfgoed-components';
-import { assign, createMachine, send, sendParent } from 'xstate';
+import { assign, createMachine, send, sendParent, StateMachine } from 'xstate';
 import {
   Collection,
   CollectionObject,
@@ -123,10 +123,11 @@ export const collectionMachine = (
            */
           {
             id: FormActors.FORM_MACHINE,
-            src: (context) => formMachine<{ name: string; description: string }>(
+            src: formMachine<{ name: string; description: string }>(
               (_: any): Observable<FormValidatorResult[]> => of([]),
               async (c: FormContext<{ name: string; description: string }>) => c.data
-            ).withContext({
+            ),
+            data: (context) => ({
               data: { name: context.collection.name, description: context.collection.description },
               original: { name: context.collection.name, description: context.collection.description },
             }),
