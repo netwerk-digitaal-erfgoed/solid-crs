@@ -44,7 +44,7 @@ Some new events should be added to the `AppEvents`:
 |======================================
 | Event 	| Payload
 
-| `AppEvents.SELECTED_COLLECTION`
+| `CollectionEvents.SELECTED_COLLECTION`
 | `collection: Collection`
 
 | `AppEvents.CLICKED_CREATE_COLLECTION`

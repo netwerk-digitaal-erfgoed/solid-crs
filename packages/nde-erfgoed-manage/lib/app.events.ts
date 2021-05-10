@@ -4,6 +4,7 @@ import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
+import { SelectedCollectionEvent } from 'features/collection/collection.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -15,7 +16,6 @@ export enum AppEvents {
   LOGGED_IN = '[AppEvent: Logged in]',
   LOGGING_OUT = '[AppEvent: Logging out]',
   LOGGED_OUT = '[AppEvent: Logged out]',
-  SELECTED_COLLECTION = '[AppEvent: Selected collection]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
 }
@@ -69,14 +69,6 @@ export interface LoggedInEvent extends Event<AppEvents> {
 export interface CollectionsLoadedEvent extends Event<AppEvents> {
   type: AppEvents.COLLECTIONS_LOADED;
   collections: Collection[];
-}
-
-/**
- * An event which is dispatched when the collections were successfully retrieved
- */
-export interface SelectedCollectionEvent extends Event<AppEvents> {
-  type: AppEvents.SELECTED_COLLECTION;
-  collection: Collection;
 }
 
 /**

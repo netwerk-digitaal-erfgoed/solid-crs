@@ -3,7 +3,7 @@ import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, MemoryStore, Col
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
 import { AppAuthenticateStates, AppContext, appMachine, AppRootStates } from './app.machine';
-import { AppRootComponent } from './app.root';
+import { AppRootComponent } from './app-root.component';
 import { SolidMockService } from './common/solid/solid-mock.service';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
