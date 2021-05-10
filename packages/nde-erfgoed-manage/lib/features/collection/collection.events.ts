@@ -1,6 +1,7 @@
 import { Alert, Event, FormSubmittedEvent } from '@digita-ai/nde-erfgoed-components';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { sendParent } from 'xstate';
-import { AppEvents, SelectedCollectionEvent } from '../../app.events';
+import { AppEvents } from '../../app.events';
 
 /**
  * Event references for the collection component, with readable log format.
@@ -54,15 +55,23 @@ export interface ClickedCreateObjectEvent extends Event<CollectionEvents> {
 }
 
 /**
+ * An event which is dispatched when the collections were successfully retrieved
+ */
+export interface SelectedCollectionEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.SELECTED_COLLECTION;
+  collection: Collection;
+}
+
+/**
  * Actions for the collections machine.
  */
 export type CollectionEvent =
-  ClickedDeleteEvent
+  SelectedCollectionEvent
+  | ClickedDeleteEvent
   | ClickedEditEvent
   | ClickedSaveEvent
   | CancelledEditEvent
   | ClickedCreateObjectEvent
-  | SelectedCollectionEvent
   | FormSubmittedEvent;
 
 /**
