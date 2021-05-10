@@ -4,7 +4,7 @@ import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
-import { SelectedCollectionEvent } from 'features/collection/collection.events';
+import { ClickedDeleteEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -89,6 +89,7 @@ export type AppEvent =
   | DismissAlertEvent
   | AddAlertEvent
   | SelectedCollectionEvent
+  | ClickedDeleteEvent
   | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent;
 
