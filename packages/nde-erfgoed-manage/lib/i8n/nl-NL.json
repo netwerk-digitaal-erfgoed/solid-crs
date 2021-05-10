@@ -74,9 +74,36 @@
         "locale": "nl-NL",
         "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
     },
-
-
-
+    {
+        "key": "nde.features.collections.alerts.created-collection",
+        "locale": "nl-NL",
+        "value": "Collectie aangemaakt"
+    },
+    {
+        "key": "nde.features.collections.root.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.features.collections.card.name-unavailable",
+        "locale": "nl-NL",
+        "value": "Naam onbekend"
+    },
+    {
+        "key": "nde.features.collections.card.subject-unavailable",
+        "locale": "nl-NL",
+        "value": "Onderwerp onbekend"
+    },
+    {
+        "key": "nde.features.collections.new-collection-name",
+        "locale": "nl-NL",
+        "value": "Nieuwe collectie"
+    },
+    {
+        "key": "nde.features.collections.new-collection-description",
+        "locale": "nl-NL",
+        "value": "Beschrijving van deze collectie"
+    },
     {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",

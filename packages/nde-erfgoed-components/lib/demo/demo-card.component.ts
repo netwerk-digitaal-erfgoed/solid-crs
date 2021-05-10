@@ -58,12 +58,12 @@ export class DemoNDECardComponent extends LitElement {
           value: 'jaar geleden',
         },
         {
-          key: 'nde.collections.card.name-unavailable',
+          key: 'nde.features.collections.card.name-unavailable',
           locale: 'nl-NL',
           value: 'Naam onbekend',
         },
         {
-          key: 'nde.collections.card.subject-unavailable',
+          key: 'nde.features.collections.card.subject-unavailable',
           locale: 'nl-NL',
           value: 'Onderwerp onbekend',
         },

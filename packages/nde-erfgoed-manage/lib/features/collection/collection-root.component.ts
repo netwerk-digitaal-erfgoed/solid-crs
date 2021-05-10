@@ -121,7 +121,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     const loading = this.state||false;
 
-    return loading ? html`
+    return loading && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       <div slot="title">${this.collection.name}</div>

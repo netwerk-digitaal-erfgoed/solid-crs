@@ -2,7 +2,7 @@ import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
+import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -44,6 +44,7 @@ export enum AppActors {
 export enum AppRootStates {
   AUTHENTICATE = '[AppState: Authenticate]',
   FEATURE  = '[AppState: Features]',
+  DATA  = '[AppState: Data]',
 }
 
 /**
@@ -52,6 +53,15 @@ export enum AppRootStates {
 export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
+}
+
+/**
+ * State indicates if a collection is being created.
+ */
+export enum AppDataStates {
+  IDLE  = '[AppCreationStates: Idle]',
+  REFRESHING  = '[AppCreationStates: Refreshing]',
+  CREATING = '[AppCreationStates: Creating]',
 }
 
 /**
@@ -74,11 +84,17 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
 export const appMachine = (
   solid: SolidService,
   collectionStore: Store<Collection>,
-  objectStore: CollectionObjectStore
+  objectStore: CollectionObjectStore,
+  template: Collection,
 ) =>
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
+    on: {
+      [CollectionEvents.SELECTED_COLLECTION]: {
+        actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+      },
+    },
     states: {
     /**
      * Determines which feature is currently active.
@@ -101,31 +117,16 @@ export const appMachine = (
               })),
             ],
           },
-          [AppEvents.LOGGED_IN]: {
-            target: [
-              `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTION}`,
-              `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.AUTHENTICATED}`,
-            ],
-            actions: setSession,
-          },
-          [AppEvents.LOGGING_OUT]: {
-            target: [
-              `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATING}`,
-            ],
-            actions: removeSession,
-          },
         },
         states: {
         /**
          * The collection feature is shown.
          */
           [AppFeatureStates.COLLECTION]: {
-            on: {
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
-              },
-            },
             // Invoke the collection machine
+            on: {
+              [AppEvents.LOGGED_OUT]: AppFeatureStates.AUTHENTICATE,
+            },
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
@@ -141,6 +142,9 @@ export const appMachine = (
            * The authenticate feature is active.
            */
           [AppFeatureStates.AUTHENTICATE]: {
+            on: {
+              [AppEvents.LOGGED_IN]: AppFeatureStates.COLLECTION,
+            },
             invoke: {
               id: AppActors.AUTHENTICATE_MACHINE,
               src: authenticateMachine(solid).withContext({ }),
@@ -162,27 +166,16 @@ export const appMachine = (
        */
       [AppRootStates.AUTHENTICATE]: {
         initial: AppAuthenticateStates.UNAUTHENTICATED,
-        on: {
-          [AppEvents.LOGGED_OUT]: {
-            target: [
-              `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
-              `${AppRootStates.AUTHENTICATE}.${AppAuthenticateStates.UNAUTHENTICATED}`,
-            ],
-          },
-        },
         states: {
           /**
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            // Load collections
-            invoke: {
-              src: () => collectionStore.all(),
-              onDone: {
-                actions: [
-                  setCollections,
-                  send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data[0] })),
-                ],
+            on: {
+              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
+              [AppEvents.LOGGING_OUT]: {
+                target: AppAuthenticateStates.UNAUTHENTICATING,
+                actions: removeSession,
               },
             },
           },
@@ -203,6 +196,60 @@ export const appMachine = (
            * The user has not been authenticated.
            */
           [AppAuthenticateStates.UNAUTHENTICATED]: {
+            on: {
+              [AppEvents.LOGGED_IN]: {
+                target: AppAuthenticateStates.AUTHENTICATED,
+                actions: setSession,
+              },
+            },
+          },
+        },
+      },
+      /**
+       * Determines if the current user is creating a collection.
+       */
+      [AppRootStates.DATA]: {
+        initial: AppDataStates.IDLE,
+        states: {
+          [AppDataStates.IDLE]: {
+            on: {
+              [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
+              [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
+            },
+          },
+          [AppDataStates.REFRESHING]: {
+            // Load collections
+            invoke: {
+              src: () => collectionStore.all(),
+              onDone: [
+                {
+                  target: AppDataStates.IDLE,
+                  actions: [
+                    setCollections,
+                    send((context, event) => ({
+                      type: CollectionEvents.SELECTED_COLLECTION,
+                      collection: event.data[0],
+                    })),
+                  ],
+                  cond: (context, event) => event.data.length > 0,
+                },
+                {
+                  target: AppDataStates.CREATING,
+                },
+              ],
+            },
+          },
+          [AppDataStates.CREATING]: {
+            invoke: {
+              src: () => collectionStore.save(template), // TODO: Update
+              onDone: {
+                target: AppDataStates.IDLE,
+                actions: [
+                  addCollection,
+                  send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data })),
+                ],
+              },
+            },
           },
         },
       },
