@@ -54,6 +54,7 @@ export class ContentHeaderComponent extends LitElement {
           fill: var(--colors-foreground-inverse);
         }
         .header {
+          padding: 0px var(--gap-large);
           background-color: var( --colors-background-light);
           color: var(--colors-foreground-normal);
           fill: var(--colors-foreground-normal);
@@ -63,35 +64,39 @@ export class ContentHeaderComponent extends LitElement {
           flex-direction: row;
           align-items: center;
         }
-        .icon {
-          margin-left: var(--gap-large);
+        .header .icon {
           font-size: 25px;
         }
-        .icon ::slotted(*) {
+        .header.inverse .icon ::slotted(svg) {
+          fill: var(--colors-foreground-inverse);
+        }
+        .header .icon ::slotted(*) {
           height: 25px;
           width: 25px;
         }
-        .content {
+        .header .content {
           flex: 1 0;
           margin: 0 var(--gap-normal);
         }
-        .content slot[name="title"]::slotted(*) {
+        .header .content slot[name="title"]::slotted(*) {
           font-weight: var(--font-weight-bold);
           font-size: var(--font-size-normal);
           height: var(--gap-normal);
         }
-        .content slot[name="subtitle"]::slotted(*) {
+        .header .content slot[name="subtitle"]::slotted(*) {
           margin-top: var(--gap-tiny);
           font-size: var(--font-size-small);
           height: var(--gap-normal);
         }
-        .actions {
-          margin-right: var(--gap-large);
+        .header .actions {
+          margin-right: var(--gap-normal);
           display: flex;
           flex-direction: row;
-          gap: var(--gap-normal);
         }
-        .actions ::slotted(*) {
+        .header .actions:last-child {
+          margin-right: 0px;
+        }
+        .header .actions ::slotted(*) {
           max-height: var(--gap-normal);
           max-width: var(--gap-normal);
           height: var(--gap-normal);
@@ -99,6 +104,7 @@ export class ContentHeaderComponent extends LitElement {
           fill: var(--colors-primary-light);
           color: var(--colors-primary-light);
           cursor: pointer;
+          margin-left: var(--gap-normal);
         }
         .header.inverse .actions ::slotted(*) {
           fill: var(--colors-foreground-inverse);

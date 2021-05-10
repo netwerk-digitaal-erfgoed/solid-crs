@@ -8,6 +8,7 @@ import { AppEvents, SelectedCollectionEvent } from '../../app.events';
 export enum CollectionEvents {
   CLICKED_DELETE              = '[CollectionsEvent: Clicked Delete]',
   CLICKED_EDIT                = '[CollectionsEvent: Clicked Edit]',
+  CLICKED_SAVE                = '[CollectionsEvent: Clicked Save]',
   CANCELLED_EDIT              = '[CollectionsEvent: Cancelled Edit]',
   CLICKED_CREATE_OBJECT       = '[CollectionsEvent: Clicked Create Object]',
   SELECTED_COLLECTION         = '[CollectionsEvent: Selected collection]',
@@ -32,6 +33,13 @@ export interface ClickedEditEvent extends Event<CollectionEvents> {
 }
 
 /**
+ * Fired when the user clicks the edit button.
+ */
+export interface ClickedSaveEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.CLICKED_SAVE;
+}
+
+/**
  * Fired when the user clicks the cancel button when editing.
  */
 export interface CancelledEditEvent extends Event<CollectionEvents> {
@@ -51,6 +59,7 @@ export interface ClickedCreateObjectEvent extends Event<CollectionEvents> {
 export type CollectionEvent =
   ClickedDeleteEvent
   | ClickedEditEvent
+  | ClickedSaveEvent
   | CancelledEditEvent
   | ClickedCreateObjectEvent
   | SelectedCollectionEvent

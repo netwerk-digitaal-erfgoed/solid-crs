@@ -47,6 +47,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
     on: {
       [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
       [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+      [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
       [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
       [AppEvents.SELECTED_COLLECTION]: CollectionStates.LOADING,
     },

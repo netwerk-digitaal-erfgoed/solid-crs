@@ -5,7 +5,8 @@ import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
-import { CollectionContext, collectionMachine } from './collection.machine';
+import { CollectionEvents } from './collection.events';
+import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
 describe('CollectionRootComponent', () => {
 
@@ -101,6 +102,101 @@ describe('CollectionRootComponent', () => {
 
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);
+
+  });
+
+  it('should send event when delete is clicked', async () => {
+
+    machine.send = jest.fn();
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should send event when create is clicked', async () => {
+
+    machine.send = jest.fn();
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.create') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should send event when edit is clicked', async () => {
+
+    machine.send = jest.fn();
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should hide save and cancel buttons when not editing', async () => {
+
+    machine.onTransition(async (state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        const save = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
+        const cancel = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
+
+        expect(save).toBeFalsy();
+        expect(cancel).toBeFalsy();
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
   });
 

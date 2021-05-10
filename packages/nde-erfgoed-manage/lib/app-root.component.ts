@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout } from '@digita-ai/nde-erfgoed-theme';
+import { Theme, Logout, Logo, Plus } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -67,7 +67,37 @@ export class AppRootComponent extends RxLitElement {
           uri: 'object-uri-1',
           name: 'Object 1',
           description: 'This is object 1',
-          image: null,
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+        {
+          uri: 'object-uri-2',
+          name: 'Object 2',
+          description: 'This is object 2',
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+        {
+          uri: 'object-uri-3',
+          name: 'Object 3',
+          description: 'This is object 3',
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+          subject: null,
+          type: null,
+          updated: 0,
+          collection: 'collection-uri-1',
+        },
+        {
+          uri: 'object-uri-4',
+          name: 'Object 4',
+          description: 'This is object 4',
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
           subject: null,
           type: null,
           updated: 0,
@@ -145,8 +175,18 @@ export class AppRootComponent extends RxLitElement {
     return html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
     <nde-sidebar>
-      <button @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button>
-      ${this.collections?.map((collection) => html`${collection.name}<br>`)}
+      <nde-content-header>
+        <div slot="icon">${ unsafeSVG(Logo) }</div>
+        <div slot="title">Lorem Ipsum</div>
+        <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
+      </nde-content-header>
+      <nde-sidebar-list>
+        <nde-sidebar-list-item slot="item" isTitle inverse>
+          <div slot="title">Collecties</div>
+          <div slot="actions">${ unsafeSVG(Plus) }</div>
+        </nde-sidebar-list-item>
+        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+      </nde-sidebar-list>
     </nde-sidebar>
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
@@ -169,12 +209,35 @@ export class AppRootComponent extends RxLitElement {
           flex-direction: row;
         }
 
-        :host * {
+        :host > * {
           flex: 1 1;
         }
 
         :host nde-sidebar {
           flex: 0 0 var(--size-sidebar);
+        }
+
+        nde-sidebar {
+          display: flex;
+          flex-direction: column;
+        }
+
+        nde-sidebar > * {
+          margin-bottom: var(--gap-normal);
+          display: block;
+        }
+
+        nde-sidebar > *:last-child {
+          margin-bottom: 0px;
+        }
+
+        nde-content-header div[slot="icon"] svg {
+          fill: var(--colors-foreground-inverse);
+        }
+
+        div[slot="actions"] svg {
+          max-height: var(--gap-normal);
+          width: var(--gap-normal);
         }
       `,
     ];

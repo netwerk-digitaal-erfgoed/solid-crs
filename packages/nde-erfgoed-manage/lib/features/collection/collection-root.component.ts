@@ -5,7 +5,8 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Edit, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
 import { CollectionEvents } from './collection.events';
@@ -48,7 +49,7 @@ export class CollectionRootComponent extends RxLitElement {
   /**
    * The collections which will be summarized by the component.
    */
-  @property({ type: Array })
+  @property({ type: Object })
   collection?: Collection;
 
   /**
@@ -121,23 +122,24 @@ export class CollectionRootComponent extends RxLitElement {
     const loading = this.state||false;
 
     return loading ? html`
-    <p>${this.translator?.translate('nde.collections.root.title')}</p>
-    ${ alerts }
-    <br>
-    actions for content header
-    <br>
-    <button @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE)}">Delete</button>
-    <button .hidden="${this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">edit</button>
-    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}">save</button>
-    <button .hidden="${!this.state.matches(CollectionStates.EDITING)}" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">cancel</button>
-    <button @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">Create object</button>
-    <br>
-    <br>
-    input collection
-    <br>
-    ${this.collection.name}
-    ${this.collection.uri}
-    ${this.objects?.map((object) => object.uri)}
+    <nde-content-header inverse>
+      <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
+      <div slot="title">${this.collection.name}</div>
+      <div slot="subtitle">${this.collection.description}</div>
+
+      ${ !this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse edit" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">${unsafeSVG(Edit)}</button></div>` : '' }
+      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.actor.send(CollectionEvents.CLICKED_SAVE)}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
+      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE)}">${unsafeSVG(Trash)}</button></div>
+    </nde-content-header>
+    <div class="content">
+      ${ alerts }
+      
+      <div class='grid'>
+        ${this.objects?.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+      </div>
+    </div>
   ` : html``;
 
   }
@@ -150,8 +152,20 @@ export class CollectionRootComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
-        :host {
+        .content {
           padding: var(--gap-large);
+        }
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-gap: var(--gap-normal);
+        }
+        nde-object-card, nde-collection-card {
+          height: 227px;
+        }
+        button svg {
+          max-width: var(--gap-normal);
+          height: var(--gap-normal);
         }
       `,
     ];
