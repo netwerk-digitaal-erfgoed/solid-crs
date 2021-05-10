@@ -120,6 +120,11 @@ export const appMachine = (
          */
           [AppFeatureStates.COLLECTION]: {
             on: {
+              [AppEvents.CLICKED_DELETE_COLLECTION]: {
+                target: [
+                  `${AppFeatureStates.COLLECTION}.loading`,
+                ],
+              },
               [AppEvents.SELECTED_COLLECTION]: `${AppFeatureStates.COLLECTION}.loaded`,
             },
             initial: 'loading',

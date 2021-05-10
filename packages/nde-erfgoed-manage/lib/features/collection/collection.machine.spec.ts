@@ -91,26 +91,21 @@ describe('CollectionMachine', () => {
 
     objectStore.getObjectsForCollection = jest.fn();
 
-    machine.onTransition((state) => {
+    machine.onTransition(() => {
 
-      if(state.matches(CollectionStates.IDLE)) {
+      expect(objectStore.getObjectsForCollection).toHaveBeenCalledTimes(1);
 
-        expect(objectStore.getObjectsForCollection).toHaveBeenCalledTimes(1);
+      expect(objectStore.getObjectsForCollection).toHaveBeenCalledWith({
+        uri: 'collection-uri-1',
+        name: 'Collection 1',
+        description: 'This is collection 1',
+      });
 
-        expect(objectStore.getObjectsForCollection).toHaveBeenCalledWith({
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        });
-
-        done();
-
-      }
+      done();
 
     });
 
     machine.start();
-    machine.send(CollectionEvents.CLICKED_DELETE);
 
   });
 

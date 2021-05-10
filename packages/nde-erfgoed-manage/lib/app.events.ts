@@ -18,6 +18,7 @@ export enum AppEvents {
   SELECTED_COLLECTION = '[AppEvent: Selected collection]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
+  CLICKED_DELETE_COLLECTION = '[AppEvent: Clicked delete collection]',
 }
 
 /**
@@ -80,6 +81,13 @@ export interface SelectedCollectionEvent extends Event<AppEvents> {
 }
 
 /**
+ * An event which is dispatched when the delete collection button is clicked
+ */
+export interface ClickedDeleteCollectionEvent extends Event<AppEvents> {
+  type: AppEvents.CLICKED_DELETE_COLLECTION;
+}
+
+/**
  * Union type of app events.
  */
 export type AppEvent =
@@ -90,7 +98,8 @@ export type AppEvent =
   | DismissAlertEvent
   | AddAlertEvent
   | SelectedCollectionEvent
-  | CollectionsLoadedEvent;
+  | CollectionsLoadedEvent
+  | ClickedDeleteCollectionEvent;
 
 /**
  * Actions for the alerts component.
