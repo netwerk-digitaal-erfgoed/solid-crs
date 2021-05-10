@@ -1,5 +1,5 @@
 import * as client from '@digita-ai/nde-erfgoed-client';
-import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 
@@ -41,42 +41,58 @@ describe('SolidService', () => {
 
   });
 
-  //   describe('login()', () => {
+  describe('login()', () => {
 
-  //     it.each([ null, undefined ])('should error when WebID is %s', async () => {
-  //       await expect(service.login(null)
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-webid');
-  //     });
+    it.each([ null, undefined ])('should error when WebID is %s', async () => {
 
-  //     it('should error when WebID is an invalid URL', async () => {
-  //       await expect(service.login('a')
-  //         .toPromise()).rejects.toThrow('invalid-webid.invalid-url');
-  //     });
+      await expect(service.login(null)).rejects.toThrow(ArgumentError);
 
-  //     it('should error when WebID does not contain profile', async () => {
-  //       await expect(service.login('https://google.com/')
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-profile');
-  //     });
+    });
 
-  //     it('should error when WebID does not contain oidcIssuer triple', async () => {
-  //       await expect(service.login('https://pod.inrupt.com/digitatestpod/settings/publicTypeIndex.ttl')
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-oidc-issuer');
-  //     });
+    it('should error when WebID is an invalid URL', async () => {
 
-  //     it('should error when WebID does not contain valid oidcIssuer value', async () => {
-  //       (service as any).validateOidcIssuer = jest.fn().mockImplementationOnce(() => of(false));
-  //       await expect(service.login('https://pod.inrupt.com/digitatestpod/profile/card#me')
-  //         .toPromise()).rejects.toThrow('invalid-webid.invalid-oidc-issuer');
-  //     });
+      await expect(service.login('a')).rejects.toThrow('invalid-webid.invalid-url');
 
-  //     it('should call login when WebID is valid', async () => {
-  //       const loginSpy = jest.spyOn(solid, 'login');
-  //       // assuming webid is valid
-  //       (service as any).validateWebId = jest.fn().mockImplementationOnce(() => of('https://broker.pod.inrupt.com/'));
-  //       await service.login('webId').toPromise();
-  //       expect(loginSpy).toHaveBeenCalledTimes(1);
-  //     });
-  //   });
+    });
+
+    it('should error when WebID does not contain profile', async () => {
+
+      await expect(service.login('https://google.com/')).rejects.toThrow('invalid-webid.no-profile');
+
+    });
+
+    // it('should error when WebID does not contain oidcIssuer triple', async () => {
+    //   await expect(service.login('https://pod.inrupt.com/digitatestpod/settings/publicTypeIndex.ttl')
+    //     .toPromise()).rejects.toThrow('invalid-webid.no-oidc-issuer');
+    // });
+
+    // it('should error when WebID does not contain valid oidcIssuer value', async () => {
+    //   (service as any).validateOidcIssuer = jest.fn().mockImplementationOnce(() => of(false));
+    //   await expect(service.login('https://pod.inrupt.com/digitatestpod/profile/card#me')
+    //     .toPromise()).rejects.toThrow('invalid-webid.invalid-oidc-issuer');
+    // });
+
+    // it('should call login when WebID is valid', async () => {
+    //   const loginSpy = jest.spyOn(solid, 'login');
+    //   // assuming webid is valid
+    //   (service as any).validateWebId = jest.fn().mockImplementationOnce(() => of('https://broker.pod.inrupt.com/'));
+    //   await service.login('webId').toPromise();
+    //   expect(loginSpy).toHaveBeenCalledTimes(1);
+    // });
+
+  });
+
+  describe('logout', () => {
+
+    it('should call inrupt logout function', async () => {
+
+      (client as any).logout = jest.fn();
+      await expect(service.logout()).resolves.toBeUndefined();
+      expect((client as any).logout).toHaveBeenCalledTimes(1);
+
+    });
+
+  });
 
   describe('getIssuer', () => {
 
