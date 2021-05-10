@@ -59,12 +59,6 @@ export class AuthenticateRootComponent extends RxLitElement {
   canSubmit? = false;
 
   /**
-   * Indicates if the form is being submitted.
-   */
-  @internalProperty()
-  isSubitting? = false;
-
-  /**
    * Indicates if the form is being initialized.
    */
   @internalProperty()

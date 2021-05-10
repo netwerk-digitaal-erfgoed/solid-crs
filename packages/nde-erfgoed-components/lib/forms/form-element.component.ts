@@ -34,6 +34,12 @@ export class FormElementComponent<T> extends RxLitElement {
   public inverse = false;
 
   /**
+   * Decides whether the label should be shown
+   */
+  @property()
+  public showLabel = true;
+
+  /**
    * The component's translator.
    */
   @property({ type: Translator })
@@ -189,9 +195,13 @@ export class FormElementComponent<T> extends RxLitElement {
 
     return html`
     <div class="form-element">
-      <div class="label">
-        <slot name="label"></slot>
-      </div>
+      ${this.showLabel
+    ? html`
+          <div class="label">
+            <slot name="label"></slot>
+          </div>
+        ` : ''
+}
       <div class="content">
         <div class="field ${this.inverse ? 'no-border' : ''}">
           <div class="input">
@@ -248,8 +258,10 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          height: 44px;
           background-color: var(--colors-background-light)
+        }
+        .form-element .content .action ::slotted(button){
+          height: 100%;
         }
         .form-element .content .field {
           display: flex;
@@ -260,13 +272,13 @@ export class FormElementComponent<T> extends RxLitElement {
           border: var(--border-normal) solid var(--colors-foreground-normal);
         }
         .form-element .content .field .input {
-          padding: 0 var(--gap-normal);
           width: 100%;
           height: 100%;
         }
         .form-element .content .field .input ::slotted(input) {
+          padding: 0 var(--gap-normal);
           width: 100%;
-          height: 100%;
+          height: 44px;
         }
         .form-element .content .field .icon {
           height: 100%;

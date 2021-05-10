@@ -1,8 +1,20 @@
-import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
-import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
+import { formMachine,
+  FormActors,
+  FormValidatorResult,
+  FormContext,
+  FormEvents, State } from '@digita-ai/nde-erfgoed-components';
+import { assign, createMachine, send, sendParent } from 'xstate';
+import {
+  Collection,
+  CollectionObject,
+  CollectionObjectStore,
+  Store,
+} from '@digita-ai/nde-erfgoed-core';
+
+import { catchError, map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
-import { CollectionEvent, CollectionEvents  } from './collection.events';
+import { CollectionEvent, CollectionEvents } from './collection.events';
 
 /**
  * The context of a collections feature.
@@ -30,18 +42,25 @@ export enum CollectionActors {
  * State references for the collection component, with readable log format.
  */
 export enum CollectionStates {
-  IDLE      = '[CollectionsState: Idle]',
-  LOADING   = '[CollectionsState: Loading]',
-  SAVING    = '[CollectionsState: Saving]',
-  EDITING   = '[CollectionsState: Editing]',
-  DELETING  = '[CollectionsState: Deleting]',
+  IDLE = '[CollectionsState: Idle]',
+  LOADING = '[CollectionsState: Loading]',
+  SAVING = '[CollectionsState: Saving]',
+  EDITING = '[CollectionsState: Editing]',
+  DELETING = '[CollectionsState: Deleting]',
 }
 
 /**
  * The collection component machine.
  */
-export const collectionMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
-  createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
+export const collectionMachine = (
+  collectionStore: Store<Collection>,
+  objectStore: CollectionObjectStore
+) =>
+  createMachine<
+  CollectionContext,
+  CollectionEvent,
+  State<CollectionStates, CollectionContext>
+  >({
     id: CollectionActors.COLLECTION_MACHINE,
     initial: CollectionStates.LOADING,
     on: {
@@ -57,7 +76,8 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
        */
       [CollectionStates.LOADING]: {
         invoke: {
-          src: (context) => objectStore.getObjectsForCollection(context.collection),
+          src: (context) =>
+            objectStore.getObjectsForCollection(context.collection),
           onDone: {
             /**
              * When done, assign objects to the context and transition to idle.
@@ -78,9 +98,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
       /**
        * Objects for the current collection are loaded.
        */
-      [CollectionStates.IDLE]: {
-
-      },
+      [CollectionStates.IDLE]: {},
       /**
        * Saving changesto the collection's metadata.
        */
@@ -99,6 +117,47 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
        * Editing the collection metadata.
        */
       [CollectionStates.EDITING]: {
+        invoke: [
+          /**
+           * Invoke a form machine which controls the form.
+           */
+          {
+            id: FormActors.FORM_MACHINE,
+            src: (context, event) => formMachine<{ name: string; description: string }>(
+              /**
+               * Validates the form.
+               */
+              (
+                c: FormContext<{ name: string; description: string }>
+              ): Observable<FormValidatorResult[]> =>
+                of([]),
+              async (
+                c: FormContext<{ name: string; description: string }>
+              ) => c.data
+            ).withContext({
+              data: { name: context.collection.name, description: context.collection.description },
+              original: { name: context.collection.name, description: context.collection.description },
+            }),
+            onDone: {
+              target: CollectionStates.SAVING,
+              actions: [
+                assign((context, event) => ({
+                  collection: {
+                    ...context.collection,
+                    name: event.data.data.name,
+                    description: event.data.data.description,
+                  },
+                })),
+              ],
+            },
+            /**
+             * Go back to unauthenticated when something goes wrong, and show an alert.
+             */
+            onError: {
+              target: CollectionStates.IDLE,
+            },
+          },
+        ],
         on: {
           [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
         },
