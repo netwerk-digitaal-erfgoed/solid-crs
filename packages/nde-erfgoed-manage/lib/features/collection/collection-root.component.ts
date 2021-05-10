@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Cross, Edit, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Edit, Empty as EmptyIcon, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
@@ -136,9 +136,20 @@ export class CollectionRootComponent extends RxLitElement {
     <div class="content">
       ${ alerts }
       
-      <div class='grid'>
-        ${this.objects?.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
-      </div>
+      ${this.objects?.length
+    ? html`
+          <div class='grid'>
+            ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+          </div>
+        `
+    : html`
+          <div class='empty'>
+            ${unsafeSVG(CollectionIcon)}
+            <div class='text'>Maak je eerste object aan</div>
+            <button class='accent'>${unsafeSVG(ObjectIcon)} Object aanmaken</button>
+          </div>
+        `
+}
     </div>
   ` : html``;
 
@@ -166,6 +177,28 @@ export class CollectionRootComponent extends RxLitElement {
         button svg {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
+        }
+        .empty {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: var(--gap-large);
+        }
+        .empty .text {
+          color: var(--colors-foreground-dark);
+        }
+        .empty > svg {
+          width: 600px;
+          height: 460px;
+        }
+        .empty button {
+          text-transform: none;
+          padding: var(--gap-small) var(--gap-normal);
+          display: flex;
+          gap: var(--gap-small);
+          justify-content: center;
         }
       `,
     ];
