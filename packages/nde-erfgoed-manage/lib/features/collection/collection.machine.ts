@@ -123,17 +123,9 @@ export const collectionMachine = (
            */
           {
             id: FormActors.FORM_MACHINE,
-            src: (context, event) => formMachine<{ name: string; description: string }>(
-              /**
-               * Validates the form.
-               */
-              (
-                c: FormContext<{ name: string; description: string }>
-              ): Observable<FormValidatorResult[]> =>
-                of([]),
-              async (
-                c: FormContext<{ name: string; description: string }>
-              ) => c.data
+            src: (context) => formMachine<{ name: string; description: string }>(
+              (_: any): Observable<FormValidatorResult[]> => of([]),
+              async (c: FormContext<{ name: string; description: string }>) => c.data
             ).withContext({
               data: { name: context.collection.name, description: context.collection.description },
               original: { name: context.collection.name, description: context.collection.description },
