@@ -1,3 +1,4 @@
+import { SolidProfile } from './solid-profile';
 import { SolidSession } from './solid-session';
 
 /**
@@ -28,5 +29,12 @@ export abstract class SolidService {
    * Deauthenticates the user from their OIDC issuer
    */
   public abstract logout(): Promise<void>;
+
+  /**
+   * Retrieves the profile for the given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  public abstract getProfile(webId: string): Promise<SolidProfile>;
 
 }

@@ -131,6 +131,9 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
           src: (context) => collectionStore.delete(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
+            actions: [
+              sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
+            ],
           },
           onError: {
             actions: sendParent(AppEvents.ERROR),
