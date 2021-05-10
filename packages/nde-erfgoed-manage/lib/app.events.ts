@@ -4,7 +4,7 @@ import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
-import { SelectedCollectionEvent } from 'features/collection/collection.events';
+import { ClickedDeleteEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -18,7 +18,6 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
-  CLICKED_DELETE_COLLECTION = '[AppEvent: Clicked delete collection]',
 }
 
 /**
@@ -80,13 +79,6 @@ export interface ClickedCreateCollectionEvent extends Event<AppEvents> {
 }
 
 /**
- * An event which is dispatched when the delete collection button is clicked
- */
-export interface ClickedDeleteCollectionEvent extends Event<AppEvents> {
-  type: AppEvents.CLICKED_DELETE_COLLECTION;
-}
-
-/**
  * Union type of app events.
  */
 export type AppEvent =
@@ -97,7 +89,7 @@ export type AppEvent =
   | DismissAlertEvent
   | AddAlertEvent
   | SelectedCollectionEvent
-  | ClickedDeleteCollectionEvent
+  | ClickedDeleteEvent
   | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent;
 
