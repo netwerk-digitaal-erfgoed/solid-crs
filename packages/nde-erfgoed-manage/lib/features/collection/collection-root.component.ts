@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Cross, Edit, Empty as EmptyIcon, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Edit, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
@@ -143,13 +143,15 @@ export class CollectionRootComponent extends RxLitElement {
           </div>
         `
     : html`
-          <div class='empty'>
-            ${unsafeSVG(CollectionIcon)}
-            <div class='text'>Maak je eerste object aan</div>
-            <button class='accent'>
-              ${unsafeSVG(ObjectIcon)}
-              <span>Object aanmaken</span>
-            </button>
+          <div class="empty-container">
+            <div class='empty'>
+              ${unsafeSVG(Empty)}
+              <div class='text'>Maak je eerste object aan</div>
+              <button class='accent'>
+                ${unsafeSVG(ObjectIcon)}
+                <span>Object aanmaken</span>
+              </button>
+            </div>
           </div>
         `
 }
@@ -166,8 +168,14 @@ export class CollectionRootComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        :host {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
         .content {
           padding: var(--gap-large);
+          height: 100%;
         }
         .grid {
           display: grid;
@@ -181,20 +189,27 @@ export class CollectionRootComponent extends RxLitElement {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
         }
+        .empty-container {
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          height: 100%;
+        }
         .empty {
           width: 100%;
           display: flex;
           flex-direction: column;
           flex-wrap: wrap;
           align-items: center;
+          justify-content: center;
           gap: var(--gap-large);
         }
         .empty .text {
           color: var(--colors-foreground-dark);
         }
         .empty > svg {
-          width: 600px;
-          height: 460px;
+          width: 40%;
+          height: auto;
         }
         .empty button {
           width: 260px;
