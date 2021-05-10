@@ -12,6 +12,7 @@ import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
+import { SolidProfile } from './common/solid/solid-profile';
 
 /**
  * The root page of the application.
@@ -127,6 +128,12 @@ export class AppRootComponent extends RxLitElement {
   collections: Collection[];
 
   /**
+   * The profile of the current user.
+   */
+  @internalProperty()
+  profile: SolidProfile;
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -165,6 +172,10 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.collections),
     ));
 
+    this.subscribe('profile', from(this.actor).pipe(
+      map((state) => state.context?.profile),
+    ));
+
   }
 
   /**
@@ -179,7 +190,7 @@ export class AppRootComponent extends RxLitElement {
     <nde-sidebar>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
-        <div slot="title">Lorem Ipsum</div>
+        <div slot="title">${this.profile?.name}</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>

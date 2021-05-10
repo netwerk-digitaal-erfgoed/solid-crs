@@ -111,4 +111,56 @@ describe('SolidService', () => {
 
   });
 
+  describe('getProfile', () => {
+
+    const validProfileDataset = {};
+    const validProfileThing = {};
+    const validName = 'mockString';
+    const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
+
+    it('should error when WebID is null', async () => {
+
+      await expect(service.getProfile(null)).rejects.toThrow();
+
+    });
+
+    it('should error when unable to set dataset', async () => {
+
+      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should error when no dataset is found', async () => {
+
+      client.getSolidDataset = jest.fn(async () =>  null);
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should error when no profile is found', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(() => null);
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should return valid profile when found', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(() => validProfileThing);
+      client.getStringNoLocale = jest.fn(() => validName);
+
+      const profile = await service.getProfile(webId);
+
+      expect(profile).toEqual(expect.objectContaining({ name: validName }));
+
+    });
+
+  });
+
 });

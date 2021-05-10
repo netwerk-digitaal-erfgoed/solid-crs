@@ -2,7 +2,7 @@ import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
-import { AppContext, appMachine } from './app.machine';
+import { AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
 import { CollectionEvents } from './features/collection/collection.events';
 

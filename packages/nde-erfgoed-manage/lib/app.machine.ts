@@ -2,12 +2,13 @@ import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
+import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
+import { SolidProfile } from './common/solid/solid-profile';
 
 /**
  * The root context of the application.
@@ -27,6 +28,11 @@ export interface AppContext {
    * The collections retrieved from the user's pod
    */
   collections?: Collection[];
+
+  /**
+   * The profile retrieved from the user's pod
+   */
+  profile?: SolidProfile;
 }
 
 /**
@@ -171,12 +177,18 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
+            /**
+             * Get profile and assign to context.
+             */
+            invoke: {
+              src: (context, event) => solid.getProfile(context.session.webId),
+              onDone: {
+                actions: setProfile,
+              },
+            },
             on: {
               [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
-              [AppEvents.LOGGING_OUT]: {
-                target: AppAuthenticateStates.UNAUTHENTICATING,
-                actions: removeSession,
-              },
+              [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
             },
           },
 
@@ -184,7 +196,11 @@ export const appMachine = (
            * The user is logging out.
            */
           [AppAuthenticateStates.UNAUTHENTICATING]: {
+            entry: removeSession,
             invoke: {
+              /**
+               * Logout from identity provider.
+               */
               src: () => solid.logout(),
               onDone: {
                 actions: send({ type: AppEvents.LOGGED_OUT }),
@@ -211,6 +227,9 @@ export const appMachine = (
       [AppRootStates.DATA]: {
         initial: AppDataStates.IDLE,
         states: {
+          /**
+           * Not refreshing or creating collections.
+           */
           [AppDataStates.IDLE]: {
             on: {
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
@@ -218,9 +237,14 @@ export const appMachine = (
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
             },
           },
+          /**
+           * Refresh collections, set current collection and assign to state.
+           */
           [AppDataStates.REFRESHING]: {
-            // Load collections
             invoke: {
+              /**
+               * Get all collections from store.
+               */
               src: () => collectionStore.all(),
               onDone: [
                 {
@@ -240,8 +264,14 @@ export const appMachine = (
               ],
             },
           },
+          /**
+           * Creating a new collection.
+           */
           [AppDataStates.CREATING]: {
             invoke: {
+              /**
+               * Save collection to the store.
+               */
               src: () => collectionStore.save(template), // TODO: Update
               onDone: {
                 target: AppDataStates.IDLE,

@@ -166,3 +166,8 @@ export const setCollections = assign({ collections: (context, event: DoneInvokeE
 export const addCollection = assign((context: AppContext, event: DoneInvokeEvent<Collection>) => ({
   collections: [ ...context.collections||[], event.data ],
 }));
+
+/**
+ * Action which sets a profile in the machine's context.
+ */
+export const setProfile = assign({ profile:  (context, event: DoneInvokeEvent<AppContext>) => event.data });
