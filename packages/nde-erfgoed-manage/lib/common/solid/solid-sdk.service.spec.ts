@@ -142,7 +142,7 @@ describe('SolidService', () => {
 
     });
 
-    it('should error when no pofile is found', async () => {
+    it('should error when no profile is found', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(() => null);
