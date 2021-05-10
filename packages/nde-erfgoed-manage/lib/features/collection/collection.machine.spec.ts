@@ -88,7 +88,18 @@ describe('CollectionMachine', () => {
 
   it('should load objects when loading', async (done) => {
 
-    objectStore.getObjectsForCollection = jest.fn();
+    objectStore.getObjectsForCollection = jest.fn().mockResolvedValue([
+      {
+        uri: 'object-uri-1',
+        name: 'Object 1',
+        description: 'This is object 1',
+        image: null,
+        subject: null,
+        type: null,
+        updated: 0,
+        collection: 'collection-uri-1',
+      },
+    ]);
 
     machine.onTransition((state) => {
 
@@ -105,9 +116,6 @@ describe('CollectionMachine', () => {
     });
 
     machine.start();
-    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
-
-    machine.send(CollectionEvents.CLICKED_DELETE);
 
   });
 

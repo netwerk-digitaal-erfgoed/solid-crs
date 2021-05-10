@@ -86,9 +86,6 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
        * Determining collection
        */
       [CollectionStates.DETERMINING_COLLECTION]: {
-        entry: assign({
-          collection: (context, event: SelectedCollectionEvent) => event.collection,
-        }),
         always: [
           {
             target: CollectionStates.LOADING,
