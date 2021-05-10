@@ -15,7 +15,7 @@
         "value": "Collectie aangemaakt"
     },
     {
-        "key": "nde.collections.root.title",
+        "key": "nde.navigation.collections.title",
         "locale": "nl-NL",
         "value": "Collecties"
     },
