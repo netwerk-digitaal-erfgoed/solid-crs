@@ -5,7 +5,6 @@ import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
-import { CollectionEvents } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
 describe('CollectionRootComponent', () => {
@@ -13,20 +12,21 @@ describe('CollectionRootComponent', () => {
   let component: CollectionRootComponent;
   let machine: Interpreter<CollectionContext>;
 
+  const collection1 = {
+    uri: 'collection-uri-1',
+    name: 'Collection 1',
+    description: 'This is collection 1',
+  };
+
+  const collection2 = {
+    uri: 'collection-uri-2',
+    name: 'Collection 2',
+    description: 'This is collection 2',
+  };
+
   beforeEach(() => {
 
-    const collectionStore = new MemoryStore<Collection>([
-      {
-        uri: 'collection-uri-1',
-        name: 'Collection 1',
-        description: 'This is collection 1',
-      },
-      {
-        uri: 'collection-uri-2',
-        name: 'Collection 2',
-        description: 'This is collection 2',
-      },
-    ]);
+    const collectionStore = new MemoryStore<Collection>([ collection1, collection2 ]);
 
     const objectStore = new CollectionObjectMemoryStore([
       {
@@ -43,11 +43,7 @@ describe('CollectionRootComponent', () => {
 
     machine = interpret(collectionMachine(collectionStore, objectStore)
       .withContext({
-        collection: {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
+        collection: collection1,
       }));
 
     machine.parent = interpret(appMachine(
@@ -71,6 +67,12 @@ describe('CollectionRootComponent', () => {
   it('should be correctly instantiated', () => {
 
     expect(component).toBeTruthy();
+
+  });
+
+  it('should not throw when running updated with null', () => {
+
+    expect(() => component.updated(null)).not.toThrow();
 
   });
 
@@ -107,11 +109,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when delete is clicked', async () => {
 
-    machine.send = jest.fn();
-
     machine.onTransition((state) => {
 
-      if(state.matches(CollectionStates.IDLE)) {
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
         button.click();
@@ -123,6 +125,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
+    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -131,11 +134,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when create is clicked', async () => {
 
-    machine.send = jest.fn();
-
     machine.onTransition((state) => {
 
-      if(state.matches(CollectionStates.IDLE)) {
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.create') as HTMLElement;
         button.click();
@@ -147,6 +150,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
+    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -155,11 +159,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when edit is clicked', async () => {
 
-    machine.send = jest.fn();
-
     machine.onTransition((state) => {
 
-      if(state.matches(CollectionStates.IDLE)) {
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        machine.send = jest.fn();
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
         button.click();
@@ -171,6 +175,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
+    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;

@@ -1,8 +1,8 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
-import { createMachine } from 'xstate';
+import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -52,6 +52,13 @@ export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
 }
+/**
+ * State references for the application's features, with readable log format.
+ */
+export enum AppFeatureCollectionStates {
+  LOADING = '[AppFeatureCollectionStates: Loading]',
+  LOADED  = '[AppFeatureCollectionStates: Loaded]',
+}
 
 /**
  * State references for the application's features, with readable log format.
@@ -65,7 +72,7 @@ export enum AppAuthenticateStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates | AppFeatureCollectionStates;
 
 /**
  * The application root machine and its configuration.
@@ -120,39 +127,21 @@ export const appMachine = (
          */
           [AppFeatureStates.COLLECTION]: {
             on: {
-              [AppEvents.SELECTED_COLLECTION]: `${AppFeatureStates.COLLECTION}.loaded`,
+              [AppEvents.SELECTED_COLLECTION]: {
+                actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+              },
             },
-            initial: 'loading',
-            states: {
-              'loading': {
-              // Load collections first
-                invoke: {
-                  src: () => collectionStore.all(),
-                  onDone: {
-                    actions: [
-                      setCollections,
-                      send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
-                    ],
-                  },
+            // Then invoke the collection machine
+            invoke: [
+              {
+                id: AppActors.COLLECTION_MACHINE,
+                src: collectionMachine(collectionStore, objectStore),
+                autoForward: true,
+                onError: {
+                  actions: send({ type: AppEvents.ERROR }),
                 },
               },
-              'loaded': {
-              // Then invoke the collection machine
-                invoke: [
-                  {
-                    id: AppActors.COLLECTION_MACHINE,
-                    src: collectionMachine(collectionStore, objectStore),
-                    data: {
-                      collection:
-                    (context: AppContext, event: SelectedCollectionEvent) => event.collection,
-                    },
-                    onError: {
-                      actions: send({ type: AppEvents.ERROR }),
-                    },
-                  },
-                ],
-              },
-            },
+            ],
           },
           /**
            * The authenticate feature is active.
@@ -192,7 +181,16 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-
+            // Load collections first
+            invoke: {
+              src: () => collectionStore.all(),
+              onDone: {
+                actions: [
+                  setCollections,
+                  send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
+                ],
+              },
+            },
           },
 
           /**

@@ -11,7 +11,7 @@ export interface CollectionContext {
   /**
    * The currently selected collection.
    */
-  collection: Collection;
+  collection?: Collection;
 
   /**
    * The list of objects in the current collection.
@@ -35,6 +35,7 @@ export enum CollectionStates {
   SAVING    = '[CollectionsState: Saving]',
   EDITING   = '[CollectionsState: Editing]',
   DELETING  = '[CollectionsState: Deleting]',
+  DETERMINING_COLLECTION  = '[CollectionsState: Determining collection]',
 }
 
 /**
@@ -43,13 +44,19 @@ export enum CollectionStates {
 export const collectionMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
   createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
     id: CollectionActors.COLLECTION_MACHINE,
-    initial: CollectionStates.LOADING,
+    context: { },
+    initial: CollectionStates.DETERMINING_COLLECTION,
     on: {
       [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
       [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
       [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
       [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
-      [AppEvents.SELECTED_COLLECTION]: CollectionStates.LOADING,
+      [AppEvents.SELECTED_COLLECTION]: {
+        actions: assign({
+          collection: (context, event) => event.collection,
+        }),
+        target: CollectionStates.DETERMINING_COLLECTION,
+      },
     },
     states: {
       /**
@@ -76,10 +83,26 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
         },
       },
       /**
+       * Determining collection
+       */
+      [CollectionStates.DETERMINING_COLLECTION]: {
+        entry: assign({
+          collection: (context, event) => event.collection,
+        }),
+        always: [
+          {
+            target: CollectionStates.LOADING,
+            cond: (context, event) => context?.collection ? true : false,
+          },
+          {
+            target: CollectionStates.IDLE,
+          },
+        ],
+      },
+      /**
        * Objects for the current collection are loaded.
        */
       [CollectionStates.IDLE]: {
-
       },
       /**
        * Saving changesto the collection's metadata.
