@@ -50,18 +50,7 @@ export class AppRootComponent extends RxLitElement {
   actor = interpret(
     (appMachine(
       new SolidSDKService(this.logger),
-      new MemoryStore<Collection>([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-        },
-      ]),
+      new MemoryStore<Collection>([]),
       new CollectionObjectMemoryStore([
         {
           uri: 'object-uri-1',

@@ -154,12 +154,18 @@ export const appMachine = (
               // Load collections first
                 invoke: {
                   src: () => collectionStore.all(),
-                  onDone: {
-                    actions: [
-                      setCollections,
-                      send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
-                    ],
-                  },
+                  onDone: [
+                    {
+                      actions: [
+                        setCollections,
+                        send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
+                      ],
+                      cond: (context, event) => event.data.length > 0,
+                    },
+                    {
+                      target: 'creating',
+                    },
+                  ],
                 },
               },
               'loaded': {

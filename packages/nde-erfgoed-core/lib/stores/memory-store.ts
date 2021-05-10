@@ -32,7 +32,7 @@ export class MemoryStore<T extends Resource> implements Store<T> {
   }
 
   /**
-   * Either deletes the given resource.
+   * Deletes the given resource.
    *
    * @param resource Resource to be deleted.
    */

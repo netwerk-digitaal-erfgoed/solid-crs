@@ -171,5 +171,5 @@ export const setCollections = assign({ collections: (context, event: DoneInvokeE
  * Action which adds a single collection to the machine's context.
  */
 export const addCollection = assign((context: AppContext, event: DoneInvokeEvent<Collection>) => ({
-  collections: [ ...context.collections, event.data ],
+  collections: [ ...context.collections||[], event.data ],
 }));
