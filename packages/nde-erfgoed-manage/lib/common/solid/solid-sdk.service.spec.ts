@@ -118,7 +118,7 @@ describe('SolidService', () => {
     const validName = 'mockString';
     const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
 
-    it('should error when WebID is %s', async () => {
+    it('should error when WebID is null', async () => {
 
       await expect(service.getProfile(null)).rejects.toThrow();
 
@@ -149,7 +149,7 @@ describe('SolidService', () => {
 
     });
 
-    it('should return name and photo when a valid profile is found', async () => {
+    it('should return valid profile when found', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(() => validProfileThing);
