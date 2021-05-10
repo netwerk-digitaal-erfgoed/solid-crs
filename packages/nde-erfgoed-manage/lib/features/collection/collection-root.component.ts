@@ -146,7 +146,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class='empty'>
             ${unsafeSVG(CollectionIcon)}
             <div class='text'>Maak je eerste object aan</div>
-            <button class='accent'>${unsafeSVG(ObjectIcon)} Object aanmaken</button>
+            <button class='accent'>
+              ${unsafeSVG(ObjectIcon)}
+              <span>Object aanmaken</span>
+            </button>
           </div>
         `
 }
@@ -194,11 +197,19 @@ export class CollectionRootComponent extends RxLitElement {
           height: 460px;
         }
         .empty button {
+          width: 260px;
           text-transform: none;
           padding: var(--gap-small) var(--gap-normal);
           display: flex;
-          gap: var(--gap-small);
-          justify-content: center;
+          gap: var(--gap-normal);
+          justify-content: flex-start;
+          align-items: center;
+          background-color: var(--colors-accent-primary);
+        }
+        .empty button span {
+          display: inline-flex;
+          align-items: center;
+          height: var(--gap-normal);
         }
       `,
     ];
