@@ -30,7 +30,7 @@ export class CollectionCardComponent extends LitElement {
     return html`
       <nde-card>
         <span slot='title'>
-          ${this.collection?.name ?? this.translator.translate('nde.collections.card.name-unavailable')}
+          ${this.collection?.name ?? this.translator.translate('nde.features.collections.card.name-unavailable')}
         </span>
         <span slot='subtitle'>
           <span>

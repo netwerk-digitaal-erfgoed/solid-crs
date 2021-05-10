@@ -1,8 +1,9 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectStore, Store, Translator } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
-import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
+import { log, pure, send } from 'xstate/lib/actions';
+import { uniqueId } from 'xstate/lib/utils';
+import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -73,7 +74,8 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
 export const appMachine = (
   solid: SolidService,
   collectionStore: Store<Collection>,
-  objectStore: CollectionObjectStore
+  objectStore: CollectionObjectStore,
+  translator: Translator,
 ) =>
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
@@ -113,6 +115,11 @@ export const appMachine = (
             ],
             actions: removeSession,
           },
+          [AppEvents.CLICKED_CREATE_COLLECTION]: {
+            target: [
+              `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTION}.creating`,
+            ],
+          },
         },
         states: {
         /**
@@ -124,6 +131,25 @@ export const appMachine = (
             },
             initial: 'loading',
             states: {
+              'creating': {
+              // Load collections first
+                invoke: {
+                  src: () => collectionStore.save(
+                    {
+                      uri: uniqueId(),
+                      name: translator.translate('nde.features.collections.new-collection-name'),
+                      description: translator.translate('nde.features.collections.new-collection-description'),
+                    },
+                  ),
+                  onDone: {
+                    target: 'loaded',
+                    actions: [
+                      addCollection,
+                      send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data })),
+                    ],
+                  },
+                },
+              },
               'loading': {
               // Load collections first
                 invoke: {
