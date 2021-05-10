@@ -24,6 +24,7 @@ export enum CollectionEvents {
  */
 export interface ClickedDeleteEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_DELETE;
+  collection: Collection;
 }
 
 /**
