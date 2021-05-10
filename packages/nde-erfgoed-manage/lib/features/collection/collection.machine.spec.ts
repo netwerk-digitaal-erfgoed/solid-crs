@@ -1,7 +1,7 @@
 import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, SelectedCollectionEvent } from '../../app.events';
-import { addAlert, CollectionEvents } from './collection.events';
+import { AppEvents } from '../../app.events';
+import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
 describe('CollectionMachine', () => {
@@ -105,7 +105,7 @@ describe('CollectionMachine', () => {
     });
 
     machine.start();
-    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     machine.send(CollectionEvents.CLICKED_DELETE);
 
@@ -130,7 +130,7 @@ describe('CollectionMachine', () => {
     });
 
     machine.start();
-    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     machine.send(CollectionEvents.CLICKED_SAVE);
 
@@ -150,7 +150,7 @@ describe('CollectionMachine', () => {
 
     machine.start();
 
-    machine.send({ type: AppEvents.SELECTED_COLLECTION, collection: collection2 } as SelectedCollectionEvent);
+    machine.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: collection2 } as SelectedCollectionEvent);
 
   });
 

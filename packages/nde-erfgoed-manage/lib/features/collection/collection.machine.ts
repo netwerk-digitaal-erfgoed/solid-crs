@@ -2,7 +2,7 @@ import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { AppEvents } from '../../app.events';
-import { CollectionEvent, CollectionEvents  } from './collection.events';
+import { CollectionEvent, CollectionEvents, SelectedCollectionEvent  } from './collection.events';
 
 /**
  * The context of a collections feature.
@@ -51,7 +51,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
       [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
       [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
       [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
-      [AppEvents.SELECTED_COLLECTION]: {
+      [CollectionEvents.SELECTED_COLLECTION]: {
         actions: assign({
           collection: (context, event) => event.collection,
         }),
@@ -87,7 +87,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
        */
       [CollectionStates.DETERMINING_COLLECTION]: {
         entry: assign({
-          collection: (context, event) => event.collection,
+          collection: (context, event: SelectedCollectionEvent) => event.collection,
         }),
         always: [
           {

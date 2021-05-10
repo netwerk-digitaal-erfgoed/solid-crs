@@ -7,6 +7,7 @@ import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
+import { CollectionEvents } from './features/collection/collection.events';
 
 /**
  * The root context of the application.
@@ -52,13 +53,6 @@ export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
 }
-/**
- * State references for the application's features, with readable log format.
- */
-export enum AppFeatureCollectionStates {
-  LOADING = '[AppFeatureCollectionStates: Loading]',
-  LOADED  = '[AppFeatureCollectionStates: Loaded]',
-}
 
 /**
  * State references for the application's features, with readable log format.
@@ -72,7 +66,7 @@ export enum AppAuthenticateStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates | AppFeatureCollectionStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
 
 /**
  * The application root machine and its configuration.
@@ -127,11 +121,11 @@ export const appMachine = (
          */
           [AppFeatureStates.COLLECTION]: {
             on: {
-              [AppEvents.SELECTED_COLLECTION]: {
+              [CollectionEvents.SELECTED_COLLECTION]: {
                 actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
               },
             },
-            // Then invoke the collection machine
+            // Invoke the collection machine
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
@@ -181,13 +175,13 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            // Load collections first
+            // Load collections
             invoke: {
               src: () => collectionStore.all(),
               onDone: {
                 actions: [
                   setCollections,
-                  send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
+                  send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data[0] })),
                 ],
               },
             },

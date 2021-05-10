@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
@@ -11,6 +11,7 @@ import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMach
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
+import { CollectionEvents } from './features/collection/collection.events';
 
 /**
  * The root page of the application.
@@ -181,7 +182,7 @@ export class AppRootComponent extends RxLitElement {
           <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
           <div slot="actions">${ unsafeSVG(Plus) }</div>
         </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(AppEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
       </nde-sidebar-list>
     </nde-sidebar>
     ` : '' }  

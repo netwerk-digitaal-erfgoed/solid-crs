@@ -1,10 +1,10 @@
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@digita-ai/nde-erfgoed-core';
-import { interpret, Interpreter, State } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
-import { AppActors, AppContext, AppFeatureCollectionStates, AppFeatureStates, appMachine, AppRootStates, AppStates } from './app.machine';
+import { AppContext, appMachine } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
-import { CollectionContext } from './features/collection/collection.machine';
+import { CollectionEvents } from './features/collection/collection.events';
 
 describe('AppMachine', () => {
 
@@ -295,7 +295,7 @@ describe('AppMachine', () => {
 
     machine.onEvent((event) => {
 
-      if(event.type === AppEvents.SELECTED_COLLECTION) {
+      if(event.type === CollectionEvents.SELECTED_COLLECTION) {
 
         done();
 

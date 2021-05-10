@@ -5,6 +5,7 @@ import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
+import { CollectionEvents } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
 describe('CollectionRootComponent', () => {
@@ -125,7 +126,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
-    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -150,7 +151,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
-    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -175,7 +176,7 @@ describe('CollectionRootComponent', () => {
     });
 
     machine.start();
-    machine.send(AppEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
