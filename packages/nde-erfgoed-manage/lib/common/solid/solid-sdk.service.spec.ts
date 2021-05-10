@@ -23,6 +23,12 @@ describe('SolidService', () => {
 
   });
 
+  afterEach(() => {
+
+    jest.clearAllMocks();
+
+  });
+
   it('should be correctly instantiated', () => {
 
     expect(service).toBeTruthy();
@@ -41,42 +47,34 @@ describe('SolidService', () => {
 
   });
 
-  //   describe('login()', () => {
+  describe('login()', () => {
 
-  //     it.each([ null, undefined ])('should error when WebID is %s', async () => {
-  //       await expect(service.login(null)
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-webid');
-  //     });
+    it.each([ null, undefined ])('should error when WebID is %s', async (value) => {
 
-  //     it('should error when WebID is an invalid URL', async () => {
-  //       await expect(service.login('a')
-  //         .toPromise()).rejects.toThrow('invalid-webid.invalid-url');
-  //     });
+      await expect(service.login(value)).rejects.toThrow('Argument webId should be set.');
 
-  //     it('should error when WebID does not contain profile', async () => {
-  //       await expect(service.login('https://google.com/')
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-profile');
-  //     });
+    });
 
-  //     it('should error when WebID does not contain oidcIssuer triple', async () => {
-  //       await expect(service.login('https://pod.inrupt.com/digitatestpod/settings/publicTypeIndex.ttl')
-  //         .toPromise()).rejects.toThrow('invalid-webid.no-oidc-issuer');
-  //     });
+    it('should throw when retrieved issuer is falsey', async () => {
 
-  //     it('should error when WebID does not contain valid oidcIssuer value', async () => {
-  //       (service as any).validateOidcIssuer = jest.fn().mockImplementationOnce(() => of(false));
-  //       await expect(service.login('https://pod.inrupt.com/digitatestpod/profile/card#me')
-  //         .toPromise()).rejects.toThrow('invalid-webid.invalid-oidc-issuer');
-  //     });
+      service.getIssuer = jest.fn(() => undefined);
 
-  //     it('should call login when WebID is valid', async () => {
-  //       const loginSpy = jest.spyOn(solid, 'login');
-  //       // assuming webid is valid
-  //       (service as any).validateWebId = jest.fn().mockImplementationOnce(() => of('https://broker.pod.inrupt.com/'));
-  //       await service.login('webId').toPromise();
-  //       expect(loginSpy).toHaveBeenCalledTimes(1);
-  //     });
-  //   });
+      await expect(service.login('test')).rejects.toThrow('Argument issuer should be set.');
+
+    });
+
+  });
+
+  describe('logout()', () => {
+
+    it.each([ null, undefined ])('should error when WebID is %s', async (value) => {
+
+      client.logout = jest.fn().mockResolvedValue(null);
+      await expect(service.logout()).resolves.not.toThrow();
+
+    });
+
+  });
 
   describe('getIssuer', () => {
 
@@ -108,6 +106,58 @@ describe('SolidService', () => {
       fetchMock.mockResponseOnce('<!DOCTYPE html>', { status: 404 });
 
       await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
+    });
+
+  });
+
+  describe('getProfile', () => {
+
+    const validProfileDataset = {};
+    const validProfileThing = {};
+    const validName = 'mockString';
+    const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
+
+    it('should error when WebID is null', async () => {
+
+      await expect(service.getProfile(null)).rejects.toThrow();
+
+    });
+
+    it('should error when unable to set dataset', async () => {
+
+      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should error when no dataset is found', async () => {
+
+      client.getSolidDataset = jest.fn(async () =>  null);
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should error when no profile is found', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(() => null);
+
+      await expect(service.getProfile(webId)).rejects.toThrow();
+
+    });
+
+    it('should return valid profile when found', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(() => validProfileThing);
+      client.getStringNoLocale = jest.fn(() => validName);
+
+      const profile = await service.getProfile(webId);
+
+      expect(profile).toEqual(expect.objectContaining({ name: validName }));
 
     });
 

@@ -1,4 +1,5 @@
 import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
+import { SolidProfile } from './solid-profile';
 import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';
 
@@ -124,6 +125,23 @@ export class SolidMockService extends SolidService {
   async logout(): Promise<void> {
 
     this.logger.debug(SolidMockService.name, 'Logging out user');
+
+  }
+
+  /**
+   * Retrieves the profile for the given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  async getProfile(webId: string): Promise<SolidProfile> {
+
+    if (!webId) {
+
+      throw new ArgumentError('Argument webId should be set.', webId);
+
+    }
+
+    return { name: 'mockName', uri: webId };
 
   }
 

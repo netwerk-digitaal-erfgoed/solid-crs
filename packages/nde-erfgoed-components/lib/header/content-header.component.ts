@@ -81,12 +81,10 @@ export class ContentHeaderComponent extends LitElement {
         .header .content slot[name="title"]::slotted(*) {
           font-weight: var(--font-weight-bold);
           font-size: var(--font-size-normal);
-          height: var(--gap-normal);
         }
         .header .content slot[name="subtitle"]::slotted(*) {
           margin-top: var(--gap-tiny);
           font-size: var(--font-size-small);
-          height: var(--gap-normal);
         }
         .header .actions {
           margin-right: var(--gap-normal);
