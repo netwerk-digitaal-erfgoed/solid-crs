@@ -30,6 +30,16 @@
         "value": "Onderwerp onbekend"
     },
     {
+        "key": "nde.features.collections.root.empty.create-object-title",
+        "locale": "nl-NL",
+        "value": "Maak je eerste object aan"
+    },
+    {
+        "key": "nde.features.collections.root.empty.create-object-button",
+        "locale": "nl-NL",
+        "value": "Object aanmaken"
+    },
+    {
         "key": "nde.features.authenticate.error.invalid-webid.no-webid",
         "locale": "nl-NL",
         "value": "Gelieve een WebID in te voeren."
