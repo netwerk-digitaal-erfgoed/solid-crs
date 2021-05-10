@@ -134,13 +134,13 @@ export class AuthenticateRootComponent extends RxLitElement {
 
     if (!event || !event.detail) {
 
-      throw new ArgumentError('Argument event || event.detail should be set.', event && event.detail);
+      throw new ArgumentError('Argument event || event.detail should be set.', event);
 
     }
 
     if (!this.actor || !this.actor.parent) {
 
-      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor || !this.actor.parent);
+      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor);
 
     }
 

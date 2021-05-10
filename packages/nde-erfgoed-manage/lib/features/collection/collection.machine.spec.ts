@@ -1,4 +1,4 @@
-import { Collection, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { CollectionEvents } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
@@ -6,10 +6,12 @@ import { CollectionContext, collectionMachine, CollectionStates } from './collec
 describe('CollectionMachine', () => {
 
   let machine: Interpreter<CollectionContext>;
+  let collectionStore: Store<Collection>;
+  let objectStore: CollectionObjectStore;
 
   beforeEach(() => {
 
-    const collectionStore = new MemoryStore<Collection>([
+    collectionStore = new MemoryStore<Collection>([
       {
         uri: 'collection-uri-1',
         name: 'Collection 1',
@@ -22,7 +24,7 @@ describe('CollectionMachine', () => {
       },
     ]);
 
-    const objectStore = new CollectionObjectMemoryStore([
+    objectStore = new CollectionObjectMemoryStore([
       {
         uri: 'object-uri-1',
         name: 'Object 1',
@@ -82,6 +84,64 @@ describe('CollectionMachine', () => {
 
     machine.start();
     machine.send(CollectionEvents.CLICKED_DELETE);
+
+  });
+
+  it('should load objects when loading', async (done) => {
+
+    objectStore.getObjectsForCollection = jest.fn();
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        expect(objectStore.getObjectsForCollection).toHaveBeenCalledTimes(1);
+
+        expect(objectStore.getObjectsForCollection).toHaveBeenCalledWith({
+          uri: 'collection-uri-1',
+          name: 'Collection 1',
+          description: 'This is collection 1',
+        });
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.CLICKED_DELETE);
+
+  });
+
+  it('should save collection when saving', async (done) => {
+
+    collectionStore.save = jest.fn().mockResolvedValueOnce({
+      uri: 'collection-uri-1',
+      name: 'Collection 1',
+      description: 'This is collection 1',
+    });
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        expect(collectionStore.save).toHaveBeenCalledTimes(1);
+
+        expect(collectionStore.save).toHaveBeenCalledWith({
+          uri: 'collection-uri-1',
+          name: 'Collection 1',
+          description: 'This is collection 1',
+        });
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.CLICKED_SAVE);
 
   });
 
