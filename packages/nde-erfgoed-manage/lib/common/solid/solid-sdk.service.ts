@@ -2,6 +2,7 @@ import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logou
 import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
+import { SolidProfile } from './solid-profile';
 
 /**
  * An implementation of the Solid service which uses Solid Client.
@@ -171,7 +172,7 @@ export class SolidSDKService extends SolidService {
 
   }
 
-  async getProfile(webId: string): Promise<{ name: string; photo: string }> {
+  async getProfile(webId: string): Promise<SolidProfile> {
 
     let profileDataset;
 
@@ -203,7 +204,7 @@ export class SolidSDKService extends SolidService {
 
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
 
-    return { name, photo: '' };
+    return { uri: webId, name };
 
   }
 

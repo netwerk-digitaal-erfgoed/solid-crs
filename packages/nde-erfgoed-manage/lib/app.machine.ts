@@ -8,6 +8,7 @@ import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
+import { SolidProfile } from './common/solid/solid-profile';
 
 /**
  * The root context of the application.
@@ -31,7 +32,7 @@ export interface AppContext {
   /**
    * The profile retrieved from the user's pod
    */
-  profile?: { name: string; photo: string };
+  profile?: SolidProfile;
 }
 
 /**
@@ -176,12 +177,12 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            // invoke: {
-            //   src: (context, event) => solid.getProfile(context.session.webId),
-            //   onDone: {
-            //     actions: setProfile,
-            //   },
-            // },
+            invoke: {
+              src: (context, event) => solid.getProfile(context.session.webId),
+              onDone: {
+                actions: setProfile,
+              },
+            },
             on: {
               [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
               [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
@@ -229,36 +230,25 @@ export const appMachine = (
           },
           [AppDataStates.REFRESHING]: {
             // Load collections
-            invoke: [
-              {
-                src: (context, event) => solid.getProfile(context.session.webId),
-                onDone: {
-                  actions: [ log('setting profile'), setProfile ],
+            invoke: {
+              src: () => collectionStore.all(),
+              onDone: [
+                {
+                  target: AppDataStates.IDLE,
+                  actions: [
+                    setCollections,
+                    send((context, event) => ({
+                      type: CollectionEvents.SELECTED_COLLECTION,
+                      collection: event.data[0],
+                    })),
+                  ],
+                  cond: (context, event) => event.data.length > 0,
                 },
-                onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                {
+                  target: AppDataStates.CREATING,
                 },
-              },
-              {
-                src: () => collectionStore.all(),
-                onDone: [
-                  {
-                    target: AppDataStates.IDLE,
-                    actions: [
-                      setCollections,
-                      send((context, event) => ({
-                        type: CollectionEvents.SELECTED_COLLECTION,
-                        collection: event.data[0],
-                      })),
-                    ],
-                    cond: (context, event) => event.data.length > 0,
-                  },
-                  {
-                    target: AppDataStates.CREATING,
-                  },
-                ],
-              },
-            ],
+              ],
+            },
           },
           [AppDataStates.CREATING]: {
             invoke: {

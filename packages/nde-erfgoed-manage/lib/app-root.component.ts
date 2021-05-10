@@ -12,6 +12,7 @@ import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
+import { SolidProfile } from './common/solid/solid-profile';
 
 /**
  * The root page of the application.
@@ -130,7 +131,7 @@ export class AppRootComponent extends RxLitElement {
    * The profile of the current user.
    */
   @internalProperty()
-  profile: { name: string; photo: string };
+  profile: SolidProfile;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.

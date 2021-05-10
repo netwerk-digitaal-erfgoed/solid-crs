@@ -1,4 +1,5 @@
 import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
+import { SolidProfile } from './solid-profile';
 import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';
 
@@ -127,9 +128,9 @@ export class SolidMockService extends SolidService {
 
   }
 
-  async getProfile(webId: string): Promise<{ name: string; photo: string }> {
+  async getProfile(webId: string): Promise<SolidProfile> {
 
-    return { name: 'mockName', photo:'mockPhoto' };
+    return { name: 'mockName', uri: webId };
 
   }
 

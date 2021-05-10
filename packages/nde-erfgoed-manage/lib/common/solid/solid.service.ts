@@ -1,3 +1,4 @@
+import { SolidProfile } from './solid-profile';
 import { SolidSession } from './solid-session';
 
 /**
@@ -34,6 +35,6 @@ export abstract class SolidService {
    *
    * @param webId The WebID for which to retrieve the profile.
    */
-  public abstract getProfile(webId: string): Promise<{ name: string; photo: string }>;
+  public abstract getProfile(webId: string): Promise<SolidProfile>;
 
 }
