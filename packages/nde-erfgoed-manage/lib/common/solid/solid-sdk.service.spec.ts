@@ -65,6 +65,17 @@ describe('SolidService', () => {
 
   });
 
+  describe('logout()', () => {
+
+    it.each([ null, undefined ])('should error when WebID is %s', async (value) => {
+
+      client.logout = jest.fn().mockResolvedValue(null);
+      await expect(service.logout()).resolves.not.toThrow();
+
+    });
+
+  });
+
   describe('getIssuer', () => {
 
     const validOpenIdConfig = JSON.stringify({ solid_oidc_supported: 'https://solidproject.org/TR/solid-oidc' });

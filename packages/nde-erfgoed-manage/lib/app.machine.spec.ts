@@ -4,8 +4,21 @@ import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
+import { CollectionEvents } from './features/collection/collection.events';
 
 describe('AppMachine', () => {
+
+  const collection1 = {
+    uri: 'collection-uri-1',
+    name: 'Collection 1',
+    description: 'This is collection 1',
+  };
+
+  const collection2 = {
+    uri: 'collection-uri-2',
+    name: 'Collection 2',
+    description: 'This is collection 2',
+  };
 
   let machine: Interpreter<AppContext>;
 
@@ -14,18 +27,7 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-        new MemoryStore<Collection>([
-          {
-            uri: 'collection-uri-1',
-            name: 'Collection 1',
-            description: 'This is collection 1',
-          },
-          {
-            uri: 'collection-uri-2',
-            name: 'Collection 2',
-            description: 'This is collection 2',
-          },
-        ]),
+        new MemoryStore<Collection>([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([
           {
             uri: 'object-uri-1',
@@ -70,18 +72,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-      new MemoryStore<Collection>([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-        },
-      ]),
+      new MemoryStore<Collection>([ collection1, collection2 ]),
       new CollectionObjectMemoryStore([
         {
           uri: 'object-uri-1',
@@ -131,18 +122,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-      new MemoryStore<Collection>([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-        },
-      ]),
+      new MemoryStore<Collection>([ collection1, collection2 ]),
       new CollectionObjectMemoryStore([
         {
           uri: 'object-uri-1',
@@ -237,18 +217,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(solid,
-        new MemoryStore<Collection>([
-          {
-            uri: 'collection-uri-1',
-            name: 'Collection 1',
-            description: 'This is collection 1',
-          },
-          {
-            uri: 'collection-uri-2',
-            name: 'Collection 2',
-            description: 'This is collection 2',
-          },
-        ]),
+        new MemoryStore<Collection>([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([
           {
             uri: 'object-uri-1',
@@ -279,7 +248,8 @@ describe('AppMachine', () => {
 
     machine.start();
 
-    machine.send({ type: AppEvents.LOGGING_OUT });
+    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
+    machine.send(AppEvents.LOGGING_OUT);
 
   });
 
@@ -290,18 +260,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(solid,
-        new MemoryStore<Collection>([
-          {
-            uri: 'collection-uri-1',
-            name: 'Collection 1',
-            description: 'This is collection 1',
-          },
-          {
-            uri: 'collection-uri-2',
-            name: 'Collection 2',
-            description: 'This is collection 2',
-          },
-        ]),
+        new MemoryStore<Collection>([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([
           {
             uri: 'object-uri-1',
@@ -330,6 +289,24 @@ describe('AppMachine', () => {
     });
 
     machine.start();
+
+  });
+
+  it('should emit selected collection after login', async (done) => {
+
+    machine.onEvent((event) => {
+
+      if(event.type === CollectionEvents.SELECTED_COLLECTION) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
 
   });
 

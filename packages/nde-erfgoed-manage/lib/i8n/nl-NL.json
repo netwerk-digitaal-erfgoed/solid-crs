@@ -9,9 +9,26 @@
         "locale": "nl-NL",
         "value": "Er ging iets fout"
     },
-    
-
-
+    {
+        "key": "nde.collections.alerts.created-collection",
+        "locale": "nl-NL",
+        "value": "Collectie aangemaakt"
+    },
+    {
+        "key": "nde.navigation.collections.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.collections.card.name-unavailable",
+        "locale": "nl-NL",
+        "value": "Naam onbekend"
+    },
+    {
+        "key": "nde.collections.card.subject-unavailable",
+        "locale": "nl-NL",
+        "value": "Onderwerp onbekend"
+    },
     {
         "key": "nde.features.authenticate.error.invalid-webid.no-webid",
         "locale": "nl-NL",
@@ -57,9 +74,6 @@
         "locale": "nl-NL",
         "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
     },
-
-
-
     {
         "key": "nde.features.collections.alerts.created-collection",
         "locale": "nl-NL",
@@ -90,9 +104,6 @@
         "locale": "nl-NL",
         "value": "Beschrijving van deze collectie"
     },
-
-
-
     {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",

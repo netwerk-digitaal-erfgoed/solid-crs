@@ -78,10 +78,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 79.84,
-        "functions": 86.17,
-        "lines": 89.39,
-        "statements": 89.46
+        "branches": 81.95,
+        "functions": 88.12,
+        "lines": 91.93,
+        "statements": 91.88
       }
     },
     "automock": false,

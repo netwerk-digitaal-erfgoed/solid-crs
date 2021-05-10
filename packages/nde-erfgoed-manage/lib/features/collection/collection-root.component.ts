@@ -65,7 +65,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     super.updated(changed);
 
-    if(changed.has('actor') && this.actor){
+    if(changed && changed.has('actor') && this.actor){
 
       if(this.actor.parent){
 
@@ -121,7 +121,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     const loading = this.state||false;
 
-    return loading ? html`
+    return loading && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       <div slot="title">${this.collection.name}</div>
