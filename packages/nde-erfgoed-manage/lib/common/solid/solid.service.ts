@@ -29,6 +29,11 @@ export abstract class SolidService {
    */
   public abstract logout(): Promise<void>;
 
+  /**
+   * Retrieves the profile for the given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
   public abstract getProfile(webId: string): Promise<{ name: string; photo: string }>;
 
 }

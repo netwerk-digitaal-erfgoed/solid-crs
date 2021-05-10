@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from './resource';
 import { Store } from './store';
@@ -32,7 +33,7 @@ export class MemoryStore<T extends Resource> implements Store<T> {
   }
 
   /**
-   * Either deletes the given resource.
+   * Deletes the given resource.
    *
    * @param resource Resource to be deleted.
    */
@@ -75,12 +76,17 @@ export class MemoryStore<T extends Resource> implements Store<T> {
 
     }
 
+    const resourceToSave: T = {
+      ...resource,
+      ...resource.uri ? {} : { uri: v4() },
+    };
+
     this.resources = [
-      ...this.resources.filter((existingResource) => resource.uri !== existingResource.uri),
-      resource,
+      ...this.resources.filter((existingResource) => resourceToSave.uri !== existingResource.uri),
+      resourceToSave,
     ];
 
-    return resource;
+    return resourceToSave;
 
   }
 

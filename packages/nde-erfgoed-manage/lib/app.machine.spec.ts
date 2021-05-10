@@ -248,7 +248,8 @@ describe('AppMachine', () => {
 
     machine.start();
 
-    machine.send({ type: AppEvents.LOGGING_OUT });
+    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
+    machine.send(AppEvents.LOGGING_OUT);
 
   });
 
