@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Cross, Edit, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Edit, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
@@ -77,7 +77,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     super.updated(changed);
 
-    if(changed.has('actor') && this.actor){
+    if(changed && changed.has('actor') && this.actor){
 
       if(this.actor.parent){
 
@@ -145,7 +145,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     const loading = this.state||false;
 
-    return loading ? html`
+    return loading && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.state.matches(CollectionStates.EDITING)
@@ -167,13 +167,30 @@ export class CollectionRootComponent extends RxLitElement {
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE)}">${unsafeSVG(Trash)}</button></div>
+      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
     <div class="content">
       ${ alerts }
-      <div class='grid'>
-        ${this.objects?.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
-      </div>
+      
+      ${this.objects?.length
+    ? html`
+          <div class='grid'>
+            ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+          </div>
+        `
+    : html`
+          <div class="empty-container">
+            <div class='empty'>
+              ${unsafeSVG(Empty)}
+              <div class='text'>${this.translator.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
+                ${unsafeSVG(ObjectIcon)}
+                <span>${this.translator.translate('nde.features.collections.root.empty.create-object-button')}</span>
+              </button>
+            </div>
+          </div>
+        `
+}
     </div>
   ` : html``;
 
@@ -187,8 +204,14 @@ export class CollectionRootComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        :host {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
         .content {
           padding: var(--gap-large);
+          height: 100%;
         }
         .grid {
           display: grid;
@@ -218,7 +241,43 @@ export class CollectionRootComponent extends RxLitElement {
         }
         .name {
           font-weight: bold;
-          font-size: var(--font-size-large)
+          font-size: var(--font-size-large);
+        }
+        .empty-container {
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          height: 100%;
+        }
+        .empty {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: var(--gap-large);
+        }
+        .empty .text {
+          color: var(--colors-foreground-dark);
+        }
+        .empty > svg {
+          width: 40%;
+          height: auto;
+        }
+        .empty button {
+          width: 260px;
+          text-transform: none;
+          padding: var(--gap-small) var(--gap-normal);
+          display: flex;
+          gap: var(--gap-normal);
+          justify-content: flex-start;
+          align-items: center;
+        }
+        .empty button span {
+          display: inline-flex;
+          align-items: center;
+          height: var(--gap-normal);
         }
       `,
     ];

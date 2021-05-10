@@ -8,25 +8,25 @@ Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedin
 
 == Run locally
 
-When running the app locally for the first time, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
+When running the app locally for the first time, or after an update, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
 
 [source,bash]
 ----
 $ npm run bootstrap:no-ci
 ----
 
-Once the dependencies have installed, you can start the app by executing the following command.
+Once the dependencies are installed, you can build the app by executing the following command.
+
+[source,bash]
+----
+$ npm run build:all
+----
+
+After installing and building once, you can start the app at any time by executing the following command.
 
 [source,bash]
 ----
 $ npm run start
-----
-
-The `start` command automatically builds the necessary dependencies before starting the application. However, you can also build the app and its dependencies separately from the `start` command as follows.
-
-[source,bash]
-----
-$ npm run build
 ----
 
 == Run with Docker
