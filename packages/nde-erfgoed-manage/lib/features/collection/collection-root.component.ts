@@ -160,6 +160,16 @@ export class CollectionRootComponent extends RxLitElement {
           grid-template-columns: repeat(3, 1fr);
           grid-gap: var(--gap-normal);
         }
+        @media only screen and (max-width: 1300px) {
+          .grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media only screen and (max-width: 1000px) {
+          .grid {
+            grid-template-columns: repeat(1, 1fr);
+          }
+        }
         nde-object-card, nde-collection-card {
           height: 227px;
         }
