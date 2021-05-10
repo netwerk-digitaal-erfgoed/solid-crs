@@ -1,4 +1,4 @@
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
@@ -193,6 +193,51 @@ describe('FormElementComponent', () => {
     await component.updateComplete;
 
     expect(input.disabled).toBeFalsy();
+
+  });
+
+  describe('bindActorToInput', () => {
+
+    const slot: HTMLSlotElement = {
+      ...window.document.createElement('input'),
+      assignedElements: jest.fn(),
+      assignedNodes: jest.fn(),
+    };
+
+    const actor = interpret(formMachine<any>((context, event): any => of([])));
+    const data = { name: '', description: '', uri: '' };
+
+    it('should throw when slot in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        undefined, actor, 'name', data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when actor in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, undefined, 'name', data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when field in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, actor, undefined, data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when data in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, actor, 'name', undefined,
+      )).toThrow(ArgumentError);
+
+    });
 
   });
 
