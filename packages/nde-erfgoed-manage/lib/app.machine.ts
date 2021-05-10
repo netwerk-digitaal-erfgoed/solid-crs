@@ -2,7 +2,7 @@ import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setSession } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -26,6 +26,11 @@ export interface AppContext {
    * The collections retrieved from the user's pod
    */
   collections?: Collection[];
+
+  /**
+   * The profile retrieved from the user's pod
+   */
+  profile?: { name: string; photo: string };
 }
 
 /**
@@ -192,7 +197,12 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-
+            invoke: {
+              src: (context, event) => solid.getProfile(context.session.webId),
+              onDone: {
+                actions: setProfile,
+              },
+            },
           },
 
           /**

@@ -29,4 +29,6 @@ export abstract class SolidService {
    */
   public abstract logout(): Promise<void>;
 
+  public abstract getProfile(webId: string): Promise<{ name: string; photo: string }>;
+
 }

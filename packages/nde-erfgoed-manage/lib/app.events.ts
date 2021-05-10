@@ -158,3 +158,8 @@ export const removeSession = assign({ session: (context, event) => undefined });
  * Action which saves a list of collections to the machine's context.
  */
 export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<AppContext>) => event.data });
+
+/**
+ * Action which sets a profile in the machine's context.
+ */
+export const setProfile = assign({ profile:  (context, event: DoneInvokeEvent<AppContext>) => event.data });

@@ -127,4 +127,10 @@ export class SolidMockService extends SolidService {
 
   }
 
+  async getProfile(webId: string): Promise<{ name: string; photo: string }> {
+
+    return { name: 'mockName', photo:'mockPhoto' };
+
+  }
+
 }

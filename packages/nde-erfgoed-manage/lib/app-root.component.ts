@@ -122,6 +122,12 @@ export class AppRootComponent extends RxLitElement {
   collections: Collection[];
 
   /**
+   * The profile of the current user.
+   */
+  @internalProperty()
+  profile: { name: string; photo: string };
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -163,6 +169,10 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.collections),
     ));
 
+    this.subscribe('profile', from(this.actor).pipe(
+      map((state) => state.context?.profile),
+    ));
+
   }
 
   /**
@@ -177,7 +187,7 @@ export class AppRootComponent extends RxLitElement {
     <nde-sidebar>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
-        <div slot="title">Lorem Ipsum</div>
+        <div slot="title">${this.profile?.name}</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>

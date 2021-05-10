@@ -1,4 +1,4 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout } from '@digita-ai/nde-erfgoed-client';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
 import { ArgumentError, Logger } from '@digita-ai/nde-erfgoed-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
@@ -168,6 +168,43 @@ export class SolidSDKService extends SolidService {
     this.logger.debug(SolidSDKService.name, 'Logging out user');
 
     return await logout();
+
+  }
+
+  async getProfile(webId: string): Promise<{ name: string; photo: string }> {
+
+    let profileDataset;
+
+    // Dereference the user's WebID to get the user's profile document.
+    try {
+
+      profileDataset = await getSolidDataset(webId);
+
+    } catch(e) {
+
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    if(!profileDataset) {
+
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    // Parses the profile document.
+    const profile = getThing(profileDataset, webId);
+
+    if(!profile) {
+
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
+    // const photo = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
+
+    return { name, photo: '' };
 
   }
 
