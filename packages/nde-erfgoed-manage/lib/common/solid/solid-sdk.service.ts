@@ -202,7 +202,6 @@ export class SolidSDKService extends SolidService {
     }
 
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
-    // const photo = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
 
     return { name, photo: '' };
 

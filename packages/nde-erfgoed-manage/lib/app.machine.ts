@@ -1,12 +1,13 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
-import { createMachine } from 'xstate';
+import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, SelectedCollectionEvent, setCollections, setProfile, setSession } from './app.events';
+import { addAlert, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
+import { CollectionEvents } from './features/collection/collection.events';
 
 /**
  * The root context of the application.
@@ -125,39 +126,21 @@ export const appMachine = (
          */
           [AppFeatureStates.COLLECTION]: {
             on: {
-              [AppEvents.SELECTED_COLLECTION]: `${AppFeatureStates.COLLECTION}.loaded`,
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+              },
             },
-            initial: 'loading',
-            states: {
-              'loading': {
-              // Load collections first
-                invoke: {
-                  src: () => collectionStore.all(),
-                  onDone: {
-                    actions: [
-                      setCollections,
-                      send((context, event) => ({ type: AppEvents.SELECTED_COLLECTION, collection: event.data[0] })),
-                    ],
-                  },
+            // Invoke the collection machine
+            invoke: [
+              {
+                id: AppActors.COLLECTION_MACHINE,
+                src: collectionMachine(collectionStore, objectStore),
+                autoForward: true,
+                onError: {
+                  actions: send({ type: AppEvents.ERROR }),
                 },
               },
-              'loaded': {
-              // Then invoke the collection machine
-                invoke: [
-                  {
-                    id: AppActors.COLLECTION_MACHINE,
-                    src: collectionMachine(collectionStore, objectStore),
-                    data: {
-                      collection:
-                    (context: AppContext, event: SelectedCollectionEvent) => event.collection,
-                    },
-                    onError: {
-                      actions: send({ type: AppEvents.ERROR }),
-                    },
-                  },
-                ],
-              },
-            },
+            ],
           },
           /**
            * The authenticate feature is active.
@@ -197,12 +180,25 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            invoke: {
-              src: (context, event) => solid.getProfile(context.session.webId),
-              onDone: {
-                actions: setProfile,
+            // Load collections
+            invoke: [
+              {
+                src: (context, event) => solid.getProfile(context.session.webId),
+                onDone: {
+                  actions: setProfile,
+                },
               },
-            },
+              {
+                src: () => collectionStore.all(),
+                onDone: {
+                  actions: [
+                    setCollections,
+                    send((context, event) =>
+                      ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data[0] })),
+                  ],
+                },
+              },
+            ],
           },
 
           /**
