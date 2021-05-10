@@ -204,7 +204,6 @@ export class CollectionRootComponent extends RxLitElement {
           gap: var(--gap-normal);
           justify-content: flex-start;
           align-items: center;
-          background-color: var(--colors-accent-primary);
         }
         .empty button span {
           display: inline-flex;
