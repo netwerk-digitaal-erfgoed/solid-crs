@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
@@ -10,8 +10,9 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
-import { CollectionRootComponent } from './features/collection/collection-root.component';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
+import { CollectionEvents } from './features/collection/collection.events';
+import { SolidProfile } from './common/solid/solid-profile';
 
 /**
  * The root page of the application.
@@ -103,7 +104,12 @@ export class AppRootComponent extends RxLitElement {
           updated: 0,
           collection: 'collection-uri-1',
         },
-      ])
+      ]),
+      {
+        uri: null,
+        name: this.translator.translate('nde.features.collections.new-collection-name'),
+        description: this.translator.translate('nde.features.collections.new-collection-description'),
+      },
     )).withContext({
       alerts: [],
     }), { devTools: true },
@@ -120,6 +126,12 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   collections: Collection[];
+
+  /**
+   * The profile of the current user.
+   */
+  @internalProperty()
+  profile: SolidProfile;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
@@ -154,13 +166,14 @@ export class AppRootComponent extends RxLitElement {
 
     super.firstUpdated(changed);
 
-    this.subscribe('state', from(this.actor).pipe(
-      tap((state) => this.logger.debug(CollectionRootComponent.name, 'AppState change:', { actor: this.actor, state })),
-      map((state) => state),
-    ));
+    this.subscribe('state', from(this.actor));
 
     this.subscribe('collections', from(this.actor).pipe(
       map((state) => state.context?.collections),
+    ));
+
+    this.subscribe('profile', from(this.actor).pipe(
+      map((state) => state.context?.profile),
     ));
 
   }
@@ -177,15 +190,15 @@ export class AppRootComponent extends RxLitElement {
     <nde-sidebar>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
-        <div slot="title">Lorem Ipsum</div>
+        <div slot="title">${this.profile?.name}</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>
         <nde-sidebar-list-item slot="item" isTitle inverse>
-          <div slot="title">Collecties</div>
-          <div slot="actions">${ unsafeSVG(Plus) }</div>
+          <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
+          <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
         </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
       </nde-sidebar-list>
     </nde-sidebar>
     ` : '' }  

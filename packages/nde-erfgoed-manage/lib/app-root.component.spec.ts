@@ -2,8 +2,8 @@ import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from './app.events';
-import { AppAuthenticateStates, AppContext, appMachine, AppRootStates } from './app.machine';
-import { AppRootComponent } from './app.root';
+import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
+import { AppRootComponent } from './app-root.component';
 import { SolidMockService } from './common/solid/solid-mock.service';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
@@ -12,6 +12,12 @@ describe('AppRootComponent', () => {
 
   let component: AppRootComponent;
   let machine: Interpreter<AppContext>;
+
+  const template: Collection = {
+    uri: 'collection-uri-3',
+    name: 'Collection 3',
+    description: 'This is collection 3',
+  };
 
   beforeEach(() => {
 
@@ -39,9 +45,13 @@ describe('AppRootComponent', () => {
           updated: 0,
           collection: 'collection-uri-1',
         },
-      ])));
+      ]),
+      template)
+      .withContext({
+        alerts: [],
+        session: { webId: 'lorem' },
+      }));
 
-    machine.start();
     component = window.document.createElement('nde-app-root') as AppRootComponent;
 
     component.actor = machine;
@@ -78,6 +88,8 @@ describe('AppRootComponent', () => {
 
     });
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -102,6 +114,8 @@ describe('AppRootComponent', () => {
 
     });
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -122,6 +136,8 @@ describe('AppRootComponent', () => {
 
     });
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -131,11 +147,122 @@ describe('AppRootComponent', () => {
 
   it('should throw error when dismissing without event', async () => {
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     expect(() => component.dismiss(null)).toThrow(ArgumentError);
     expect(() => component.dismiss({ detail: null } as CustomEvent<Alert>)).toThrow(ArgumentError);
+
+  });
+
+  it('should send create event when sidebar list action is clicked', async (done) => {
+
+    machine.onTransition(async (state) => {
+
+      if(
+        state.matches({
+          [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED,
+          [AppRootStates.DATA]: AppDataStates.IDLE,
+        })
+      &&
+        state.context?.collections?.length > 0){
+
+        done();
+
+        await component.updateComplete;
+        const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-sidebar');
+        expect(sidebar).toBeTruthy();
+
+        const listItem = sidebar[0].querySelectorAll('nde-sidebar-list-item')[0];
+        expect(listItem).toBeTruthy();
+
+        const action = listItem.querySelector('div[slot="actions"]') as HTMLElement;
+        expect(action).toBeTruthy();
+
+        action.click();
+
+      }
+
+    });
+
+    machine.onEvent((event) => {
+
+      if(event.type === AppEvents.CLICKED_CREATE_COLLECTION){
+
+        done();
+
+      }
+
+    });
+
+    machine.onTransition(async (state) => {
+
+      if(
+        state.matches({
+          [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.UNAUTHENTICATED,
+          [AppRootStates.DATA]: AppDataStates.IDLE,
+        })) {
+
+        done();
+        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } });
+        await component.updateComplete;
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should add collection when store contains none', async (done) => {
+
+    // start without collection
+    machine = interpret(appMachine(solid,
+      new MemoryStore<Collection>([]),
+      new CollectionObjectMemoryStore([]),
+      template));
+
+    machine.start();
+    component.actor = machine;
+
+    machine.onTransition(async (state) => {
+
+      await component.updateComplete;
+
+      if(state.context?.collections?.length === 1){
+
+        done();
+
+      }
+
+    });
+
+    machine.onTransition(async (state) => {
+
+      if(
+        state.matches({
+          [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.UNAUTHENTICATED,
+          [AppRootStates.DATA]: AppDataStates.IDLE,
+        })) {
+
+        done();
+        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } });
+        await component.updateComplete;
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
   });
 

@@ -4,6 +4,7 @@ import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
+import { ClickedDeleteEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -15,7 +16,6 @@ export enum AppEvents {
   LOGGED_IN = '[AppEvent: Logged in]',
   LOGGING_OUT = '[AppEvent: Logging out]',
   LOGGED_OUT = '[AppEvent: Logged out]',
-  SELECTED_COLLECTION = '[AppEvent: Selected collection]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
 }
@@ -74,9 +74,8 @@ export interface CollectionsLoadedEvent extends Event<AppEvents> {
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export interface SelectedCollectionEvent extends Event<AppEvents> {
-  type: AppEvents.SELECTED_COLLECTION;
-  collection: Collection;
+export interface ClickedCreateCollectionEvent extends Event<AppEvents> {
+  type: AppEvents.CLICKED_CREATE_COLLECTION;
 }
 
 /**
@@ -90,6 +89,8 @@ export type AppEvent =
   | DismissAlertEvent
   | AddAlertEvent
   | SelectedCollectionEvent
+  | ClickedDeleteEvent
+  | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent;
 
 /**
@@ -157,4 +158,16 @@ export const removeSession = assign({ session: (context, event) => undefined });
 /**
  * Action which saves a list of collections to the machine's context.
  */
-export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<AppContext>) => event.data });
+export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });
+
+/**
+ * Action which adds a single collection to the machine's context.
+ */
+export const addCollection = assign((context: AppContext, event: DoneInvokeEvent<Collection>) => ({
+  collections: [ ...context.collections||[], event.data ],
+}));
+
+/**
+ * Action which sets a profile in the machine's context.
+ */
+export const setProfile = assign({ profile:  (context, event: DoneInvokeEvent<AppContext>) => event.data });

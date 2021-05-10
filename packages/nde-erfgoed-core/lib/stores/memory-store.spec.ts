@@ -129,6 +129,20 @@ describe('MemoryStore', () => {
 
     });
 
+    it('should add a non-existing resource without uri', async () => {
+
+      const collectionToSave = { ...collection3, uri: null };
+
+      const savedResource = await service.save(collectionToSave);
+
+      expect(savedResource.uri).toBeTruthy();
+
+      const remainingResources = await service.all();
+
+      expect(remainingResources.length).toBe(3);
+
+    });
+
     it('should update an existing resource', async () => {
 
       const savedResource = await service.save(collection2Updated);
