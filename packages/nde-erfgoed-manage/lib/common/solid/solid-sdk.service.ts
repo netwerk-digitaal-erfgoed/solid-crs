@@ -172,7 +172,29 @@ export class SolidSDKService extends SolidService {
 
   }
 
+  /**
+   * Retrieves the profile for the given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
   async getProfile(webId: string): Promise<SolidProfile> {
+
+    if (!webId) {
+
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+
+    }
+
+    // Parse the user's WebID as a url.
+    try {
+
+      const webIdUrl = new URL(webId);
+
+    } catch {
+
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+
+    }
 
     let profileDataset;
 

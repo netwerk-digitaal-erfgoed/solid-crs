@@ -128,7 +128,18 @@ export class SolidMockService extends SolidService {
 
   }
 
+  /**
+   * Retrieves the profile for the given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
   async getProfile(webId: string): Promise<SolidProfile> {
+
+    if (!webId) {
+
+      throw new ArgumentError('Argument webId should be set.', webId);
+
+    }
 
     return { name: 'mockName', uri: webId };
 

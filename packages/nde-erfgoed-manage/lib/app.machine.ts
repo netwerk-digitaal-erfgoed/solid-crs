@@ -177,6 +177,9 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
+            /**
+             * Get profile and assign to context.
+             */
             invoke: {
               src: (context, event) => solid.getProfile(context.session.webId),
               onDone: {
@@ -195,6 +198,9 @@ export const appMachine = (
           [AppAuthenticateStates.UNAUTHENTICATING]: {
             entry: removeSession,
             invoke: {
+              /**
+               * Logout from identity provider.
+               */
               src: () => solid.logout(),
               onDone: {
                 actions: send({ type: AppEvents.LOGGED_OUT }),
@@ -221,6 +227,9 @@ export const appMachine = (
       [AppRootStates.DATA]: {
         initial: AppDataStates.IDLE,
         states: {
+          /**
+           * Not refreshing or creating collections.
+           */
           [AppDataStates.IDLE]: {
             on: {
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
@@ -228,9 +237,14 @@ export const appMachine = (
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
             },
           },
+          /**
+           * Refresh collections, set current collection and assign to state.
+           */
           [AppDataStates.REFRESHING]: {
-            // Load collections
             invoke: {
+              /**
+               * Get all collections from store.
+               */
               src: () => collectionStore.all(),
               onDone: [
                 {
@@ -250,8 +264,14 @@ export const appMachine = (
               ],
             },
           },
+          /**
+           * Creating a new collection.
+           */
           [AppDataStates.CREATING]: {
             invoke: {
+              /**
+               * Save collection to the store.
+               */
               src: () => collectionStore.save(template), // TODO: Update
               onDone: {
                 target: AppDataStates.IDLE,
