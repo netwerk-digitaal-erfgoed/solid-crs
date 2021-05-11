@@ -213,12 +213,15 @@ export class CollectionRootComponent extends RxLitElement {
           height: var(--gap-normal);
         }
         nde-form-element input {
-          height: 23px;
+          height: 20px;
           padding: 0;
         }
         .name {
           font-weight: bold;
           font-size: var(--font-size-large)
+        }
+        .description {
+          margin-top: var(--gap-tiny);
         }
       `,
     ];
