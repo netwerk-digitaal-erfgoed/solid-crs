@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, FormValidationStates, Alert, FormRootStates, FormCleanlinessStates } from '@digita-ai/nde-erfgoed-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -151,7 +151,7 @@ export class CollectionRootComponent extends RxLitElement {
       ${this.state.matches(CollectionStates.EDITING)
     ? html`
           <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-            <input type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}" />
+            <input autofocus type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
           <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
             <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
