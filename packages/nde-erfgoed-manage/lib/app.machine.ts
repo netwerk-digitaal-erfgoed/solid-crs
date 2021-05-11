@@ -258,9 +258,6 @@ export const appMachine = (
                   ],
                   cond: (context, event) => event.data.length > 0,
                 },
-                {
-                  target: AppDataStates.CREATING,
-                },
               ],
             },
           },

@@ -41,6 +41,12 @@ export class CollectionRootComponent extends RxLitElement {
   public alerts: Alert[];
 
   /**
+   * The count of al the collections.
+   */
+  @property({ type: Number })
+  public collectionCount: number;
+
+  /**
    * The state of this component.
    */
   @internalProperty()
@@ -131,7 +137,7 @@ export class CollectionRootComponent extends RxLitElement {
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.actor.send(CollectionEvents.CLICKED_SAVE)}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>
+      ${this.collectionCount > 1 ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
     <div class="content">
       ${ alerts }
