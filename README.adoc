@@ -6,6 +6,6 @@ Solid CBS is a system for managing collections of digital objects for small heri
 
 * xref:docs/modules/ROOT/nav.adoc[Project documentation]
 * xref:docs/modules/manual/nav.adoc[User manual]
-* xref:docs/modules/ROOT/install.adoc[Install instructions]
+* xref:docs/modules/ROOT/pages/install.adoc[Install instructions]
 
 The test environment can be found at  https://app.nde.digita.ai/. This always runs the most recent release of the application. 
