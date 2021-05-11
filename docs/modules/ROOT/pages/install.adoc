@@ -1,0 +1,72 @@
+= Install instructions 
+:description: Install instructions to run the app
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
+
+== Run locally
+
+When running the app locally for the first time, or after an update, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
+
+[source,bash]
+----
+$ npm run bootstrap:no-ci
+----
+
+Once the dependencies are installed, you can build the app by executing the following command.
+
+[source,bash]
+----
+$ npm run build:all
+----
+
+After installing and building once, you can start the app at any time by executing the following command.
+
+[source,bash]
+----
+$ npm run start
+----
+
+== Run with Docker
+
+You can run the application by using docker. To use the latest published version, run the following command.
+
+[source,bash]
+----
+$ docker run -p 3002:3002 ghcr.io/digita-ai/nde-erfgoed-manage:latest
+----
+
+Alternatively, you can build and run an image locally.
+
+[source,bash]
+----
+# Build on Mac
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t cbs:local ./packages/nde-erfgoed-manage/
+
+# Build on Windows
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t cbs:local ./packages/nde-erfgoed-manage/
+
+# Run local image
+$ docker run -p 3002:3002 cbs:local
+----
+
+== Configure Git
+
+Start by installing Git and configuring your global Git name and email address. You can do so by executing the following commands. Please make sure to use exactly the same name and email address as in your Github profile.
+
+[source,text]
+----
+$ git config --global user.name "John Doe"
+$ git config --global user.email john@digita.ai
+----
+
+To be safe, backup all of your existing repositories, or simply create a new folder which will contain your Github repositories. Once done, clone the Github repositories by executing the following command.
+
+[source,text]
+----
+$ git clone git@github.com:digita-ai/dgt-platform.git
+----
+
+In order to pull and publish packages from Github, you need to authenticate by using a personal access token. Start by generating one which has at least the `+write:packages+` and `+read:packages+` scopes on https://github.com/settings/tokens[this page]. Note that you will not be able to recover or view the token after it has been created, so keep it somewhere safe.
+
+Set this token to an environment variable with key 'NPM_TOKEN' (https://gist.github.com/iest/58692bf1001b0424c257[bash, zsh, fish], https://superuser.com/questions/949560/how-do-i-set-system-environment-variables-in-windows-10[Windows]). 
