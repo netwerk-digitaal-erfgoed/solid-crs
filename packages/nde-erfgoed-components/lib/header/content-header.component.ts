@@ -48,18 +48,23 @@ export class ContentHeaderComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
+        :host {
+          display: block;
+          height: 99px;
+          min-height: 99px;
+        }
         .header.inverse {
           background-color: var(--colors-primary-dark);
           color: var(--colors-foreground-inverse);
           fill: var(--colors-foreground-inverse);
         }
         .header {
+          height: 100%;
           padding: 0px var(--gap-large);
           background-color: var( --colors-background-light);
           color: var(--colors-foreground-normal);
           fill: var(--colors-foreground-normal);
           border-bottom: 1px solid var(--colors-primary-normal);
-          height: 99px;
           display: flex;
           flex-direction: row;
           align-items: center;

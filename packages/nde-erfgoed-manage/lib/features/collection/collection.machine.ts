@@ -3,16 +3,14 @@ import { formMachine,
   FormValidatorResult,
   FormContext,
   FormEvents, State } from '@digita-ai/nde-erfgoed-components';
-import { assign, createMachine, send, sendParent, StateMachine } from 'xstate';
+import { assign, createMachine, sendParent } from 'xstate';
 import {
   Collection,
   CollectionObject,
   CollectionObjectStore,
   Store,
 } from '@digita-ai/nde-erfgoed-core';
-
-import { catchError, map } from 'rxjs/operators';
-import { from, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
 
@@ -23,7 +21,7 @@ export interface CollectionContext {
   /**
    * The currently selected collection.
    */
-  collection: Collection;
+  collection?: Collection;
 
   /**
    * The list of objects in the current collection.
@@ -42,11 +40,12 @@ export enum CollectionActors {
  * State references for the collection component, with readable log format.
  */
 export enum CollectionStates {
-  IDLE = '[CollectionsState: Idle]',
-  LOADING = '[CollectionsState: Loading]',
-  SAVING = '[CollectionsState: Saving]',
-  EDITING = '[CollectionsState: Editing]',
-  DELETING = '[CollectionsState: Deleting]',
+  IDLE      = '[CollectionsState: Idle]',
+  LOADING   = '[CollectionsState: Loading]',
+  SAVING    = '[CollectionsState: Saving]',
+  EDITING   = '[CollectionsState: Editing]',
+  DELETING  = '[CollectionsState: Deleting]',
+  DETERMINING_COLLECTION  = '[CollectionsState: Determining collection]',
 }
 
 /**
@@ -62,13 +61,19 @@ export const collectionMachine = (
   State<CollectionStates, CollectionContext>
   >({
     id: CollectionActors.COLLECTION_MACHINE,
-    initial: CollectionStates.LOADING,
+    context: { },
+    initial: CollectionStates.DETERMINING_COLLECTION,
     on: {
       [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
       [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
       [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
       [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
-      [AppEvents.SELECTED_COLLECTION]: CollectionStates.LOADING,
+      [CollectionEvents.SELECTED_COLLECTION]: {
+        actions: assign({
+          collection: (context, event) => event.collection,
+        }),
+        target: CollectionStates.DETERMINING_COLLECTION,
+      },
     },
     states: {
       /**
@@ -94,6 +99,20 @@ export const collectionMachine = (
             actions: sendParent(AppEvents.ERROR),
           },
         },
+      },
+      /**
+       * Determining collection
+       */
+      [CollectionStates.DETERMINING_COLLECTION]: {
+        always: [
+          {
+            target: CollectionStates.LOADING,
+            cond: (context, event) => context?.collection ? true : false,
+          },
+          {
+            target: CollectionStates.IDLE,
+          },
+        ],
       },
       /**
        * Objects for the current collection are loaded.
@@ -163,6 +182,9 @@ export const collectionMachine = (
           src: (context) => collectionStore.delete(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
+            actions: [
+              sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
+            ],
           },
           onError: {
             actions: sendParent(AppEvents.ERROR),
