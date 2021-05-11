@@ -195,6 +195,6 @@
     # How to handle these? Perhaps omit these properties for the time being?
 
     # For linking the heritage object to the digital object
-    schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234>
+    schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234> .
     # To discuss: the type pointed to in 'schema:mainEntityOfPage' can be anything. Is it useful to have a 'convenience property' to the image? E.g.:
     # schema:image <https://data.hetlageland.org/digital-objects/1234> .

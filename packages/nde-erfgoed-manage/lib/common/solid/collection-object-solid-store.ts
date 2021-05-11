@@ -1,15 +1,18 @@
-import { MemoryStore, CollectionObject, CollectionObjectStore, Collection } from '@digita-ai/nde-erfgoed-core';
+import { getSolidDataset, getThing, getStringWithLocale } from '@digita-ai/nde-erfgoed-client';
+import { CollectionObject, CollectionObjectStore, Collection } from '@digita-ai/nde-erfgoed-core';
 
-export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> implements CollectionObjectStore {
+export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   /**
    * Retrieves all objects for a specific collection.
    *
    * @param collection The collection for which to retrieve objects.
    */
-  getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
+  async getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
 
-    throw new Error('Method not implemented.');
+    const objects = await this.all();
+
+    return objects.filter((object) => object.collection === collection.uri);
 
   }
 
@@ -18,9 +21,22 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
    *
    * @param uri The URI of the Collection
    */
-  getObject(uri: string): Promise<CollectionObject> {
+  async getObject(uri: string): Promise<CollectionObject> {
 
-    throw new Error('Method not implemented.');
+    const dataset = await getSolidDataset(uri);
+
+    const collectionThing = getThing(dataset, uri);
+
+    return {
+      uri,
+      collection: 'http://localhost:3000/leapeeters/heritage-collections/collection-1',
+      name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
+      type: undefined,
+      subject: undefined,
+      image: undefined,
+      updated: undefined,
+    };
 
   }
 
@@ -31,7 +47,7 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
    */
   async all(): Promise<CollectionObject[]> {
 
-    return [];
+    return [ await this.getObject('http://localhost:3000/leapeeters/heritage-objects/object-1') ];
 
   }
 

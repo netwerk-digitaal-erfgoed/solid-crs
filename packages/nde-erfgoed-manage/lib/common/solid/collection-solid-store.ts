@@ -1,4 +1,4 @@
-import { getSolidDataset, getStringNoLocale, getThing } from '@digita-ai/nde-erfgoed-client';
+import { getSolidDataset, getStringWithLocale, getThing } from '@digita-ai/nde-erfgoed-client';
 import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 
 /**
@@ -23,9 +23,17 @@ export class CollectionSolidStore implements CollectionStore {
    *
    * @param resource The Collection to delete
    */
-  delete(resource: Collection): Promise<Collection> {
+  async delete(collection: Collection): Promise<Collection> {
 
-    throw new Error('Method not implemented.');
+    const result = await fetch(collection.uri, { method: 'DELETE' });
+
+    if (!result.ok) {
+
+      throw new Error('Error while deleting');
+
+    }
+
+    return collection;
 
   }
 
@@ -47,14 +55,14 @@ export class CollectionSolidStore implements CollectionStore {
    */
   async getCollection(uri: string): Promise<Collection> {
 
-    const dataset = await getSolidDataset('http://localhost:3000/leapeeters/heritage-collections/collection-1');
+    const dataset = await getSolidDataset(uri);
 
-    const collectionThing = getThing(dataset, 'http://localhost:3000/leapeeters/heritage-collections/collection-1');
+    const collectionThing = getThing(dataset, uri);
 
     return {
       uri,
-      name: getStringNoLocale(collectionThing, 'http://schema.org/name'),
-      description: getStringNoLocale(collectionThing, 'http://schema.org/description'),
+      name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
     };
 
   }

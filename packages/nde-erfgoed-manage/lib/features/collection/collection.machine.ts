@@ -2,7 +2,7 @@ import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { AppEvents } from '../../app.events';
-import { CollectionEvent, CollectionEvents, SelectedCollectionEvent  } from './collection.events';
+import { CollectionEvent, CollectionEvents  } from './collection.events';
 
 /**
  * The context of a collections feature.
