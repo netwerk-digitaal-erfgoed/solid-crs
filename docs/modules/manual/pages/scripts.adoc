@@ -1,5 +1,8 @@
-
-# Documentation for NDE repository scripts
+= Scripts
+:description: Description of different scripts to run with `npm run [script]`
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
 
 The following scripts can be run with `npm run [script]` (substituting `[script]` with the name of the desired script):
 
