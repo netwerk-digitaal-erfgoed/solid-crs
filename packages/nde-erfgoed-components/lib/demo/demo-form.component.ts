@@ -62,7 +62,7 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<FormContext<Collection>>;
+  public actor: Interpreter<FormContext<Partial<Collection>>>;
 
   /**
    * Enables or disables the submit button.
@@ -79,7 +79,7 @@ export class DemoFormComponent extends RxLitElement {
     super();
 
     this.actor = interpret(
-      formMachine<Collection>(validator, submitter).withContext({
+      formMachine<Partial<Collection>>(validator, submitter).withContext({
         data: { uri: '', name: 'Test', description: 'Test desc' },
         original: { uri: '', name: 'Test', description: 'Test desc' },
       }),

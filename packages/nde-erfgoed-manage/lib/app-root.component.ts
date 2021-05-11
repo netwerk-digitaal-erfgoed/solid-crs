@@ -53,12 +53,14 @@ export class AppRootComponent extends RxLitElement {
   actor = interpret(
     (appMachine(
       new SolidSDKService(this.logger),
-      new CollectionSolidStore('web id'),
-      new CollectionObjectSolidStore('web id'),
+      new CollectionSolidStore(),
+      new CollectionObjectSolidStore(),
+      // todo figure this out
       {
         uri: null,
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
+        objectsUri: undefined,
       },
     )).withContext({
       alerts: [],

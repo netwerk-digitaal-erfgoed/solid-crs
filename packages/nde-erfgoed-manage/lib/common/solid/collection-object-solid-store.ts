@@ -1,5 +1,6 @@
-import { getSolidDataset, getThing, getStringWithLocale } from '@digita-ai/nde-erfgoed-client';
-import { CollectionObject, CollectionObjectStore, Collection } from '@digita-ai/nde-erfgoed-core';
+import { CallTracker } from 'assert';
+import { getSolidDataset, getThing, getStringWithLocale, getThingAll } from '@digita-ai/nde-erfgoed-client';
+import { CollectionObject, CollectionObjectStore, Collection  } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -10,7 +11,20 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
 
-    const objects = await this.all();
+    const dataset = await getSolidDataset(collection.objectsUri);
+
+    const objectThings = getThingAll(dataset); // a list of CollectionObject Things
+
+    const objects = objectThings.map((thing) => ({
+      uri: collection.objectsUri,
+      collection: collection.uri,
+      name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
+      type: undefined,
+      subject: undefined,
+      image: undefined,
+      updated: undefined,
+    }));
 
     return objects.filter((object) => object.collection === collection.uri);
 
@@ -29,7 +43,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     return {
       uri,
-      collection: 'http://localhost:3000/leapeeters/heritage-collections/collection-1',
+      collection: 'http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1',
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
       type: undefined,
@@ -47,7 +61,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async all(): Promise<CollectionObject[]> {
 
-    return [ await this.getObject('http://localhost:3000/leapeeters/heritage-objects/object-1') ];
+    return [ await this.getObject('http://localhost:3000/leapeeters/heritage-objects/data-1#object-1') ];
 
   }
 

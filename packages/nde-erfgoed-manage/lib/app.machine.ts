@@ -1,5 +1,5 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
@@ -9,6 +9,7 @@ import { authenticateMachine } from './features/authenticate/authenticate.machin
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
+import { CollectionSolidStore } from './common/solid/collection-solid-store';
 
 /**
  * The root context of the application.
@@ -89,7 +90,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const appMachine = (
   solid: SolidService,
-  collectionStore: Store<Collection>,
+  collectionStore: CollectionSolidStore,
   objectStore: CollectionObjectStore,
   template: Collection,
 ) =>
@@ -245,7 +246,7 @@ export const appMachine = (
               /**
                * Get all collections from store.
                */
-              src: () => collectionStore.all(),
+              src: (context) => collectionStore.allByWebId(context.session.webId),
               onDone: [
                 {
                   target: AppDataStates.IDLE,
@@ -262,6 +263,9 @@ export const appMachine = (
                   target: AppDataStates.CREATING,
                 },
               ],
+              onError: {
+                actions: send({ type: AppEvents.ERROR }),
+              },
             },
           },
           /**

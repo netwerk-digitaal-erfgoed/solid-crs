@@ -1,4 +1,5 @@
-import { getSolidDataset, getStringWithLocale, getThing } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll } from '@digita-ai/nde-erfgoed-client';
+
 import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 
 /**
@@ -6,15 +7,22 @@ import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
  */
 export class CollectionSolidStore implements CollectionStore {
 
-  constructor(private webId: string) { }
-
+  // todo move this to abstract SolidStore
   /**
    * Retrieves a list of collections for a given WebID
    *
    */
-  async all(): Promise<Collection[]> {
+  async allByWebId(webId: string): Promise<Collection[]> {
 
-    return [ await this.getCollection('http://localhost:3000/leapeeters/heritage-collections/collection-1') ];
+    // retrieve the catalog
+    const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
+    const catalogDataset = await getSolidDataset(catalogUri);
+    const catalog = getThing(catalogDataset, catalogUri);
+
+    // get datasets (=== collections) in this catalog
+    const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset');
+
+    return await Promise.all(collectionUris.map(async (collectionUri) => await this.getCollection(collectionUri)));
 
   }
 
@@ -55,15 +63,60 @@ export class CollectionSolidStore implements CollectionStore {
    */
   async getCollection(uri: string): Promise<Collection> {
 
+    // retrieve collection
     const dataset = await getSolidDataset(uri);
-
     const collectionThing = getThing(dataset, uri);
+
+    // retrieve distribution for the collection objects location
+    const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+    const distributionThing = getThing(dataset, distributionUri);
+    const objectsUri = getUrl(distributionThing, 'http://schema.org/contentUrl');
 
     return {
       uri,
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
+      objectsUri,
     };
+
+  }
+
+  /**
+   * Retrieves a list of collections
+   *
+   */
+  all(): Promise<Collection[]> {
+
+    throw new Error('Method not implemented.');
+
+  }
+
+  // todo move this to abstract SolidStore
+  /**
+   * Returns the instance URI of a type registration for a given RDF class
+   *
+   * @param webId The WebID of the Solid pod
+   * @param forClass The forClass value of the type registration
+   */
+  private async getInstanceForClass(webId: string, forClass: string): Promise<string> {
+
+    const profileDataset = await getSolidDataset(webId);
+    const profile = getThing(profileDataset, webId);
+
+    // all collections are publicly accessible
+    const publicTypeIndexDataset = await getSolidDataset(getUrl(profile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex'));
+
+    const catalogTypeRegistration = getThingAll(publicTypeIndexDataset).find((typeIndex) =>
+      getUrl(typeIndex, 'http://www.w3.org/ns/solid/terms#forClass') === forClass);
+
+    // todo create catalog type registration when not present
+    if (!catalogTypeRegistration) {
+
+      throw new Error('no type registration found');
+
+    }
+
+    return getUrl(catalogTypeRegistration, 'http://www.w3.org/ns/solid/terms#instance');
 
   }
 
