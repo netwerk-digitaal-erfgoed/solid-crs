@@ -80,7 +80,7 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
 
   });
 

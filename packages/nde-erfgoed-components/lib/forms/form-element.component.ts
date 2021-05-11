@@ -204,9 +204,7 @@ export class FormElementComponent<T> extends RxLitElement {
 }
       <div class="content">
         <div class="field ${this.inverse ? 'no-border' : ''}">
-          <div class="input">
-            <slot name="input"></slot>
-          </div>
+          <slot name="input"></slot>
           <div class="icon">
             ${this.showLoading ? html`<div class="loading">${ unsafeSVG(Loading) }</div>` : html`<slot name="icon"></slot>`}
           </div>
@@ -271,13 +269,9 @@ export class FormElementComponent<T> extends RxLitElement {
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
         }
-        .form-element .content .field .input {
-          width: 100%;
-          height: 100%;
-        }
-        .form-element .content .field .input ::slotted(input) {
+        .form-element .content .field ::slotted(input) {
           padding: 0 var(--gap-normal);
-          width: 100%;
+          flex: 1 0;
           height: 44px;
         }
         .form-element .content .field .icon {

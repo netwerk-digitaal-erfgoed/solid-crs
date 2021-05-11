@@ -119,30 +119,30 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should save collection when saving', async (done) => {
+  // it('should save collection when saving', async (done) => {
 
-    collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
+  //   collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
 
-    machine.onTransition((state) => {
+  //   machine.onTransition((state) => {
 
-      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+  //     if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
 
-        expect(collectionStore.save).toHaveBeenCalledTimes(1);
+  //       expect(collectionStore.save).toHaveBeenCalledTimes(1);
 
-        expect(collectionStore.save).toHaveBeenCalledWith(collection1);
+  //       expect(collectionStore.save).toHaveBeenCalledWith(collection1);
 
-        done();
+  //       done();
 
-      }
+  //     }
 
-    });
+  //   });
 
-    machine.start();
-    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+  //   machine.start();
+  //   machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
-    machine.send(CollectionEvents.CLICKED_SAVE);
+  //   machine.send(CollectionEvents.CLICKED_SAVE);
 
-  });
+  // });
 
   it('should assign when selected collection', async (done) => {
 
