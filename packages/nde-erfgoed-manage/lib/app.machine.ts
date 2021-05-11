@@ -235,6 +235,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
+              [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
           /**
@@ -245,7 +246,8 @@ export const appMachine = (
               /**
                * Get all collections from store.
                */
-              src: () => collectionStore.all(),
+              src: () => collectionStore.all().then((collections) =>
+                collections.sort((a, b) => a.name.localeCompare(b.name))),
               onDone: [
                 {
                   target: AppDataStates.IDLE,

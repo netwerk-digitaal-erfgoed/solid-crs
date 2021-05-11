@@ -126,6 +126,9 @@ export const collectionMachine = (
           src: (context) => collectionStore.save(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
+            actions: [
+              sendParent((_: any) => ({ type: CollectionEvents.SAVED_COLLECTION })),
+            ],
           },
           onError: {
             actions: sendParent(AppEvents.ERROR),
