@@ -231,6 +231,10 @@ export class AuthenticateRootComponent extends RxLitElement {
           color: white;
         }
 
+        nde-form-element input {
+          height: 100%;
+        }
+
         .webid-container p {
           text-align: center;
           color: var(--colors-foreground-light);
