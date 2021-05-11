@@ -1,6 +1,6 @@
 {
   "name": "@digita-ai/nde-erfgoed-components",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/nde-erfgoed-components.umd.js",
@@ -27,8 +27,8 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
-    "@digita-ai/nde-erfgoed-core": "0.2.0",
-    "@digita-ai/nde-erfgoed-theme": "0.2.0",
+    "@digita-ai/nde-erfgoed-core": "0.2.1",
+    "@digita-ai/nde-erfgoed-theme": "0.2.1",
     "@digita-ai/semcom-core": "0.3.4",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
