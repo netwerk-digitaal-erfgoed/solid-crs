@@ -2,7 +2,8 @@
 @prefix schema: <http://schema.org/> .
 
 # Heritage object: description of a 'real' heritage object
-<>
+
+<#object-1>
     ########################################
     # Group: "Identificatie"
     ########################################
