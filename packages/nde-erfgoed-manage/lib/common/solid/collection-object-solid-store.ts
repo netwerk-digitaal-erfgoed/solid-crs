@@ -1,8 +1,4 @@
-import { ArgumentError } from '../errors/argument-error';
-import { MemoryStore } from '../stores/memory-store';
-import { Collection } from './collection';
-import { CollectionObject } from './collection-object';
-import { CollectionObjectStore } from './collection-object-store';
+import { MemoryStore, CollectionObject, CollectionObjectStore, Collection } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> implements CollectionObjectStore {
 
@@ -35,7 +31,7 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
    */
   async all(): Promise<CollectionObject[]> {
 
-    throw new Error('Method not implemented.');
+    return [];
 
   }
 
