@@ -36,6 +36,7 @@
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
+    "uuid": "^8.3.2",
     "xstate": "^4.17.1",
     "xstate-codegen": "0.1.0-next.8"
   },

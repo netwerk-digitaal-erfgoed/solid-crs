@@ -1,6 +1,6 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl } from '@digita-ai/nde-erfgoed-client';
-
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, Thing, addUrl, addStringWithLocale, createThing } from '@digita-ai/nde-erfgoed-client';
 import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
+import { v4 } from 'uuid';
 
 /**
  * A store for collections.
@@ -56,13 +56,42 @@ export class CollectionSolidStore implements CollectionStore {
   }
 
   /**
-   * Stores a single Collection to a pod
+   * Stores a single Collection and its distribution to a pod
    *
    * @param resource The Collection to save
    */
-  save(resource: Collection): Promise<Collection> {
+  async save(collection: Collection): Promise<Collection> {
 
-    throw new Error('Method not implemented.');
+    // for creating new collection
+
+    const collectionUri = collection.uri || `http://localhost:3000/leapeeters/heritage-collections/catalog#collection-${v4()}`;
+    const distributionUri = `http://localhost:3000/leapeeters/heritage-collections/catalog#distribution-${v4()}`;
+
+    // retrieve the catalog
+    const catalogDataset = await getSolidDataset(collectionUri);
+    const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
+
+    // add collection to catalog
+    const updatedCatalogThing = addUrl(catalogThing, 'http://schema.org/dataset', collectionUri);
+    let updatedDataset = setThing(catalogDataset, updatedCatalogThing);
+    // create collection Thing from our Collection model
+    let collectionThing = createThing({ url: collectionUri });
+    collectionThing = addUrl(collectionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Dataset');
+    collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/name', collection.name, 'nl');
+    collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
+    collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
+
+    // create empty distribution
+    const distributionThing = createThing({ url: distributionUri });
+
+    // save collection and distribution in dataset
+    updatedDataset = setThing(updatedDataset, collectionThing);
+    updatedDataset = setThing(updatedDataset, distributionThing);
+
+    // replace existing dataset with updated
+    await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
+
+    return { ...collection, uri: collectionUri };
 
   }
 

@@ -122,6 +122,11 @@ export const appMachine = (
               })),
             ],
           },
+          [CollectionEvents.SELECTED_COLLECTION]: {
+            actions: [
+              send((context, event) => (event), { to: AppActors.COLLECTION_MACHINE }),
+            ],
+          },
         },
         states: {
         /**
@@ -254,10 +259,6 @@ export const appMachine = (
                       type: CollectionEvents.SELECTED_COLLECTION,
                       collection: event.data[0],
                     })),
-                    send((context, event) => ({
-                      type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: event.data[0],
-                    }), { to: AppActors.COLLECTION_MACHINE }),
                   ],
                   cond: (context, event) => event.data.length > 0,
                 },
@@ -284,6 +285,11 @@ export const appMachine = (
                 actions: [
                   addCollection,
                   send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data })),
+                ],
+              },
+              onError: {
+                actions: [
+                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
                 ],
               },
             },
