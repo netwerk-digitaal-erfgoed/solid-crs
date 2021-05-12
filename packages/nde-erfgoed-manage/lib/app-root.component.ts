@@ -183,9 +183,7 @@ export class AppRootComponent extends RxLitElement {
     ));
 
     this.subscribe('selected', from(this.actor).pipe(
-      filter((state) => state.event.type === CollectionEvents.SELECTED_COLLECTION),
-      map((state) => state.event as SelectedCollectionEvent),
-      map((event) => event.collection),
+      map((state) => state.context?.selected),
     ));
 
   }
