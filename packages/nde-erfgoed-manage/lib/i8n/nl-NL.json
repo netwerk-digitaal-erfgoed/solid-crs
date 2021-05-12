@@ -15,6 +15,11 @@
         "value": "Collectie aangemaakt"
     },
     {
+        "key": "nde.navigation.search.title",
+        "locale": "nl-NL",
+        "value": "Zoeken"
+    },
+    {
         "key": "nde.navigation.collections.title",
         "locale": "nl-NL",
         "value": "Collecties"
@@ -113,6 +118,16 @@
         "key": "nde.features.collections.new-collection-description",
         "locale": "nl-NL",
         "value": "Beschrijving van deze collectie"
+    },
+    {
+        "key": "nde.features.search.header.search-results-for",
+        "locale": "nl-NL",
+        "value": "Zoekresultaten voor"
+    },
+    {
+        "key": "nde.features.search.header.subtitle",
+        "locale": "nl-NL",
+        "value": "We hebben dit gevonden"
     },
     {
         "key": "nde.common.date.just-now",

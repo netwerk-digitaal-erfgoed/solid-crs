@@ -6,7 +6,6 @@ import { Event } from '@digita-ai/nde-erfgoed-components';
  */
 export enum SearchEvents {
   SEARCH_UPDATED   = '[SearchEvent: Updated element]',
-  SEARCH_SUBMITTED = '[SearchEvent: Submitted]',
 }
 
 /**
@@ -18,15 +17,7 @@ export enum SearchEvents {
  */
 export interface SearchUpdatedEvent extends Event<SearchEvents> {
   type: SearchEvents.SEARCH_UPDATED;
-  field: string; value: string;
+  searchTerm: string;
 }
 
-/**
- * Event dispatched when a search element was submitted.
- */
-export interface SearchSubmittedEvent extends Event<SearchEvents> {
-  type: SearchEvents.SEARCH_SUBMITTED;
-  field: string; value: string;
-}
-
-export type SearchEvent = SearchUpdatedEvent | SearchSubmittedEvent;
+export type SearchEvent = SearchUpdatedEvent;

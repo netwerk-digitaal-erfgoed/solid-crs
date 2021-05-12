@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { interpret, State } from 'xstate';
+import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, CollectionMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormEvent } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout, Logo, Plus } from '@digita-ai/nde-erfgoed-theme';
+import { Theme, Logout, Logo, Plus, Cross } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -134,6 +134,12 @@ export class AppRootComponent extends RxLitElement {
   profile: SolidProfile;
 
   /**
+   * The actor responsible for form validation in this component.
+   */
+  @internalProperty()
+  formActor: ActorRef<FormEvent>;
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -193,13 +199,24 @@ export class AppRootComponent extends RxLitElement {
         <div slot="title">${this.profile?.name}</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
-      <nde-sidebar-list>
-        <nde-sidebar-list-item slot="item" isTitle inverse>
-          <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
-          <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
-        </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
-      </nde-sidebar-list>
+      <nde-sidebar-item>
+        <div slot="content">
+          <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
+          <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+            <input type="text" slot="input" class="searchTerm" @change="${(e) => console.log(e)}"/>
+            <div slot="icon">${ unsafeSVG(Cross) }</div>
+          </nde-form-element>
+        </div>
+      </nde-sidebar-item>
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+        <nde-sidebar-list slot="content">
+          <nde-sidebar-list-item slot="item" isTitle inverse>
+            <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
+            <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
+          </nde-sidebar-list-item>
+          ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+        </nde-sidebar-list>
+      </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
@@ -236,12 +253,7 @@ export class AppRootComponent extends RxLitElement {
         }
 
         nde-sidebar > * {
-          margin-bottom: var(--gap-normal);
           display: block;
-        }
-
-        nde-sidebar > *:last-child {
-          margin-bottom: 0px;
         }
 
         nde-content-header div[slot="icon"] svg {
@@ -251,6 +263,18 @@ export class AppRootComponent extends RxLitElement {
         div[slot="actions"] svg {
           max-height: var(--gap-normal);
           width: var(--gap-normal);
+        }
+
+        .search-title {
+          padding: var(--gap-small) 0;
+        }
+
+        div[slot="icon"] svg {
+          fill: var(--colors-primary-dark);
+        }
+
+        div[slot="content"]{
+          padding-bottom: var(--gap-small);
         }
       `,
     ];

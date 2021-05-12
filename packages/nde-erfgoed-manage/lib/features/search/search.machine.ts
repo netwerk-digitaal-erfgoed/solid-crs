@@ -1,5 +1,5 @@
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -13,7 +13,7 @@ export interface SearchContext {
   /**
    * The searched term
    */
-  searchedTerm?: string;
+  searchTerm?: string;
 
   /**
    * The list of objects in the current search.
@@ -44,22 +44,27 @@ export enum SearchStates {
 /**
  * The search component machine.
  */
-export const searchMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
+export const searchMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
     context: { },
     initial: SearchStates.IDLE,
     on: {
-      [SearchEvents.SEARCH_UPDATED]: SearchStates.SEARCHING,
+      [SearchEvents.SEARCH_UPDATED]: {
+        actions: assign({
+          searchTerm: (context, event) => event.searchTerm,
+        }),
+        target: SearchStates.SEARCHING,
+      },
     },
     states: {
       [SearchStates.IDLE]: {},
       [SearchStates.SEARCHING]: {
         invoke: {
-          src: (context) => of({}).pipe(
-            switchMap((data) => objectStore.search(context.searchedTerm)
+          src: (context, event) => of({ searchTerm: event.searchTerm }).pipe(
+            switchMap((data) => of(objectStore.search(data.searchTerm))
               .pipe(map((objects) => ({ ...data, objects })))),
-            switchMap((data) => collectionStore.search(context.searchedTerm)
+            switchMap((data) => of(collectionStore.search(data.searchTerm))
               .pipe(map((collections) => ({ ...data, collections })))),
           ),
           onDone: {

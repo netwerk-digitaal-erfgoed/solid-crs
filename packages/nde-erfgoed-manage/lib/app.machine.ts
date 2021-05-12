@@ -1,5 +1,5 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
@@ -91,7 +91,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const appMachine = (
   solid: SolidService,
-  collectionStore: Store<Collection>,
+  collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
   template: Collection,
 ) =>

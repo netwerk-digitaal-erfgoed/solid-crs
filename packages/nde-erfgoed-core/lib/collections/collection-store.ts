@@ -9,8 +9,8 @@ export interface CollectionStore extends Store<Collection> {
   /**
    * Retrieves all collections where a specific string appears in one of its properties
    *
-   * @param searchterm the therm that should be present in a property
+   * @param searchTerm the therm that should be present in a property
    */
-  search(searchterm: string): Promise<Collection[]>;
+  search(searchTerm: string): Promise<Collection[]>;
 
 }

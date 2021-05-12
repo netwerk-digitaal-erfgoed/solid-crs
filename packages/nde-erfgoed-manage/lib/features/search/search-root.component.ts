@@ -61,7 +61,7 @@ export class SearchRootComponent extends RxLitElement {
    * The searched term
    */
   @internalProperty()
-  searchedTerm = '';
+  searchTerm = '';
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -87,8 +87,8 @@ export class SearchRootComponent extends RxLitElement {
       this.subscribe('objects', from(this.actor)
         .pipe(map((state) => state.context?.objects)));
 
-      this.subscribe('searchedTerm', from(this.actor)
-        .pipe(map((state) => state.context?.searchedTerm)));
+      this.subscribe('searchTerm', from(this.actor)
+        .pipe(map((state) => state.context?.searchTerm)));
 
     }
 
@@ -127,8 +127,8 @@ export class SearchRootComponent extends RxLitElement {
     return html`
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <div slot="title">Zoekresultaten voor "${this.searchedTerm}"</div>
-        <div slot="subtitle">We hebben dit gevonden</div>
+        <div slot="title">${this.translator?.translate('nde.features.search.header.search-results-for')} "${this.searchTerm}"</div>
+        <div slot="subtitle">${this.translator?.translate('nde.features.search.header.subtitle')}</div>
 
         <div slot="actions"><button class="no-padding inverse" @click="${() => console.log('cross clicked')}">${unsafeSVG(Cross)}</button></div>
       </nde-content-header>
@@ -155,7 +155,7 @@ export class SearchRootComponent extends RxLitElement {
         `
     : html`
           <div class="empty-container">
-            No results
+            No results ... WIP
           </div>
         `
 }

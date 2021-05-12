@@ -51,7 +51,11 @@ export class SidebarListComponent extends RxLitElement {
 
     return [
       unsafeCSS(Theme),
-      css``,
+      css`
+        .list {
+          padding: var(--gap-normal) 0;
+        }
+      `,
     ];
 
   }
