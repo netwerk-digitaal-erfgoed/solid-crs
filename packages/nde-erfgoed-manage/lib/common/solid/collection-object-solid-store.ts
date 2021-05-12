@@ -11,22 +11,30 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
 
-    const dataset = await getSolidDataset(collection.objectsUri);
+    try {
 
-    const objectThings = getThingAll(dataset); // a list of CollectionObject Things
+      const dataset = await getSolidDataset(collection.objectsUri);
 
-    const objects = objectThings.map((thing) => ({
-      uri: collection.objectsUri,
-      collection: collection.uri,
-      name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
-      type: undefined,
-      subject: undefined,
-      image: undefined,
-      updated: undefined,
-    }));
+      const objectThings = getThingAll(dataset); // a list of CollectionObject Things
 
-    return objects.filter((object) => object.collection === collection.uri);
+      const objects = objectThings.map((thing) => ({
+        uri: collection.objectsUri,
+        collection: collection.uri,
+        name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
+        description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
+        type: undefined,
+        subject: undefined,
+        image: undefined,
+        updated: undefined,
+      }));
+
+      return objects.filter((object) => object.collection === collection.uri);
+
+    } catch (e) {
+
+      return [];
+
+    }
 
   }
 

@@ -82,7 +82,8 @@ export class CollectionSolidStore implements CollectionStore {
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
 
     // create empty distribution
-    const distributionThing = createThing({ url: distributionUri });
+    let distributionThing = createThing({ url: distributionUri });
+    distributionThing = addUrl(distributionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DataDownload');
 
     // save collection and distribution in dataset
     updatedDataset = setThing(updatedDataset, collectionThing);
