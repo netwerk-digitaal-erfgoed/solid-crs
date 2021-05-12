@@ -246,7 +246,7 @@ export const appMachine = (
               /**
                * Get all collections from store.
                */
-              src: (context) => collectionStore.allByWebId(context.session.webId),
+              src: (context) => collectionStore.all(),
               onDone: [
                 {
                   target: AppDataStates.IDLE,

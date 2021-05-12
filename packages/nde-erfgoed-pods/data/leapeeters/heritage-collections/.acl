@@ -7,3 +7,14 @@
     acl:accessTo    <./>;
     acl:default     <./>;
     acl:mode        acl:Read.
+
+<#owner>
+    a             acl:Authorization;
+    acl:agent     <http://localhost:3000/leapeeters/profile/card#me>;
+    acl:accessTo  <./>;
+    acl:default	  <./>;
+    acl:mode      acl:Read,
+                  acl:Write,
+		              acl:Append,
+		              acl:Delete,
+                  acl:Control.

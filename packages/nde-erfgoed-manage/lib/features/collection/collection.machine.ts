@@ -1,6 +1,7 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
+import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { CollectionEvent, CollectionEvents  } from './collection.events';
 
@@ -132,6 +133,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
           onDone: {
             target: CollectionStates.IDLE,
             actions: [
+              log('done'),
               sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
             ],
           },

@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession } from '@digita-ai/nde-erfgoed-client';
 
 import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 
@@ -7,12 +7,13 @@ import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
  */
 export class CollectionSolidStore implements CollectionStore {
 
-  // todo move this to abstract SolidStore
   /**
    * Retrieves a list of collections for a given WebID
    *
    */
-  async allByWebId(webId: string): Promise<Collection[]> {
+  async all(): Promise<Collection[]> {
+
+    const webId = getDefaultSession().info.webId;
 
     // retrieve the catalog
     const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
@@ -33,13 +34,12 @@ export class CollectionSolidStore implements CollectionStore {
    */
   async delete(collection: Collection): Promise<Collection> {
 
-    const result = await fetch(collection.uri, { method: 'DELETE' });
-
-    if (!result.ok) {
-
-      throw new Error('Error while deleting');
-
-    }
+    // retrieve the catalog
+    const catalogDataset = await getSolidDataset(collection.uri);
+    // remove the collection and distribution from the dataset
+    const updatedDataset = removeThing(removeThing(catalogDataset, collection.uri), collection.objectsUri);
+    // replace existing dataset with updated
+    await saveSolidDatasetAt(collection.uri, updatedDataset, { fetch });
 
     return collection;
 
@@ -78,16 +78,6 @@ export class CollectionSolidStore implements CollectionStore {
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
       objectsUri,
     };
-
-  }
-
-  /**
-   * Retrieves a list of collections
-   *
-   */
-  all(): Promise<Collection[]> {
-
-    throw new Error('Method not implemented.');
 
   }
 
