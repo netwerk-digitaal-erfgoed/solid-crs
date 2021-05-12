@@ -42,6 +42,7 @@ export enum AppActors {
   APP_MACHINE = 'AppMachine',
   COLLECTION_MACHINE = 'CollectionMachine',
   AUTHENTICATE_MACHINE = 'AuthenticateMachine',
+  SEARCH_MACHINE = 'SearchMachine',
 }
 
 /**
@@ -59,6 +60,7 @@ export enum AppRootStates {
 export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
+  SEARCH  = '[AppFeatureState: Search]',
 }
 
 /**

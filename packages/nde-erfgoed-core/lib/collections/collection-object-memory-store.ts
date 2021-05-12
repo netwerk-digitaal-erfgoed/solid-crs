@@ -40,4 +40,21 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
 
   }
 
+  async search(searchterm: string): Promise<CollectionObject[]> {
+
+    if (!searchterm) {
+
+      throw new ArgumentError('Argument searchterm should be set.', searchterm);
+
+    }
+
+    const lowerCaseTerm = searchterm.toLowerCase();
+
+    return this.resources.filter((resource) =>
+      resource.name.toLowerCase().includes(lowerCaseTerm) ||
+      resource.subject.toLowerCase().includes(lowerCaseTerm) ||
+      resource.description.toLowerCase().includes(lowerCaseTerm));
+
+  }
+
 }

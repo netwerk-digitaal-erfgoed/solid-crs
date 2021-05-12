@@ -41,7 +41,7 @@ export enum CollectionStates {
 /**
  * The collection component machine.
  */
-export const collectionMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
+export const collectionMachine = (collectionStore: CollectionMemoryStore, objectStore: CollectionObjectStore) =>
   createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
     id: CollectionActors.COLLECTION_MACHINE,
     context: { },

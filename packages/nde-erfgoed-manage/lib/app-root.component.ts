@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, CollectionMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus } from '@digita-ai/nde-erfgoed-theme';
@@ -51,7 +51,7 @@ export class AppRootComponent extends RxLitElement {
   actor = interpret(
     (appMachine(
       new SolidSDKService(this.logger),
-      new MemoryStore<Collection>([
+      new CollectionMemoryStore([
         {
           uri: 'collection-uri-1',
           name: 'Collection 1',

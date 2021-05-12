@@ -12,4 +12,11 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
    * @param collection The collection for which to retrieve objects.
    */
   getObjectsForCollection(collection: Collection): Promise<CollectionObject[]>;
+
+  /**
+   * Retrieves all object where a specific string appears in one of its properties
+   *
+   * @param searchterm the therm that should be present in a property
+   */
+  search(searchterm: string): Promise<CollectionObject[]>;
 }
