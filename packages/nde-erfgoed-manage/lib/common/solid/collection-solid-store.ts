@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl } from '@digita-ai/nde-erfgoed-client';
 
 import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 
@@ -36,8 +36,18 @@ export class CollectionSolidStore implements CollectionStore {
 
     // retrieve the catalog
     const catalogDataset = await getSolidDataset(collection.uri);
+    const catalogThing = getThing(catalogDataset, collection.uri.split('#')[0]);
+
+    // remove the collection reference from catalog
+    const updatedCatalog = removeUrl(catalogThing, 'http://schema.org/dataset', collection.uri);
+    let updatedDataset = setThing(catalogDataset, updatedCatalog);
+
     // remove the collection and distribution from the dataset
-    const updatedDataset = removeThing(removeThing(catalogDataset, collection.uri), collection.objectsUri);
+    updatedDataset = removeThing(updatedDataset, collection.uri);
+    const collectionThing = getThing(catalogDataset, collection.uri);
+    const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+    updatedDataset = removeThing(updatedDataset, distributionUri);
+
     // replace existing dataset with updated
     await saveSolidDatasetAt(collection.uri, updatedDataset, { fetch });
 
