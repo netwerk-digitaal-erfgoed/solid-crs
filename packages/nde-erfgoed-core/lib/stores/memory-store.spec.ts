@@ -9,6 +9,7 @@ describe('MemoryStore', () => {
     name: 'Collection 1',
     description: 'This is collection 1',
     objectsUri: 'objects-uri',
+    distribution: 'distribution-uri',
   };
 
   const collection2: Collection = {
@@ -16,6 +17,7 @@ describe('MemoryStore', () => {
     name: 'Collection 2',
     description: 'This is collection 2',
     objectsUri: 'objects-uri',
+    distribution: 'distribution-uri',
   };
 
   const collection3: Collection = {
@@ -23,6 +25,7 @@ describe('MemoryStore', () => {
     name: 'Collection 3',
     description: 'This is collection 3',
     objectsUri: 'objects-uri',
+    distribution: 'distribution-uri',
   };
 
   const collection2Updated: Collection = {
@@ -30,6 +33,7 @@ describe('MemoryStore', () => {
     name: 'Collection 2',
     description: 'This is collection 2 with update',
     objectsUri: 'objects-uri',
+    distribution: 'distribution-uri',
   };
 
   const resources: Collection[] = [ collection1, collection2 ];
