@@ -158,12 +158,15 @@ export class CollectionRootComponent extends RxLitElement {
           </nde-form-element>
         `
     : html`
-          <div slot="title">${this.collection.name}</div>
-          <div slot="subtitle">${this.collection.description}</div>
+          <div slot="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+            ${this.collection.name}
+          </div>
+          <div slot="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+            ${this.collection.description}
+          </div>
         `
 }
 
-      ${ !this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse edit" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">${unsafeSVG(Edit)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
@@ -239,6 +242,9 @@ export class CollectionRootComponent extends RxLitElement {
           height: var(--gap-normal);
           padding: 0;
           line-height: var(--gap-normal);
+        }
+        nde-content-header div[slot="title"]:hover, nde-content-header div[slot="subtitle"]:hover {
+          cursor: pointer;
         }
         .name {
           font-weight: bold;

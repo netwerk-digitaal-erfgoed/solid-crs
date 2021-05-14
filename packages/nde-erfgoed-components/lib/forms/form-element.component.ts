@@ -182,6 +182,17 @@ export class FormElementComponent<T> extends RxLitElement {
       // Send event when input field's value changes.
       element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
 
+      // Listen for Enter presses to submit
+      element.addEventListener('keypress', (event) => {
+
+        if (event.key === 'Enter') {
+
+          actor.send({ type: FormEvents.FORM_SUBMITTED });
+
+        }
+
+      });
+
     });
 
   }
