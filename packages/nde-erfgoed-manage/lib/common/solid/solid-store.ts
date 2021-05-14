@@ -1,20 +1,20 @@
 import { Thing, getUrl, getSolidDataset, getThing, getThingAll } from '@digita-ai/nde-erfgoed-client';
 
-import { Resource, Store } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Resource, Store } from '@digita-ai/nde-erfgoed-core';
 
 export class SolidStore<T extends Resource> implements Store<T> {
 
-  all(): Promise<T[]> {
+  async all(): Promise<T[]> {
 
-    throw new Error('Method not implemented.');
-
-  }
-  delete(resource: T): Promise<T> {
-
-    throw new Error('Method not implemented.');
+    throw new Error('Method not implemented');
 
   }
-  save(resource: T): Promise<T> {
+  async delete(resource: T): Promise<T> {
+
+    throw new Error('Method not implemented');
+
+  }
+  async save(resource: T): Promise<T> {
 
     throw new Error('Method not implemented.');
 
@@ -29,6 +29,18 @@ export class SolidStore<T extends Resource> implements Store<T> {
    */
   async getInstanceForClass(webId: string, forClass: string): Promise<string> {
 
+    if (!webId) {
+
+      throw new ArgumentError('Argument webId should be set', webId);
+
+    }
+
+    if (!forClass) {
+
+      throw new ArgumentError('Argument forClass should be set', webId);
+
+    }
+
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
 
@@ -41,7 +53,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
     // todo create catalog type registration when not present
     if (!catalogTypeRegistration) {
 
-      throw new Error('no type registration found');
+      throw new ArgumentError('No type registration found', catalogTypeRegistration);
 
     }
 

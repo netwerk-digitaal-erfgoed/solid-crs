@@ -1,4 +1,5 @@
 import { ArgumentError } from '../errors/argument-error';
+import { Collection } from './collection';
 import { CollectionObject } from './collection-object';
 import { CollectionObjectMemoryStore } from './collection-object-memory-store';
 
@@ -8,7 +9,8 @@ describe('CollectionObjectMemoryStore', () => {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
-  };
+    objectsUri: 'objects-uri',
+  } as Collection;
 
   const resources: CollectionObject[] = [
     {

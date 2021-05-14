@@ -8,24 +8,28 @@ describe('MemoryStore', () => {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
+    objectsUri: 'objects-uri',
   };
 
   const collection2: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
+    objectsUri: 'objects-uri',
   };
 
   const collection3: Collection = {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
+    objectsUri: 'objects-uri',
   };
 
   const collection2Updated: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2 with update',
+    objectsUri: 'objects-uri',
   };
 
   const resources: Collection[] = [ collection1, collection2 ];

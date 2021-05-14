@@ -1,4 +1,3 @@
-import { allowedNodeEnvironmentFlags } from 'process';
 import * as client from '@digita-ai/nde-erfgoed-client';
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { CollectionSolidStore } from './collection-solid-store';

@@ -1,6 +1,5 @@
-import { CallTracker } from 'assert';
-import { getSolidDataset, getThing, getStringWithLocale, getThingAll } from '@digita-ai/nde-erfgoed-client';
-import { CollectionObject, CollectionObjectStore, Collection  } from '@digita-ai/nde-erfgoed-core';
+import { getSolidDataset, getThing, getStringWithLocale, getThingAll, Thing } from '@digita-ai/nde-erfgoed-client';
+import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -11,30 +10,40 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async getObjectsForCollection(collection: Collection): Promise<CollectionObject[]> {
 
-    try {
+    if (!collection) {
 
-      const dataset = await getSolidDataset(collection.objectsUri);
+      throw new ArgumentError('Argument collection should be set');
 
-      const objectThings = getThingAll(dataset); // a list of CollectionObject Things
+    }
 
-      const objects = objectThings.map((thing) => ({
-        uri: collection.objectsUri,
-        collection: collection.uri,
-        name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
-        description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
-        type: undefined,
-        subject: undefined,
-        image: undefined,
-        updated: undefined,
-      }));
+    const dataset = await getSolidDataset(collection.objectsUri);
 
-      return objects.filter((object) => object.collection === collection.uri);
-
-    } catch (e) {
+    if (!dataset) {
 
       return [];
 
     }
+
+    const objectThings = getThingAll(dataset); // a list of CollectionObject Things
+
+    if (!objectThings) {
+
+      return [];
+
+    }
+
+    const objects = objectThings.map((thing: Thing) => ({
+      uri: collection.objectsUri,
+      collection: collection.uri,
+      name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
+      type: undefined,
+      subject: undefined,
+      image: undefined,
+      updated: undefined,
+    } as CollectionObject));
+
+    return objects.filter((object: CollectionObject) => object.collection === collection.uri);
 
   }
 
@@ -45,12 +54,19 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async getObject(uri: string): Promise<CollectionObject> {
 
+    if (!uri) {
+
+      throw new ArgumentError('Argument uri should be set');
+
+    }
+
     const dataset = await getSolidDataset(uri);
 
     const collectionThing = getThing(dataset, uri);
 
     return {
       uri,
+      // todo replace with actual triple value
       collection: 'http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1',
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
@@ -58,18 +74,17 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       subject: undefined,
       image: undefined,
       updated: undefined,
-    };
+    } as CollectionObject;
 
   }
 
   /**
-   * Retrieves a list of collections for a given WebID
+   * Retrieves a list of collections for the current WebID
    *
-   * @param webId The WebID to retreive Collections from
    */
   async all(): Promise<CollectionObject[]> {
 
-    return [ await this.getObject('http://localhost:3000/leapeeters/heritage-objects/data-1#object-1') ];
+    throw new Error('Method not implemented.');
 
   }
 
@@ -78,7 +93,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    *
    * @param resource The Collection to delete
    */
-  delete(resource: CollectionObject): Promise<CollectionObject> {
+  async delete(resource: CollectionObject): Promise<CollectionObject> {
 
     throw new Error('Method not implemented.');
 
@@ -89,7 +104,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    *
    * @param resource The Collection to save
    */
-  save(resource: CollectionObject): Promise<CollectionObject> {
+  async save(resource: CollectionObject): Promise<CollectionObject> {
 
     throw new Error('Method not implemented.');
 
