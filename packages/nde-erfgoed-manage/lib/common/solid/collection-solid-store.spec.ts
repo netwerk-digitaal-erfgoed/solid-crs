@@ -54,13 +54,26 @@ describe('CollectionSolidStore', () => {
 
     it('should return empty list when no collections in catalog', async () => {
 
-      client.getDefaultSession = jest.fn(() => mockSession);
       service.getInstanceForClass = jest.fn(async () => 'test-instance');
+      client.getDefaultSession = jest.fn(() => mockSession);
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
-      client.getUrlAll = jest.fn(() => []);
+      client.getUrlAll = jest.fn(() => [ ]);
 
       await expect(service.all()).resolves.toEqual([]);
+
+    });
+
+    it('should return empty list when no collections in catalog', async () => {
+
+      service.getInstanceForClass = jest.fn(async () => 'test-instance');
+      service.getCollection = jest.fn(async () => mockCollection);
+      client.getDefaultSession = jest.fn(() => mockSession);
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getUrlAll = jest.fn(() => [ 'test-thing ' ]);
+
+      await expect(service.all()).resolves.toEqual([ mockCollection ]);
 
     });
 
@@ -83,6 +96,7 @@ describe('CollectionSolidStore', () => {
       client.removeThing = jest.fn(() => 'test-thing');
       client.getUrl = jest.fn(() => 'test-url');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.deleteFile = jest.fn(async () => 'test-file');
 
       expect(service.delete(mockCollection)).resolves.toEqual(mockCollection);
 
@@ -107,6 +121,7 @@ describe('CollectionSolidStore', () => {
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.overwriteFile = jest.fn(async () => 'test-file');
 
       await expect(service.save(mockCollection)).resolves.toEqual(mockCollection);
 
@@ -128,6 +143,25 @@ describe('CollectionSolidStore', () => {
 
       expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
       expect(result.uri).toBeTruthy();
+
+    });
+
+    it('should return collection with new objectsUri when saved', async () => {
+
+      delete mockCollection.objectsUri;
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.setThing = jest.fn(() => 'test-dataset');
+      client.addUrl = jest.fn(() => 'test-thing');
+      client.createThing = jest.fn(() => 'test-thing');
+      client.addStringWithLocale = jest.fn(() => 'test-thing');
+      client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+
+      const result = await service.save(mockCollection);
+
+      expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
+      expect(result.objectsUri).toBeTruthy();
 
     });
 

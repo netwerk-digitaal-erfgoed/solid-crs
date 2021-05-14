@@ -79,7 +79,7 @@ export const collectionMachine = (collectionStore: Store<Collection>, objectStor
             /**
              * Notify the parent machine when something goes wrong.
              */
-            actions: sendParent(AppEvents.ERROR),
+            actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
           },
         },
       },

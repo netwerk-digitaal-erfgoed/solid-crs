@@ -56,15 +56,17 @@ describe('CollectionObjectSolidStore', () => {
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThingAll = jest.fn(() => [ 'test-thing' ]);
       client.getStringWithLocale = jest.fn(() => 'test-string');
+      client.asUrl = jest.fn(() => 'test-url');
 
-      await expect(service.getObjectsForCollection(mockCollection)).resolves.toEqual([
-        expect.objectContaining({
-          uri: mockCollection.objectsUri,
-          collection: mockCollection.uri,
-          name: 'test-string',
-          description: 'test-string',
-        }),
-      ]);
+      const result = await service.getObjectsForCollection(mockCollection)
+;
+
+      expect(result[0]).toEqual(expect.objectContaining({
+        uri: mockCollection.objectsUri,
+        collection: mockCollection.uri,
+        name: 'test-string',
+        description: 'test-string',
+      }));
 
     });
 
@@ -82,11 +84,12 @@ describe('CollectionObjectSolidStore', () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() =>  'test-thing');
+      client.getUrl = jest.fn(() => 'test-url');
       client.getStringWithLocale = jest.fn(() => 'test-string');
 
-      await expect(service.getObject('test-uri')).resolves.toEqual(
+      await expect(service.getObject('test-url')).resolves.toEqual(
         expect.objectContaining({
-          uri: 'test-uri',
+          uri: 'test-url',
           name: 'test-string',
           description: 'test-string',
         }),

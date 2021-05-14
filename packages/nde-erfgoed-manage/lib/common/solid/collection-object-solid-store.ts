@@ -1,5 +1,7 @@
-import { getSolidDataset, getThing, getStringWithLocale, getThingAll, Thing } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, Thing, asUrl } from '@digita-ai/nde-erfgoed-client';
+
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
+import { asapScheduler } from 'rxjs';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -32,11 +34,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objects = objectThings.map((thing: Thing) => ({
-      uri: collection.objectsUri,
+    const objects = objectThings.map((objectThing: Thing) => ({
+      uri: asUrl(objectThing),
       collection: collection.uri,
-      name: getStringWithLocale(thing, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(thing, 'http://schema.org/description', 'nl'),
+      name: getStringWithLocale(objectThing, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(objectThing, 'http://schema.org/description', 'nl'),
       type: undefined,
       subject: undefined,
       image: undefined,
@@ -67,7 +69,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     return {
       uri,
       // todo replace with actual triple value
-      collection: 'http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1',
+      collection: getUrl(collectionThing, 'http://schema.org/isPartOf'),
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
       type: undefined,

@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile } from '@digita-ai/nde-erfgoed-client';
 import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
@@ -71,6 +71,9 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // replace existing dataset with updated
     await saveSolidDatasetAt(collection.uri, updatedDataset, { fetch });
 
+    // delete collection objects file
+    await deleteFile(collection.objectsUri, { fetch });
+
     return collection;
 
   }
@@ -91,7 +94,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // for creating new collection
 
     const collectionUri = collection.uri || `http://localhost:3000/leapeeters/heritage-collections/catalog#collection-${v4()}`;
-    const distributionUri = `http://localhost:3000/leapeeters/heritage-collections/catalog#distribution-${v4()}`;
+    const distributionUri = collection.distribution || `http://localhost:3000/leapeeters/heritage-collections/catalog#distribution-${v4()}`;
+    const objectsUri = collection.objectsUri || `http://localhost:3000/leapeeters/heritage-objects/data-${v4()}`;
 
     // retrieve the catalog
     const catalogDataset = await getSolidDataset(collectionUri);
@@ -110,6 +114,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
     distributionThing = addUrl(distributionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DataDownload');
+    distributionThing = addUrl(distributionThing, 'http://schema.org/contentUrl', objectsUri);
 
     // save collection and distribution in dataset
     updatedDataset = setThing(updatedDataset, collectionThing);
@@ -118,7 +123,10 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // replace existing dataset with updated
     await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
 
-    return { ...collection, uri: collectionUri };
+    // create an empty file at objectsUri, where the collection objects will be stored
+    await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch });
+
+    return { ...collection, uri: collectionUri, objectsUri };
 
   }
 
