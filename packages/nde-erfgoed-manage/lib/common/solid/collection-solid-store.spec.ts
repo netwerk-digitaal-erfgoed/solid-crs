@@ -12,18 +12,21 @@ describe('CollectionSolidStore', () => {
     },
   };
 
-  const mockCollection = {
-    uri: 'test-uri',
-    name: 'test-name',
-    description: 'test-description',
-    objectsUri: 'test-url',
-  } as Collection;
+  let mockCollection;
 
   beforeEach(() => {
 
     service = new CollectionSolidStore();
 
     jest.clearAllMocks();
+
+    mockCollection = {
+      uri: 'test-uri',
+      name: 'test-name',
+      description: 'test-description',
+      objectsUri: 'test-url',
+      distribution: 'test-url',
+    } as Collection;
 
   });
 
@@ -165,6 +168,25 @@ describe('CollectionSolidStore', () => {
 
     });
 
+    it('should return collection with new distribution when saved', async () => {
+
+      delete mockCollection.distribution;
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.setThing = jest.fn(() => 'test-dataset');
+      client.addUrl = jest.fn(() => 'test-thing');
+      client.createThing = jest.fn(() => 'test-thing');
+      client.addStringWithLocale = jest.fn(() => 'test-thing');
+      client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+
+      const result = await service.save(mockCollection);
+
+      expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
+      expect(result.distribution).toBeTruthy();
+
+    });
+
   });
 
   describe('getCollection()', () => {
@@ -199,6 +221,7 @@ describe('CollectionSolidStore', () => {
         name: 'test-string',
         description: 'test-string',
         objectsUri: 'test-url',
+        distribution: 'test-url',
       });
 
     });

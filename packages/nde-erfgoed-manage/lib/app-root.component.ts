@@ -61,6 +61,7 @@ export class AppRootComponent extends RxLitElement {
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
         objectsUri: undefined,
+        distribution: undefined,
       },
     )).withContext({
       alerts: [],

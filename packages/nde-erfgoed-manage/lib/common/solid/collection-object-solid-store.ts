@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, Thing, asUrl } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted } from '@digita-ai/nde-erfgoed-client';
 
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { asapScheduler } from 'rxjs';
@@ -34,7 +34,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objects = objectThings.map((objectThing: Thing) => ({
+    const objects = objectThings.map((objectThing: ThingPersisted) => ({
       uri: asUrl(objectThing),
       collection: collection.uri,
       name: getStringWithLocale(objectThing, 'http://schema.org/name', 'nl'),

@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl } from '@digita-ai/nde-erfgoed-client';
 import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
@@ -9,7 +9,7 @@ import { SolidStore } from './solid-store';
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
   /**
-   * Retrieves a list of collections for a given WebID
+   * Retrieves a list of all collections
    *
    */
   async all(): Promise<Collection[]> {
@@ -126,7 +126,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // create an empty file at objectsUri, where the collection objects will be stored
     await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch });
 
-    return { ...collection, uri: collectionUri, objectsUri };
+    return { ...collection, uri: collectionUri, objectsUri, distribution: distributionUri };
 
   }
 
@@ -163,6 +163,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
       objectsUri,
+      distribution: distributionUri,
     };
 
   }
