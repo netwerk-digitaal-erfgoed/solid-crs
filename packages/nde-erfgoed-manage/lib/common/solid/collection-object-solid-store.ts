@@ -12,7 +12,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     if (!collection) {
 
-      throw new ArgumentError('Argument collection should be set');
+      throw new ArgumentError('Argument collection should be set', collection);
 
     }
 
@@ -56,7 +56,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     if (!uri) {
 
-      throw new ArgumentError('Argument uri should be set');
+      throw new ArgumentError('Argument uri should be set', uri);
 
     }
 
