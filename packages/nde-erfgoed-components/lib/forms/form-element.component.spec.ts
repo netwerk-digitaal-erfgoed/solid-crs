@@ -84,6 +84,25 @@ describe('FormElementComponent', () => {
 
   });
 
+  xit('should send SUBMITTED event when enter keypress', async (done) => {
+
+    machine.onEvent(((event) => {
+
+      if(event.type === FormEvents.FORM_SUBMITTED) {
+
+        done();
+
+      }
+
+    }));
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
+
+  });
+
   xit('should send event when updating slotted input field', async (done) => {
 
     machine.onEvent(((event) => {
