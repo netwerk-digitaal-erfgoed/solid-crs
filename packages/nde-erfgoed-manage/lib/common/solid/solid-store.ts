@@ -20,7 +20,6 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
   }
 
-  // todo move this to abstract SolidStore
   /**
    * Returns the instance URI of a type registration for a given RDF class
    *

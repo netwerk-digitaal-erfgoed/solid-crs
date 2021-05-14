@@ -55,7 +55,6 @@ export class AppRootComponent extends RxLitElement {
       new SolidSDKService(this.logger),
       new CollectionSolidStore(),
       new CollectionObjectSolidStore(),
-      // todo figure this out
       {
         uri: null,
         name: this.translator.translate('nde.features.collections.new-collection-name'),

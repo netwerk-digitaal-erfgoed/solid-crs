@@ -141,7 +141,6 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore),
-                // autoForward: true,
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

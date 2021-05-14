@@ -68,7 +68,6 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     return {
       uri,
-      // todo replace with actual triple value
       collection: getUrl(collectionThing, 'http://schema.org/isPartOf'),
       name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
