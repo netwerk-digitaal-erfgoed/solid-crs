@@ -50,7 +50,8 @@ describe('CollectionRootComponent', () => {
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
-      objectStore
+      objectStore,
+      {},
     ));
 
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;

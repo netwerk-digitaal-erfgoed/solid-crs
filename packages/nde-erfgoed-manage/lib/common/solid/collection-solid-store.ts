@@ -1,11 +1,12 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getThingAll, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, Thing, addUrl, addStringWithLocale, createThing } from '@digita-ai/nde-erfgoed-client';
-import { Collection, CollectionStore } from '@digita-ai/nde-erfgoed-core';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing } from '@digita-ai/nde-erfgoed-client';
+import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
+import { SolidStore } from './solid-store';
 
 /**
  * A store for collections.
  */
-export class CollectionSolidStore implements CollectionStore {
+export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
   /**
    * Retrieves a list of collections for a given WebID
@@ -13,15 +14,28 @@ export class CollectionSolidStore implements CollectionStore {
    */
   async all(): Promise<Collection[]> {
 
-    const webId = getDefaultSession().info.webId;
+    const webId = getDefaultSession()?.info?.webId;
+
+    if (!webId) {
+
+      throw new ArgumentError('Argument WebID should be set',  webId);
+
+    }
 
     // retrieve the catalog
     const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
+
+    if (!catalogUri) {
+
+      throw new ArgumentError('Could not retrieve type registration',  { webId, class: 'http://schema.org/DataCatalog' });
+
+    }
+
     const catalogDataset = await getSolidDataset(catalogUri);
     const catalog = getThing(catalogDataset, catalogUri);
 
     // get datasets (=== collections) in this catalog
-    const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset');
+    const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset') as string[];
 
     return await Promise.all(collectionUris.map(async (collectionUri) => await this.getCollection(collectionUri)));
 
@@ -33,6 +47,12 @@ export class CollectionSolidStore implements CollectionStore {
    * @param resource The Collection to delete
    */
   async delete(collection: Collection): Promise<Collection> {
+
+    if (!collection) {
+
+      throw new ArgumentError('Argument collection should be set', collection);
+
+    }
 
     // retrieve the catalog
     const catalogDataset = await getSolidDataset(collection.uri);
@@ -61,6 +81,12 @@ export class CollectionSolidStore implements CollectionStore {
    * @param resource The Collection to save
    */
   async save(collection: Collection): Promise<Collection> {
+
+    if (!collection) {
+
+      throw new ArgumentError('Argument collection should be set', collection);
+
+    }
 
     // for creating new collection
 
@@ -103,9 +129,21 @@ export class CollectionSolidStore implements CollectionStore {
    */
   async getCollection(uri: string): Promise<Collection> {
 
+    if (!uri) {
+
+      throw new ArgumentError('Argument uri should be set', uri);
+
+    }
+
     // retrieve collection
     const dataset = await getSolidDataset(uri);
     const collectionThing = getThing(dataset, uri);
+
+    if (!collectionThing) {
+
+      return null;
+
+    }
 
     // retrieve distribution for the collection objects location
     const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
@@ -118,35 +156,6 @@ export class CollectionSolidStore implements CollectionStore {
       description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
       objectsUri,
     };
-
-  }
-
-  // todo move this to abstract SolidStore
-  /**
-   * Returns the instance URI of a type registration for a given RDF class
-   *
-   * @param webId The WebID of the Solid pod
-   * @param forClass The forClass value of the type registration
-   */
-  private async getInstanceForClass(webId: string, forClass: string): Promise<string> {
-
-    const profileDataset = await getSolidDataset(webId);
-    const profile = getThing(profileDataset, webId);
-
-    // all collections are publicly accessible
-    const publicTypeIndexDataset = await getSolidDataset(getUrl(profile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex'));
-
-    const catalogTypeRegistration = getThingAll(publicTypeIndexDataset).find((typeIndex) =>
-      getUrl(typeIndex, 'http://www.w3.org/ns/solid/terms#forClass') === forClass);
-
-    // todo create catalog type registration when not present
-    if (!catalogTypeRegistration) {
-
-      throw new Error('no type registration found');
-
-    }
-
-    return getUrl(catalogTypeRegistration, 'http://www.w3.org/ns/solid/terms#instance');
 
   }
 
