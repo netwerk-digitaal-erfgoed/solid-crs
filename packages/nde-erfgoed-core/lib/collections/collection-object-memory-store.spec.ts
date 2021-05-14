@@ -111,4 +111,20 @@ describe('CollectionObjectMemoryStore', () => {
 
   });
 
+  describe('getObject()', () => {
+
+    it('should throw error when collection is undefined', async () => {
+
+      await expect(service.getObject(undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return object with matching uri', async () => {
+
+      await expect(service.getObject(resources[0].uri)).resolves.toEqual(resources[0]);
+
+    });
+
+  });
+
 });
