@@ -2,5 +2,4 @@ ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 ifdef::env-github,env-browser[:relfileprefix: pages/]
 
 * xref:scope.adoc[Scope]
-* xref:priorities.adoc[Priorities]
 * xref:architecture.adoc[Architecture]
