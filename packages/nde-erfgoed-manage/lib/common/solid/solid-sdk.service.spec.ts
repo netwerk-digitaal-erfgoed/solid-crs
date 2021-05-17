@@ -1,5 +1,5 @@
 import * as client from '@digita-ai/nde-erfgoed-client';
-import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 

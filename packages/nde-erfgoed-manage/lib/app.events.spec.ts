@@ -1,4 +1,4 @@
-import { addCollection, dismissAlert, error, removeSession, setCollections, setSession } from '../lib/app.events';
+import { addCollection, dismissAlert, error, removeSession, setCollections, setProfile, setSession } from '../lib/app.events';
 import { addAlert } from './features/collection/collection.events';
 
 describe('App Events', () => {
@@ -68,6 +68,16 @@ describe('App Events', () => {
     it('should return correct action', () => {
 
       expect(error).toBeTruthy();
+
+    });
+
+  });
+
+  describe('setProfile', () => {
+
+    it('should return correct action', () => {
+
+      expect(setProfile).toBeTruthy();
 
     });
 
