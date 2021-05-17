@@ -48,6 +48,7 @@ export class MemoryTranslator {
 
     // return key when no translation was found
     return foundTranslation?.value || key;
+
   }
 
 }
