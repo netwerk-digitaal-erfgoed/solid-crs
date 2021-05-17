@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
@@ -11,7 +11,7 @@ import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMach
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
-import { CollectionEvents } from './features/collection/collection.events';
+import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 
 /**
@@ -134,6 +134,12 @@ export class AppRootComponent extends RxLitElement {
   profile: SolidProfile;
 
   /**
+   * The selected collection of the current user.
+   */
+  @internalProperty()
+  selected: Collection;
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -176,6 +182,10 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.profile),
     ));
 
+    this.subscribe('selected', from(this.actor).pipe(
+      map((state) => state.context?.selected),
+    ));
+
   }
 
   /**
@@ -198,12 +208,12 @@ export class AppRootComponent extends RxLitElement {
           <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
           <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
         </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
       </nde-sidebar-list>
     </nde-sidebar>
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
-    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     `;
 
   }
