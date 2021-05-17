@@ -13,4 +13,14 @@ export interface Collection extends Resource {
    * The description of the collection.
    */
   description: string;
+
+  /**
+   * The URI of this collection's objects
+   */
+  objectsUri: string;
+
+  /**
+   * The distribution URI of this collection
+   */
+  distribution: string;
 }

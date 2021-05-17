@@ -12,4 +12,11 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
    * @param collection The collection for which to retrieve objects.
    */
   getObjectsForCollection(collection: Collection): Promise<CollectionObject[]>;
+
+  /**
+   * Retrieves a single CollectionObject
+   *
+   * @param uri The URI of the CollectionObject
+   */
+  getObject(uri: string): Promise<CollectionObject>;
 }

@@ -2,6 +2,7 @@
  * Exports the modules of the package.
  */
 export * from './collections/collection';
+export * from './collections/collection-store';
 export * from './collections/collection-object';
 export * from './collections/collection-object-memory-store';
 export * from './collections/collection-object-store';

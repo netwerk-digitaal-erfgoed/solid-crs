@@ -1,4 +1,5 @@
 import { ArgumentError } from '../errors/argument-error';
+import { Collection } from './collection';
 import { CollectionObject } from './collection-object';
 import { CollectionObjectMemoryStore } from './collection-object-memory-store';
 
@@ -8,7 +9,8 @@ describe('CollectionObjectMemoryStore', () => {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
-  };
+    objectsUri: 'objects-uri',
+  } as Collection;
 
   const resources: CollectionObject[] = [
     {
@@ -104,6 +106,22 @@ describe('CollectionObjectMemoryStore', () => {
 
       service = new CollectionObjectMemoryStore(null);
       expect(service.getObjectsForCollection(collection1)).rejects.toThrow(ArgumentError);
+
+    });
+
+  });
+
+  describe('getObject()', () => {
+
+    it('should throw error when collection is undefined', async () => {
+
+      await expect(service.getObject(undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return object with matching uri', async () => {
+
+      await expect(service.getObject(resources[0].uri)).resolves.toEqual(resources[0]);
 
     });
 
