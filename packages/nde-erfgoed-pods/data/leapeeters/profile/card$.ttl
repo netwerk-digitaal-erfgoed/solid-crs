@@ -18,5 +18,5 @@
     solid:oidcIssuer <http://localhost:3000/>;
     solid:oidcIssuerRegistrationToken "JNLqmggwKoXTRuLeUooc5";
     solid:privateTypeIndex <http://localhost:3000/leapeeters/settings/privateTypeIndex.ttl>;
-    solid:publicTypeIndex <http://localhost:3000/leapeeters/settings/publicTypeIndex.ttl>.
+    solid:publicTypeIndex <http://localhost:3000/leapeeters/settings/publicTypeIndex.ttl>;
     space:storage <http://localhost:3000/leapeeters/>.
