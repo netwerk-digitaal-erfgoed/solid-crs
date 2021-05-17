@@ -19,7 +19,9 @@ export class ConsoleLogger extends Logger {
     protected readonly minimumLevel: LoggerLevel,
     protected readonly minimumLevelPrintData: LoggerLevel,
   ) {
+
     super(minimumLevel, minimumLevelPrintData);
+
   }
 
   /**
@@ -30,47 +32,60 @@ export class ConsoleLogger extends Logger {
    * @param message Message that should be logged
    * @param data Any relevant data that should be logged
    */
-  log(level: LoggerLevel, typeName: string, message: string, data?: unknown) {
+  log(level: LoggerLevel, typeName: string, message: string, data?: unknown): void {
+
     if (level === null || level === undefined) {
+
       throw new ArgumentError('level should be set', typeName);
+
     }
 
     if (!typeName) {
+
       throw new ArgumentError('typeName should be set', typeName);
+
     }
 
     if (!message) {
+
       throw new ArgumentError('message should be set', message);
+
     }
 
     const timestamp: string = new Date().toISOString();
 
     if (level <= this.minimumLevel) {
+
       const logMessage = `[${timestamp} ${typeName}] ${message}`;
       const logData = level >= this.minimumLevelPrintData ? '' : data||'';
       const log = [ logMessage, logData ];
+
       switch (level) {
 
-      case LoggerLevel.info:
-        console.info(...log);
-        break;
+        case LoggerLevel.info:
+          console.info(...log);
+          break;
 
-      case LoggerLevel.debug:
-        console.debug(...log);
-        break;
+        case LoggerLevel.debug:
+          console.debug(...log);
+          break;
 
-      case LoggerLevel.warn:
-        console.warn(...log);
-        break;
+        case LoggerLevel.warn:
+          console.warn(...log);
+          break;
 
-      case LoggerLevel.error:
-        console.error(...log);
-        break;
+        case LoggerLevel.error:
+          console.error(...log);
+          break;
 
-      default:
-        console.log(...log);
-        break;
+        default:
+          console.log(...log);
+          break;
+
       }
+
     }
+
   }
+
 }

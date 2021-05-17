@@ -1,15 +1,15 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Event, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
-import { ActorRef, Interpreter, State} from 'xstate';
+import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
+import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, NdeLogoInverse, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Login, Logo, Theme, Loading } from '@digita-ai/nde-erfgoed-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { AppEvents } from '../../app.events';
-import { AuthenticateContext } from './authenticate.machine';
+import { AuthenticateContext, AuthenticateStates } from './authenticate.machine';
 
 /**
  * The root page of the authenticate feature.
@@ -19,19 +19,19 @@ export class AuthenticateRootComponent extends RxLitElement {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({ type: Logger })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator;
 
   /**
    * The actor controlling this component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   public actor: Interpreter<AuthenticateContext>;
 
   /**
@@ -44,7 +44,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActor: ActorRef<Event<FormEvents>>;
+  formActor: ActorRef<FormEvent>;
 
   /**
    * The state of this component.
@@ -53,30 +53,62 @@ export class AuthenticateRootComponent extends RxLitElement {
   state?: State<AuthenticateContext>;
 
   /**
-   * The state of this component.
+   * Indicates if the form can be submitted.
    */
   @internalProperty()
-  enableSubmit?: boolean;
+  canSubmit? = false;
+
+  /**
+   * Indicates if the form is being submitted.
+   */
+  @internalProperty()
+  isSubmitting? = false;
+
+  /**
+   * Indicates if the form is being initialized.
+   */
+  @internalProperty()
+  isInitializing? = false;
+
+  /**
+   * Indicates if the user is being redirected.
+   */
+  @internalProperty()
+  isRedirecting? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues) {
+
     super.updated(changed);
 
-    if(changed.has('actor')){
+    if(changed.has('actor') && this.actor){
+
       this.subscribe('formActor', from(this.actor).pipe(
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
       if(this.actor.parent) {
+
         this.subscribe('alerts', from(this.actor.parent)
-          .pipe(map((state) => state.context.alerts)));
+          .pipe(map((state) => state.context?.alerts)));
+
       }
+
+      this.subscribe('isInitializing', from(this.actor).pipe(
+        map((state) => state.matches(AuthenticateStates.INITIAL)),
+      ));
+
+      this.subscribe('isRedirecting', from(this.actor).pipe(
+        map((state) => state.matches(AuthenticateStates.REDIRECTING)),
+      ));
+
     }
 
-    if(changed.has('formActor')){
-      this.subscribe('enableSubmit', from(this.formActor).pipe(
+    if(changed.has('formActor') && this.formActor){
+
+      this.subscribe('canSubmit', from(this.formActor).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
@@ -84,7 +116,13 @@ export class AuthenticateRootComponent extends RxLitElement {
           },
         })),
       ));
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
     }
+
   }
 
   /**
@@ -93,15 +131,21 @@ export class AuthenticateRootComponent extends RxLitElement {
    * @param event Dismiss event dispatched by an alert componet.
    */
   handleDismiss(event: CustomEvent<Alert>) {
+
     if (!event || !event.detail) {
-      throw new ArgumentError('Argument event || event.detail should be set.', event && event.detail);
+
+      throw new ArgumentError('Argument event || event.detail should be set.', event);
+
     }
 
     if (!this.actor || !this.actor.parent) {
-      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor || !this.actor.parent);
+
+      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor);
+
     }
 
     this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
   }
 
   /**
@@ -110,49 +154,57 @@ export class AuthenticateRootComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
     return html`
       <div class="title-container">
-        ${ unsafeSVG(NdeLogoInverse) }
+        ${ unsafeSVG(Logo) }
         <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
       </div>
-      <div class="form-container">
-        ${ alerts }
+      ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`
+        <div class="form-container">
+          ${ alerts }
+          
+          <form>
+            <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+              <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
+              <input type="text" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+              <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+            </nde-form-element>
+          </form>
         
-        <form>
-          <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
-            <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-            <div slot="icon"></div>
-            <input type="text" slot="input" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-            <button slot="action" class="primary" ?disabled="${!this.enableSubmit}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
-          </nde-form-element>
-        </form>
-       
-      </div>
-      <div class="webid-container">
-        <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
-      </div>`;
+        </div>
+        <div class="webid-container">
+          <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+        </div>
+      `}
+      `;
+
   }
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
         :host {
-          height: 100%;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          gap: var(--gap-huge);
+          background-color: var(--colors-primary-dark);
+        }
+        
+        :host > * {
+          margin-bottom: var(--gap-huge);
+          width: 400px;
         }
 
-        
         .title-container {
           height: 50px;
           display: flex;
@@ -160,7 +212,6 @@ export class AuthenticateRootComponent extends RxLitElement {
           justify-content: space-between;
           align-items: center;
           color: var(--colors-foreground-inverse);
-          width: 400px;
         }
         
         .title-container svg {
@@ -180,6 +231,10 @@ export class AuthenticateRootComponent extends RxLitElement {
           color: white;
         }
 
+        nde-form-element input {
+          height: 100%;
+        }
+
         .webid-container p {
           text-align: center;
           color: var(--colors-foreground-light);
@@ -191,15 +246,22 @@ export class AuthenticateRootComponent extends RxLitElement {
         }
 
         .form-container {
-          width: 400px;
           display: flex;
           flex-direction: column;
           justify-content: center;
           align-items: stretch;
-          gap: var(--gap-large);
         }
-      `,
+
+        .form-container > * {
+          margin-bottom: var(--gap-large);
+        }
+
+        svg {
+          stroke: var(--colors-foreground-light) !important;
+        }
+        `,
     ];
+
   }
 
 }

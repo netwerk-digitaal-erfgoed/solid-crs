@@ -1,0 +1,5 @@
+/* Default styling for SVGs */
+svg {
+  width: var(--font-size-header-normal);
+  height: var(--font-size-header-normal);
+}

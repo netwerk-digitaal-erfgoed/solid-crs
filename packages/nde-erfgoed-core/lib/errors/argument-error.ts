@@ -4,6 +4,7 @@ import { BaseError } from './base-error';
  * An error thrown when a function is called with invalid arguments.
  */
 export class ArgumentError extends BaseError {
+
   public readonly name = ArgumentError.name;
 
   /**
@@ -14,8 +15,11 @@ export class ArgumentError extends BaseError {
    * @param cause The underlying error.
    */
   constructor(message: string, public value: unknown, cause?: Error) {
+
     super(message, cause);
 
     Object.setPrototypeOf(this, ArgumentError.prototype);
+
   }
+
 }

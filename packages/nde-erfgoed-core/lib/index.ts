@@ -2,6 +2,9 @@
  * Exports the modules of the package.
  */
 export * from './collections/collection';
+export * from './collections/collection-object';
+export * from './collections/collection-object-memory-store';
+export * from './collections/collection-object-store';
 export * from './errors/argument-error';
 export * from './errors/base-error';
 export * from './errors/not-implemented-error';
@@ -14,6 +17,5 @@ export * from './logging/logger';
 export * from './stores/memory-store';
 export * from './stores/resource';
 export * from './stores/store';
-export * from './solid/solid-mock.service';
-export * from './solid/solid-sdk.service';
-export * from './solid/solid.service';
+export * from './utils/functions';
+export * from './utils/date-parser';

@@ -13,9 +13,8 @@ form nde-form-element:last-child {
   margin-bottom: 0;
 }
 
-form nde-form-element input {
+nde-form-element input {
   color: var(--colors-foreground-normal);
-  padding: 0;
   border: none;
   font-size: var(--font-size-small);
   font-family: var(--font-family);
@@ -24,6 +23,11 @@ form nde-form-element input {
   width: 100%;
 }
 
+nde-form-element input:disabled {
+  color: var(--colors-foreground-light);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -33,16 +37,12 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: var(--colors-foreground-normal) !important;
 }
 
-form nde-form-element div[slot="icon"] svg {
+nde-form-element div[slot="icon"] svg {
   max-height: var(--gap-normal);
   max-width: var(--gap-normal);
 }
 
-form nde-form-element div[slot="help"] {
+nde-form-element div[slot="help"] {
   font-size: var(--font-size-small);
   color: var(--colors-foreground-light);
-}
-
-form nde-form-element button[slot="action"] {
-  height: 44px;
 }
