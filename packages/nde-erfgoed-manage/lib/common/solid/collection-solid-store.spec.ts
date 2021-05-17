@@ -146,6 +146,7 @@ describe('CollectionSolidStore', () => {
       client.addStringWithLocale = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
       client.overwriteFile = jest.fn(async () => 'test-file');
+      client.fetch = jest.fn(async () => ({ ok: true }));
 
       await expect(service.save(mockCollection)).resolves.toEqual(mockCollection);
 
@@ -164,6 +165,7 @@ describe('CollectionSolidStore', () => {
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.fetch = jest.fn(async () => ({ ok: true }));
 
       const result = await service.save(mockCollection);
 
@@ -185,6 +187,7 @@ describe('CollectionSolidStore', () => {
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.fetch = jest.fn(async () => ({ ok: true }));
 
       const result = await service.save(mockCollection);
 
@@ -206,6 +209,7 @@ describe('CollectionSolidStore', () => {
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.fetch = jest.fn(async () => ({ ok: true }));
 
       const result = await service.save(mockCollection);
 

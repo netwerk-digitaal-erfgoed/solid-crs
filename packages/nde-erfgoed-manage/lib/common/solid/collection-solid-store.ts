@@ -139,8 +139,14 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // replace existing dataset with updated
     await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
 
-    // create an empty file at objectsUri, where the collection objects will be stored
-    await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch });
+    const result = await fetch(objectsUri, { method: 'head' });
+
+    if (!result.ok) {
+
+      // create an empty file at objectsUri, where the collection objects will be stored
+      await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch });
+
+    }
 
     return { ...collection, uri: collectionUri, objectsUri, distribution: distributionUri };
 

@@ -118,7 +118,7 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
         invoke: {
           src: (context) => collectionStore.save(context.collection),
           onDone: {
-            target: CollectionStates.IDLE,
+            target: CollectionStates.DETERMINING_COLLECTION,
             actions: [
               sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
             ],

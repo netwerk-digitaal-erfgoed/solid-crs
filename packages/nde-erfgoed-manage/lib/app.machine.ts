@@ -254,7 +254,7 @@ export const appMachine = (
               /**
                * Get all collections from store.
                */
-              src: (context) => collectionStore.all(),
+              src: () => collectionStore.all(),
               onDone: [
                 {
                   target: AppDataStates.IDLE,
@@ -262,7 +262,8 @@ export const appMachine = (
                     setCollections,
                     send((context, event) => ({
                       type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: context.selected ? context.selected : event.data[0],
+                      collection: event.data.find((collection: Collection) =>
+                        context.selected?.uri === collection.uri) ?? event.data[0],
                     })),
                   ],
                   cond: (context, event) => event.data.length > 0,
