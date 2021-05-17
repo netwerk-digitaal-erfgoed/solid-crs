@@ -76,7 +76,7 @@ jobs:
 
       - run: npm run bootstrap
 
-      - run: npm run build
+      - run: npm run build:all
 
       - run: npm publish packages/nde-erfgoed-theme
         env:
