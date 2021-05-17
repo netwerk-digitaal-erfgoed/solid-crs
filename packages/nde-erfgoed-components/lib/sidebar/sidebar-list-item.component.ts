@@ -70,6 +70,12 @@ export class SidebarListItemComponent extends RxLitElement {
         display: flex;
       }
 
+      .item slot[name="title"]::slotted(*) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       .item.selected slot[name="title"]::slotted(*), .item:hover:not(.title) slot[name="title"]::slotted(*) {
         color: var(--colors-foreground-inverse);
       }
@@ -77,6 +83,7 @@ export class SidebarListItemComponent extends RxLitElement {
       .item.title slot[name="title"]::slotted(*) {
         font-weight: var( --font-weight-bold);
       }
+
       .item.title {
         cursor: default;
       }
