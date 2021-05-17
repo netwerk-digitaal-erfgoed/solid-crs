@@ -1,4 +1,4 @@
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, formMachine } from '@digita-ai/nde-erfgoed-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryStore } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
@@ -117,6 +117,56 @@ describe('CollectionRootComponent', () => {
       if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should send event when collection title is clicked', async () => {
+
+    machine.onTransition((state) => {
+
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="title"]') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should send event when collection subtitle is clicked', async () => {
+
+    machine.onTransition((state) => {
+
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="subtitle"]') as HTMLElement;
         button.click();
 
         expect(machine.send).toHaveBeenCalledTimes(1);
@@ -289,6 +339,25 @@ describe('CollectionRootComponent', () => {
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
 
     });
+
+  });
+
+  it('should update subscription when formActor is updated', async () => {
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    component.subscribe = jest.fn();
+
+    const map = new Map<string, string>();
+    map.set('actor', 'bla');
+    map.set('formActor', 'bla');
+
+    component.updated(map);
+
+    expect(component.subscribe).toHaveBeenCalledTimes(5);
 
   });
 

@@ -1,6 +1,8 @@
-import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
+import { appMachine } from '../../app.machine';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
@@ -43,6 +45,13 @@ describe('CollectionMachine', () => {
       .withContext({
         collection: collection1,
       }));
+
+    machine.parent = interpret(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      collectionStore,
+      objectStore,
+      {}
+    ));
 
   });
 
@@ -119,30 +128,30 @@ describe('CollectionMachine', () => {
 
   });
 
-  // it('should save collection when saving', async (done) => {
+  it('should save collection when saving', async (done) => {
 
-  //   collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
+    collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
 
-  //   machine.onTransition((state) => {
+    machine.onTransition((state) => {
 
-  //     if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
 
-  //       expect(collectionStore.save).toHaveBeenCalledTimes(1);
+        expect(collectionStore.save).toHaveBeenCalledTimes(1);
 
-  //       expect(collectionStore.save).toHaveBeenCalledWith(collection1);
+        expect(collectionStore.save).toHaveBeenCalledWith(collection1);
 
-  //       done();
+        done();
 
-  //     }
+      }
 
-  //   });
+    });
 
-  //   machine.start();
-  //   machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+    machine.start();
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
 
-  //   machine.send(CollectionEvents.CLICKED_SAVE);
+    machine.send(CollectionEvents.CLICKED_SAVE);
 
-  // });
+  });
 
   it('should assign when selected collection', async (done) => {
 

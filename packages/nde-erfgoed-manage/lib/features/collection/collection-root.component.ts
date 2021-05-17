@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Cross, Edit, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
