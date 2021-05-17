@@ -18,6 +18,7 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
+  SEARCH_UPDATED   = '[AppEvent: Updated searchTerm]',
 }
 
 /**
@@ -78,6 +79,11 @@ export interface ClickedCreateCollectionEvent extends Event<AppEvents> {
   type: AppEvents.CLICKED_CREATE_COLLECTION;
 }
 
+export interface SearchUpdatedEvent extends Event<AppEvents> {
+  type: AppEvents.SEARCH_UPDATED;
+  searchTerm: string;
+}
+
 /**
  * Union type of app events.
  */
@@ -91,7 +97,8 @@ export type AppEvent =
   | SelectedCollectionEvent
   | ClickedDeleteEvent
   | ClickedCreateCollectionEvent
-  | CollectionsLoadedEvent;
+  | CollectionsLoadedEvent
+  | SearchUpdatedEvent;
 
 /**
  * Actions for the alerts component.

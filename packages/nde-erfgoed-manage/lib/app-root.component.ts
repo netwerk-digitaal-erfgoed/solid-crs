@@ -13,6 +13,7 @@ import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
+import { SearchEvents } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -139,6 +140,9 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   formActor: ActorRef<FormEvent>;
 
+  @internalProperty()
+  searchTerm = '';
+
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
@@ -184,6 +188,18 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
+  searchUpdated(event): void{
+
+    this.searchTerm = event.target.value;
+
+  }
+
+  clearSearchTerm(): void {
+
+    this.searchTerm = '';
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -203,8 +219,8 @@ export class AppRootComponent extends RxLitElement {
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
-            <input type="text" slot="input" class="searchTerm" @change="${(e) => console.log(e)}"/>
-            <div slot="icon">${ unsafeSVG(Cross) }</div>
+            <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e) => e.code === 'Enter' ? this.actor.send(AppEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>
+            <div slot="icon"  @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>
           </nde-form-element>
         </div>
       </nde-sidebar-item>
@@ -221,6 +237,7 @@ export class AppRootComponent extends RxLitElement {
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.SEARCH]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }  
     `;
 
   }

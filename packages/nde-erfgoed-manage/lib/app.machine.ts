@@ -9,6 +9,8 @@ import { authenticateMachine } from './features/authenticate/authenticate.machin
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
+import { SearchEvents } from './features/search/search.events';
+import { searchMachine } from './features/search/search.machine';
 
 /**
  * The root context of the application.
@@ -52,6 +54,7 @@ export enum AppRootStates {
   AUTHENTICATE = '[AppState: Authenticate]',
   FEATURE  = '[AppState: Features]',
   DATA  = '[AppState: Data]',
+  SEARCH  = '[AppState: Search]',
 }
 
 /**
@@ -82,9 +85,17 @@ export enum AppAuthenticateStates {
 }
 
 /**
+ * State references for the application's features, with readable log format.
+ */
+export enum AppSearchStates {
+  IDLE = '[AppSearchStates: Authenticated]',
+  SEARCHING  = '[AppSearchStates: Unauthenticated]',
+}
+
+/**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates | AppSearchStates;
 
 /**
  * The application root machine and its configuration.
@@ -110,6 +121,11 @@ export const appMachine = (
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
+          [AppEvents.SEARCH_UPDATED]: {
+            target: `${AppRootStates.FEATURE}.${AppFeatureStates.SEARCH}`,
+            cond: (context, event) =>  !!event.searchTerm?.length,
+          },
+          [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
           },
@@ -132,9 +148,6 @@ export const appMachine = (
          */
           [AppFeatureStates.COLLECTION]: {
             // Invoke the collection machine
-            on: {
-              [AppEvents.LOGGED_OUT]: AppFeatureStates.AUTHENTICATE,
-            },
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
@@ -166,6 +179,24 @@ export const appMachine = (
                 actions: send({ type: AppEvents.ERROR }),
               },
             },
+          },
+          [AppFeatureStates.SEARCH]: {
+            invoke: [
+              {
+                id: AppActors.SEARCH_MACHINE,
+                src: searchMachine(collectionStore, objectStore),
+                autoForward: true,
+                onDone: {
+                  actions: send((_, event) => (
+                    { type: SearchEvents.SEARCH_UPDATED,
+                      searchTerm: event.data.searchTerm }
+                  )),
+                },
+                onError: {
+                  actions: send({ type: AppEvents.ERROR }),
+                },
+              },
+            ],
           },
         },
       },

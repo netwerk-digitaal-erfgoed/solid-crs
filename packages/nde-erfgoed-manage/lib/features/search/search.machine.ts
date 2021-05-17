@@ -4,7 +4,7 @@ import { State } from '@digita-ai/nde-erfgoed-components';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SearchEvent, SearchEvents  } from './search.events';
-import { AppEvents } from 'app.events';
+import { AppEvents } from './../../app.events';
 
 /**
  * The context of a searchs feature.
@@ -49,16 +49,17 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
     id: SearchActors.SEARCH_MACHINE,
     context: { },
     initial: SearchStates.IDLE,
-    on: {
-      [SearchEvents.SEARCH_UPDATED]: {
-        actions: assign({
-          searchTerm: (context, event) => event.searchTerm,
-        }),
-        target: SearchStates.SEARCHING,
-      },
-    },
     states: {
-      [SearchStates.IDLE]: {},
+      [SearchStates.IDLE]: {
+        on: {
+          [SearchEvents.SEARCH_UPDATED]: {
+            actions: assign({
+              searchTerm: (context, event) => event.searchTerm,
+            }),
+            target: SearchStates.SEARCHING,
+          },
+        },
+      },
       [SearchStates.SEARCHING]: {
         invoke: {
           src: (context, event) => of({ searchTerm: event.searchTerm }).pipe(
