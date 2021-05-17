@@ -17,6 +17,8 @@ describe('AppRootComponent', () => {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
   };
 
   beforeEach(() => {
@@ -27,11 +29,15 @@ describe('AppRootComponent', () => {
           uri: 'collection-uri-1',
           name: 'Collection 1',
           description: 'This is collection 1',
+          objectsUri: 'test-uri',
+          distribution: 'test-uri',
         },
         {
           uri: 'collection-uri-2',
           name: 'Collection 2',
           description: 'This is collection 2',
+          objectsUri: 'test-uri',
+          distribution: 'test-uri',
         },
       ]),
       new CollectionObjectMemoryStore([
@@ -70,8 +76,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should show primary navigation when authenticated', async (done) => {
+  it('should show primary navigation when authenticated', async (done) => {
 
     machine.onTransition(async (state) => {
 
@@ -98,8 +103,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should not show primary navigation when unauthenticated', async (done) => {
+  it('should not show primary navigation when unauthenticated', async (done) => {
 
     machine.onTransition(async (state) => {
 
@@ -159,8 +163,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should send create event when sidebar list action is clicked', async (done) => {
+  it('should send create event when sidebar list action is clicked', async (done) => {
 
     machine.onTransition(async (state) => {
 
@@ -223,8 +226,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should add collection when store contains none', async (done) => {
+  it('should add collection when store contains none', async (done) => {
 
     // start without collection
     machine = interpret(appMachine(solid,

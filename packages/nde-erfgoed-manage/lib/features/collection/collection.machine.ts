@@ -1,5 +1,5 @@
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
@@ -42,7 +42,7 @@ export enum CollectionStates {
 /**
  * The collection component machine.
  */
-export const collectionMachine = (collectionStore: Store<Collection>, objectStore: CollectionObjectStore) =>
+export const collectionMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
     id: CollectionActors.COLLECTION_MACHINE,
     context: { },

@@ -111,8 +111,7 @@ describe('CollectionRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should send event when delete is clicked', async () => {
+  it('should send event when delete is clicked', async () => {
 
     machine.onTransition((state) => {
 
@@ -162,8 +161,7 @@ describe('CollectionRootComponent', () => {
 
   });
 
-  // TODO: Update test
-  xit('should send event when edit is clicked', async () => {
+  it('should send event when edit is clicked', async () => {
 
     machine.onTransition((state) => {
 
