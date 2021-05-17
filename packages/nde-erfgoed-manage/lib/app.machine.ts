@@ -243,6 +243,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
+              [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
           /**
@@ -261,7 +262,7 @@ export const appMachine = (
                     setCollections,
                     send((context, event) => ({
                       type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: event.data[0],
+                      collection: context.selected ? context.selected : event.data[0],
                     })),
                   ],
                   cond: (context, event) => event.data.length > 0,

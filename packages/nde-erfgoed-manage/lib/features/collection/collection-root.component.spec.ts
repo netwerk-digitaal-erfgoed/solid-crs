@@ -136,6 +136,56 @@ describe('CollectionRootComponent', () => {
 
   });
 
+  it('should send event when collection title is clicked', async () => {
+
+    machine.onTransition((state) => {
+
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="title"]') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should send event when collection subtitle is clicked', async () => {
+
+    machine.onTransition((state) => {
+
+      machine.send = jest.fn();
+
+      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="subtitle"]') as HTMLElement;
+        button.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
   it('should send event when create is clicked', async () => {
 
     machine.onTransition((state) => {
@@ -186,7 +236,7 @@ describe('CollectionRootComponent', () => {
 
   });
 
-  it('should hide save and cancel buttons when not editing', async () => {
+  it('should hide save and cancel buttons and show edit button when not editing', async () => {
 
     machine.onTransition(async (state) => {
 
@@ -194,9 +244,46 @@ describe('CollectionRootComponent', () => {
 
         const save = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
         const cancel = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
+        const edit = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
 
         expect(save).toBeFalsy();
         expect(cancel).toBeFalsy();
+        expect(edit).toBeTruthy();
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+  });
+
+  it('should show save and cancel buttons and hide edit button when editing', async () => {
+
+    machine.onTransition(async (state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        const edit = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
+
+        expect(edit).toBeTruthy();
+
+        (edit as HTMLButtonElement).click();
+
+      }
+
+      if (state.matches(CollectionStates.EDITING)) {
+
+        const save = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
+        const cancel = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
+        const edit = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
+
+        expect(save).toBeTruthy();
+        expect(cancel).toBeTruthy();
+        expect(edit).toBeFalsy();
 
       }
 
@@ -255,6 +342,25 @@ describe('CollectionRootComponent', () => {
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
 
     });
+
+  });
+
+  it('should update subscription when formActor is updated', async () => {
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    component.subscribe = jest.fn();
+
+    const map = new Map<string, string>();
+    map.set('actor', 'bla');
+    map.set('formActor', 'bla');
+
+    component.updated(map);
+
+    expect(component.subscribe).toHaveBeenCalledTimes(5);
 
   });
 

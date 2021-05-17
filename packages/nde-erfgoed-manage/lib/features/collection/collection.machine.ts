@@ -1,7 +1,12 @@
+import { formMachine,
+  FormActors,
+  FormValidatorResult,
+  FormContext,
+  FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
-import { FormEvents, State } from '@digita-ai/nde-erfgoed-components';
-import { log } from 'xstate/lib/actions';
+
+import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { CollectionEvent, CollectionEvents  } from './collection.events';
 
@@ -65,7 +70,8 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
        */
       [CollectionStates.LOADING]: {
         invoke: {
-          src: (context) => objectStore.getObjectsForCollection(context.collection),
+          src: (context) =>
+            objectStore.getObjectsForCollection(context.collection),
           onDone: {
             /**
              * When done, assign objects to the context and transition to idle.
@@ -100,8 +106,7 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
       /**
        * Objects for the current collection are loaded.
        */
-      [CollectionStates.IDLE]: {
-      },
+      [CollectionStates.IDLE]: {},
       /**
        * Saving changesto the collection's metadata.
        */
@@ -110,6 +115,9 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
           src: (context) => collectionStore.save(context.collection),
           onDone: {
             target: CollectionStates.IDLE,
+            actions: [
+              sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
+            ],
           },
           onError: {
             actions: sendParent(AppEvents.ERROR),
@@ -120,6 +128,37 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
        * Editing the collection metadata.
        */
       [CollectionStates.EDITING]: {
+        invoke: [
+          /**
+           * Invoke a form machine which controls the form.
+           */
+          {
+            id: FormActors.FORM_MACHINE,
+            src: formMachine<{ name: string; description: string }>(
+              (): Observable<FormValidatorResult[]> => of([]),
+              async (c: FormContext<{ name: string; description: string }>) => c.data
+            ),
+            data: (context) => ({
+              data: { name: context.collection.name, description: context.collection.description },
+              original: { name: context.collection.name, description: context.collection.description },
+            }),
+            onDone: {
+              target: CollectionStates.SAVING,
+              actions: [
+                assign((context, event) => ({
+                  collection: {
+                    ...context.collection,
+                    name: event.data.data.name,
+                    description: event.data.data.description,
+                  },
+                })),
+              ],
+            },
+            onError: {
+              target: CollectionStates.IDLE,
+            },
+          },
+        ],
         on: {
           [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
         },
@@ -134,6 +173,7 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
             target: CollectionStates.IDLE,
             actions: [
               sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
+              sendParent((context) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: undefined })),
             ],
           },
           onError: {
