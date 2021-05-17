@@ -127,7 +127,7 @@ export const collectionMachine = (
           onDone: {
             target: CollectionStates.IDLE,
             actions: [
-              sendParent((_: any) => ({ type: CollectionEvents.SAVED_COLLECTION })),
+              sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
             ],
           },
           onError: {
@@ -146,7 +146,7 @@ export const collectionMachine = (
           {
             id: FormActors.FORM_MACHINE,
             src: formMachine<{ name: string; description: string }>(
-              (_: any): Observable<FormValidatorResult[]> => of([]),
+              (): Observable<FormValidatorResult[]> => of([]),
               async (c: FormContext<{ name: string; description: string }>) => c.data
             ),
             data: (context) => ({
@@ -165,9 +165,6 @@ export const collectionMachine = (
                 })),
               ],
             },
-            /**
-             * Go back to unauthenticated when something goes wrong, and show an alert.
-             */
             onError: {
               target: CollectionStates.IDLE,
             },

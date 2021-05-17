@@ -72,6 +72,7 @@ export enum AppFeatureStates {
 export enum AppDataStates {
   IDLE  = '[AppCreationStates: Idle]',
   REFRESHING  = '[AppCreationStates: Refreshing]',
+  REFRESHING_SIDEBAR  = '[AppCreationStates: Refreshing Sidebar]',
   CREATING = '[AppCreationStates: Creating]',
 }
 
@@ -244,7 +245,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
-              [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
+              [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING_SIDEBAR,
             },
           },
           /**
@@ -255,8 +256,7 @@ export const appMachine = (
               /**
                * Get all collections from store.
                */
-              src: () => collectionStore.all().then((collections) =>
-                collections.sort((a, b) => a.name.localeCompare(b.name))),
+              src: () => collectionStore.all(),
               onDone: [
                 {
                   target: AppDataStates.IDLE,
@@ -268,6 +268,20 @@ export const appMachine = (
                     })),
                   ],
                   cond: (context, event) => event.data.length > 0,
+                },
+                {
+                  target: AppDataStates.CREATING,
+                },
+              ],
+            },
+          },
+          [AppDataStates.REFRESHING_SIDEBAR]: {
+            invoke: {
+              src: () => collectionStore.all(),
+              onDone: [
+                {
+                  target: AppDataStates.IDLE,
+                  actions: [ setCollections ],
                 },
                 {
                   target: AppDataStates.CREATING,

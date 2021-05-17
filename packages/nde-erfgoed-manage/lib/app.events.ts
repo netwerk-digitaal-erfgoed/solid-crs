@@ -159,7 +159,10 @@ export const removeSession = assign({ session: (context, event) => undefined });
 /**
  * Action which saves a list of collections to the machine's context.
  */
-export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });
+export const setCollections = assign({
+  collections: (context, event: DoneInvokeEvent<Collection[]>) =>
+    event.data.sort((a, b) => a.name.localeCompare(b.name)),
+});
 
 /**
  * Action which adds a single collection to the machine's context.
