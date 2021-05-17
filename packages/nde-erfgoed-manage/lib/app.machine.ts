@@ -106,7 +106,7 @@ export const appMachine = (
       [CollectionEvents.SELECTED_COLLECTION]: {
         actions:
         [
-          (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+          forwardTo(AppActors.COLLECTION_MACHINE),
           assign({ selected: (context, event) => event.collection }),
         ],
       },
@@ -131,11 +131,6 @@ export const appMachine = (
                 type: AppEvents.ADD_ALERT,
                 alert: { type: 'danger', message: 'nde.root.alerts.error' },
               })),
-            ],
-          },
-          [CollectionEvents.SELECTED_COLLECTION]: {
-            actions: [
-              send((context, event) => (event), { to: AppActors.COLLECTION_MACHINE }),
             ],
           },
         },
