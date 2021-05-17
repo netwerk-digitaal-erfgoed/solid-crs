@@ -1,8 +1,9 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
-import { of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { from, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { log } from 'xstate/lib/actions';
 import { SearchEvent, SearchEvents  } from './search.events';
 import { AppEvents } from './../../app.events';
 
@@ -48,31 +49,28 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
   createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
     context: { },
-    initial: SearchStates.IDLE,
+    initial: SearchStates.SEARCHING,
     states: {
-      [SearchStates.IDLE]: {
-        on: {
-          [SearchEvents.SEARCH_UPDATED]: {
-            actions: assign({
-              searchTerm: (context, event) => event.searchTerm,
-            }),
-            target: SearchStates.SEARCHING,
-          },
-        },
-      },
+      [SearchStates.IDLE]: { },
       [SearchStates.SEARCHING]: {
         invoke: {
-          src: (context, event) => of({ searchTerm: event.searchTerm }).pipe(
-            switchMap((data) => of(objectStore.search(data.searchTerm))
+          src: (context, event) => of({ searchTerm: context.searchTerm }).pipe(
+            tap((data) => console.log(data)),
+            switchMap((data) => from(objectStore.search(data.searchTerm))
               .pipe(map((objects) => ({ ...data, objects })))),
-            switchMap((data) => of(collectionStore.search(data.searchTerm))
+            tap((data) => console.log(data)),
+            switchMap((data) => from(collectionStore.search(data.searchTerm))
               .pipe(map((collections) => ({ ...data, collections })))),
+            tap((data) => console.log(data)),
           ),
           onDone: {
-            actions: assign({
-              objects: (context, event) => event.data.objects,
-              collections: (context, event) => event.data.collections,
-            }),
+            actions: [
+              log((context, event) => 'TEST, ' + context),
+              assign({
+                objects: (context, event) => event?.data.objects,
+                collections: (context, event) => event?.data.collections,
+              }),
+            ],
             target: SearchStates.IDLE,
           },
           onError: {

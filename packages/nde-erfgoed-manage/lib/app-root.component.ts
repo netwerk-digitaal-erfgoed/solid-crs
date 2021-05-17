@@ -188,9 +188,9 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
-  searchUpdated(event): void{
+  searchUpdated(event: KeyboardEvent): void{
 
-    this.searchTerm = event.target.value;
+    this.searchTerm = (event.target as HTMLInputElement).value;
 
   }
 
@@ -219,7 +219,7 @@ export class AppRootComponent extends RxLitElement {
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
-            <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e) => e.code === 'Enter' ? this.actor.send(AppEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>
+            <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(AppEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>
             <div slot="icon"  @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>
           </nde-form-element>
         </div>
@@ -237,7 +237,7 @@ export class AppRootComponent extends RxLitElement {
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
-    ${ this.state?.matches({ [AppRootStates.SEARCH]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }  
     `;
 
   }

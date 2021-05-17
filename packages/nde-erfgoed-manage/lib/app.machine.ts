@@ -2,7 +2,7 @@ import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { log, send } from 'xstate/lib/actions';
-import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
+import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, SearchUpdatedEvent, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -185,13 +185,9 @@ export const appMachine = (
               {
                 id: AppActors.SEARCH_MACHINE,
                 src: searchMachine(collectionStore, objectStore),
-                autoForward: true,
-                onDone: {
-                  actions: send((_, event) => (
-                    { type: SearchEvents.SEARCH_UPDATED,
-                      searchTerm: event.data.searchTerm }
-                  )),
-                },
+                data: (context, event: SearchUpdatedEvent) => ({
+                  searchTerm: event.searchTerm,
+                }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

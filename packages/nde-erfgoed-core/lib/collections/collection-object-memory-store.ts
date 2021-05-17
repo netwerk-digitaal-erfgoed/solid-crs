@@ -51,9 +51,9 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
     const lowerCaseTerm = searchTerm.toLowerCase();
 
     return this.resources.filter((resource) =>
-      resource.name.toLowerCase().includes(lowerCaseTerm) ||
-      resource.subject.toLowerCase().includes(lowerCaseTerm) ||
-      resource.description.toLowerCase().includes(lowerCaseTerm));
+      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
+      resource?.subject?.toLowerCase().includes(lowerCaseTerm) ||
+      resource?.description?.toLowerCase().includes(lowerCaseTerm));
 
   }
 

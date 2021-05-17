@@ -27,8 +27,8 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
     const lowerCaseTerm = searchTerm.toLowerCase();
 
     return this.resources.filter((resource) =>
-      resource.name.toLowerCase().includes(lowerCaseTerm) ||
-      resource.description.toLowerCase().includes(lowerCaseTerm));
+      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
+      resource?.description?.toLowerCase().includes(lowerCaseTerm));
 
   }
 

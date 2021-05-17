@@ -5,7 +5,7 @@ import { Event } from '@digita-ai/nde-erfgoed-components';
  * Event references for the Search component, with readable log format.
  */
 export enum SearchEvents {
-  SEARCH_UPDATED   = '[SearchEvent: Updated element]',
+  SEARCH   = '[SearchEvent: Search]',
 }
 
 /**
@@ -16,8 +16,7 @@ export enum SearchEvents {
  * Event dispatched when a search element was updated.
  */
 export interface SearchUpdatedEvent extends Event<SearchEvents> {
-  type: SearchEvents.SEARCH_UPDATED;
-  searchTerm: string;
+  type: SearchEvents.SEARCH;
 }
 
 export type SearchEvent = SearchUpdatedEvent;

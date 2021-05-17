@@ -18,7 +18,7 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
-  SEARCH_UPDATED   = '[AppEvent: Updated searchTerm]',
+  SEARCH_UPDATED   = '[AppEvent: Updated search]',
 }
 
 /**
