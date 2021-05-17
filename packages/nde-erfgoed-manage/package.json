@@ -36,6 +36,7 @@
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
+    "uuid": "^8.3.2",
     "xstate": "^4.17.1",
     "xstate-codegen": "0.1.0-next.8"
   },
@@ -43,6 +44,7 @@
     "@digita-ai/typescript-config": "^0.3.3",
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.44",
+    "@types/uuid": "8.3.0",
     "eslint": "^7.16.0",
     "http-server": "^0.12.3",
     "jest": "26.6.3",
@@ -78,10 +80,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 85.43,
-        "functions": 84.3,
-        "lines": 92.16,
-        "statements": 92.15
+        "branches": 88.94,
+        "functions": 84.83,
+        "lines": 93.55,
+        "statements": 93.52
       }
     },
     "automock": false,

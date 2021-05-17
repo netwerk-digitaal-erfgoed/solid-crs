@@ -1,5 +1,5 @@
-import { Alert, formMachine } from '@digita-ai/nde-erfgoed-components';
-import { ArgumentError, Collection, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryStore } from '@digita-ai/nde-erfgoed-core';
+import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { ArgumentError, Collection, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryStore, MemoryTranslator } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -50,12 +50,15 @@ describe('CollectionRootComponent', () => {
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
-      objectStore
+      objectStore,
+      {},
     ));
 
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
+
+    component.translator = new MemoryTranslator([], 'nl-NL');
 
   });
 

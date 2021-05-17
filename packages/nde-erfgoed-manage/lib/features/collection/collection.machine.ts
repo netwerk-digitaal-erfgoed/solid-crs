@@ -8,7 +8,7 @@ import {
   Collection,
   CollectionObject,
   CollectionObjectStore,
-  Store,
+  CollectionStore,
 } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
@@ -51,15 +51,8 @@ export enum CollectionStates {
 /**
  * The collection component machine.
  */
-export const collectionMachine = (
-  collectionStore: Store<Collection>,
-  objectStore: CollectionObjectStore
-) =>
-  createMachine<
-  CollectionContext,
-  CollectionEvent,
-  State<CollectionStates, CollectionContext>
-  >({
+export const collectionMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
+  createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
     id: CollectionActors.COLLECTION_MACHINE,
     context: { },
     initial: CollectionStates.DETERMINING_COLLECTION,
@@ -96,7 +89,7 @@ export const collectionMachine = (
             /**
              * Notify the parent machine when something goes wrong.
              */
-            actions: sendParent(AppEvents.ERROR),
+            actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
           },
         },
       },
@@ -125,7 +118,7 @@ export const collectionMachine = (
         invoke: {
           src: (context) => collectionStore.save(context.collection),
           onDone: {
-            target: CollectionStates.IDLE,
+            target: CollectionStates.DETERMINING_COLLECTION,
             actions: [
               sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
             ],
