@@ -1,3 +1,4 @@
+import { ArgumentError } from '../errors/argument-error';
 import { ConsoleLogger } from './console-logger';
 import { LoggerLevel } from './logger-level';
 
@@ -125,6 +126,22 @@ describe('ConsoleLogger', () => {
       }
 
     }
+
+  });
+
+  describe('info', () => {
+
+    it('should throw when typename is undefined', async() => {
+
+      expect(() => service.info(undefined, 'message')).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when message is undefined', async() => {
+
+      expect(() => service.info('ConsoleLoggerTests', undefined)).toThrow(ArgumentError);
+
+    });
 
   });
 

@@ -13,6 +13,7 @@ export enum CollectionEvents {
   CANCELLED_EDIT              = '[CollectionsEvent: Cancelled Edit]',
   CLICKED_CREATE_OBJECT       = '[CollectionsEvent: Clicked Create Object]',
   SELECTED_COLLECTION         = '[CollectionsEvent: Selected collection]',
+  SAVED_COLLECTION            = '[CollectionsEvent: Saved collection]',
 }
 
 /**
@@ -64,6 +65,13 @@ export interface SelectedCollectionEvent extends Event<CollectionEvents> {
 }
 
 /**
+ * Fired when the application is done saving a collection.
+ */
+export interface SavedCollectionEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.SAVED_COLLECTION;
+}
+
+/**
  * Actions for the collections machine.
  */
 export type CollectionEvent =
@@ -73,7 +81,8 @@ export type CollectionEvent =
   | ClickedSaveEvent
   | CancelledEditEvent
   | ClickedCreateObjectEvent
-  | FormSubmittedEvent;
+  | FormSubmittedEvent
+  | SavedCollectionEvent;
 
 /**
  * Adds an alert to the machine's parent.

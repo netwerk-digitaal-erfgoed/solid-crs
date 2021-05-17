@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@digita-ai/nde-erfgoed-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { Interpreter, State } from 'xstate';
+import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Cross, Edit, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
@@ -65,6 +65,18 @@ export class CollectionRootComponent extends RxLitElement {
   objects?: CollectionObject[];
 
   /**
+   * The actor responsible for form validation in this component.
+   */
+  @internalProperty()
+  formActor: ActorRef<FormEvent>;
+
+  /**
+   * Indicates if the form is being submitted.
+   */
+  @internalProperty()
+  isSubmitting? = false;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -77,6 +89,18 @@ export class CollectionRootComponent extends RxLitElement {
 
         this.subscribe('alerts', from(this.actor.parent)
           .pipe(map((state) => state.context?.alerts)));
+
+      }
+
+      this.subscribe('formActor', from(this.actor).pipe(
+        map((state) => state.children[FormActors.FORM_MACHINE]),
+      ));
+
+      if(changed.has('formActor') && this.formActor){
+
+        this.subscribe('isSubmitting', from(this.formActor).pipe(
+          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+        ));
 
       }
 
@@ -130,11 +154,26 @@ export class CollectionRootComponent extends RxLitElement {
     return loading && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
-      <div slot="title">${this.collection.name}</div>
-      <div slot="subtitle">${this.collection.description}</div>
+      ${this.state.matches(CollectionStates.EDITING)
+    ? html`
+          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+            <input autofocus type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
+          </nde-form-element>
+          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
+          </nde-form-element>
+        `
+    : html`
+          <div slot="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+            ${this.collection.name}
+          </div>
+          <div slot="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+            ${this.collection.description}
+          </div>
+        `
+}
 
-      ${ !this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse edit" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">${unsafeSVG(Edit)}</button></div>` : '' }
-      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.actor.send(CollectionEvents.CLICKED_SAVE)}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
@@ -152,10 +191,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
               <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
                 ${unsafeSVG(ObjectIcon)}
-                <span>${this.translator.translate('nde.features.collections.root.empty.create-object-button')}</span>
+                <span>${this.translator?.translate('nde.features.collections.root.empty.create-object-button')}</span>
               </button>
             </div>
           </div>
@@ -205,6 +244,21 @@ export class CollectionRootComponent extends RxLitElement {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
         }
+        nde-form-element input {
+          height: var(--gap-normal);
+          padding: 0;
+          line-height: var(--gap-normal);
+        }
+        nde-content-header div[slot="title"]:hover, nde-content-header div[slot="subtitle"]:hover {
+          cursor: pointer;
+        }
+        .name {
+          font-weight: bold;
+          font-size: var(--font-size-large);
+        }
+        .description {
+          margin-top: var(--gap-tiny);
+        }
         .empty-container {
           display: flex;
           justify-content: center;
@@ -240,6 +294,9 @@ export class CollectionRootComponent extends RxLitElement {
           display: inline-flex;
           align-items: center;
           height: var(--gap-normal);
+        }
+        .description {
+          margin-top: var(--gap-tiny);
         }
       `,
     ];

@@ -17,6 +17,8 @@ describe('AppRootComponent', () => {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
   };
 
   beforeEach(() => {
@@ -27,11 +29,15 @@ describe('AppRootComponent', () => {
           uri: 'collection-uri-1',
           name: 'Collection 1',
           description: 'This is collection 1',
+          objectsUri: 'test-uri',
+          distribution: 'test-uri',
         },
         {
           uri: 'collection-uri-2',
           name: 'Collection 2',
           description: 'This is collection 2',
+          objectsUri: 'test-uri',
+          distribution: 'test-uri',
         },
       ]),
       new CollectionObjectMemoryStore([
