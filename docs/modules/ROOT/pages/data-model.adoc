@@ -1,0 +1,57 @@
+= Data model for collections data
+:description: A description of the data model used in the Solid CBS project for NDE.
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:page-tags: nde-erfgoed
+:imagesdir: ../images
+
+To describe the data model, link:https://netwerk-digitaal-erfgoed.github.io/requirements-datasets/[NDE'S Requirements for Datasets] are used. These requirements describe the model and the rules to which datasets must adhere (it applies to all datasets in NDE's network, not just to those of Solid CBS). The model uses Schema.org as vocabulary. The model is intended for publishing data (for use by others), not specifically for storing data in a collection management system, such as Solid CBS.
+
+The model consists of four types of resources: an 'Organization' (the heritage institution that uses SolidCBS), a 'Data Catalog' (for grouping the datasets of the institution), a 'Dataset' (a 'Collectie') and a 'Distribution' (to get the actual RDF data of the 'Objecten' in the 'Collectie').
+
+Applied to the 'Heemkundevereniging Het Lage Land' in SolidCBS, with fictional data, the model could look like this (in Turtle):
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+
+
+<https://data.hetlageland.org/>
+    rdf:type schema:Organization ;
+    schema:name "Heemkundevereniging Het Lage Land" ;
+    schema:alternateName "Het Lage Land" . # Optional
+
+<https://data.hetlageland.org/catalog>
+    rdf:type schema:DataCatalog ;
+    schema:name "Datacatalogus van Heemkundevereniging Het Lage Land"@nl ;
+    schema:description "Datacatalogus met datasets, beschikbaar gesteld door Heemkundevereniging Het Lage Land"@nl ; # Optional
+    schema:publisher <https://data.hetlageland.org/> ;
+    schema:dataset <https://data.hetlageland.org/datasets/1234> . # 0, 1 or more
+
+<https://data.hetlageland.org/datasets/1234>
+    rdf:type schema:Dataset ;
+    schema:name "Dataset met topstukken"@nl ;
+    schema:description "Dataset met de beschrijvingen van het mooiste beeldmateriaal in onze collectie"@nl ; # Optional
+    schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ;
+    schema:creator <https://data.hetlageland.org/> ;
+    schema:publisher <https://data.hetlageland.org/> ;
+    schema:dateCreated "2021-04-26" ;
+    schema:datePublished "2021-04-26" ; # For now: same as 'schema:dateCreated'
+    schema:dateModified "2021-05-07" ;
+    schema:includedInDataCatalog <https://data.hetlageland.org/catalog> ;
+    schema:distribution <https://data.hetlageland.org/distributions/1234>, <https://data.hetlageland.org/distributions/5678> .  # 0, 1 or more
+
+<https://data.hetlageland.org/distributions/1234>
+    rdf:type schema:DataDownload ;
+    schema:encodingFormat "text/turtle" ;
+    schema:contentUrl <https://data.hetlageland.org/dumps/1234.ttl> ;
+    schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ; # License of the dataset
+    schema:datePublished "2021-04-26" ;
+    schema:dateModified "2021-05-07" .
+
+<https://data.hetlageland.org/distributions/5678>
+    rdf:type schema:DataDownload ;
+    schema:encodingFormat "application/n-triples" ;
+    schema:contentUrl <https://data.hetlageland.org/dumps/5678.nt> ;
+    schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ; # License of the dataset
+    schema:datePublished "2021-04-26" ;
+    schema:dateModified "2021-05-07" .
