@@ -1,4 +1,96 @@
 #!/bin/sh
+
 . "$(dirname $0)/_/husky.sh"
 
-./node_modules/.bin/commitlint --edit $1
+## List changed files
+STATUS=$(git status --porcelain)
+STAGED=$(echo "$STATUS" | grep -E '^(M|A|D|R|C) ' | sed -E 's/^(M|A|D|R|C)  ([^ ]+).*$/\2/g')
+#MODIFIED=$(echo "$STATUS" | grep -E '^ (M|A|D|R|C)' | sed -E 's/^ (M|A|D|R|C) ([^ ]+).*$/\2/g')
+#UNTRACKED=$(echo "$STATUS" | grep -E '^??' | sed -E 's/^?? //g')
+#CHANGED=$(echo "$STAGED" && echo "$MODIFIED" && echo "$UNTRACKED")
+
+## Check for ongoing merge
+MERGE=$(git rev-parse -q --verify MERGE_HEAD || echo "")
+M_MSG=$([[ -f .git/MERGE_MSG ]] && cat .git/MERGE_MSG || echo '')
+
+## Check for empty commits
+if [[ -z "$STAGED" && -z "$MERGE" ]] ; then 
+    
+    echo "[COMMIT-MSG Hook] No staged changes && no ongoing merge => aborting commit"
+    exit 1
+
+fi
+
+## Lint commit message
+echo "[COMMIT-MSG Hook] Linting commit message" && ./node_modules/.bin/commitlint --edit $1
+
+## Check for WIP mention
+if (grep -qe "WIP" $1); then
+
+    ## If WIP, skip tests
+    echo "[COMMIT-MSG Hook] Found WIP mention => Skipping tests"
+
+else
+
+    ## If no WIP, run tests
+    echo "[COMMIT-MSG Hook] No WIP mention found"
+
+    if [[ -n "$MERGE" ]] ; then
+        echo "[COMMIT-MSG Hook] Saved ongoing merge status"
+    fi
+
+    if [[ -n "$STAGED" ]] ; then
+        echo "[COMMIT-MSG Hook] Stashing working tree"
+        STASH="pre-commit hook test on $(date '+%F %T')" && git stash push -qukm "$STASH"
+    fi
+
+    echo "[COMMIT-MSG Hook] Running tests"
+
+    ## Build list of previous WIP changes
+    LIST=""
+    NEW=$(git rev-parse HEAD)
+    while [[ -n "$NEW" ]] ; do
+        LIST=$(echo "$LIST" ; echo "$NEW")
+        NEW=$(echo "$NEW" | sed -e 's/^\(.*\)$/\1\^@/g' | xargs git rev-list --no-walk -E --grep="WIP")
+    done
+
+    RELEVANT="$(echo "$LIST" | xargs -L1 git diff-tree --no-commit-id --name-only -r | sort -u ; echo "$STAGED")"
+
+    ## Install root dependencies if package.json changed
+    echo "$RELEVANT" | grep -q "^package.json$" && npm i
+
+    ## Bootstrap packages with changed package.json
+    PACKAGES=$(echo "$RELEVANT" | grep "package.json$" | grep -v "^package.json$" | xargs cat | grep name
+    echo "$PACKAGES" | sed 's/.*"name": "\(.*\)".*/--scope "\1"/g') | xargs ./node_modules/.bin/lerna bootstrap --since HEAD
+
+    ## Run tests related to staged files
+    echo "$RELEVANT" | xargs ./node_modules/.bin/jest --bail --coverage --silent --passWithNoTests --findRelatedTests
+
+    if [[ $? -ne 0 ]] ; then
+        echo "[COMMIT-MSG Hook] You tried to commit changes without a WIP mention,"
+        echo "[COMMIT-MSG Hook] but tests related to staged files or yet untested WIP commits are failing."
+        echo "[COMMIT-MSG Hook] Resolve the remaining issues or commit current changes as WIP."
+    fi
+
+    echo "[COMMIT-MSG Hook] Resetting the stage"
+
+    ## Reset tracked files & clean untracked files
+    git reset --hard
+    git clean -df
+
+    if [[ -n "$STAGED" ]] ; then 
+        echo "[COMMIT-MSG Hook] Restoring working tree"
+        git stash list | grep -q "$STASH" && git stash pop -q --index
+    fi
+
+    if [[ -n "$MERGE" ]] ; then 
+        echo "[COMMIT-MSG Hook] Restoring ongoing merge status"
+        git update-ref MERGE_HEAD "$MERGE"   
+        if [[ -n "$M_MSG" ]] ; then 
+            echo "$M_MSG" > .git/MERGE_MSG
+        fi
+    fi 
+
+    exit $TESTS
+
+fi

@@ -8,13 +8,29 @@ button {
   outline: none;
 }
 
+button.no-padding {
+  padding: 0;
+}
+
 button.primary {
-  background-color: var(--colors-primary-normal);
+  background-color: var(--colors-primary-light);
+}
+
+button.accent {
+  background-color: var(--colors-accent-primary);
 }
 
 button svg {
   fill: var(--colors-foreground-inverse);
   max-height: 100%;
+}
+
+button.inverse {
+  background-color: transparent;
+}
+
+button.inverse svg {
+  fill: var(--colors-primary-light);
 }
 
 button:disabled {

@@ -6,25 +6,48 @@ Opzet van een collectiebeheersysteem voor digitale objecten van kleine erfgoedin
 * xref:docs/modules/ROOT/nav.adoc[Project documentation]
 * xref:docs/modules/manual/nav.adoc[User manual]
 
-== Running locally
+== Run locally
 
-When running the app locally for the first time, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
+When running the app locally for the first time, or after an update, start by installing its dependencies. You can do so by executing the following command in the root of the cloned repository.
 
 [source,bash]
 ----
 $ npm run bootstrap:no-ci
 ----
 
-Once the dependencies have installed, you can start the app by executing the following command.
+Once the dependencies are installed, you can build the app by executing the following command.
+
+[source,bash]
+----
+$ npm run build:all
+----
+
+After installing and building once, you can start the app at any time by executing the following command.
 
 [source,bash]
 ----
 $ npm run start
 ----
 
-The `start` command automatically builds the necessary dependencies before starting the application. However, you can also build the app and its dependencies separately from the `start` command as follows.
+== Run with Docker
+
+You can run the application by using docker. To use the latest published version, run the following command.
 
 [source,bash]
 ----
-$ npm run build
+$ docker run -p 3002:3002 ghcr.io/digita-ai/nde-erfgoed-manage:latest
+----
+
+Alternatively, you can build and run an image locally.
+
+[source,bash]
+----
+# Build on Mac
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t cbs:local ./packages/nde-erfgoed-manage/
+
+# Build on Windows
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t cbs:local ./packages/nde-erfgoed-manage/
+
+# Run local image
+$ docker run -p 3002:3002 cbs:local
 ----

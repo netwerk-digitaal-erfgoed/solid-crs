@@ -5,6 +5,7 @@ import { Translation } from './translation';
  * An implementation of a Translator which stores translations in-memory.
  */
 export class MemoryTranslator {
+
   /**
    * Instantiates a MemoryTranslator.
    *
@@ -24,21 +25,29 @@ export class MemoryTranslator {
    * This error is thrown when either no locale or key have been given.
    */
   translate(key: string, locale?: string): string {
+
     if (!key) {
+
       throw new ArgumentError('Argument key should be set.', key);
+
     }
 
     if (!locale && ! this.defaultLocale) {
+
       throw new ArgumentError('Argument locale should be set.', locale);
+
     }
 
     // Use default locale if no locale was passed to function
     const usedLocale = locale? locale : this.defaultLocale;
 
     // Find translation based on locale
-    const foundTranslation = this.translations?.find((translation) => translation.locale === usedLocale && translation.key === key);
+    const foundTranslation = this.translations?.find(
+      (translation) => translation.locale === usedLocale && translation.key === key
+    );
 
     // return key when no translation was found
     return foundTranslation?.value || key;
   }
+
 }

@@ -1,6 +1,6 @@
 import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Bell, Dismiss, Theme } from '@digita-ai/nde-erfgoed-theme';
+import { Bell, Cross, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert } from './alert';
 
@@ -12,25 +12,26 @@ export class AlertComponent extends LitElement {
   /**
    * The component's logger.
    */
-  @property({type: Logger})
+  @property({ type: Logger })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({type: Translator})
+  @property({ type: Translator })
   public translator: Translator;
 
   /**
    * The collection which will be rendered by the component.
    */
-  @property({type: Object})
+  @property({ type: Object })
   public alert: Alert;
 
   /**
    * The styles associated with the component.
    */
   static get styles() {
+
     return [
       unsafeCSS(Theme),
       css`
@@ -75,17 +76,24 @@ export class AlertComponent extends LitElement {
         }
       `,
     ];
+
   }
 
   /**
    * Dispatches an event to dismiss the alert.
    */
   dismiss() {
+
     this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
+
     if (!this.alert) {
+
       throw new ArgumentError('Argument this.alert should be set.', this.alert);
+
     }
-    this.dispatchEvent(new CustomEvent<Alert>('dismiss', {detail:this.alert}));
+
+    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
+
   }
 
   /**
@@ -94,6 +102,7 @@ export class AlertComponent extends LitElement {
    * @returns The rendered HTML of the component.
    */
   render() {
+
     const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
     const type = this.alert && this.alert.type ? this.alert.type : 'warning';
 
@@ -101,10 +110,12 @@ export class AlertComponent extends LitElement {
     <div class="alert ${ type }">
       <div class="icon">${ unsafeSVG(Bell) }</div>
       <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Dismiss) }</div>
+      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
     </div>
   `;
+
   }
+
 }
 
 export default AlertComponent;

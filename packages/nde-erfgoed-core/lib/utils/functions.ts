@@ -7,9 +7,11 @@
  * @returns The debounced function.
  */
 export const debounce = (func: () => void, wait: number, immediate = false) => {
+
   let timeout: NodeJS.Timeout;
 
   return function() {
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
 
@@ -22,15 +24,24 @@ export const debounce = (func: () => void, wait: number, immediate = false) => {
 
     // Executes the function after a timeout.
     timeout = setTimeout(() => {
+
       timeout = null;
+
       if (!immediate) {
+
         func.apply(context, args);
+
       }
+
     }, wait);
 
     // Don't wait for timer if immidiate.
     if (immediate && !timeout) {
+
       func.apply(context, args);
+
     }
+
   };
+
 };

@@ -33,9 +33,9 @@ jobs:
 
       - run: npm run bootstrap
 
-      - run: npm run build
+      - run: npm run build:all
 
-      - run: npm run lint
+      - run: npm run lint:all
 
       - run: npm run test:ci
 
@@ -60,7 +60,7 @@ jobs:
           body_path: CHANGELOG.md
           draft: false
           prerelease: false
-  
+
   publish-npm:
     name: Publish NPM packages
     runs-on: ubuntu-latest
@@ -68,15 +68,15 @@ jobs:
     needs: release
     steps:
       - uses: actions/checkout@v2
-      
+
       - uses: actions/setup-node@v1
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-  
+
       - run: npm run bootstrap
 
-      - run: npm run build
+      - run: npm run build:all
 
       - run: npm publish packages/nde-erfgoed-theme
         env:
@@ -87,6 +87,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
       - run: npm publish packages/nde-erfgoed-components
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/nde-erfgoed-client
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -122,7 +126,17 @@ jobs:
         with:
           context: packages/nde-erfgoed-pods/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
+          tags: ghcr.io/digita-ai/nde-erfgoed-pods:latest,ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.GA_TOKEN}}
+
+      - name: Build and push manage
+        id: docker_build_manage
+        uses: docker/build-push-action@v2
+        with:
+          context: packages/nde-erfgoed-manage/
+          push: true
+          tags: ghcr.io/digita-ai/nde-erfgoed-manage:latest,ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GA_TOKEN}}
 
@@ -164,4 +178,18 @@ jobs:
           location: 'west europe'
           ports: 80
           command-line: ./node_modules/.bin/community-solid-server -b https://pods.nde.digita.ai -p 80 --rootFilePath /tmp/css -c config/config-file.json -l debug
+          # ip-address: 'Private'
+
+      - name: Deploy manage on develop
+        uses: 'azure/aci-deploy@v1'
+        with:
+          resource-group: ${{ secrets.RESOURCE_GROUP }}
+          dns-name-label: nde-erfgoed-manage-develop
+          image: ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
+          registry-login-server: ghcr.io
+          registry-username: ${{ secrets.GA_USERNAME }}
+          registry-password: ${{ secrets.GA_TOKEN }}
+          name: nde-erfgoed-manage-develop
+          location: 'west europe'
+          ports: 3002
           # ip-address: 'Private'
