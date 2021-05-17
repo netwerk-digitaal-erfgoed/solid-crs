@@ -41,6 +41,12 @@ export class CollectionRootComponent extends RxLitElement {
   public alerts: Alert[];
 
   /**
+   * Check if there should be a delete icon.
+   */
+  @property({ type: Boolean })
+  public showDelete: boolean;
+
+  /**
    * The state of this component.
    */
   @internalProperty()
@@ -131,7 +137,7 @@ export class CollectionRootComponent extends RxLitElement {
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.actor.send(CollectionEvents.CLICKED_SAVE)}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() =>  this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>
+      ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
     <div class="content">
       ${ alerts }
@@ -146,10 +152,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
               <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
                 ${unsafeSVG(ObjectIcon)}
-                <span>${this.translator.translate('nde.features.collections.root.empty.create-object-button')}</span>
+                <span>${this.translator?.translate('nde.features.collections.root.empty.create-object-button')}</span>
               </button>
             </div>
           </div>

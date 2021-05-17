@@ -1,6 +1,8 @@
-import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
+import { appMachine } from '../../app.machine';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
@@ -43,6 +45,13 @@ describe('CollectionMachine', () => {
       .withContext({
         collection: collection1,
       }));
+
+    machine.parent = interpret(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      collectionStore,
+      objectStore,
+      {}
+    ));
 
   });
 
