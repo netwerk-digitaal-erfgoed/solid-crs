@@ -4,11 +4,15 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
-
+import {
+  Collection,
+  CollectionObject,
+  CollectionObjectStore,
+  CollectionStore,
+} from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
-import { CollectionEvent, CollectionEvents  } from './collection.events';
+import { CollectionEvent, CollectionEvents } from './collection.events';
 
 /**
  * The context of a collections feature.
