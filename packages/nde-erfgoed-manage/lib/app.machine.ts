@@ -1,7 +1,7 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
-import { log, send } from 'xstate/lib/actions';
+import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -33,6 +33,11 @@ export interface AppContext {
    * The profile retrieved from the user's pod
    */
   profile?: SolidProfile;
+
+  /**
+   * The selected collection from the user's pod
+   */
+  selected?: Collection;
 }
 
 /**
@@ -98,7 +103,11 @@ export const appMachine = (
     type: 'parallel',
     on: {
       [CollectionEvents.SELECTED_COLLECTION]: {
-        actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+        actions:
+        [
+          (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+          assign({ selected: (context, event) => event.collection }),
+        ],
       },
     },
     states: {

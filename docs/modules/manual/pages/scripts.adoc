@@ -1,0 +1,43 @@
+= Scripts
+:description: Description of different scripts to run with `npm run [script]`
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
+
+The following scripts can be run with `npm run [script]` (substituting `[script]` with the name of the desired script):
+
+- `bootstrap`: Cleans and installs dependencies in root and packages
+
+- `bootstrap:no-ci`: Installs dependencies in root and packages
+
+- `build`: Builds packages that changed since last commit
+
+- `build:all`: Builds all packages
+
+- `build:dev`: Builds packages that changed since last commit in development mode
+
+- `build:dev:all`: Builds all packages in development mode
+
+- `lint`: Lints packages that changed since last commit
+
+- `lint:all`: Lints all packages
+
+- `lint:fix`: Lints packages that changed since last commit with auto-fix
+
+- `lint:fix:all`: Lints all packages with auto-fix
+
+- `lint:staged`: Lints all staged files with auto-fix
+
+- `postinstall`: Installs Husky after every install
+
+- `release`: Releases a new version (with semantic numbering)
+
+- `start`: Starts all packages
+
+- `start:watch`: Starts all packages as development servers
+
+- `test`: Tests all packages
+
+- `test:all`: Tests packages that changed since last commit in development mode
+
+- `test:ci`: Tests all packages non-parallel

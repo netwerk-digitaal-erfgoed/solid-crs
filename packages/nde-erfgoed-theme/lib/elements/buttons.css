@@ -16,6 +16,10 @@ button.primary {
   background-color: var(--colors-primary-light);
 }
 
+button.accent {
+  background-color: var(--colors-accent-primary);
+}
+
 button svg {
   fill: var(--colors-foreground-inverse);
   max-height: 100%;

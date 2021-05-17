@@ -97,6 +97,16 @@ describe('SolidService', () => {
 
     });
 
+    it('should error when unable to set dataset', async () => {
+
+      const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
+
+      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+
+      await expect(service.getIssuer(webId)).rejects.toThrow();
+
+    });
+
     it('should error when oidcIssuer openid config is not found', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
