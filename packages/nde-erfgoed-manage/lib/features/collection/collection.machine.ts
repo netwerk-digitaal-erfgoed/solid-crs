@@ -133,7 +133,6 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
           onDone: {
             target: CollectionStates.IDLE,
             actions: [
-              log('done'),
               sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
             ],
           },

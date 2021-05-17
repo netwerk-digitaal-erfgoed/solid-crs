@@ -50,6 +50,7 @@ describe('CollectionSolidStore', () => {
 
       client.getDefaultSession = jest.fn(() => mockSession);
       service.getInstanceForClass = jest.fn(async () => undefined);
+      service.saveInstanceForClass = jest.fn(async () => undefined);
 
       await expect(service.all()).rejects.toThrow('Could not retrieve type registration');
 
@@ -77,6 +78,25 @@ describe('CollectionSolidStore', () => {
       client.getUrlAll = jest.fn(() => [ 'test-thing ' ]);
 
       await expect(service.all()).resolves.toEqual([ mockCollection ]);
+
+    });
+
+    it('should create new catalog when none was found', async (done) => {
+
+      client.getDefaultSession = jest.fn(() => mockSession);
+      service.getInstanceForClass = jest.fn(async () => 'test-instance');
+      service.getCollection = jest.fn(async () => mockCollection);
+      client.getSolidDataset = jest.fn(async () => { throw new Error(); });
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getUrlAll = jest.fn(() => [ 'test-thing ' ]);
+
+      service.createCatalog = jest.fn(async () => {
+
+        done();
+
+      });
+
+      await service.all();
 
     });
 
@@ -117,6 +137,7 @@ describe('CollectionSolidStore', () => {
 
     it('should return collection when saved', async () => {
 
+      service.getInstanceForClass = jest.fn(() => 'https://test-uri/');
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
       client.setThing = jest.fn(() => 'test-dataset');
@@ -134,8 +155,10 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.uri;
 
+      service.getInstanceForClass = jest.fn(() => 'https://test-uri/');
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
+      client.getUrl = jest.fn(() => 'test-url');
       client.setThing = jest.fn(() => 'test-dataset');
       client.addUrl = jest.fn(() => 'test-thing');
       client.createThing = jest.fn(() => 'test-thing');
@@ -153,9 +176,11 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.objectsUri;
 
+      service.getInstanceForClass = jest.fn(() => 'https://test-uri/');
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
       client.setThing = jest.fn(() => 'test-dataset');
+      client.getUrl = jest.fn(() => 'https://test-uri/');
       client.addUrl = jest.fn(() => 'test-thing');
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
@@ -172,9 +197,11 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.distribution;
 
+      service.getInstanceForClass = jest.fn(() => 'https://test-uri/');
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
       client.setThing = jest.fn(() => 'test-dataset');
+      client.getUrl = jest.fn(() => 'test-url');
       client.addUrl = jest.fn(() => 'test-thing');
       client.createThing = jest.fn(() => 'test-thing');
       client.addStringWithLocale = jest.fn(() => 'test-thing');
@@ -223,6 +250,54 @@ describe('CollectionSolidStore', () => {
         objectsUri: 'test-url',
         distribution: 'test-url',
       });
+
+    });
+
+  });
+
+  describe('createCatalog()', () => {
+
+    it('should call overwriteFile', async (done) => {
+
+      client.getDefaultSession = jest.fn(() => mockSession);
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getStringWithLocale = jest.fn(() => 'test-string');
+      client.getStringNoLocale = jest.fn(() => 'test-string');
+
+      client.overwriteFile = jest.fn(() => done());
+      await service.createCatalog('test-uri');
+
+    });
+
+    it('should use schema:name by default', async () => {
+
+      client.getDefaultSession = jest.fn(() => mockSession);
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getStringWithLocale = jest.fn(() => 'test-string');
+      client.getStringNoLocale = jest.fn(() => 'test-string');
+      client.overwriteFile = jest.fn(() => 'test-file');
+
+      await service.createCatalog('test-uri');
+      expect(client.getStringWithLocale).toHaveBeenCalledTimes(1);
+      expect(client.getStringNoLocale).not.toHaveBeenCalled();
+
+    });
+
+    it('should use foaf:name when schema:name was not found', async (done) => {
+
+      client.getDefaultSession = jest.fn(() => mockSession);
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getStringWithLocale = jest.fn(() => null);
+      client.getStringNoLocale = jest.fn(() => done());
+      client.overwriteFile = jest.fn(() => 'test-file');
+
+      await service.createCatalog('test-uri');
 
     });
 

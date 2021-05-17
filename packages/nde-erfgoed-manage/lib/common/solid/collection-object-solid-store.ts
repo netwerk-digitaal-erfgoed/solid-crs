@@ -1,7 +1,5 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted } from '@digita-ai/nde-erfgoed-client';
-
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch } from '@digita-ai/nde-erfgoed-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
-import { asapScheduler } from 'rxjs';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -18,7 +16,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const dataset = await getSolidDataset(collection.objectsUri);
+    const dataset = await getSolidDataset(collection.objectsUri, { fetch });
 
     if (!dataset) {
 
@@ -62,7 +60,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const dataset = await getSolidDataset(uri);
+    const dataset = await getSolidDataset(uri, { fetch });
 
     const collectionThing = getThing(dataset, uri);
 

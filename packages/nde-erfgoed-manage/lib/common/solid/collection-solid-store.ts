@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
 import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
@@ -23,7 +23,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve the catalog
-    const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
+    const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog') ||
+      await this.saveInstanceForClass(webId, 'http://schema.org/DataCatalog', 'heritage-collections/catalog');
 
     if (!catalogUri) {
 
@@ -31,7 +32,16 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
-    const catalogDataset = await getSolidDataset(catalogUri);
+    const catalogDataset = await getSolidDataset(catalogUri, { fetch }).catch(
+      async (err) => {
+
+        await this.createCatalog(catalogUri);
+
+        return await getSolidDataset(catalogUri, { fetch });
+
+      }
+    );
+
     const catalog = getThing(catalogDataset, catalogUri);
 
     // get datasets (=== collections) in this catalog
@@ -55,7 +65,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collection.uri);
+    const catalogDataset = await getSolidDataset(collection.uri, { fetch });
     const catalogThing = getThing(catalogDataset, collection.uri.split('#')[0]);
 
     // remove the collection reference from catalog
@@ -91,14 +101,20 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
-    // for creating new collection
+    // retrieve base urls for storage and catalogs (https://leapeeters.nl/ or https://leapeeters.nl/catalog)
+    const webId = getDefaultSession()?.info?.webId;
+    const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
+    const profileDataset = await getSolidDataset(webId);
+    const profile = getThing(profileDataset, webId);
+    const storage = getUrl(profile, 'http://www.w3.org/ns/pim/space#storage');
 
-    const collectionUri = collection.uri || `http://localhost:3000/leapeeters/heritage-collections/catalog#collection-${v4()}`;
-    const distributionUri = collection.distribution || `http://localhost:3000/leapeeters/heritage-collections/catalog#distribution-${v4()}`;
-    const objectsUri = collection.objectsUri || `http://localhost:3000/leapeeters/heritage-objects/data-${v4()}`;
+    // uris for creating new collection
+    const collectionUri = collection.uri || new URL(`#collection-${v4()}`, catalogUri).toString();
+    const distributionUri = collection.distribution || new URL(`#distribution-${v4()}`, catalogUri).toString();
+    const objectsUri = collection.objectsUri || new URL(`heritage-objects/data-${v4()}`, storage).toString();
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collectionUri);
+    const catalogDataset = await getSolidDataset(collectionUri, { fetch });
     const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
 
     // add collection to catalog
@@ -144,7 +160,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve collection
-    const dataset = await getSolidDataset(uri);
+    const dataset = await getSolidDataset(uri, { fetch });
     const collectionThing = getThing(dataset, uri);
 
     if (!collectionThing) {
@@ -165,6 +181,34 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       objectsUri,
       distribution: distributionUri,
     };
+
+  }
+
+  /**
+   * Creates an initial DataCatalog for storing collections
+   *
+   * @param uri Where the catalog should be saved
+   */
+  async createCatalog(uri: string): Promise<void> {
+
+    const webId = getDefaultSession()?.info?.webId;
+
+    const profileDataset = await getSolidDataset(webId);
+    const profile = getThing(profileDataset, webId);
+
+    // fall back on foaf:name value if schema:name is missing
+    const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl') ||
+      getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ;
+
+    await overwriteFile(`${uri}`, new Blob([ `
+    @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+    @prefix schema: <http://schema.org/>.
+
+    <>
+      rdf:type schema:DataCatalog ;
+      schema:name "Datacatalogus van ${name}"@nl ;
+      schema:publisher <${webId}> .
+    ` ], { type: 'text/turtle' }), { fetch });
 
   }
 
