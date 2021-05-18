@@ -1,5 +1,5 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
-import { Collection, CollectionObjectStore, Store } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
@@ -94,7 +94,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const appMachine = (
   solid: SolidService,
-  collectionStore: Store<Collection>,
+  collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
   template: Collection,
 ) =>
@@ -105,7 +105,7 @@ export const appMachine = (
       [CollectionEvents.SELECTED_COLLECTION]: {
         actions:
         [
-          (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+          forwardTo(AppActors.COLLECTION_MACHINE),
           assign({ selected: (context, event) => event.collection }),
         ],
       },
@@ -146,7 +146,6 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore),
-                autoForward: true,
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },
@@ -263,7 +262,8 @@ export const appMachine = (
                     setCollections,
                     send((context, event) => ({
                       type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: context.selected ? context.selected : event.data[0],
+                      collection: event.data.find((collection: Collection) =>
+                        context.selected?.uri === collection.uri) ?? event.data[0],
                     })),
                   ],
                   cond: (context, event) => event.data.length > 0,
@@ -272,6 +272,9 @@ export const appMachine = (
                   target: AppDataStates.CREATING,
                 },
               ],
+              onError: {
+                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+              },
             },
           },
           /**
@@ -288,6 +291,11 @@ export const appMachine = (
                 actions: [
                   addCollection,
                   send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data })),
+                ],
+              },
+              onError: {
+                actions: [
+                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
                 ],
               },
             },

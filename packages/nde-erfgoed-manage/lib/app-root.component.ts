@@ -1,8 +1,8 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
+import { map } from 'rxjs/operators';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus } from '@digita-ai/nde-erfgoed-theme';
@@ -11,8 +11,10 @@ import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMach
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
-import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
+import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
+import { CollectionSolidStore } from './common/solid/collection-solid-store';
+import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
 
 /**
  * The root page of the application.
@@ -51,64 +53,14 @@ export class AppRootComponent extends RxLitElement {
   actor = interpret(
     (appMachine(
       new SolidSDKService(this.logger),
-      new MemoryStore<Collection>([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-        },
-      ]),
-      new CollectionObjectMemoryStore([
-        {
-          uri: 'object-uri-1',
-          name: 'Object 1',
-          description: 'This is object 1',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-2',
-          name: 'Object 2',
-          description: 'This is object 2',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-3',
-          name: 'Object 3',
-          description: 'This is object 3',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-4',
-          name: 'Object 4',
-          description: 'This is object 4',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-      ]),
+      new CollectionSolidStore(),
+      new CollectionObjectSolidStore(),
       {
         uri: null,
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
+        objectsUri: undefined,
+        distribution: undefined,
       },
     )).withContext({
       alerts: [],

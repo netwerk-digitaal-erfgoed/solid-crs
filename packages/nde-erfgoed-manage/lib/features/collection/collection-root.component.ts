@@ -191,10 +191,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
               <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
                 ${unsafeSVG(ObjectIcon)}
-                <span>${this.translator.translate('nde.features.collections.root.empty.create-object-button')}</span>
+                <span>${this.translator?.translate('nde.features.collections.root.empty.create-object-button')}</span>
               </button>
             </div>
           </div>

@@ -89,7 +89,6 @@ export class SidebarListItemComponent extends RxLitElement {
       }
 
       .actions {
-        margin-right: var(--gap-small);
         display: flex;
         flex-direction: row;
         gap: var(--gap-normal);

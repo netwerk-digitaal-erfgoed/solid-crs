@@ -35,7 +35,7 @@ describe('MemoryTranslator', () => {
 
   describe('translate', () => {
 
-    it('Should translate an existing key in an existing locale.', () => {
+    it('Should return an existing key in an existing locale.', () => {
 
       const value = service.translate('foo', 'en-GB');
 
@@ -51,19 +51,19 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('Should translate return null with an existing key in an non-existing locale.', () => {
+    it('Should return the input key with an existing key in an non-existing locale.', () => {
 
       const value = service.translate('foo.bar', 'nl-NL');
 
-      expect(value).toBeFalsy();
+      expect(value).toEqual('foo.bar');
 
     });
 
-    it('Should translate return null with an non-existing key in an existing locale.', () => {
+    it('Should return the input key with an non-existing key in an existing locale.', () => {
 
       const value = service.translate('lorem', 'nl-NL');
 
-      expect(value).toBeFalsy();
+      expect(value).toEqual('lorem');
 
     });
 
