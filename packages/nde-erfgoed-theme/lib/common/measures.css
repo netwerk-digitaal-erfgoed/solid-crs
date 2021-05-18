@@ -19,7 +19,6 @@
   --size-sidebar: 300px;
 }
 
-
 /* Works on Firefox */
 * {
   scrollbar-width: var(--gap-tiny);
