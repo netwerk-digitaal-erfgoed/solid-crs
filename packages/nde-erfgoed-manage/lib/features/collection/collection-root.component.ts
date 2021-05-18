@@ -213,14 +213,24 @@ export class CollectionRootComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        *::-webkit-scrollbar-thumb {
+          background-color: var(--colors-foreground-light);
+          border: 3px solid var(--colors-background-normal);
+        }
+        *::-webkit-scrollbar-track {
+          background: var(--colors-background-normal);
+        }
         :host {
+          scrollbar-color: var(--colors-foreground-light) var(--colors-background-normal);
           display: flex;
           flex-direction: column;
           height: 100%;
         }
         .content {
+          margin-top: 1px;
           padding: var(--gap-large);
           height: 100%;
+          overflow-y: auto;
         }
         .grid {
           display: grid;
