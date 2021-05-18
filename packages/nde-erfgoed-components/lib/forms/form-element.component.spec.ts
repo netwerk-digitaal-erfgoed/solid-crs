@@ -1,4 +1,4 @@
-import { Collection } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
@@ -80,7 +80,26 @@ describe('FormElementComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+
+  });
+
+  xit('should send SUBMITTED event when enter keypress', async (done) => {
+
+    machine.onEvent(((event) => {
+
+      if(event.type === FormEvents.FORM_SUBMITTED) {
+
+        done();
+
+      }
+
+    }));
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
 
   });
 
@@ -193,6 +212,51 @@ describe('FormElementComponent', () => {
     await component.updateComplete;
 
     expect(input.disabled).toBeFalsy();
+
+  });
+
+  describe('bindActorToInput', () => {
+
+    const slot: HTMLSlotElement = {
+      ...window.document.createElement('input'),
+      assignedElements: jest.fn(),
+      assignedNodes: jest.fn(),
+    };
+
+    const actor = interpret(formMachine<any>((context, event): any => of([])));
+    const data = { name: '', description: '', uri: '' };
+
+    it('should throw when slot in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        undefined, actor, 'name', data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when actor in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, undefined, 'name', data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when field in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, actor, undefined, data,
+      )).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when data in undefined', async() => {
+
+      expect(() => component.bindActorToInput(
+        slot, actor, 'name', undefined,
+      )).toThrow(ArgumentError);
+
+    });
 
   });
 

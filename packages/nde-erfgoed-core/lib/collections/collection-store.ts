@@ -2,7 +2,7 @@ import { Store } from '../stores/store';
 import { Collection } from './collection';
 
 /**
- * A store for collection objects.
+ * A store for collections.
  */
 export interface CollectionStore extends Store<Collection> {
 
@@ -12,5 +12,12 @@ export interface CollectionStore extends Store<Collection> {
    * @param searchTerm the therm that should be present in a property
    */
   search(searchTerm: string): Promise<Collection[]>;
+
+  /**
+   * Retrieves a single collection
+   *
+   * @param uri The URI of the collection.
+   */
+  getCollection(uri: string): Promise<Collection>;
 
 }

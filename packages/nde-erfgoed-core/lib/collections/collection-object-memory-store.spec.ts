@@ -1,4 +1,5 @@
 import { ArgumentError } from '../errors/argument-error';
+import { Collection } from './collection';
 import { CollectionObject } from './collection-object';
 import { CollectionObjectMemoryStore } from './collection-object-memory-store';
 
@@ -8,13 +9,14 @@ describe('CollectionObjectMemoryStore', () => {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
-  };
+    objectsUri: 'objects-uri',
+  } as Collection;
 
   const resources: CollectionObject[] = [
     {
       uri: 'object-uri-1',
       name: 'Object 1',
-      description: 'This is object 1',
+      description: 'This is object 1 one',
       image: null,
       subject: null,
       type: null,
@@ -24,7 +26,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-2',
       name: 'Object 2',
-      description: 'This is object 2',
+      description: 'This is object 2 two',
       image: null,
       subject: null,
       type: null,
@@ -34,7 +36,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-3',
       name: 'Object 3',
-      description: 'This is object 3',
+      description: 'This is object 3 three',
       image: null,
       subject: null,
       type: null,
@@ -104,6 +106,50 @@ describe('CollectionObjectMemoryStore', () => {
 
       service = new CollectionObjectMemoryStore(null);
       expect(service.getObjectsForCollection(collection1)).rejects.toThrow(ArgumentError);
+
+    });
+
+  });
+
+  describe('getObject()', () => {
+
+    it('should throw error when collection is undefined', async () => {
+
+      await expect(service.getObject(undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return object with matching uri', async () => {
+
+      await expect(service.getObject(resources[0].uri)).resolves.toEqual(resources[0]);
+
+    });
+
+  });
+
+  describe('search', () => {
+
+    it('should error when searchTerm is empty', async () => {
+
+      await expect(service.search('')).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return the correct object', async () => {
+
+      await expect(service.search('one')).resolves.toEqual([ resources[0] ]);
+
+    });
+
+    it('should return the correct objects', async () => {
+
+      await expect(service.search('two')).resolves.toEqual([ resources[1] ]);
+
+    });
+
+    it('should error when searchTerm is undefined', async () => {
+
+      await expect(service.search(undefined)).rejects.toThrow(ArgumentError);
 
     });
 

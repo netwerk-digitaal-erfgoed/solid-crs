@@ -46,7 +46,8 @@ export class MemoryTranslator {
       (translation) => translation.locale === usedLocale && translation.key === key
     );
 
-    return foundTranslation ? foundTranslation.value : null;
+    // return key when no translation was found
+    return foundTranslation?.value || key;
 
   }
 

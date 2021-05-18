@@ -4,7 +4,7 @@ import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
-import { ClickedDeleteEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
+import { ClickedDeleteEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -98,7 +98,8 @@ export type AppEvent =
   | ClickedDeleteEvent
   | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent
-  | SearchUpdatedEvent;
+  | SearchUpdatedEvent
+  | SavedCollectionEvent;
 
 /**
  * Actions for the alerts component.
@@ -165,7 +166,10 @@ export const removeSession = assign({ session: (context, event) => undefined });
 /**
  * Action which saves a list of collections to the machine's context.
  */
-export const setCollections = assign({ collections: (context, event: DoneInvokeEvent<Collection[]>) => event.data });
+export const setCollections = assign({
+  collections: (context, event: DoneInvokeEvent<Collection[]>) =>
+    event.data.sort((a, b) => a.name.localeCompare(b.name)),
+});
 
 /**
  * Action which adds a single collection to the machine's context.

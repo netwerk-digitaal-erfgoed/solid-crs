@@ -1,7 +1,7 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine, forwardTo } from 'xstate';
-import { log, send } from 'xstate/lib/actions';
+import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, SearchUpdatedEvent, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -35,6 +35,11 @@ export interface AppContext {
    * The profile retrieved from the user's pod
    */
   profile?: SolidProfile;
+
+  /**
+   * The selected collection from the user's pod
+   */
+  selected?: Collection;
 }
 
 /**
@@ -111,7 +116,11 @@ export const appMachine = (
     type: 'parallel',
     on: {
       [CollectionEvents.SELECTED_COLLECTION]: {
-        actions: (context, event) => forwardTo(AppActors.COLLECTION_MACHINE),
+        actions:
+        [
+          forwardTo(AppActors.COLLECTION_MACHINE),
+          assign({ selected: (context, event) => event.collection }),
+        ],
       },
     },
     states: {
@@ -152,7 +161,6 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore),
-                autoForward: true,
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },
@@ -264,6 +272,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
+              [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
           /**
@@ -282,7 +291,8 @@ export const appMachine = (
                     setCollections,
                     send((context, event) => ({
                       type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: event.data[0],
+                      collection: event.data.find((collection: Collection) =>
+                        context.selected?.uri === collection.uri) ?? event.data[0],
                     })),
                   ],
                   cond: (context, event) => event.data.length > 0,
@@ -291,6 +301,9 @@ export const appMachine = (
                   target: AppDataStates.CREATING,
                 },
               ],
+              onError: {
+                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+              },
             },
           },
           /**
@@ -307,6 +320,11 @@ export const appMachine = (
                 actions: [
                   addCollection,
                   send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data })),
+                ],
+              },
+              onError: {
+                actions: [
+                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
                 ],
               },
             },

@@ -1,5 +1,5 @@
 import * as client from '@digita-ai/nde-erfgoed-client';
-import { ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, ConsoleLogger, LoggerLevel } from '@digita-ai/nde-erfgoed-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 
@@ -94,6 +94,16 @@ describe('SolidService', () => {
       fetchMock.mockResponses(openId);
 
       await expect(service.getIssuer(webId)).rejects.toThrowError(message);
+
+    });
+
+    it('should error when unable to set dataset', async () => {
+
+      const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
+
+      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+
+      await expect(service.getIssuer(webId)).rejects.toThrow();
 
     });
 

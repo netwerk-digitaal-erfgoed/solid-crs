@@ -62,7 +62,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * Indicates if the form is being submitted.
    */
   @internalProperty()
-  isSubitting? = false;
+  isSubmitting? = false;
 
   /**
    * Indicates if the form is being initialized.
@@ -117,7 +117,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         })),
       ));
 
-      this.subscribe('isSubitting', from(this.formActor).pipe(
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
         map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
       ));
 
@@ -170,8 +170,8 @@ export class AuthenticateRootComponent extends RxLitElement {
           <form>
             <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
               <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-              <input type="text" slot="input" ?disabled="${this.isSubitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
-              <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+              <input type="text" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+              <button slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
             </nde-form-element>
           </form>
         
@@ -229,6 +229,10 @@ export class AuthenticateRootComponent extends RxLitElement {
         
         nde-form-element label {
           color: white;
+        }
+
+        nde-form-element input {
+          height: 100%;
         }
 
         .webid-container p {

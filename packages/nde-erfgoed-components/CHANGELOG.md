@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.1...v0.3.0) (2021-05-18)
+
+
+### **Features**
+
+* implement Solid pods as storage ([#195](https://github.com/digita-ai/nde-erfgoedinstellingen/issues/195)) ([ec1ad34](https://github.com/digita-ai/nde-erfgoedinstellingen/commit/ec1ad3472257f142612498a17b7553d697a328d7))
+* support updating of collections ([#189](https://github.com/digita-ai/nde-erfgoedinstellingen/issues/189)) ([4e8edc2](https://github.com/digita-ai/nde-erfgoedinstellingen/commit/4e8edc2243070a48042dd3a8af4a29ab86058ed4))
+
+
+### **Bug Fixes**
+
+* Translator should return key when no translation found ([#79](https://github.com/digita-ai/nde-erfgoedinstellingen/issues/79)) ([3a60ba8](https://github.com/digita-ai/nde-erfgoedinstellingen/commit/3a60ba8c71afd3d8aff8e3d459d20313d8ffe636))
+
+
+
+### [0.2.1](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.0...v0.2.1) (2021-05-11)
+
+**Note:** Version bump only for package @digita-ai/nde-erfgoed-components
+
+
+
+
+
 ## 0.2.0 (2021-05-10)
 
 

@@ -9,16 +9,22 @@ describe('CollectionMemoryStore', () => {
       uri: 'collection-uri-1',
       name: 'Collection 1',
       description: 'This is collection 1',
+      objectsUri: '',
+      distribution: '',
     },
     {
       uri: 'collection-uri-2',
       name: 'Collection 2 testing',
       description: 'This is collection 2 testing',
+      objectsUri: '',
+      distribution: '',
     },
     {
       uri: 'collection-uri-3',
       name: 'Collection 3 testing nachos',
       description: 'This is collection 3 testing nachos',
+      objectsUri: '',
+      distribution: '',
     },
   ];
 
@@ -48,9 +54,9 @@ describe('CollectionMemoryStore', () => {
 
   describe('search', () => {
 
-    it('should return all collections when searchTerm is empty', async () => {
+    it('should error when searchTerm is empty', async () => {
 
-      await expect(service.search('nacho')).resolves.toEqual(resources);
+      await expect(service.search('')).rejects.toThrow(ArgumentError);
 
     });
 
@@ -69,6 +75,16 @@ describe('CollectionMemoryStore', () => {
     it('should error when searchTerm is undefined', async () => {
 
       await expect(service.search(undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+  });
+
+  describe('getCollection', () => {
+
+    it('should return the right collection', async () => {
+
+      expect(service.getCollection(resources[0].uri)).resolves.toEqual(resources[0]);
 
     });
 

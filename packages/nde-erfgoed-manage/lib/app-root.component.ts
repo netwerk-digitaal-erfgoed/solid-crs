@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionObjectMemoryStore, CollectionMemoryStore, MemoryStore } from '@digita-ai/nde-erfgoed-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
 import { Alert, FormEvent } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross } from '@digita-ai/nde-erfgoed-theme';
@@ -13,7 +13,8 @@ import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
-import { SearchEvents } from './features/search/search.events';
+import { CollectionSolidStore } from './common/solid/collection-solid-store';
+import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
 
 /**
  * The root page of the application.
@@ -52,64 +53,14 @@ export class AppRootComponent extends RxLitElement {
   actor = interpret(
     (appMachine(
       new SolidSDKService(this.logger),
-      new CollectionMemoryStore([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-        },
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-        },
-      ]),
-      new CollectionObjectMemoryStore([
-        {
-          uri: 'object-uri-1',
-          name: 'Object 1',
-          description: 'This is object 1',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-2',
-          name: 'Object 2',
-          description: 'This is object 2',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-3',
-          name: 'Object 3',
-          description: 'This is object 3',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-        {
-          uri: 'object-uri-4',
-          name: 'Object 4',
-          description: 'This is object 4',
-          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-      ]),
+      new CollectionSolidStore(),
+      new CollectionObjectSolidStore(),
       {
         uri: null,
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
+        objectsUri: undefined,
+        distribution: undefined,
       },
     )).withContext({
       alerts: [],
@@ -142,6 +93,12 @@ export class AppRootComponent extends RxLitElement {
 
   @internalProperty()
   searchTerm = '';
+
+  /**
+   * The selected collection of the current user.
+   */
+  @internalProperty()
+  selected: Collection;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
@@ -186,6 +143,10 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.profile),
     ));
 
+    this.subscribe('selected', from(this.actor).pipe(
+      map((state) => state.context?.selected),
+    ));
+
   }
 
   searchUpdated(event: KeyboardEvent): void{
@@ -220,7 +181,7 @@ export class AppRootComponent extends RxLitElement {
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
             <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(AppEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>
-            <div slot="icon"  @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>
+            <div class="cross" slot="icon"  @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>
           </nde-form-element>
         </div>
       </nde-sidebar-item>
@@ -236,7 +197,7 @@ export class AppRootComponent extends RxLitElement {
     </nde-sidebar>
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
-    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }  
     `;
 
@@ -292,6 +253,10 @@ export class AppRootComponent extends RxLitElement {
 
         div[slot="content"]{
           padding-bottom: var(--gap-small);
+        }
+
+        .cross:hover {
+          cursor: pointer;
         }
       `,
     ];

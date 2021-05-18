@@ -52,7 +52,8 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
       [SearchStates.SEARCHING]: {
         invoke: {
           src: async (context, event) => ({
-            objects: await objectStore.search(context.searchTerm),
+            // objects: await objectStore.search(context.searchTerm),
+            objects: [],
             collections: await collectionStore.search(context.searchTerm),
           }),
           onDone: {

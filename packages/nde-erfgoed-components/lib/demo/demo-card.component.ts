@@ -134,7 +134,7 @@ export class DemoNDECardComponent extends LitElement {
     return [ css`
       .grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         grid-gap: var(--gap-normal);
       }
       nde-object-card, nde-collection-card {
