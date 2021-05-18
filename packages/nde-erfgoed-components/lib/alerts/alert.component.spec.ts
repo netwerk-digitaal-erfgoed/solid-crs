@@ -72,7 +72,7 @@ describe('AlertComponent', () => {
 
     const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
-    expect(message.trim()).toBe('');
+    expect(message.trim()).toBe(component.alert.message);
 
   });
 
