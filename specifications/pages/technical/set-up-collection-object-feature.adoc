@@ -1,0 +1,25 @@
+= Technical Documentation: Set up collection object feature
+
+== Author(s)
+
+* Stijn Taelemans
+
+
+== References
+
+* https://www.wrike.com/open.htm?id=692044114[Wrike task]
+* Branch: `feat/set-up-collection-object-feature`
+* Project: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+
+== Introduction
+
+=== Overview
+
+TODO
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+TODO
