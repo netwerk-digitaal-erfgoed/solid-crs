@@ -1,5 +1,5 @@
 = Authenticeer
-:description: Een omschrijving van de architectuur van het project.
+:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling Solid CBS.
 :sectanchors:
 :url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
 :imagesdir: ../images
