@@ -1,6 +1,7 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
+import { Subject } from 'rxjs';
 import { SearchEvent  } from './search.events';
 import { AppEvents } from './../../app.events';
 
@@ -53,7 +54,7 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
         invoke: {
           src: async (context, event) => ({
             // objects: await objectStore.search(context.searchTerm),
-            objects: [],
+            objects: [ { uri: '', name: 'Objecten zoeken nog niet ondersteund', subject: 'Even geduld' } ],
             collections: await collectionStore.search(context.searchTerm),
           }),
           onDone: {

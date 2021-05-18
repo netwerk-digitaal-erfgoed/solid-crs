@@ -130,6 +130,26 @@
         "value": "We hebben dit gevonden"
     },
     {
+        "key": "nde.features.search.root.empty.no-search-results",
+        "locale": "nl-NL",
+        "value": "Geen zoekresultaten voor deze zoekterm!"
+    },
+    {
+        "key": "nde.features.search.root.empty.go-back",
+        "locale": "nl-NL",
+        "value": "Ga terug"
+    },
+    {
+        "key": "nde.features.search.root.objects",
+        "locale": "nl-NL",
+        "value": "Objecten"
+    },
+    {
+        "key": "nde.features.search.root.collections",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"

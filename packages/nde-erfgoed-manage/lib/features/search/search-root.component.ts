@@ -129,8 +129,6 @@ export class SearchRootComponent extends RxLitElement {
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <div slot="title">${this.translator?.translate('nde.features.search.header.search-results-for')} "${this.searchTerm}"</div>
         <div slot="subtitle">${this.translator?.translate('nde.features.search.header.subtitle')}</div>
-
-        <div slot="actions"><button class="no-padding inverse" @click="${() => this.logger.info('this', 'cross clicked placeholder')}">${unsafeSVG(Cross)}</button></div>
       </nde-content-header>
 
       <div class="content">
@@ -139,10 +137,10 @@ export class SearchRootComponent extends RxLitElement {
       ${this.objects?.length || this.collections?.length
     ? html`
 
-      ${this.collections.length
+      ${this.collections?.length
     ? html`
-              <div class="title no-padding-top">
-                ${unsafeSVG(CollectionIcon)} <span>Collecties</span>
+              <div class="title">
+                ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('nde.features.search.root.collections')}</span>
               </div>
               <div class='grid'>
                 ${this.collections.map((collection) => html`<nde-collection-card .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
@@ -150,10 +148,10 @@ export class SearchRootComponent extends RxLitElement {
             ` : ''
 }
 
-          ${this.objects.length
+          ${this.objects?.length
     ? html`
               <div class="title">
-                ${unsafeSVG(ObjectIcon)} <span>Objecten</span>
+                ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
               </div>
               <div class='grid'>
                 ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
@@ -164,7 +162,10 @@ export class SearchRootComponent extends RxLitElement {
         `
     : html`
           <div class="empty-container">
-            No results ... WIP
+            <div class='empty'>
+              ${unsafeSVG(Empty)}
+              <div class='text'>${this.translator?.translate('nde.features.search.root.empty.no-search-results')}</div>
+            </div>
           </div>
         `
 }
@@ -189,6 +190,9 @@ export class SearchRootComponent extends RxLitElement {
         .content {
           padding: var(--gap-large);
           height: 100%;
+        }
+        .content > div:first-child {
+          padding-top: 0;
         }
         .grid {
           display: grid;
@@ -224,8 +228,27 @@ export class SearchRootComponent extends RxLitElement {
           padding-right: var(--gap-normal);
           fill: var(--colors-foreground-normal);
         }
-        .no-padding-top {
-          padding-top: 0;
+        .empty-container {
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+          height: 100%;
+        }
+        .empty {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: var(--gap-large);
+        }
+        .empty .text {
+          color: var(--colors-foreground-dark);
+        }
+        .empty > svg {
+          width: 40%;
+          height: auto;
         }
       `,
     ];
