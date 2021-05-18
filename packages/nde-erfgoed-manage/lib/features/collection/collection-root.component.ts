@@ -180,7 +180,7 @@ export class CollectionRootComponent extends RxLitElement {
         .grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          grid-gap: var(--gap-normal);
+          grid-gap: var(--gap-large);
         }
         @media only screen and (max-width: 1300px) {
           .grid {

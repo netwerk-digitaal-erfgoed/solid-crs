@@ -130,7 +130,7 @@ export class SearchRootComponent extends RxLitElement {
         <div slot="title">${this.translator?.translate('nde.features.search.header.search-results-for')} "${this.searchTerm}"</div>
         <div slot="subtitle">${this.translator?.translate('nde.features.search.header.subtitle')}</div>
 
-        <div slot="actions"><button class="no-padding inverse" @click="${() => console.log('cross clicked')}">${unsafeSVG(Cross)}</button></div>
+        <div slot="actions"><button class="no-padding inverse" @click="${() => this.logger.info('this', 'cross clicked placeholder')}">${unsafeSVG(Cross)}</button></div>
       </nde-content-header>
 
       <div class="content">
@@ -138,20 +138,29 @@ export class SearchRootComponent extends RxLitElement {
       
       ${this.objects?.length || this.collections?.length
     ? html`
-          ${this.objects.length
+
+      ${this.collections.length
     ? html`
-              <div class='grid'>
-                ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+              <div class="title no-padding-top">
+                ${unsafeSVG(CollectionIcon)} <span>Collecties</span>
               </div>
-            ` : ''
-}
-          ${this.collections.length
-    ? html`
               <div class='grid'>
                 ${this.collections.map((collection) => html`<nde-collection-card .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
               </div>
             ` : ''
 }
+
+          ${this.objects.length
+    ? html`
+              <div class="title">
+                ${unsafeSVG(ObjectIcon)} <span>Objecten</span>
+              </div>
+              <div class='grid'>
+                ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+              </div>
+            ` : ''
+}
+
         `
     : html`
           <div class="empty-container">
@@ -184,7 +193,7 @@ export class SearchRootComponent extends RxLitElement {
         .grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          grid-gap: var(--gap-normal);
+          grid-gap: var(--gap-large);
         }
         @media only screen and (max-width: 1300px) {
           .grid {
@@ -202,6 +211,21 @@ export class SearchRootComponent extends RxLitElement {
         button svg {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
+        }
+        .title {
+          padding: var(--gap-large) 0;
+          color: var(--colors-primary-dark);
+          font-weight: bold;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+        .title svg {
+          padding-right: var(--gap-normal);
+          fill: var(--colors-foreground-normal);
+        }
+        .no-padding-top {
+          padding-top: 0;
         }
       `,
     ];

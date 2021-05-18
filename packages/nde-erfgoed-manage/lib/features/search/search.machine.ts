@@ -1,10 +1,7 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
-import { from, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { log } from 'xstate/lib/actions';
-import { SearchEvent, SearchEvents  } from './search.events';
+import { SearchEvent  } from './search.events';
 import { AppEvents } from './../../app.events';
 
 /**
@@ -54,23 +51,15 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
       [SearchStates.IDLE]: { },
       [SearchStates.SEARCHING]: {
         invoke: {
-          src: (context, event) => of({ searchTerm: context.searchTerm }).pipe(
-            tap((data) => console.log(data)),
-            switchMap((data) => from(objectStore.search(data.searchTerm))
-              .pipe(map((objects) => ({ ...data, objects })))),
-            tap((data) => console.log(data)),
-            switchMap((data) => from(collectionStore.search(data.searchTerm))
-              .pipe(map((collections) => ({ ...data, collections })))),
-            tap((data) => console.log(data)),
-          ),
+          src: async (context, event) => ({
+            objects: await objectStore.search(context.searchTerm),
+            collections: await collectionStore.search(context.searchTerm),
+          }),
           onDone: {
-            actions: [
-              log((context, event) => 'TEST, ' + context),
-              assign({
-                objects: (context, event) => event?.data.objects,
-                collections: (context, event) => event?.data.collections,
-              }),
-            ],
+            actions: assign({
+              objects: (context, event) => event?.data.objects,
+              collections: (context, event) => event?.data.collections,
+            }),
             target: SearchStates.IDLE,
           },
           onError: {
