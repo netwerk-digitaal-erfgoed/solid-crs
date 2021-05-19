@@ -1,4 +1,7 @@
 = Technical Documentation: Add svg icons
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
 
 == Author(s)
 

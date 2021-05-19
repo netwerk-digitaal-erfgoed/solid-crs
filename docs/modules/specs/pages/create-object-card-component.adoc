@@ -1,4 +1,7 @@
 = Technical Documentation: Create object card component
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
 
 == Author(s)
 
