@@ -168,7 +168,7 @@ export const removeSession = assign({ session: (context, event) => undefined });
  */
 export const setCollections = assign({
   collections: (context, event: DoneInvokeEvent<Collection[]>) =>
-    event.data.sort((a, b) => a.name.localeCompare(b.name)),
+    event.data.sort((a, b) => a.name?.localeCompare(b.name)),
 });
 
 /**

@@ -1,8 +1,6 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
-import { Subject } from 'rxjs';
-import { SearchEvent  } from './search.events';
 import { AppEvents } from './../../app.events';
 
 /**
@@ -44,7 +42,7 @@ export enum SearchStates {
  * The search component machine.
  */
 export const searchMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
-  createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
+  createMachine<SearchContext, Event, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
     context: { },
     initial: SearchStates.SEARCHING,
