@@ -1,6 +1,6 @@
 import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
-import { createMachine, forwardTo } from 'xstate';
+import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, SearchUpdatedEvent, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
@@ -9,7 +9,6 @@ import { authenticateMachine } from './features/authenticate/authenticate.machin
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
-import { SearchEvents } from './features/search/search.events';
 import { searchMachine } from './features/search/search.machine';
 
 /**
