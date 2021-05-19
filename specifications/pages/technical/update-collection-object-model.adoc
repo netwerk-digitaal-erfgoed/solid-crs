@@ -80,4 +80,4 @@ The new model should look like this. Commented are the corresponding predicates 
 }
 ----
 
-In the pods package, see 'data/leapeeters/heritage-objects/data-1' for an example of this model in turtle. Prefixes used in the example are also defined in there. For 
+In the pods package, see 'data/leapeeters/heritage-objects/data-1' for an example of this model in turtle. Prefixes used in the example are also defined in there. 
