@@ -116,11 +116,10 @@ export const appMachine = (
     type: 'parallel',
     on: {
       [CollectionEvents.SELECTED_COLLECTION]: {
-        actions:
-        [
-          forwardTo(AppActors.COLLECTION_MACHINE),
+        actions: [
           assign({ selected: (context, event) => event.collection }),
         ],
+        target: `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTION}`,
       },
     },
     states: {
@@ -131,6 +130,9 @@ export const appMachine = (
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
           [AppEvents.SEARCH_UPDATED]: {
+            actions: assign({
+              selected: (context, event) => undefined,
+            }),
             target: `${AppRootStates.FEATURE}.${AppFeatureStates.SEARCH}`,
             cond: (context, event) =>  !!event.searchTerm?.length,
           },
@@ -161,6 +163,9 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore),
+                data: (context, event) => ({
+                  collection: context.selected,
+                }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },
