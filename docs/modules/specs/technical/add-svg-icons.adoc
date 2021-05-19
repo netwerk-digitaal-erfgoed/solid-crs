@@ -32,8 +32,8 @@ All changes are to be made in the '@digita-ai/nde-erfgoed-theme' package.
 
 The finished icons should look like this:
 
-image::../../images/collections/icons-1.svg[Icons]
-image::../../images/collections/icons-2.svg[Icons]
+image::../images/collections/icons-1.svg[Icons]
+image::../images/collections/icons-2.svg[Icons]
 
 
 Create in '@digita-ai/nde-erfgoed-theme' package under 'lib/icon/'.

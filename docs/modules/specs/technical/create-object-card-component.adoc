@@ -63,7 +63,7 @@ Create 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core'
 
 The finished component should look like this:
 
-image::../../images/collections/collection-object-component.svg[ObjectCardComponent]
+image::../images/collections/collection-object-component.svg[ObjectCardComponent]
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/collection-object/object-card.component.ts', with tag `<nde-object-card>`
 
