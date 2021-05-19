@@ -35,7 +35,7 @@ The shared components needed for this spec are created.
 
 The finished component should look like this:
 
-image::../../assets/collections/collection-root.svg[CollectionRootComponent]
+image::../../images/collections/collection-root.svg[CollectionRootComponent]
 
 Create in '@digita-ai/nde-erfgoed-manage' package under 'lib/collections/pages/collection-root.component'. (might already exist)
 
@@ -43,7 +43,7 @@ The component contains a `ContentHeaderComponent` at the top, followed by a http
 
 Every `CollectionObject` in the current `Collection` should be displayed using a grid of `ObjectCardComponents`. Clicking these should not do anything, yet. Try to adjust the grid dimensions based on window width. With default view widths, three cards should be displayed next to eachother.
 
-image::../../assets/collections/collection-root-no-objects.svg[CollectionRootComponent without CollectionObjects]
+image::../../images/collections/collection-root-no-objects.svg[CollectionRootComponent without CollectionObjects]
 
 If the component does not contain any `CollectionObjects`, the page should display a large icon. (see image)  
 The svg for this icon can be found on Figma, export it and add it to the theme package. 
@@ -53,7 +53,7 @@ The svg for this icon can be found on Figma, export it and add it to the theme p
 
 The finished component should look like this:
 
-image::../../assets/collections/app-root.svg[AppRootComponent]
+image::../../images/collections/app-root.svg[AppRootComponent]
 
 Exists in '@digita-ai/nde-erfgoed-manage' package under 'lib/'.
 

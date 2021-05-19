@@ -32,7 +32,7 @@ All components are to be made in the '@digita-ai/nde-erfgoed-components' package
 
 The finished component should look like this:
 
-image::../../assets/collections/content-header.svg[ContentHeaderComponent]
+image::../../images/collections/content-header.svg[ContentHeaderComponent]
 
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/header/content-header.component.ts', with tag `<nde-content-header>`
