@@ -156,7 +156,7 @@ export class AppRootComponent extends RxLitElement {
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-list>
-        <nde-sidebar-list-item slot="item" isTitle inverse>
+        <nde-sidebar-list-item slot="title" isTitle inverse>
           <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
           <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
         </nde-sidebar-list-item>
@@ -182,6 +182,8 @@ export class AppRootComponent extends RxLitElement {
           background-color: var(--colors-background-normal);
           display: flex;
           flex-direction: row;
+          overflow: hidden;
+          max-height: 100%;
         }
 
         :host > * {
@@ -193,17 +195,10 @@ export class AppRootComponent extends RxLitElement {
         }
 
         nde-sidebar {
+          max-height: inherit;
+          height: 100%;
           display: flex;
           flex-direction: column;
-        }
-
-        nde-sidebar > * {
-          margin-bottom: var(--gap-normal);
-          display: block;
-        }
-
-        nde-sidebar > *:last-child {
-          margin-bottom: 0px;
         }
 
         nde-content-header div[slot="icon"] svg {

@@ -26,7 +26,7 @@ export class ContentHeaderComponent extends LitElement {
         <slot name="icon"></slot>
       </div>
 
-      <div class="content">      
+      <div class="content">
         <slot name="title"></slot>
         <slot name="subtitle"></slot>
       </div>
@@ -84,12 +84,14 @@ export class ContentHeaderComponent extends LitElement {
           margin: 0 var(--gap-normal);
         }
         .header .content slot[name="title"]::slotted(*) {
+          overflow: hidden;
           font-weight: var(--font-weight-bold);
           font-size: var(--font-size-normal);
           height: var(--gap-normal);
           line-height: var(--gap-normal);
         }
         .header .content slot[name="subtitle"]::slotted(*) {
+          overflow: hidden;
           margin-top: var(--gap-tiny);
           font-size: var(--font-size-small);
           height: var(--gap-normal);

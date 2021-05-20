@@ -220,6 +220,7 @@ export class AuthenticateRootComponent extends RxLitElement {
           max-width: 50px;
           width: 50px;
           fill: var(--colors-foreground-inverse);
+          stroke: none !important;
         }
         
         .title-container h1 {
