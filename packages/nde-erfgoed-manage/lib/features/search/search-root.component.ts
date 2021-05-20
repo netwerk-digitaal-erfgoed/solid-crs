@@ -142,7 +142,7 @@ export class SearchRootComponent extends RxLitElement {
               <div class="title">
                 ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('nde.features.search.root.collections')}</span>
               </div>
-              <div class='grid'>
+              <div class='three-column-content-grid'>
                 ${this.collections.map((collection) => html`<nde-collection-card .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
               </div>
             ` : ''
@@ -153,7 +153,7 @@ export class SearchRootComponent extends RxLitElement {
               <div class="title">
                 ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
               </div>
-              <div class='grid'>
+              <div class='three-column-content-grid'>
                 ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
               </div>
             ` : ''
@@ -193,21 +193,6 @@ export class SearchRootComponent extends RxLitElement {
         }
         .content > div:first-child {
           padding-top: 0;
-        }
-        .grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          grid-gap: var(--gap-large);
-        }
-        @media only screen and (max-width: 1300px) {
-          .grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-        @media only screen and (max-width: 1000px) {
-          .grid {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-          }
         }
         nde-object-card, nde-collection-card {
           height: 227px;
