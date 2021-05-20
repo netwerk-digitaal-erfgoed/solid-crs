@@ -1,4 +1,7 @@
 = Technical Documentation: Set up authenticate feature
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
 
 == Author(s)
 
@@ -56,7 +59,7 @@ The `authenticateConfig` has three possible states:
 * `AuthenticateStates.AUTHENTICATING`
 * `AuthenticateStates.AUTHENTICATED`
 
-image::../../assets/authenticate/authenticate-machine-state-chart.svg[AuthenticateMachine State Chart]
+image::../images/authenticate/authenticate-machine-state-chart.svg[AuthenticateMachine State Chart]
 
 The `AuthenticateStates.UNAUTHENTICATED` state is the initial state of the machine. From here, it can transition to the `AuthenticateStates.AUTHENTICATING` state when the `AuthenticateEvents.CLICKED_LOGIN` event is called. The machine should be in the `AuthenticateStates.AUTHENTICATING` state from the moment the button is clicked. The app should transition to `AuthenticateStates.AUTHENTICATED` using the `AuthenticateEvents.LOGIN_SUCCESS` event when the `handleIncomingRedirect()` function is called and its return value contains a `isLoggedIn` attribute equal to `true`. Should `isLoggedIn` be `false`, a `AuthenticateEvents.LOGIN_ERROR` event should be dispatched and the machine should return to its initial state. After `AuthenticateEvents.LOGIN_SUCCESS`, we reach the `AuthenticateStates.AUTHENTICATED` state. From this state, the machine can go back to the `AuthenticateStates.UNAUTHENTICATED` state when a `AuthenticateEvents.CLICKED_LOGOUT` action is fired.
 

@@ -1,4 +1,7 @@
 = Technical Documentation: Update sidebar
+:sectanchors:
+:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:imagesdir: ../images
 
 == Author(s)
 
@@ -32,7 +35,7 @@ All components are to be made in the '@digita-ai/nde-erfgoed-components' package
 
 The finished component should look like this:
 
-image::../../assets/collections/sidebar-list-item.svg[SidebarListItemComponent]
+image::../images/collections/sidebar-list-item.svg[SidebarListItemComponent]
 
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/sidebar/sidebar-list-item.component.ts', with tag `<nde-sidebar-list-item>`
@@ -49,7 +52,7 @@ To preview the component while developing: register the component in 'lib/demo.t
 
 The finished component should look like this:
 
-image::../../assets/collections/sidebar-list.svg[SidebarItemComponent]
+image::../images/collections/sidebar-list.svg[SidebarItemComponent]
 
 
 Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/sidebar/sidebar-item.component.ts', with tag `<nde-sidebar-item>`
