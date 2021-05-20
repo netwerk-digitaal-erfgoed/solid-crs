@@ -4,3 +4,4 @@ version: 0.2.1
 nav:
   - modules/ROOT/nav.adoc
   - modules/manual/nav.adoc
+  - modules/specs/nav.adoc
