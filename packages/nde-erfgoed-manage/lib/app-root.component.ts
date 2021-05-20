@@ -96,6 +96,12 @@ export class AppRootComponent extends RxLitElement {
   selected: Collection;
 
   /**
+   * The actor responsible for the search field.
+   */
+  @internalProperty()
+  formActor: ActorRef<FormEvent>;
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.
@@ -142,6 +148,23 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.selected),
     ));
 
+    if(changed.has('formActor') && this.formActor){
+
+      // this.subscribe('canSubmit', from(this.formActor).pipe(
+      //   map((state) => state.matches({
+      //     [FormSubmissionStates.NOT_SUBMITTED]:{
+      //       [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+      //       [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+      //     },
+      //   })),
+      // ));
+
+      // this.subscribe('isSubmitting', from(this.formActor).pipe(
+      //   map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      // ));
+
+    }
+
   }
 
   searchUpdated(event: KeyboardEvent): void{
@@ -175,9 +198,16 @@ export class AppRootComponent extends RxLitElement {
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
-          <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>            ${this.searchTerm
-  ? html`<div class="cross" slot="icon" @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>`
-  : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
+            <input type="text"
+              slot="input"
+              .value="${this.searchTerm}"
+              class="searchTerm"
+              @input="${(event: Event) => this.searchTerm = (event.target as HTMLInputElement).value}"
+              @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"
+            />
+            ${this.searchTerm
+    ? html`<div class="cross" slot="icon" @click="${() => this.searchTerm = ''}">${ unsafeSVG(Cross) }</div>`
+    : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
 }
           </nde-form-element>
         </div>

@@ -220,15 +220,31 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            /**
-             * Get profile and assign to context.
-             */
-            invoke: {
-              src: (context, event) => solid.getProfile(context.session.webId),
-              onDone: {
-                actions: setProfile,
+            invoke: [
+              /**
+               * Get profile and assign to context.
+               */
+              {
+                src: (context, event) => solid.getProfile(context.session.webId),
+                onDone: {
+                  actions: setProfile,
+                },
               },
-            },
+              {
+                id: FormActors.FORM_MACHINE,
+                src: formMachine<{ name: string; description: string }>(
+                  (): Observable<FormValidatorResult[]> => of([]),
+                  async (c: FormContext<{ name: string; description: string }>) => c.data
+                ),
+                data: () => ({
+                  data: { searchTerm: '' },
+                  original: { searchTerm: '' },
+                }),
+                onDone: {
+                  actions: [ ],
+                },
+              },
+            ],
             on: {
               [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
               [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
