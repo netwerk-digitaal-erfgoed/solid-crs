@@ -90,4 +90,16 @@ export class MemoryStore<T extends Resource> implements Store<T> {
 
   }
 
+  async get(uri: string): Promise<T> {
+
+    if (!uri) {
+
+      throw new ArgumentError('Argument uri should be set.', uri);
+
+    }
+
+    return this.resources.find((res) => res.uri === uri);
+
+  }
+
 }

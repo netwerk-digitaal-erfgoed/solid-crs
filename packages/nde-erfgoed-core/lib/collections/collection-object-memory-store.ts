@@ -18,23 +18,6 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
   }
 
   /**
-   * Retrieves a single CollectionObject
-   *
-   * @param uri The URI of the CollectionObject
-   */
-  async getObject(uri: string): Promise<CollectionObject> {
-
-    if (!uri) {
-
-      throw new ArgumentError('Argument uri should be set.', uri);
-
-    }
-
-    return this.resources.find((resource) => resource.uri === uri);
-
-  }
-
-  /**
    * Retrieves all objects for a specific collection.
    *
    * @param collection The collection for which to retrieve objects.

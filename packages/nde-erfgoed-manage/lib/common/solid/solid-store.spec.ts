@@ -172,4 +172,14 @@ describe('SolidStore', () => {
 
   });
 
+  describe('get()', () => {
+
+    it('should throw', async () => {
+
+      await expect(service.get(undefined)).rejects.toThrow();
+
+    });
+
+  });
+
 });

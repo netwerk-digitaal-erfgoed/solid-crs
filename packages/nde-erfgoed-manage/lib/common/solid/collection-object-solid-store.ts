@@ -47,12 +47,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   }
 
-  /**
-   * Retrieves a single Collection
-   *
-   * @param uri The URI of the Collection
-   */
-  async getObject(uri: string): Promise<CollectionObject> {
+  async get(uri: string): Promise<CollectionObject> {
 
     if (!uri) {
 

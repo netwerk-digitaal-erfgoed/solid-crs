@@ -21,11 +21,4 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
    */
   search(searchTerm: string): Promise<CollectionObject[]>;
 
-  /**
-   * Retrieves a single CollectionObject
-   *
-   * @param uri The URI of the CollectionObject
-   */
-  getObject(uri: string): Promise<CollectionObject>;
-
 }

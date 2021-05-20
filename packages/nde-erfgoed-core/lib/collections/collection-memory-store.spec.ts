@@ -80,14 +80,4 @@ describe('CollectionMemoryStore', () => {
 
   });
 
-  describe('getCollection', () => {
-
-    it('should return the right collection', async () => {
-
-      expect(service.getCollection(resources[0].uri)).resolves.toEqual(resources[0]);
-
-    });
-
-  });
-
 });

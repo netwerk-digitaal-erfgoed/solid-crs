@@ -19,6 +19,11 @@ export class SolidStore<T extends Resource> implements Store<T> {
     throw new Error('Method not implemented.');
 
   }
+  async get(uri: string): Promise<T> {
+
+    throw new Error('Method not implemented.');
+
+  }
 
   /**
    * Returns the instance URI of a type registration for a given RDF class

@@ -22,4 +22,12 @@ export interface Store<T extends Resource> {
    * @param resource Resource to be saved.
    */
   save(resource: T): Promise<T>;
+
+  /**
+   * Get a resource by its uri
+   *
+   * @param uri uri of the resource
+   */
+  get(uri: string): Promise<T>;
+
 }

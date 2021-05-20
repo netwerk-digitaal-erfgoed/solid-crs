@@ -32,10 +32,4 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
   }
 
-  async getCollection(uri: string): Promise<Collection> {
-
-    return this.resources.find((res) => res.uri === uri);
-
-  }
-
 }

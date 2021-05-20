@@ -47,7 +47,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // get datasets (=== collections) in this catalog
     const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset') as string[];
 
-    return await Promise.all(collectionUris.map(async (collectionUri) => await this.getCollection(collectionUri)));
+    return await Promise.all(collectionUris.map(async (collectionUri) => await this.get(collectionUri)));
 
   }
 
@@ -157,7 +157,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
    *
    * @param uri The URI of the Collection
    */
-  async getCollection(uri: string): Promise<Collection> {
+  async get(uri: string): Promise<Collection> {
 
     if (!uri) {
 
