@@ -1,7 +1,8 @@
-import { Alert, State } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, FormContext, formMachine, FormValidatorResult, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
+import { Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -10,7 +11,7 @@ import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { searchMachine } from './features/search/search.machine';
-import { SearchEvents } from './features/search/search.events';
+import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 /**
  * The root context of the application.

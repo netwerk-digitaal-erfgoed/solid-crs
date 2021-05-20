@@ -56,25 +56,31 @@ describe('CollectionMemoryStore', () => {
 
     it('should error when searchTerm is empty', async () => {
 
-      await expect(service.search('')).rejects.toThrow(ArgumentError);
+      await expect(service.search('', resources)).rejects.toThrow(ArgumentError);
 
     });
 
     it('should return the correct collections', async () => {
 
-      await expect(service.search('testing')).resolves.toEqual([ resources[1], resources[2] ]);
+      await expect(service.search('testing', resources)).resolves.toEqual([ resources[1], resources[2] ]);
 
     });
 
     it('should return the correct collections', async () => {
 
-      await expect(service.search('nacho')).resolves.toEqual([ resources[2] ]);
+      await expect(service.search('nacho', resources)).resolves.toEqual([ resources[2] ]);
 
     });
 
     it('should error when searchTerm is undefined', async () => {
 
-      await expect(service.search(undefined)).rejects.toThrow(ArgumentError);
+      await expect(service.search(undefined, resources)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should error when collections is undefined', async () => {
+
+      await expect(service.search('test', undefined)).rejects.toThrow(ArgumentError);
 
     });
 

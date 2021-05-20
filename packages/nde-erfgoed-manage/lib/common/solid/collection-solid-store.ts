@@ -218,7 +218,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
   }
 
-  async search(searchTerm: string): Promise<Collection[]> {
+  async search(searchTerm: string, collections: Collection[]): Promise<Collection[]> {
 
     if (!searchTerm) {
 
@@ -226,10 +226,15 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-    const all = await this.all();
+    if (!collections) {
 
-    return all.filter((resource) =>
+      throw new ArgumentError('Argument collections should be set.', collections);
+
+    }
+
+    const lowerCaseTerm = searchTerm.toLowerCase();
+
+    return collections.filter((resource) =>
       resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
       resource?.description?.toLowerCase().includes(lowerCaseTerm));
 

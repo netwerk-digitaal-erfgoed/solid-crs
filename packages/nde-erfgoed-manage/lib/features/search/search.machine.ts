@@ -50,11 +50,20 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
       [SearchStates.IDLE]: { },
       [SearchStates.SEARCHING]: {
         invoke: {
-          src: async (context, event) => ({
-            // objects: await objectStore.search(context.searchTerm),
-            objects: [ { uri: '', name: 'Objecten zoeken nog niet ondersteund', subject: 'Even geduld' } ],
-            collections: await collectionStore.search(context.searchTerm),
-          }),
+          src: async (context, event) => {
+
+            const collections = await collectionStore.all();
+            const objectsPromises = collections.map((col) => objectStore.getObjectsForCollection(col));
+            const allObjects: CollectionObject[][] = await Promise.all(objectsPromises);
+            const objects = [].concat(...allObjects);
+
+            return {
+              // objects: await objectStore.search(context.searchTerm),
+              objects: await objectStore.search(context.searchTerm, objects),
+              collections: await collectionStore.search(context.searchTerm, collections),
+            };
+
+          },
           onDone: {
             actions: assign({
               objects: (context, event) => event?.data.objects,

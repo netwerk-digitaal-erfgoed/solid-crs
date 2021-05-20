@@ -16,7 +16,7 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
   }
 
-  async search(searchTerm: string): Promise<Collection[]> {
+  async search(searchTerm: string, collections: Collection[]): Promise<Collection[]> {
 
     if (!searchTerm) {
 
@@ -24,9 +24,15 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
     }
 
+    if (!collections) {
+
+      throw new ArgumentError('Argument collections should be set.', collections);
+
+    }
+
     const lowerCaseTerm = searchTerm.toLowerCase();
 
-    return this.resources.filter((resource) =>
+    return collections.filter((resource) =>
       resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
       resource?.description?.toLowerCase().includes(lowerCaseTerm));
 

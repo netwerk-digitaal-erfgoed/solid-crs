@@ -64,7 +64,7 @@ describe('SearchMachine', () => {
   it('should start without errors', async (done) => {
 
     const collectionStoreSearch = jest.spyOn(collectionStore, 'search');
-    // const objectStoreSearch = jest.spyOn(objectStore, 'search');
+    const objectStoreSearch = jest.spyOn(objectStore, 'search');
 
     machine.onTransition((state) => {
 
@@ -72,9 +72,9 @@ describe('SearchMachine', () => {
 
         expect(state.context?.collections).toEqual([ collection2 ]);
         expect(collectionStoreSearch).toHaveBeenCalledTimes(1);
-        expect(collectionStoreSearch).toHaveBeenCalledWith(searchTerm);
-        // expect(objectStoreSearch).toHaveBeenCalledTimes(1);
-        // expect(objectStoreSearch).toHaveBeenCalledWith(searchTerm);
+        expect(collectionStoreSearch).toHaveBeenCalledWith(searchTerm, [ collection1, collection2 ]);
+        expect(objectStoreSearch).toHaveBeenCalledTimes(1);
+        expect(objectStoreSearch).toHaveBeenCalledWith(searchTerm, [ object1 ]);
         done();
 
       }

@@ -19,6 +19,6 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
    *
    * @param searchTerm the therm that should be present in a property
    */
-  search(searchTerm: string): Promise<CollectionObject[]>;
+  search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]>;
 
 }

@@ -115,25 +115,31 @@ describe('CollectionObjectMemoryStore', () => {
 
     it('should error when searchTerm is empty', async () => {
 
-      await expect(service.search('')).rejects.toThrow(ArgumentError);
+      await expect(service.search('', resources)).rejects.toThrow(ArgumentError);
 
     });
 
     it('should return the correct object', async () => {
 
-      await expect(service.search('one')).resolves.toEqual([ resources[0] ]);
+      await expect(service.search('one', resources)).resolves.toEqual([ resources[0] ]);
 
     });
 
     it('should return the correct objects', async () => {
 
-      await expect(service.search('two')).resolves.toEqual([ resources[1] ]);
+      await expect(service.search('two', resources)).resolves.toEqual([ resources[1] ]);
 
     });
 
     it('should error when searchTerm is undefined', async () => {
 
-      await expect(service.search(undefined)).rejects.toThrow(ArgumentError);
+      await expect(service.search(undefined, resources)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should error when collections is undefined', async () => {
+
+      await expect(service.search('test', undefined)).rejects.toThrow(ArgumentError);
 
     });
 

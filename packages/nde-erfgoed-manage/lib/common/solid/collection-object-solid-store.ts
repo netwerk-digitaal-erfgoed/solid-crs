@@ -104,7 +104,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   }
 
-  async search(searchTerm: string): Promise<CollectionObject[]> {
+  async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
 
     if (!searchTerm) {
 
@@ -112,10 +112,15 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-    const all = await this.all();
+    if (!objects) {
 
-    return all.filter((resource) =>
+      throw new ArgumentError('Argument objects should be set.', objects);
+
+    }
+
+    const lowerCaseTerm = searchTerm.toLowerCase();
+
+    return objects.filter((resource) =>
       resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
       resource?.subject?.toLowerCase().includes(lowerCaseTerm) ||
       resource?.description?.toLowerCase().includes(lowerCaseTerm));
