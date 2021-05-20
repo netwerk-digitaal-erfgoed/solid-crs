@@ -181,7 +181,10 @@ export class CollectionRootComponent extends RxLitElement {
     <div class="content">
       ${ alerts }
       
-      ${this.objects?.length
+      ${this.state?.matches(CollectionStates.LOADING)
+    ? html``
+    : html`
+                ${this.objects?.length
     ? html`
           <div class='three-column-content-grid'>
             ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
@@ -198,6 +201,8 @@ export class CollectionRootComponent extends RxLitElement {
               </button>
             </div>
           </div>
+        `
+}
         `
 }
     </div>

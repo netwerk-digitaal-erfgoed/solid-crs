@@ -2,7 +2,7 @@ import { Alert, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
 import { assign, log, send } from 'xstate/lib/actions';
-import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, SearchUpdatedEvent, setCollections, setProfile, setSession } from './app.events';
+import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -10,6 +10,7 @@ import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { searchMachine } from './features/search/search.machine';
+import { SearchEvents } from './features/search/search.events';
 
 /**
  * The root context of the application.
@@ -128,7 +129,7 @@ export const appMachine = (
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
-          [AppEvents.SEARCH_UPDATED]: {
+          [SearchEvents.SEARCH_UPDATED]: {
             actions: assign({
               selected: (context, event) => undefined,
             }),

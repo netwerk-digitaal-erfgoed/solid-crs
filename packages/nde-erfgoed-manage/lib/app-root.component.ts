@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert, FormEvent } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, FormEvent } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout, Logo, Plus, Cross } from '@digita-ai/nde-erfgoed-theme';
+import { Theme, Logout, Logo, Plus, Cross, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -15,6 +15,7 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
+import { SearchEvents } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -84,12 +85,6 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   profile: SolidProfile;
-
-  /**
-   * The actor responsible for form validation in this component.
-   */
-  @internalProperty()
-  formActor: ActorRef<FormEvent>;
 
   @internalProperty()
   searchTerm = '';
@@ -180,8 +175,10 @@ export class AppRootComponent extends RxLitElement {
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
-            <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(AppEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>
-            <div class="cross" slot="icon"  @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>
+          <input type="text" slot="input" .value="${this.searchTerm}" class="searchTerm" @input="${this.searchUpdated}" @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"/>            ${this.searchTerm
+  ? html`<div class="cross" slot="icon" @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>`
+  : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
+}
           </nde-form-element>
         </div>
       </nde-sidebar-item>

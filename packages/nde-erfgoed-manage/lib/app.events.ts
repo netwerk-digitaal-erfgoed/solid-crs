@@ -5,6 +5,7 @@ import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
 import { ClickedDeleteEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
+import { SearchUpdatedEvent } from 'features/search/search.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -18,7 +19,6 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
-  SEARCH_UPDATED   = '[AppEvent: Updated search]',
 }
 
 /**
@@ -77,11 +77,6 @@ export interface CollectionsLoadedEvent extends Event<AppEvents> {
  */
 export interface ClickedCreateCollectionEvent extends Event<AppEvents> {
   type: AppEvents.CLICKED_CREATE_COLLECTION;
-}
-
-export interface SearchUpdatedEvent extends Event<AppEvents> {
-  type: AppEvents.SEARCH_UPDATED;
-  searchTerm: string;
 }
 
 /**

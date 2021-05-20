@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Collection as CollectionIcon, Cross, Edit, Empty, Object as ObjectIcon, Plus, Save, Search, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Edit, Empty, Loading, Object as ObjectIcon, Plus, Save, Search, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -8,7 +8,7 @@ import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
-import { SearchContext } from './search.machine';
+import { SearchContext, SearchStates } from './search.machine';
 
 /**
  * The root page of the collections feature.
@@ -133,8 +133,11 @@ export class SearchRootComponent extends RxLitElement {
 
       <div class="content">
       ${ this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`) }
-      
-      ${this.objects?.length || this.collections?.length
+
+      ${ this.state?.matches([ SearchStates.SEARCHING ])
+    ? html``
+    : html`
+        ${this.objects?.length || this.collections?.length
     ? html`
 
       ${this.collections?.length
@@ -167,6 +170,8 @@ export class SearchRootComponent extends RxLitElement {
               <div class='text'>${this.translator?.translate('nde.features.search.root.empty.no-search-results')}</div>
             </div>
           </div>
+        `
+}
         `
 }
     </div>
