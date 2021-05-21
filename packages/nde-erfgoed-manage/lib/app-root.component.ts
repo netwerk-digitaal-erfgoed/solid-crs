@@ -3,10 +3,11 @@ import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert, FormActors, FormEvent } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, FormCleanlinessStates, FormEvent, FormRootStates, FormSubmissionStates, FormValidationStates } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { nullEvent } from 'xstate/lib/actionTypes';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
@@ -101,6 +102,9 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   formActor: ActorRef<FormEvent>;
 
+  @internalProperty()
+  helper: any;
+
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
@@ -126,10 +130,6 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
-  /**
-   * Hook called after first update after connection to the DOM.
-   * It subscribes to the actor, logs state changes, and pipes state to the properties.
-   */
   firstUpdated(changed: PropertyValues): void {
 
     super.firstUpdated(changed);
@@ -140,28 +140,39 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.collections),
     ));
 
+    this.subscribe('formActor', from(this.actor).pipe(
+      map((state) => state.children[FormActors.FORM_MACHINE]),
+    ));
+
     this.subscribe('profile', from(this.actor).pipe(
       map((state) => state.context?.profile),
     ));
 
     this.subscribe('selected', from(this.actor).pipe(
-      map((state) => state.context?.selected),
+      map((state) => state.context.selected),
     ));
+
+  }
+
+  /**
+   * Hook called after first update after connection to the DOM.
+   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   */
+  updated(changed: PropertyValues): void {
 
     if(changed.has('formActor') && this.formActor){
 
-      // this.subscribe('canSubmit', from(this.formActor).pipe(
-      //   map((state) => state.matches({
-      //     [FormSubmissionStates.NOT_SUBMITTED]:{
-      //       [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-      //       [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-      //     },
-      //   })),
-      // ));
-
-      // this.subscribe('isSubmitting', from(this.formActor).pipe(
-      //   map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-      // ));
+      this.subscribe('helper', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+        tap((matches) => matches
+          ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm })
+          : null),
+      ));
 
     }
 
@@ -197,13 +208,12 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item>
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
-          <nde-form-element .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+          <nde-form-element .inverse="${true}" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
             <input type="text"
               slot="input"
               .value="${this.searchTerm}"
               class="searchTerm"
               @input="${(event: Event) => this.searchTerm = (event.target as HTMLInputElement).value}"
-              @keyup="${(e: KeyboardEvent) => e.code === 'Enter' ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm }) : null }"
             />
             ${this.searchTerm
     ? html`<div class="cross" slot="icon" @click="${() => this.searchTerm = ''}">${ unsafeSVG(Cross) }</div>`

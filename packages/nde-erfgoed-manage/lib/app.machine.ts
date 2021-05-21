@@ -1,8 +1,8 @@
 import { Alert, FormActors, FormContext, formMachine, FormValidatorResult, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
-import { assign, log, send } from 'xstate/lib/actions';
-import { Observable, of } from 'rxjs';
+import { assign, forwardTo, log, send, sendParent } from 'xstate/lib/actions';
+import { EMPTY, Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -91,17 +91,9 @@ export enum AppAuthenticateStates {
 }
 
 /**
- * State references for the application's features, with readable log format.
- */
-export enum AppSearchStates {
-  IDLE = '[AppSearchStates: Authenticated]',
-  SEARCHING  = '[AppSearchStates: Unauthenticated]',
-}
-
-/**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates | AppSearchStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
 
 /**
  * The application root machine and its configuration.
@@ -118,9 +110,9 @@ export const appMachine = (
     on: {
       [CollectionEvents.SELECTED_COLLECTION]: {
         actions: [
+          forwardTo(AppActors.COLLECTION_MACHINE),
           assign({ selected: (context, event) => event.collection }),
         ],
-        target: `${AppRootStates.FEATURE}.${AppFeatureStates.COLLECTION}`,
       },
     },
     states: {
@@ -195,6 +187,12 @@ export const appMachine = (
             },
           },
           [AppFeatureStates.SEARCH]: {
+            on: {
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: send((context, event) => event),
+              },
+            },
             invoke: [
               {
                 id: AppActors.SEARCH_MACHINE,
@@ -232,17 +230,14 @@ export const appMachine = (
               },
               {
                 id: FormActors.FORM_MACHINE,
-                src: formMachine<{ name: string; description: string }>(
+                src: formMachine<{ searchTerm: string }>(
                   (): Observable<FormValidatorResult[]> => of([]),
-                  async (c: FormContext<{ name: string; description: string }>) => c.data
                 ),
-                data: () => ({
+                data: {
                   data: { searchTerm: '' },
                   original: { searchTerm: '' },
-                }),
-                onDone: {
-                  actions: [ ],
                 },
+
               },
             ],
             on: {
