@@ -4,6 +4,7 @@ import { SearchRootComponent } from './features/search/search-root.component';
 import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { CollectionRootComponent } from './features/collection/collection-root.component';
+import { ObjectRootComponent } from './features/object/object-root.component';
 import './index';
 
 /**
@@ -21,6 +22,7 @@ inspect({
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
+customElements.define('nde-object-root', ObjectRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);

@@ -9,6 +9,7 @@ import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
+import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
 
 /**
@@ -158,7 +159,7 @@ export class SearchRootComponent extends RxLitElement {
                 ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
               </div>
               <div class='three-column-content-grid'>
-                ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+                ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
               </div>
             ` : ''
 }

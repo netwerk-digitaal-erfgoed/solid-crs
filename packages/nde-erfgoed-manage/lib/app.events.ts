@@ -6,6 +6,7 @@ import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
 import { ClickedDeleteEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 import { SearchUpdatedEvent } from 'features/search/search.events';
+import { SelectedObjectEvent } from 'features/object/object.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -94,7 +95,8 @@ export type AppEvent =
   | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent
   | SearchUpdatedEvent
-  | SavedCollectionEvent;
+  | SavedCollectionEvent
+  | SelectedObjectEvent;
 
 /**
  * Actions for the alerts component.

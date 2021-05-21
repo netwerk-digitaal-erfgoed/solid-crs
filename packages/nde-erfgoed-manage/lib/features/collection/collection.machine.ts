@@ -7,6 +7,7 @@ import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
+import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
 
 /**
@@ -105,7 +106,13 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
       /**
        * Objects for the current collection are loaded.
        */
-      [CollectionStates.IDLE]: {},
+      [CollectionStates.IDLE]: {
+        on: {
+          [ObjectEvents.SELECTED_OBJECT]: {
+            actions: sendParent((context, event) => event),
+          },
+        },
+      },
       /**
        * Saving changesto the collection's metadata.
        */
