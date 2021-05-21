@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, Thing, getStringNoLocale, getDatetime, getUrlAll } from '@digita-ai/nde-erfgoed-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -24,7 +24,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objectThings = getThingAll(dataset); // a list of CollectionObject Things
+    const objectThings = getThingAll(dataset).filter((thing) =>
+      getUrl(thing, 'http://schema.org/isPartOf') === collection.uri); // a list of CollectionObject Things
 
     if (!objectThings) {
 
@@ -32,18 +33,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objects = objectThings.map((objectThing: ThingPersisted) => ({
-      uri: asUrl(objectThing),
-      collection: collection.uri,
-      name: getStringWithLocale(objectThing, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(objectThing, 'http://schema.org/description', 'nl'),
-      type: undefined,
-      subject: undefined,
-      image: undefined,
-      updated: undefined,
-    } as CollectionObject));
-
-    return objects.filter((object: CollectionObject) => object.collection === collection.uri);
+    return objectThings.map((objectThing: ThingPersisted) =>
+      CollectionObjectSolidStore.fromThing(objectThing));
 
   }
 
@@ -106,6 +97,50 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
   async save(resource: CollectionObject): Promise<CollectionObject> {
 
     throw new Error('Method not implemented.');
+
+  }
+
+  /**
+   * Converts a Collection to a Thing
+   *
+   * @param collection The collection to convert
+   * @returns a Thing
+   */
+  static toThing(collection: CollectionObject): Thing {
+
+    return null;
+
+  }
+
+  /**
+   * Creates a Collection from a ThingPersisted
+   *
+   * @param collection The collection to convert
+   * @returns a Collection
+   */
+  static fromThing(collection: ThingPersisted): CollectionObject {
+
+    return {
+      uri: asUrl(collection),
+      updated: getUrl(collection, 'http://schema.org/dateModified'),
+      type: getUrl(collection, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+      additionalType: getUrl(collection, 'http://schema.org/additionalType'),
+      identifier: getStringNoLocale(collection, 'http://schema.org/identifier'),
+      name: getStringWithLocale(collection, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(collection, 'http://schema.org/description', 'nl'),
+      collection: getUrl(collection, 'http://schema.org/isPartOf'),
+      maintainer: getUrl(collection, 'http://schema.org/maintainer'),
+
+      creator: getUrl(collection, 'http://schema.org/creator'),
+      locationCreated: getUrl(collection, 'http://schema.org/locationCreated'),
+      material: getUrl(collection, 'http://schema.org/material'),
+      dateCreated: getStringNoLocale(collection, 'http://schema.org/dateCreated'),
+
+      // todo figure out blank nodes
+
+      image: getUrl(collection, 'http://schema.org/image'),
+      mainEntityOfPage: getUrl(collection, 'http://schema.org/mainEntityOfPage'),
+    } as CollectionObject;
 
   }
 
