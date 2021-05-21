@@ -1,0 +1,5 @@
+= Zoeken
+:description: Een gebruikershandleiding voor het gebruik van de zoekfunctie in Solid CBS.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
+:imagesdir: ../images
