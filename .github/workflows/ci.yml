@@ -3,19 +3,31 @@ name: CI
 on: push
 
 jobs:
+  variables:
+    name: Set variables
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+      image_manage: ${{ steps.vars.outputs.image_manage }}
+      image_pods: ${{ steps.vars.outputs.image_pods }}
+    steps:
+      - name: Set variables
+        id: vars
+        run: |
+          echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+          echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
+          echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
+
   test:
     name: Run tests
+    needs: variables
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
       - name: Check tag
-        run: echo ${{ steps.extract-tag.outputs.tag }}
+        run: echo ${{ needs.variables.outputs.tag }}
 
       - name: Extract branch
         id: extract-branch
@@ -98,16 +110,14 @@ jobs:
 
   publish-docker:
     name: Publish Docker images
-    needs: publish-npm
+    # TODO: needs publish-npm
+    needs: [variables]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
+    # TODO: restore
+#    if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -129,10 +139,8 @@ jobs:
           context: packages/solid-crs-pods/
           push: true
           tags: |
-            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:latest
-            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
-          build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+            ${{ needs.variables.outputs.image_pods }}:latest
+#            ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
 
       - name: Build and push manage
         id: docker_build_manage
@@ -141,21 +149,19 @@ jobs:
           context: packages/solid-crs-manage/
           push: true
           tags: |
-            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest
-            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
+            ${{ needs.variables.outputs.image_manage }}:latest
+#            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
   deploy-develop:
     name: Deploy to develop
-    needs: publish-docker
+    needs: [publish-docker, variables]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
 
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
@@ -173,8 +179,8 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: solid-crs-pods-develop
-          image: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
+          dns-name-label: nde-erfgoed-pods-develop
+          image: ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
           registry-login-server: ghcr.io
           registry-username: ${{ secrets.GA_USERNAME }}
           registry-password: ${{ secrets.GA_TOKEN }}
@@ -188,8 +194,8 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: solid-crs-manage-develop
-          image: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
+          dns-name-label: nde-erfgoed-manage-develop
+          image: ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
           registry-login-server: ghcr.io
           registry-username: ${{ secrets.GA_USERNAME }}
           registry-password: ${{ secrets.GA_TOKEN }}
