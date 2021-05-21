@@ -294,6 +294,12 @@ export class AppRootComponent extends RxLitElement {
         .cross:hover {
           cursor: pointer;
         }
+
+        nde-sidebar-item:last-of-type {
+          flex-direction: column;
+          flex: 1 1 auto;
+          height: 0px;
+        }
       `,
     ];
 
