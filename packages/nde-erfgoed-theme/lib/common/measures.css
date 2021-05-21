@@ -18,3 +18,24 @@
    */
   --size-sidebar: 300px;
 }
+
+/* Works on Firefox */
+* {
+  scrollbar-width: var(--gap-tiny);
+  scrollbar-color: var(--colors-foreground-light) var(--colors-foreground-inverse);
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--colors-foreground-inverse);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--colors-foreground-light);
+  border-radius: 20px;
+  border: 3px solid var(--colors-foreground-inverse);
+}

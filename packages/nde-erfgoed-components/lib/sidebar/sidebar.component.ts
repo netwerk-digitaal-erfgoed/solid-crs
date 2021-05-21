@@ -45,13 +45,16 @@ export class SidebarComponent extends RxLitElement {
       css`
         :host {
           width: var(--size-sidebar);
-          display: flex;
-          flex-direction: column;
         }
         .sidebar {
           flex: 1 0;
         }
-        .sidebar.primary {
+        .sidebar.primary slot {
+          height: 100%;
+          max-height: inherit;
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap-normal);
           background-color: var(--colors-primary-dark);
           color: var(--colors-foreground-inverse);
         }

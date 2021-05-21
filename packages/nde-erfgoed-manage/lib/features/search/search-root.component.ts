@@ -8,6 +8,7 @@ import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
+import { CollectionEvents } from '../collection/collection.events';
 import { SearchContext, SearchStates } from './search.machine';
 
 /**
@@ -146,7 +147,7 @@ export class SearchRootComponent extends RxLitElement {
                 ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('nde.features.search.root.collections')}</span>
               </div>
               <div class='three-column-content-grid'>
-                ${this.collections.map((collection) => html`<nde-collection-card .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
+                ${this.collections.map((collection) => html`<nde-collection-card @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}" .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
               </div>
             ` : ''
 }

@@ -7,7 +7,6 @@ import { Alert, FormActors, FormCleanlinessStates, FormEvent, FormRootStates, Fo
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { nullEvent } from 'xstate/lib/actionTypes';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
@@ -224,7 +223,7 @@ export class AppRootComponent extends RxLitElement {
       </nde-sidebar-item>
       <nde-sidebar-item .padding="${false}" .showBorder="${false}">
         <nde-sidebar-list slot="content">
-          <nde-sidebar-list-item slot="item" isTitle inverse>
+          <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
             <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
           </nde-sidebar-list-item>
@@ -252,6 +251,8 @@ export class AppRootComponent extends RxLitElement {
           background-color: var(--colors-background-normal);
           display: flex;
           flex-direction: row;
+          overflow: hidden;
+          max-height: 100%;
         }
 
         :host > * {
@@ -263,12 +264,10 @@ export class AppRootComponent extends RxLitElement {
         }
 
         nde-sidebar {
+          max-height: inherit;
+          height: 100%;
           display: flex;
           flex-direction: column;
-        }
-
-        nde-sidebar > * {
-          display: block;
         }
 
         nde-content-header div[slot="icon"] svg {
@@ -281,7 +280,7 @@ export class AppRootComponent extends RxLitElement {
         }
 
         .search-title {
-          padding: var(--gap-small) 0;
+          padding-bottom: var(--gap-normal);
         }
 
         div[slot="icon"] svg {

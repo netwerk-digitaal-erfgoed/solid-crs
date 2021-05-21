@@ -1,6 +1,7 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
+import { CollectionEvents } from '../collection/collection.events';
 import { AppEvents } from './../../app.events';
 
 /**
@@ -47,7 +48,13 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
     context: { },
     initial: SearchStates.SEARCHING,
     states: {
-      [SearchStates.IDLE]: { },
+      [SearchStates.IDLE]: {
+        on: {
+          [CollectionEvents.SELECTED_COLLECTION]: {
+            actions: sendParent((context, event) => event),
+          },
+        },
+      },
       [SearchStates.SEARCHING]: {
         invoke: {
           src: async (context, event) => {
