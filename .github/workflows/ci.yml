@@ -2,9 +2,6 @@ name: CI
 
 on: push
 
-env:
-  NPM_TOKEN: ${{secrets.GA_TOKEN}}
-
 jobs:
   test:
     name: Run tests
@@ -27,11 +24,14 @@ jobs:
       - name: Check branch
         run: echo ${{ steps.extract-branch.outputs.branch }}
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
@@ -75,6 +75,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
