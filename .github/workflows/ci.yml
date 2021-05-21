@@ -128,7 +128,9 @@ jobs:
         with:
           context: packages/solid-crs-pods/
           push: true
-          tags: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:latest,ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
+          tags: |
+            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:latest
+            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
@@ -138,9 +140,9 @@ jobs:
         with:
           context: packages/solid-crs-manage/
           push: true
-          tags: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest,ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
-          build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+          tags: |
+            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest
+            ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
 
   deploy-develop:
     name: Deploy to develop
