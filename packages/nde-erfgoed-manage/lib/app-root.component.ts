@@ -11,7 +11,7 @@ import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMach
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
-import { CollectionEvents } from './features/collection/collection.events';
+import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
@@ -215,7 +215,7 @@ export class AppRootComponent extends RxLitElement {
               @input="${(event: Event) => this.searchTerm = (event.target as HTMLInputElement).value}"
             />
             ${this.searchTerm
-    ? html`<div class="cross" slot="icon" @click="${() => this.searchTerm = ''}">${ unsafeSVG(Cross) }</div>`
+    ? html`<div class="cross" slot="icon" @click="${() => { this.searchTerm = ''; this.actor.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: this.collections[0] } as SelectedCollectionEvent); }}">${ unsafeSVG(Cross) }</div>`
     : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
 }
           </nde-form-element>
@@ -294,6 +294,12 @@ export class AppRootComponent extends RxLitElement {
 
         .cross:hover {
           cursor: pointer;
+        }
+
+        nde-sidebar-item:last-of-type {
+          flex-direction: column;
+          flex: 1 1 auto;
+          height: 0px;
         }
       `,
     ];

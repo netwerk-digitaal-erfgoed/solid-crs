@@ -65,7 +65,7 @@ export class SidebarListComponent extends RxLitElement {
         display: flex;
         flex-direction: column;
         flex: 1 1 auto;
-        height: 0px;
+        height: 100%;
       }
       .list {
         height: 100%;

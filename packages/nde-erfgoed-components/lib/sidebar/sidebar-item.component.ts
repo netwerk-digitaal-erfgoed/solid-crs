@@ -27,7 +27,7 @@ export class SidebarItemComponent extends RxLitElement {
   render() {
 
     return html`
-    <div class="${this.showBorder ? ' border': ''}${this.padding ? ' padding' : ''}">
+    <div class="content-container ${this.showBorder ? ' border': ''}${this.padding ? ' padding' : ''}">
       <slot name="content"></slot>
     </div>
   `;
@@ -42,6 +42,9 @@ export class SidebarItemComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        div.content-container {
+          height: 100%;
+        }
         .border {
           border-bottom: 1px solid var(--colors-primary-normal);
         }
