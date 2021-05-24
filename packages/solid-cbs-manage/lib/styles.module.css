@@ -1,0 +1,15 @@
+@import '../node_modules/@netwerk-digitaal-erfgoed/solid-cbs-theme/dist/style.css';
+
+html {
+  height: 100%;
+}
+body {
+  height: 100%;
+  background-color: var(--colors-background-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+body > * {
+  flex: 1 1;
+}
