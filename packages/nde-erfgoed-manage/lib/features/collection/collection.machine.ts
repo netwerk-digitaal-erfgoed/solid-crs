@@ -11,7 +11,7 @@ import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
 
 /**
- * The context of a collections feature.
+ * The context of the collection feature.
  */
 export interface CollectionContext {
   /**
@@ -33,7 +33,7 @@ export enum CollectionActors {
 }
 
 /**
- * State references for the collection component, with readable log format.
+ * State references for the collection machine, with readable log format.
  */
 export enum CollectionStates {
   IDLE      = '[CollectionsState: Idle]',
@@ -45,7 +45,7 @@ export enum CollectionStates {
 }
 
 /**
- * The collection component machine.
+ * The collection machine.
  */
 export const collectionMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({

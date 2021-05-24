@@ -13,7 +13,7 @@ import { CollectionContext, CollectionStates } from './collection.machine';
 import { CollectionEvents } from './collection.events';
 
 /**
- * The root page of the collections feature.
+ * The root page of the collection feature.
  */
 export class CollectionRootComponent extends RxLitElement {
 

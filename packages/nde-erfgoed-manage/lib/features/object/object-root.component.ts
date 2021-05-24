@@ -11,8 +11,14 @@ import { AppEvents } from '../../app.events';
 import { ObjectContext, ObjectStates } from './object.machine';
 import { ObjectEvents } from './object.events';
 
+/**
+ * The root page of the object feature.
+ */
 export class ObjectRootComponent extends RxLitElement {
 
+  /**
+   * The component's logger.
+   */
   @property({ type: Object })
   public logger: Logger;
 

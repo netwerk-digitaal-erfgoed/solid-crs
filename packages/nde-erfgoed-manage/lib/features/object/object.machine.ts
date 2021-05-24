@@ -9,14 +9,26 @@ import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
 
+/**
+ * The context of the object feature.
+ */
 export interface ObjectContext {
+  /**
+   * The currently selected object.
+   */
   object?: CollectionObject;
 }
 
+/**
+ * Actor references for this machine config.
+ */
 export enum ObjectActors {
   OBJECT_MACHINE = 'ObjectMachine',
 }
 
+/**
+ * State references for the object machine, with readable log format.
+ */
 export enum ObjectStates {
   IDLE      = '[ObjectsState: Idle]',
   SAVING    = '[ObjectsState: Saving]',
@@ -24,6 +36,9 @@ export enum ObjectStates {
   DELETING  = '[ObjectsState: Deleting]',
 }
 
+/**
+ * The object machine.
+ */
 export const objectMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<ObjectContext, ObjectEvent, State<ObjectStates, ObjectContext>>({
     id: ObjectActors.OBJECT_MACHINE,
