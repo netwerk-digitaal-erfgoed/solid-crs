@@ -6,27 +6,27 @@
     },
     {
       "name": "manage",
-      "path": "packages/nde-erfgoed-manage"
+      "path": "packages/solid-cbs-manage"
     },
     {
       "name": "components",
-      "path": "packages/nde-erfgoed-components"
+      "path": "packages/solid-cbs-components"
     },
     {
       "name": "client",
-      "path": "packages/nde-erfgoed-client"
+      "path": "packages/solid-cbs-client"
     },
     {
       "name": "core",
-      "path": "packages/nde-erfgoed-core"
+      "path": "packages/solid-cbs-core"
     },
     {
       "name": "theme",
-      "path": "packages/nde-erfgoed-theme"
+      "path": "packages/solid-cbs-theme"
     },
     {
       "name": "pods",
-      "path": "packages/nde-erfgoed-pods"
+      "path": "packages/solid-cbs-pods"
     },
   ],
   "settings": {

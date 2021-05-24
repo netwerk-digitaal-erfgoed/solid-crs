@@ -1,0 +1,46 @@
+{
+  "name": "@netwerk-digitaal-erfgoed/solid-cbs-theme",
+  "version": "0.3.0",
+  "description": "Theme for the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "main": "./dist/solid-cbs-theme.umd.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/solid-cbs-theme.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/solid-cbs-theme.es.js",
+      "require": "./dist/solid-cbs-theme.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf ./dist && vite build && tsc",
+    "lint": "stylelint \"lib/**/*.css\"",
+    "lint:fix": "stylelint \"lib/**/*.css\" --fix",
+    "lint:staged": "lint-staged"
+  },
+  "devDependencies": {
+    "@digita-ai/typescript-config": "^0.3.3",
+    "@types/node": "^15.0.2",
+    "normalize.css": "8.0.1",
+    "rimraf": "^3.0.2",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "vite": "2.2.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netwerk-digitaal-erfgoed/solid-cbs.git",
+    "directory": "packages/solid-cbs-theme"
+  },
+  "bugs": {
+    "url": "https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues"
+  }
+}
