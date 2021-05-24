@@ -12,6 +12,8 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
+import { objectMachine } from './features/object/object.machine';
+import { ObjectEvents } from './features/object/object.events';
 
 /**
  * The root context of the application.
@@ -51,6 +53,7 @@ export enum AppActors {
   COLLECTION_MACHINE = 'CollectionMachine',
   AUTHENTICATE_MACHINE = 'AuthenticateMachine',
   SEARCH_MACHINE = 'SearchMachine',
+  OBJECT_MACHINE = 'ObjectMachine',
 }
 
 /**
@@ -70,6 +73,7 @@ export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
   SEARCH  = '[AppFeatureState: Search]',
+  OBJECT = '[AppFeatureState: Object]',
 }
 
 /**
@@ -107,6 +111,11 @@ export const appMachine = (
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
+    on: {
+      [ObjectEvents.SELECTED_OBJECT]: {
+        actions: forwardTo(AppActors.OBJECT_MACHINE),
+      },
+    },
     states: {
     /**
      * Determines which feature is currently active.
@@ -114,7 +123,6 @@ export const appMachine = (
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
-
           [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
@@ -137,8 +145,11 @@ export const appMachine = (
          * The collection feature is shown.
          */
           [AppFeatureStates.COLLECTION]: {
-            // Invoke the collection machine
             on: {
+              [ObjectEvents.SELECTED_OBJECT]: {
+                target: AppFeatureStates.OBJECT,
+                actions: send((context, event) => event),
+              },
               [SearchEvents.SEARCH_UPDATED]: {
                 actions: assign({
                   selected: (context, event) => undefined,
@@ -192,6 +203,10 @@ export const appMachine = (
            */
           [AppFeatureStates.SEARCH]: {
             on: {
+              [ObjectEvents.SELECTED_OBJECT]: {
+                target: AppFeatureStates.OBJECT,
+                actions: send((context, event) => event),
+              },
               /**
                * Forward the search updated event to the search machine.
                */
@@ -224,6 +239,26 @@ export const appMachine = (
                     collection: context.collections[0],
                   })),
                 },
+                onError: {
+                  actions: send({ type: AppEvents.ERROR }),
+                },
+              },
+            ],
+          },
+          /**
+           * The object feature is shown.
+           */
+          [AppFeatureStates.OBJECT]: {
+            on: {
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: send((context, event) => event),
+              },
+            },
+            invoke: [
+              {
+                id: AppActors.OBJECT_MACHINE,
+                src: objectMachine(collectionStore, objectStore),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

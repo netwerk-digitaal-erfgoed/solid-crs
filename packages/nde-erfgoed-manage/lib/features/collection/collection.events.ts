@@ -2,9 +2,10 @@ import { Alert, Event, FormSubmittedEvent } from '@digita-ai/nde-erfgoed-compone
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
+import { SelectedObjectEvent } from 'features/object/object.events';
 
 /**
- * Event references for the collection component, with readable log format.
+ * Event references for the collection machine, with readable log format.
  */
 export enum CollectionEvents {
   CLICKED_DELETE              = '[CollectionsEvent: Clicked Delete]',
@@ -36,7 +37,7 @@ export interface ClickedEditEvent extends Event<CollectionEvents> {
 }
 
 /**
- * Fired when the user clicks the edit button.
+ * Fired when the user clicks the save button.
  */
 export interface ClickedSaveEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_SAVE;
@@ -72,7 +73,7 @@ export interface SavedCollectionEvent extends Event<CollectionEvents> {
 }
 
 /**
- * Actions for the collections machine.
+ * Events for the collection machine.
  */
 export type CollectionEvent =
   SelectedCollectionEvent
@@ -82,6 +83,7 @@ export type CollectionEvent =
   | CancelledEditEvent
   | ClickedCreateObjectEvent
   | FormSubmittedEvent
+  | SelectedObjectEvent
   | SavedCollectionEvent;
 
 /**

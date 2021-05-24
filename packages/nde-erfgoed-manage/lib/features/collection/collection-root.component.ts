@@ -8,11 +8,12 @@ import { RxLitElement } from 'rx-lit';
 import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
+import { ObjectEvents } from '../object/object.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
 import { CollectionEvents } from './collection.events';
 
 /**
- * The root page of the collections feature.
+ * The root page of the collection feature.
  */
 export class CollectionRootComponent extends RxLitElement {
 
@@ -187,7 +188,7 @@ export class CollectionRootComponent extends RxLitElement {
                 ${this.objects?.length
     ? html`
           <div class='three-column-content-grid'>
-            ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+            ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
         `
     : html`

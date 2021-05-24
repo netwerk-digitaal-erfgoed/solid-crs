@@ -7,10 +7,11 @@ import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
+import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
 
 /**
- * The context of a collections feature.
+ * The context of the collection feature.
  */
 export interface CollectionContext {
   /**
@@ -32,7 +33,7 @@ export enum CollectionActors {
 }
 
 /**
- * State references for the collection component, with readable log format.
+ * State references for the collection machine, with readable log format.
  */
 export enum CollectionStates {
   IDLE      = '[CollectionsState: Idle]',
@@ -44,7 +45,7 @@ export enum CollectionStates {
 }
 
 /**
- * The collection component machine.
+ * The collection machine.
  */
 export const collectionMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
@@ -105,7 +106,13 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
       /**
        * Objects for the current collection are loaded.
        */
-      [CollectionStates.IDLE]: {},
+      [CollectionStates.IDLE]: {
+        on: {
+          [ObjectEvents.SELECTED_OBJECT]: {
+            actions: sendParent((context, event) => event),
+          },
+        },
+      },
       /**
        * Saving changesto the collection's metadata.
        */

@@ -9,6 +9,7 @@ import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
+import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
 import { SearchEvents } from './search.events';
 
@@ -149,7 +150,7 @@ export class SearchRootComponent extends RxLitElement {
                 ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('nde.features.search.root.collections')}</span>
               </div>
               <div class='three-column-content-grid'>
-                ${this.collections.map((collection) => html`<nde-collection-card @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}" .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
+                ${this.collections.map((collection) => html`<nde-collection-card @click="${() => this.actor.parent?.send(CollectionEvents.SELECTED_COLLECTION, { collection })}" .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
               </div>
             ` : ''
 }
@@ -160,7 +161,7 @@ export class SearchRootComponent extends RxLitElement {
                 ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
               </div>
               <div class='three-column-content-grid'>
-                ${this.objects.map((object) => html`<nde-object-card .translator=${this.translator} .object=${object}></nde-object-card>`)}
+                ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.parent?.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
               </div>
             ` : ''
 }
