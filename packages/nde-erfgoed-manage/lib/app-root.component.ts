@@ -86,6 +86,9 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   profile: SolidProfile;
 
+  /**
+   * The search term.
+   */
   @internalProperty()
   searchTerm = '';
 
@@ -171,7 +174,7 @@ export class AppRootComponent extends RxLitElement {
 
     }
 
-    if(changed.has('searchActor') && this.searchActor){
+    if(changed.has('searchActor') && this.searchActor) {
 
       this.subscribe('searchTerm', from(this.searchActor).pipe(
         map((state) => state.context.searchTerm)
@@ -179,14 +182,28 @@ export class AppRootComponent extends RxLitElement {
 
     }
 
+    if(changed.has('searchActor') && !this.searchActor) {
+
+      this.searchTerm = '';
+
+    }
+
   }
 
+  /**
+   * Handles an update of the search field.
+   *
+   * @param event HTML event fired when the search input field is updated.
+   */
   searchUpdated(event: KeyboardEvent): void {
 
     this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: (event.target as HTMLInputElement).value });
 
   }
 
+  /**
+   * Clears the search field.
+   */
   clearSearchTerm(): void {
 
     this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' });

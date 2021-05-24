@@ -13,7 +13,7 @@ import { SearchContext, SearchStates } from './search.machine';
 import { SearchEvents } from './search.events';
 
 /**
- * The root page of the collections feature.
+ * The root page of the search feature.
  */
 export class SearchRootComponent extends RxLitElement {
 

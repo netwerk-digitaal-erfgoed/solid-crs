@@ -144,6 +144,7 @@ export const appMachine = (
                   selected: (context, event) => undefined,
                 }),
                 target: AppFeatureStates.SEARCH,
+                cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
               },
               [CollectionEvents.SELECTED_COLLECTION]: {
                 actions: [
@@ -186,11 +187,20 @@ export const appMachine = (
               },
             },
           },
+          /**
+           * Shows the search feature.
+           */
           [AppFeatureStates.SEARCH]: {
             on: {
+              /**
+               * Forward the search updated event to the search machine.
+               */
               [SearchEvents.SEARCH_UPDATED]: {
                 actions: send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
               },
+              /**
+               * Transition to collection feature when a collection is selected.
+               */
               [CollectionEvents.SELECTED_COLLECTION]: {
                 target: AppFeatureStates.COLLECTION,
                 actions: [
@@ -198,6 +208,9 @@ export const appMachine = (
                 ],
               },
             },
+            /**
+             * Invoke the search achine.
+             */
             invoke: [
               {
                 id: AppActors.SEARCH_MACHINE,

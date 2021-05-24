@@ -90,6 +90,11 @@ export class MemoryStore<T extends Resource> implements Store<T> {
 
   }
 
+  /**
+   * Get a resource by its uri
+   *
+   * @param uri uri of the resource
+   */
   async get(uri: string): Promise<T> {
 
     if (!uri) {

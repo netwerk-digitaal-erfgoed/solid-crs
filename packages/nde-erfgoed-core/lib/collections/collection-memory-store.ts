@@ -1,3 +1,4 @@
+import { fulltextMatch } from '../utils/fulltext-match';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryStore } from '../stores/memory-store';
 import { Collection } from './collection';
@@ -16,6 +17,13 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
   }
 
+  /**
+   * Searches collections based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param collections The collections to search through.
+   * @returns The collections which match the search term.
+   */
   async search(searchTerm: string, collections: Collection[]): Promise<Collection[]> {
 
     if (!searchTerm) {
@@ -30,11 +38,7 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-
-    return collections.filter((resource) =>
-      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.description?.toLowerCase().includes(lowerCaseTerm));
+    return collections.filter((collection) => fulltextMatch(collection, searchTerm));
 
   }
 

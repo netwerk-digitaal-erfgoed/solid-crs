@@ -49,9 +49,15 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
     context: { },
     initial: SearchStates.SEARCHING,
     states: {
+      /**
+       * Showing search results.
+       */
       [SearchStates.IDLE]: {
         on: {
           [SearchEvents.SEARCH_UPDATED]: [
+            /**
+             * Start searching when the term was updated when not empty.
+             */
             {
               actions: [
                 assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
@@ -59,6 +65,9 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
               target: SearchStates.SEARCHING,
               cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
             },
+            /**
+             * Transition to dismissed when term is empty.
+             */
             {
               actions: [
                 assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
@@ -69,7 +78,13 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
           ],
         },
       },
+      /**
+       * Performing a search.
+       */
       [SearchStates.SEARCHING]: {
+        /**
+         * Search for objects and collections based on the given search term.
+         */
         invoke: {
           src: async (context, event) => {
 
@@ -84,6 +99,9 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             };
 
           },
+          /**
+           * When done, update context and show search results.
+           */
           onDone: {
             actions: assign({
               objects: (context, event) => event?.data.objects,
@@ -96,6 +114,9 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
           },
         },
       },
+      /**
+       * Dismissed search results.
+       */
       [SearchStates.DISMISSED]: {
         type: 'final',
       },
