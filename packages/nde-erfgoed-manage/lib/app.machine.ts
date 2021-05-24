@@ -111,11 +111,11 @@ export const appMachine = (
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
-    // on: {
-    //   [ObjectEvents.SELECTED_OBJECT]: {
-    //     actions: forwardTo(AppActors.OBJECT_MACHINE),
-    //   },
-    // },
+    on: {
+      [ObjectEvents.SELECTED_OBJECT]: {
+        actions: forwardTo(AppActors.OBJECT_MACHINE),
+      },
+    },
     states: {
     /**
      * Determines which feature is currently active.
