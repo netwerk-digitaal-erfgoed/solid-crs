@@ -1,8 +1,8 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
-import { CollectionEvents } from '../collection/collection.events';
 import { AppEvents } from './../../app.events';
+import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './search.events';
 
 /**
  * The context of a searchs feature.
@@ -37,22 +37,36 @@ export enum SearchActors {
 export enum SearchStates {
   IDLE        = '[SearchState: Idle]',
   SEARCHING   = '[SearchState: Searching]',
+  DISMISSED   = '[SearchState: Dismissed]',
 }
 
 /**
  * The search component machine.
  */
 export const searchMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
-  createMachine<SearchContext, Event, State<SearchStates, SearchContext>>({
+  createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
     context: { },
     initial: SearchStates.SEARCHING,
     states: {
       [SearchStates.IDLE]: {
         on: {
-          [CollectionEvents.SELECTED_COLLECTION]: {
-            actions: sendParent((context, event) => event),
-          },
+          [SearchEvents.SEARCH_UPDATED]: [
+            {
+              actions: [
+                assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
+              ],
+              target: SearchStates.SEARCHING,
+              cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+            },
+            {
+              actions: [
+                assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
+              ],
+              target: SearchStates.DISMISSED,
+              cond: (_, event: SearchUpdatedEvent) => event.searchTerm === undefined || event.searchTerm === '',
+            },
+          ],
         },
       },
       [SearchStates.SEARCHING]: {
@@ -65,7 +79,6 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             const objects = [].concat(...allObjects);
 
             return {
-              // objects: await objectStore.search(context.searchTerm),
               objects: await objectStore.search(context.searchTerm, objects),
               collections: await collectionStore.search(context.searchTerm, collections),
             };
@@ -82,6 +95,9 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             actions: sendParent(AppEvents.ERROR),
           },
         },
+      },
+      [SearchStates.DISMISSED]: {
+        type: 'final',
       },
     },
   });
