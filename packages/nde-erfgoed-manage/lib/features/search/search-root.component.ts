@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Collection as CollectionIcon, Cross, Edit, Empty, Loading, Object as ObjectIcon, Plus, Save, Search, Theme, Trash } from '@digita-ai/nde-erfgoed-theme';
+import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Search, Theme } from '@digita-ai/nde-erfgoed-theme';
 import { Alert } from '@digita-ai/nde-erfgoed-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -11,9 +11,10 @@ import { AppEvents } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
+import { SearchEvents } from './search.events';
 
 /**
- * The root page of the collections feature.
+ * The root page of the search feature.
  */
 export class SearchRootComponent extends RxLitElement {
 
@@ -131,6 +132,7 @@ export class SearchRootComponent extends RxLitElement {
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <div slot="title">${this.translator?.translate('nde.features.search.header.search-results-for')} "${this.searchTerm}"</div>
         <div slot="subtitle">${this.translator?.translate('nde.features.search.header.subtitle')}</div>
+        <div slot="actions" @click="${() => this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' })}">${ unsafeSVG(Cross) }</div>
       </nde-content-header>
 
       <div class="content">

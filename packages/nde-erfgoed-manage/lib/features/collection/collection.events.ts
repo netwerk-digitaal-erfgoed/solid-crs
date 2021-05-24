@@ -2,6 +2,7 @@ import { Alert, Event, FormSubmittedEvent } from '@digita-ai/nde-erfgoed-compone
 import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
+import { SelectedObjectEvent } from 'features/object/object.events';
 
 /**
  * Event references for the collection component, with readable log format.
@@ -82,6 +83,7 @@ export type CollectionEvent =
   | CancelledEditEvent
   | ClickedCreateObjectEvent
   | FormSubmittedEvent
+  | SelectedObjectEvent
   | SavedCollectionEvent;
 
 /**

@@ -1,5 +1,5 @@
 import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch } from '@digita-ai/nde-erfgoed-client';
-import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
+import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -47,6 +47,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   }
 
+  /**
+   * Retrieves a single Collection
+   *
+   * @param uri The URI of the Collection
+   */
   async get(uri: string): Promise<CollectionObject> {
 
     if (!uri) {
@@ -104,6 +109,13 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   }
 
+  /**
+   * Searches objects based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param objects The objects to search through.
+   * @returns The objects which match the search term.
+   */
   async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
 
     if (!searchTerm) {
@@ -118,12 +130,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-
-    return objects.filter((resource) =>
-      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.subject?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.description?.toLowerCase().includes(lowerCaseTerm));
+    return objects.filter((object) => fulltextMatch(object, searchTerm));
 
   }
 

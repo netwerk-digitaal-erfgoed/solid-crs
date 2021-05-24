@@ -1,8 +1,8 @@
-import { Alert, FormActors, FormContext, formMachine, FormValidatorResult, State } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { createMachine } from 'xstate';
-import { assign, forwardTo, log, send, sendParent } from 'xstate/lib/actions';
-import { EMPTY, Observable, of } from 'rxjs';
+import { assign, forwardTo, log, send } from 'xstate/lib/actions';
+import { Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -112,12 +112,12 @@ export const appMachine = (
     id: AppActors.APP_MACHINE,
     type: 'parallel',
     on: {
-      [CollectionEvents.SELECTED_COLLECTION]: {
-        actions: [
-          forwardTo(AppActors.COLLECTION_MACHINE),
-          assign({ selected: (context, event) => event.collection }),
-        ],
-      },
+      // [CollectionEvents.SELECTED_COLLECTION]: {
+      //   actions: [
+      //     forwardTo(AppActors.COLLECTION_MACHINE),
+      //     assign({ selected: (context, event) => event.collection }),
+      //   ],
+      // },
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: forwardTo(AppActors.OBJECT_MACHINE),
       },
@@ -129,13 +129,6 @@ export const appMachine = (
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
-          [SearchEvents.SEARCH_UPDATED]: {
-            actions: assign({
-              selected: (context, event) => undefined,
-            }),
-            target: `${AppRootStates.FEATURE}.${AppFeatureStates.SEARCH}`,
-            cond: (context, event) =>  !!event.searchTerm?.length,
-          },
           [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
@@ -162,6 +155,19 @@ export const appMachine = (
               [ObjectEvents.SELECTED_OBJECT]: {
                 target: AppFeatureStates.OBJECT,
                 actions: send((context, event) => event),
+              },
+              [SearchEvents.SEARCH_UPDATED]: {
+                actions: assign({
+                  selected: (context, event) => undefined,
+                }),
+                target: AppFeatureStates.SEARCH,
+                cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+              },
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                actions: [
+                  forwardTo(AppActors.COLLECTION_MACHINE),
+                  assign({ selected: (context, event) => event.collection }),
+                ],
               },
             },
             invoke: [
@@ -198,17 +204,34 @@ export const appMachine = (
               },
             },
           },
+          /**
+           * Shows the search feature.
+           */
           [AppFeatureStates.SEARCH]: {
             on: {
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                target: AppFeatureStates.COLLECTION,
-                actions: send((context, event) => event),
-              },
               [ObjectEvents.SELECTED_OBJECT]: {
                 target: AppFeatureStates.OBJECT,
                 actions: send((context, event) => event),
               },
+              /**
+               * Forward the search updated event to the search machine.
+               */
+              [SearchEvents.SEARCH_UPDATED]: {
+                actions: send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
+              },
+              /**
+               * Transition to collection feature when a collection is selected.
+               */
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: [
+                  assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
+                ],
+              },
             },
+            /**
+             * Invoke the search achine.
+             */
             invoke: [
               {
                 id: AppActors.SEARCH_MACHINE,
@@ -216,6 +239,12 @@ export const appMachine = (
                 data: (context, event: SearchUpdatedEvent) => ({
                   searchTerm: event.searchTerm,
                 }),
+                onDone: {
+                  actions: send((context, event) => ({
+                    type: CollectionEvents.SELECTED_COLLECTION,
+                    collection: context.collections[0],
+                  })),
+                },
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

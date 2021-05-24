@@ -1,9 +1,9 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
 import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert, FormActors, FormCleanlinessStates, FormEvent, FormRootStates, FormSubmissionStates, FormValidationStates } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, FormEvent } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -11,11 +11,11 @@ import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMach
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
-import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
+import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
-import { SearchEvents } from './features/search/search.events';
+import { SearchEvent, SearchEvents } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -86,6 +86,9 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   profile: SolidProfile;
 
+  /**
+   * The search term.
+   */
   @internalProperty()
   searchTerm = '';
 
@@ -101,8 +104,11 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   formActor: ActorRef<FormEvent>;
 
+  /**
+   * The actor responsible for the search field.
+   */
   @internalProperty()
-  helper: any;
+  searchActor: ActorRef<SearchEvent>;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
@@ -159,33 +165,48 @@ export class AppRootComponent extends RxLitElement {
    */
   updated(changed: PropertyValues): void {
 
-    if(changed.has('formActor') && this.formActor){
+    if(changed.has('actor') && this.actor) {
 
-      this.subscribe('helper', from(this.formActor).pipe(
-        map((state) => state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-          },
-        })),
-        tap((matches) => matches
-          ? this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: this.searchTerm })
-          : null),
+      this.subscribe('searchActor', from(this.actor)
+        .pipe(
+          map((state) => state.children[AppActors.SEARCH_MACHINE])
+        ));
+
+    }
+
+    if(changed.has('searchActor') && this.searchActor) {
+
+      this.subscribe('searchTerm', from(this.searchActor).pipe(
+        map((state) => state.context.searchTerm)
       ));
+
+    }
+
+    if(changed.has('searchActor') && !this.searchActor) {
+
+      this.searchTerm = '';
 
     }
 
   }
 
-  searchUpdated(event: KeyboardEvent): void{
+  /**
+   * Handles an update of the search field.
+   *
+   * @param event HTML event fired when the search input field is updated.
+   */
+  searchUpdated(event: KeyboardEvent): void {
 
-    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: (event.target as HTMLInputElement).value });
 
   }
 
+  /**
+   * Clears the search field.
+   */
   clearSearchTerm(): void {
 
-    this.searchTerm = '';
+    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' });
 
   }
 
@@ -212,10 +233,10 @@ export class AppRootComponent extends RxLitElement {
               slot="input"
               .value="${this.searchTerm}"
               class="searchTerm"
-              @input="${(event: Event) => this.searchTerm = (event.target as HTMLInputElement).value}"
+              @input="${this.searchUpdated}"
             />
             ${this.searchTerm
-    ? html`<div class="cross" slot="icon" @click="${() => { this.searchTerm = ''; this.actor.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: this.collections[0] } as SelectedCollectionEvent); }}">${ unsafeSVG(Cross) }</div>`
+    ? html`<div class="cross" slot="icon" @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>`
     : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
 }
           </nde-form-element>

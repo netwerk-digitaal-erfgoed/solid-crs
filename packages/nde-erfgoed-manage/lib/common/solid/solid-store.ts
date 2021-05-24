@@ -19,6 +19,12 @@ export class SolidStore<T extends Resource> implements Store<T> {
     throw new Error('Method not implemented.');
 
   }
+
+  /**
+   * Get a resource by its uri
+   *
+   * @param uri uri of the resource
+   */
   async get(uri: string): Promise<T> {
 
     throw new Error('Method not implemented.');

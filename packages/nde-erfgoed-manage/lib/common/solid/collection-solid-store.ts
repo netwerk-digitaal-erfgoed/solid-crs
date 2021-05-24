@@ -1,5 +1,5 @@
 import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
-import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionStore, ArgumentError, fulltextMatch } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
 
@@ -218,6 +218,13 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
   }
 
+  /**
+   * Searches collections based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param collections The collections to search through.
+   * @returns The collections which match the search term.
+   */
   async search(searchTerm: string, collections: Collection[]): Promise<Collection[]> {
 
     if (!searchTerm) {
@@ -232,11 +239,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-
-    return collections.filter((resource) =>
-      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.description?.toLowerCase().includes(lowerCaseTerm));
+    return collections.filter((collection) => fulltextMatch(collection, searchTerm));
 
   }
 

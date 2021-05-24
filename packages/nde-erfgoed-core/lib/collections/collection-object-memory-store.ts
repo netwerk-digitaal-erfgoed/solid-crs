@@ -1,3 +1,4 @@
+import { fulltextMatch } from '../utils/fulltext-match';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryStore } from '../stores/memory-store';
 import { Collection } from './collection';
@@ -40,6 +41,13 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
 
   }
 
+  /**
+   * Searches objects based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param objects The objects to search through.
+   * @returns The objects which match the search term.
+   */
   async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
 
     if (!searchTerm) {
@@ -54,12 +62,7 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
 
     }
 
-    const lowerCaseTerm = searchTerm.toLowerCase();
-
-    return objects.filter((resource) =>
-      resource?.name?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.subject?.toLowerCase().includes(lowerCaseTerm) ||
-      resource?.description?.toLowerCase().includes(lowerCaseTerm));
+    return objects.filter((object) => fulltextMatch(object, searchTerm));
 
   }
 

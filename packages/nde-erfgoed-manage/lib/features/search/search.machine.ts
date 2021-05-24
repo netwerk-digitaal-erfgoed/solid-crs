@@ -1,9 +1,8 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { State } from '@digita-ai/nde-erfgoed-components';
-import { CollectionEvents } from '../collection/collection.events';
-import { ObjectEvents } from '../object/object.events';
 import { AppEvents } from './../../app.events';
+import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './search.events';
 
 /**
  * The context of a searchs feature.
@@ -38,28 +37,54 @@ export enum SearchActors {
 export enum SearchStates {
   IDLE        = '[SearchState: Idle]',
   SEARCHING   = '[SearchState: Searching]',
+  DISMISSED   = '[SearchState: Dismissed]',
 }
 
 /**
  * The search component machine.
  */
 export const searchMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
-  createMachine<SearchContext, Event, State<SearchStates, SearchContext>>({
+  createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
     context: { },
     initial: SearchStates.SEARCHING,
     states: {
+      /**
+       * Showing search results.
+       */
       [SearchStates.IDLE]: {
         on: {
-          [CollectionEvents.SELECTED_COLLECTION]: {
-            actions: sendParent((context, event) => event),
-          },
-          [ObjectEvents.SELECTED_OBJECT]: {
-            actions: sendParent((context, event) => event),
-          },
+          [SearchEvents.SEARCH_UPDATED]: [
+            /**
+             * Start searching when the term was updated when not empty.
+             */
+            {
+              actions: [
+                assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
+              ],
+              target: SearchStates.SEARCHING,
+              cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+            },
+            /**
+             * Transition to dismissed when term is empty.
+             */
+            {
+              actions: [
+                assign({ searchTerm: (context, event: SearchUpdatedEvent) => event.searchTerm }),
+              ],
+              target: SearchStates.DISMISSED,
+              cond: (_, event: SearchUpdatedEvent) => event.searchTerm === undefined || event.searchTerm === '',
+            },
+          ],
         },
       },
+      /**
+       * Performing a search.
+       */
       [SearchStates.SEARCHING]: {
+        /**
+         * Search for objects and collections based on the given search term.
+         */
         invoke: {
           src: async (context, event) => {
 
@@ -69,12 +94,14 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             const objects = [].concat(...allObjects);
 
             return {
-              // objects: await objectStore.search(context.searchTerm),
               objects: await objectStore.search(context.searchTerm, objects),
               collections: await collectionStore.search(context.searchTerm, collections),
             };
 
           },
+          /**
+           * When done, update context and show search results.
+           */
           onDone: {
             actions: assign({
               objects: (context, event) => event?.data.objects,
@@ -86,6 +113,12 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             actions: sendParent(AppEvents.ERROR),
           },
         },
+      },
+      /**
+       * Dismissed search results.
+       */
+      [SearchStates.DISMISSED]: {
+        type: 'final',
       },
     },
   });

@@ -7,9 +7,11 @@ import { Collection } from './collection';
 export interface CollectionStore extends Store<Collection> {
 
   /**
-   * Retrieves all collections where a specific string appears in one of its properties
+   * Searches collections based on a search term.
    *
-   * @param searchTerm the therm that should be present in a property
+   * @param searchTerm The term to search for.
+   * @param collections The collections to search through.
+   * @returns The collections which match the search term.
    */
   search(searchTerm: string, collections: Collection[]): Promise<Collection[]>;
 
