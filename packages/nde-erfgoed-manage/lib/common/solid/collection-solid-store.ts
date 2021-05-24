@@ -1,5 +1,5 @@
 import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
-import { Collection, CollectionStore, ArgumentError } from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionStore, ArgumentError, fulltextMatch } from '@digita-ai/nde-erfgoed-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
 
@@ -47,7 +47,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // get datasets (=== collections) in this catalog
     const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset') as string[];
 
-    return await Promise.all(collectionUris.map(async (collectionUri) => await this.getCollection(collectionUri)));
+    return await Promise.all(collectionUris.map(async (collectionUri) => await this.get(collectionUri)));
 
   }
 
@@ -157,7 +157,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
    *
    * @param uri The URI of the Collection
    */
-  async getCollection(uri: string): Promise<Collection> {
+  async get(uri: string): Promise<Collection> {
 
     if (!uri) {
 
@@ -215,6 +215,31 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       schema:name "Datacatalogus van ${name}"@nl ;
       schema:publisher <${webId}> .
     ` ], { type: 'text/turtle' }), { fetch });
+
+  }
+
+  /**
+   * Searches collections based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param collections The collections to search through.
+   * @returns The collections which match the search term.
+   */
+  async search(searchTerm: string, collections: Collection[]): Promise<Collection[]> {
+
+    if (!searchTerm) {
+
+      throw new ArgumentError('Argument searchTerm should be set.', searchTerm);
+
+    }
+
+    if (!collections) {
+
+      throw new ArgumentError('Argument collections should be set.', collections);
+
+    }
+
+    return collections.filter((collection) => fulltextMatch(collection, searchTerm));
 
   }
 

@@ -18,13 +18,22 @@ export class DemoSidebarListComponent extends RxLitElement {
   render() {
 
     return html`
-    <nde-sidebar-list>
-      <nde-sidebar-list-item slot="item" isTitle inverse>
-        <p slot="title">Collecties</p>
-        <div slot="actions">${ unsafeSVG(Search) }</div>
-      </nde-sidebar-list-item>
-      ${this.items?.map((item) => html`<nde-sidebar-list-item slot="item" inverse><p slot="title">${item}</p></nde-sidebar-list-item>`)}
-    </nde-sidebar-list>
+    <nde-sidebar-item>
+      <div slot="content">
+        <div> Zoeken </div>
+        <div> Zoeken </div>
+        <div> Zoeken </div>
+      </div>
+    </nde-sidebar-item>
+    <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+      <nde-sidebar-list slot="content">
+        <nde-sidebar-list-item slot="item" isTitle inverse>
+          <p slot="title">Collecties</p>
+          <div slot="actions">${ unsafeSVG(Search) }</div>
+        </nde-sidebar-list-item>
+        ${this.items?.map((item) => html`<nde-sidebar-list-item slot="item" inverse><p slot="title">${item}</p></nde-sidebar-list-item>`)}
+      </nde-sidebar-list>
+    </nde-sidebar-item>
   `;
 
   }

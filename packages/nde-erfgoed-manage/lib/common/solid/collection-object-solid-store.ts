@@ -1,5 +1,5 @@
 import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch } from '@digita-ai/nde-erfgoed-client';
-import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
+import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -52,7 +52,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    *
    * @param uri The URI of the Collection
    */
-  async getObject(uri: string): Promise<CollectionObject> {
+  async get(uri: string): Promise<CollectionObject> {
 
     if (!uri) {
 
@@ -106,6 +106,31 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
   async save(resource: CollectionObject): Promise<CollectionObject> {
 
     throw new Error('Method not implemented.');
+
+  }
+
+  /**
+   * Searches objects based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param objects The objects to search through.
+   * @returns The objects which match the search term.
+   */
+  async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
+
+    if (!searchTerm) {
+
+      throw new ArgumentError('Argument searchTerm should be set.', searchTerm);
+
+    }
+
+    if (!objects) {
+
+      throw new ArgumentError('Argument objects should be set.', objects);
+
+    }
+
+    return objects.filter((object) => fulltextMatch(object, searchTerm));
 
   }
 

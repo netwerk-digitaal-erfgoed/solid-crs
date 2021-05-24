@@ -5,6 +5,7 @@ import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
 import { SolidSession } from './common/solid/solid-session';
 import { ClickedDeleteEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
+import { SearchUpdatedEvent } from 'features/search/search.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -92,6 +93,7 @@ export type AppEvent =
   | ClickedDeleteEvent
   | ClickedCreateCollectionEvent
   | CollectionsLoadedEvent
+  | SearchUpdatedEvent
   | SavedCollectionEvent;
 
 /**
@@ -161,7 +163,7 @@ export const removeSession = assign({ session: (context, event) => undefined });
  */
 export const setCollections = assign({
   collections: (context, event: DoneInvokeEvent<Collection[]>) =>
-    event.data.sort((a, b) => a.name.localeCompare(b.name)),
+    event.data.sort((a, b) => a.name?.localeCompare(b.name)),
 });
 
 /**

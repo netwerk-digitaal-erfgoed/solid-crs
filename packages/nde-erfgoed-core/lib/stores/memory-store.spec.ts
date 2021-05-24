@@ -179,4 +179,20 @@ describe('MemoryStore', () => {
 
   });
 
+  describe('get', () => {
+
+    it('should return the right resource', () => {
+
+      expect(service.get(collection2.uri)).resolves.toEqual(collection2);
+
+    });
+
+    it('should throw when uri is null', () => {
+
+      expect(service.get(null)).rejects.toThrow(ArgumentError);
+
+    });
+
+  });
+
 });

@@ -1,3 +1,4 @@
+import { fulltextMatch } from '../utils/fulltext-match';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryStore } from '../stores/memory-store';
 import { Collection } from './collection';
@@ -14,23 +15,6 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
   constructor(resources: CollectionObject[]) {
 
     super(resources);
-
-  }
-
-  /**
-   * Retrieves a single CollectionObject
-   *
-   * @param uri The URI of the CollectionObject
-   */
-  async getObject(uri: string): Promise<CollectionObject> {
-
-    if (!uri) {
-
-      throw new ArgumentError('Argument uri should be set.', uri);
-
-    }
-
-    return this.resources.find((resource) => resource.uri === uri);
 
   }
 
@@ -54,6 +38,31 @@ export class CollectionObjectMemoryStore extends MemoryStore<CollectionObject> i
     }
 
     return this.resources.filter((resource) => resource.collection === collection.uri);
+
+  }
+
+  /**
+   * Searches objects based on a search term.
+   *
+   * @param searchTerm The term to search for.
+   * @param objects The objects to search through.
+   * @returns The objects which match the search term.
+   */
+  async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
+
+    if (!searchTerm) {
+
+      throw new ArgumentError('Argument searchTerm should be set.', searchTerm);
+
+    }
+
+    if (!objects) {
+
+      throw new ArgumentError('Argument objects should be set.', objects);
+
+    }
+
+    return objects.filter((object) => fulltextMatch(object, searchTerm));
 
   }
 

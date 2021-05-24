@@ -71,7 +71,7 @@ describe('CollectionSolidStore', () => {
     it('should return empty list when no collections in catalog', async () => {
 
       service.getInstanceForClass = jest.fn(async () => 'test-instance');
-      service.getCollection = jest.fn(async () => mockCollection);
+      service.get = jest.fn(async () => mockCollection);
       client.getDefaultSession = jest.fn(() => mockSession);
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => 'test-thing');
@@ -85,7 +85,7 @@ describe('CollectionSolidStore', () => {
 
       client.getDefaultSession = jest.fn(() => mockSession);
       service.getInstanceForClass = jest.fn(async () => 'test-instance');
-      service.getCollection = jest.fn(async () => mockCollection);
+      service.get = jest.fn(async () => mockCollection);
       client.getSolidDataset = jest.fn(async () => { throw new Error(); });
       client.getThing = jest.fn(() => 'test-thing');
       client.getUrlAll = jest.fn(() => [ 'test-thing ' ]);
@@ -220,14 +220,14 @@ describe('CollectionSolidStore', () => {
 
   });
 
-  describe('getCollection()', () => {
+  describe('get()', () => {
 
     it.each([ null, undefined ])('should error when uri is %s', async (value) => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => null);
 
-      await expect(service.getCollection(value)).rejects.toThrow('Argument uri should be set');
+      await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
 
     });
 
@@ -236,7 +236,7 @@ describe('CollectionSolidStore', () => {
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => null);
 
-      await expect(service.getCollection('test-uri')).resolves.toEqual(null);
+      await expect(service.get('test-uri')).resolves.toEqual(null);
 
     });
 
@@ -247,7 +247,7 @@ describe('CollectionSolidStore', () => {
       client.getUrl = jest.fn(() => 'test-url');
       client.getStringWithLocale = jest.fn(() => 'test-string');
 
-      await expect(service.getCollection('test-uri')).resolves.toEqual({
+      await expect(service.get('test-uri')).resolves.toEqual({
         uri: 'test-uri',
         name: 'test-string',
         description: 'test-string',

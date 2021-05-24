@@ -16,6 +16,7 @@ export * from './forms/form.events';
 export * from './sidebar/sidebar.component';
 export * from './sidebar/sidebar-list-item.component';
 export * from './sidebar/sidebar-list.component';
+export * from './sidebar/sidebar-item.component';
 export * from './demo/demo-sidebar-list.component';
 export * from './state/event';
 export * from './state/schema';

@@ -1,7 +1,8 @@
-import { Alert, State } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@digita-ai/nde-erfgoed-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
-import { createMachine, forwardTo } from 'xstate';
-import { assign, log, send } from 'xstate/lib/actions';
+import { createMachine } from 'xstate';
+import { assign, forwardTo, log, send } from 'xstate/lib/actions';
+import { Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -9,6 +10,8 @@ import { authenticateMachine } from './features/authenticate/authenticate.machin
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
+import { searchMachine } from './features/search/search.machine';
+import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 /**
  * The root context of the application.
@@ -47,6 +50,7 @@ export enum AppActors {
   APP_MACHINE = 'AppMachine',
   COLLECTION_MACHINE = 'CollectionMachine',
   AUTHENTICATE_MACHINE = 'AuthenticateMachine',
+  SEARCH_MACHINE = 'SearchMachine',
 }
 
 /**
@@ -56,6 +60,7 @@ export enum AppRootStates {
   AUTHENTICATE = '[AppState: Authenticate]',
   FEATURE  = '[AppState: Features]',
   DATA  = '[AppState: Data]',
+  SEARCH  = '[AppState: Search]',
 }
 
 /**
@@ -64,6 +69,7 @@ export enum AppRootStates {
 export enum AppFeatureStates {
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
+  SEARCH  = '[AppFeatureState: Search]',
 }
 
 /**
@@ -101,15 +107,6 @@ export const appMachine = (
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
-    on: {
-      [CollectionEvents.SELECTED_COLLECTION]: {
-        actions:
-        [
-          forwardTo(AppActors.COLLECTION_MACHINE),
-          assign({ selected: (context, event) => event.collection }),
-        ],
-      },
-    },
     states: {
     /**
      * Determines which feature is currently active.
@@ -117,6 +114,8 @@ export const appMachine = (
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.AUTHENTICATE,
         on: {
+
+          [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
           },
@@ -140,12 +139,27 @@ export const appMachine = (
           [AppFeatureStates.COLLECTION]: {
             // Invoke the collection machine
             on: {
-              [AppEvents.LOGGED_OUT]: AppFeatureStates.AUTHENTICATE,
+              [SearchEvents.SEARCH_UPDATED]: {
+                actions: assign({
+                  selected: (context, event) => undefined,
+                }),
+                target: AppFeatureStates.SEARCH,
+                cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+              },
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                actions: [
+                  forwardTo(AppActors.COLLECTION_MACHINE),
+                  assign({ selected: (context, event) => event.collection }),
+                ],
+              },
             },
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore),
+                data: (context, event) => ({
+                  collection: context.selected,
+                }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },
@@ -173,6 +187,49 @@ export const appMachine = (
               },
             },
           },
+          /**
+           * Shows the search feature.
+           */
+          [AppFeatureStates.SEARCH]: {
+            on: {
+              /**
+               * Forward the search updated event to the search machine.
+               */
+              [SearchEvents.SEARCH_UPDATED]: {
+                actions: send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
+              },
+              /**
+               * Transition to collection feature when a collection is selected.
+               */
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: [
+                  assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
+                ],
+              },
+            },
+            /**
+             * Invoke the search achine.
+             */
+            invoke: [
+              {
+                id: AppActors.SEARCH_MACHINE,
+                src: searchMachine(collectionStore, objectStore),
+                data: (context, event: SearchUpdatedEvent) => ({
+                  searchTerm: event.searchTerm,
+                }),
+                onDone: {
+                  actions: send((context, event) => ({
+                    type: CollectionEvents.SELECTED_COLLECTION,
+                    collection: context.collections[0],
+                  })),
+                },
+                onError: {
+                  actions: send({ type: AppEvents.ERROR }),
+                },
+              },
+            ],
+          },
         },
       },
       /**
@@ -185,15 +242,28 @@ export const appMachine = (
            * The user is authenticated.
            */
           [AppAuthenticateStates.AUTHENTICATED]: {
-            /**
-             * Get profile and assign to context.
-             */
-            invoke: {
-              src: (context, event) => solid.getProfile(context.session.webId),
-              onDone: {
-                actions: setProfile,
+            invoke: [
+              /**
+               * Get profile and assign to context.
+               */
+              {
+                src: (context, event) => solid.getProfile(context.session.webId),
+                onDone: {
+                  actions: setProfile,
+                },
               },
-            },
+              {
+                id: FormActors.FORM_MACHINE,
+                src: formMachine<{ searchTerm: string }>(
+                  (): Observable<FormValidatorResult[]> => of([]),
+                ),
+                data: {
+                  data: { searchTerm: '' },
+                  original: { searchTerm: '' },
+                },
+
+              },
+            ],
             on: {
               [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
               [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,

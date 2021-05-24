@@ -64,6 +64,12 @@ export class FormElementComponent<T> extends RxLitElement {
   public showLoading = false;
 
   /**
+   * Indicates if the form should submit on keypress = enter.
+   */
+  @internalProperty()
+  public submitOnEnter = true;
+
+  /**
    * Indicates if the form's input should be locked.
    */
   @internalProperty()
@@ -183,15 +189,19 @@ export class FormElementComponent<T> extends RxLitElement {
       element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
 
       // Listen for Enter presses to submit
-      element.addEventListener('keypress', (event) => {
+      if (this.submitOnEnter) {
 
-        if (event.key === 'Enter') {
+        element.addEventListener('keypress', (event) => {
 
-          actor.send({ type: FormEvents.FORM_SUBMITTED });
+          if (event.key === 'Enter') {
 
-        }
+            actor.send({ type: FormEvents.FORM_SUBMITTED });
 
-      });
+          }
+
+        });
+
+      }
 
     });
 

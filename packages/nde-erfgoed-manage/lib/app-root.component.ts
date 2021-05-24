@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { interpret, State } from 'xstate';
+import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@digita-ai/nde-erfgoed-core';
-import { Alert } from '@digita-ai/nde-erfgoed-components';
+import { Alert, FormActors, FormEvent } from '@digita-ai/nde-erfgoed-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout, Logo, Plus } from '@digita-ai/nde-erfgoed-theme';
+import { Theme, Logout, Logo, Plus, Cross, Search } from '@digita-ai/nde-erfgoed-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -15,6 +15,7 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
+import { SearchEvent, SearchEvents } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -86,10 +87,28 @@ export class AppRootComponent extends RxLitElement {
   profile: SolidProfile;
 
   /**
+   * The search term.
+   */
+  @internalProperty()
+  searchTerm = '';
+
+  /**
    * The selected collection of the current user.
    */
   @internalProperty()
   selected: Collection;
+
+  /**
+   * The actor responsible for the search field.
+   */
+  @internalProperty()
+  formActor: ActorRef<FormEvent>;
+
+  /**
+   * The actor responsible for the search field.
+   */
+  @internalProperty()
+  searchActor: ActorRef<SearchEvent>;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
@@ -116,10 +135,6 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
-  /**
-   * Hook called after first update after connection to the DOM.
-   * It subscribes to the actor, logs state changes, and pipes state to the properties.
-   */
   firstUpdated(changed: PropertyValues): void {
 
     super.firstUpdated(changed);
@@ -130,13 +145,68 @@ export class AppRootComponent extends RxLitElement {
       map((state) => state.context?.collections),
     ));
 
+    this.subscribe('formActor', from(this.actor).pipe(
+      map((state) => state.children[FormActors.FORM_MACHINE]),
+    ));
+
     this.subscribe('profile', from(this.actor).pipe(
       map((state) => state.context?.profile),
     ));
 
     this.subscribe('selected', from(this.actor).pipe(
-      map((state) => state.context?.selected),
+      map((state) => state.context.selected),
     ));
+
+  }
+
+  /**
+   * Hook called after first update after connection to the DOM.
+   * It subscribes to the actor, logs state changes, and pipes state to the properties.
+   */
+  updated(changed: PropertyValues): void {
+
+    if(changed.has('actor') && this.actor) {
+
+      this.subscribe('searchActor', from(this.actor)
+        .pipe(
+          map((state) => state.children[AppActors.SEARCH_MACHINE])
+        ));
+
+    }
+
+    if(changed.has('searchActor') && this.searchActor) {
+
+      this.subscribe('searchTerm', from(this.searchActor).pipe(
+        map((state) => state.context.searchTerm)
+      ));
+
+    }
+
+    if(changed.has('searchActor') && !this.searchActor) {
+
+      this.searchTerm = '';
+
+    }
+
+  }
+
+  /**
+   * Handles an update of the search field.
+   *
+   * @param event HTML event fired when the search input field is updated.
+   */
+  searchUpdated(event: KeyboardEvent): void {
+
+    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: (event.target as HTMLInputElement).value });
+
+  }
+
+  /**
+   * Clears the search field.
+   */
+  clearSearchTerm(): void {
+
+    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' });
 
   }
 
@@ -155,17 +225,37 @@ export class AppRootComponent extends RxLitElement {
         <div slot="title">${this.profile?.name}</div>
         <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
-      <nde-sidebar-list>
-        <nde-sidebar-list-item slot="title" isTitle inverse>
-          <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
-          <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
-        </nde-sidebar-list-item>
-        ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
-      </nde-sidebar-list>
+      <nde-sidebar-item>
+        <div slot="content">
+          <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
+          <nde-form-element .inverse="${true}" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+            <input type="text"
+              slot="input"
+              .value="${this.searchTerm}"
+              class="searchTerm"
+              @input="${this.searchUpdated}"
+            />
+            ${this.searchTerm
+    ? html`<div class="cross" slot="icon" @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>`
+    : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
+}
+          </nde-form-element>
+        </div>
+      </nde-sidebar-item>
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+        <nde-sidebar-list slot="content">
+          <nde-sidebar-list-item slot="title" isTitle inverse>
+            <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
+            <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
+          </nde-sidebar-list-item>
+          ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
+        </nde-sidebar-list>
+      </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.AUTHENTICATE }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }  
     `;
 
   }
@@ -208,6 +298,28 @@ export class AppRootComponent extends RxLitElement {
         div[slot="actions"] svg {
           max-height: var(--gap-normal);
           width: var(--gap-normal);
+        }
+
+        .search-title {
+          padding-bottom: var(--gap-normal);
+        }
+
+        div[slot="icon"] svg {
+          fill: var(--colors-primary-dark);
+        }
+
+        div[slot="content"]{
+          padding-bottom: var(--gap-small);
+        }
+
+        .cross:hover {
+          cursor: pointer;
+        }
+
+        nde-sidebar-item:last-of-type {
+          flex-direction: column;
+          flex: 1 1 auto;
+          height: 0px;
         }
       `,
     ];

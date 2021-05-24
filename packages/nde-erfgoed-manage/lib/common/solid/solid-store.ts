@@ -21,6 +21,17 @@ export class SolidStore<T extends Resource> implements Store<T> {
   }
 
   /**
+   * Get a resource by its uri
+   *
+   * @param uri uri of the resource
+   */
+  async get(uri: string): Promise<T> {
+
+    throw new Error('Method not implemented.');
+
+  }
+
+  /**
    * Returns the instance URI of a type registration for a given RDF class
    *
    * @param webId The WebID of the Solid pod

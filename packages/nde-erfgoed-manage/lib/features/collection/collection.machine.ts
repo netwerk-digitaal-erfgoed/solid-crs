@@ -4,12 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@digita-ai/nde-erfgoed-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import {
-  Collection,
-  CollectionObject,
-  CollectionObjectStore,
-  CollectionStore,
-} from '@digita-ai/nde-erfgoed-core';
+import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@digita-ai/nde-erfgoed-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -177,7 +172,6 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
             target: CollectionStates.IDLE,
             actions: [
               sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
-              sendParent((context) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: undefined })),
             ],
           },
           onError: {

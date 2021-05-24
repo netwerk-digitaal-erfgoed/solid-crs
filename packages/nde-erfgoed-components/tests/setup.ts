@@ -8,12 +8,14 @@ import { CardComponent } from '../lib/collections/card.component';
 import { CollectionCardComponent } from '../lib/collections/collection-card.component';
 import { ObjectCardComponent } from '../lib/collections/object-card.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
+import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
 
 /**
  * Register tags for components.
  */
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-form-element', FormElementComponent);
+customElements.define('nde-sidebar-item', SidebarItemComponent);
 customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
 customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar', SidebarComponent);

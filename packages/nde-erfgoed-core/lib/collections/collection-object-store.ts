@@ -6,6 +6,7 @@ import { CollectionObject } from './collection-object';
  * A store for collection objects.
  */
 export interface CollectionObjectStore extends Store<CollectionObject> {
+
   /**
    * Retrieves all objects for a specific collection.
    *
@@ -14,9 +15,12 @@ export interface CollectionObjectStore extends Store<CollectionObject> {
   getObjectsForCollection(collection: Collection): Promise<CollectionObject[]>;
 
   /**
-   * Retrieves a single CollectionObject
+   * Searches objects based on a search term.
    *
-   * @param uri The URI of the CollectionObject
+   * @param searchTerm The term to search for.
+   * @param objects The objects to search through.
+   * @returns The objects which match the search term.
    */
-  getObject(uri: string): Promise<CollectionObject>;
+  search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]>;
+
 }

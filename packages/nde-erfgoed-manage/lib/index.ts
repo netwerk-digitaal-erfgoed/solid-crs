@@ -7,3 +7,4 @@ export * from './common/solid/solid-session';
 export * from './common/solid/solid.service';
 export * from './features/collection/collection-root.component';
 export * from './features/authenticate/authenticate-root.component';
+export * from './features/search/search-root.component';

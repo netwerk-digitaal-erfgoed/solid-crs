@@ -16,7 +16,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-1',
       name: 'Object 1',
-      description: 'This is object 1',
+      description: 'This is object 1 one',
       image: null,
       subject: null,
       type: null,
@@ -26,7 +26,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-2',
       name: 'Object 2',
-      description: 'This is object 2',
+      description: 'This is object 2 two',
       image: null,
       subject: null,
       type: null,
@@ -36,7 +36,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-3',
       name: 'Object 3',
-      description: 'This is object 3',
+      description: 'This is object 3 three',
       image: null,
       subject: null,
       type: null,
@@ -111,17 +111,35 @@ describe('CollectionObjectMemoryStore', () => {
 
   });
 
-  describe('getObject()', () => {
+  describe('search', () => {
 
-    it('should throw error when collection is undefined', async () => {
+    it('should error when searchTerm is empty', async () => {
 
-      await expect(service.getObject(undefined)).rejects.toThrow(ArgumentError);
+      await expect(service.search('', resources)).rejects.toThrow(ArgumentError);
 
     });
 
-    it('should return object with matching uri', async () => {
+    it('should return the correct object', async () => {
 
-      await expect(service.getObject(resources[0].uri)).resolves.toEqual(resources[0]);
+      await expect(service.search('one', resources)).resolves.toEqual([ resources[0] ]);
+
+    });
+
+    it('should return the correct objects', async () => {
+
+      await expect(service.search('two', resources)).resolves.toEqual([ resources[1] ]);
+
+    });
+
+    it('should error when searchTerm is undefined', async () => {
+
+      await expect(service.search(undefined, resources)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should error when collections is undefined', async () => {
+
+      await expect(service.search('test', undefined)).rejects.toThrow(ArgumentError);
 
     });
 

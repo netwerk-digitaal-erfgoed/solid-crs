@@ -72,11 +72,11 @@ describe('CollectionObjectSolidStore', () => {
 
   });
 
-  describe('getObject()', () => {
+  describe('get()', () => {
 
     it.each([ null, undefined ])('should error when uri is %s', async (value) => {
 
-      await expect(service.getObject(value)).rejects.toThrow('Argument uri should be set');
+      await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
 
     });
 
@@ -87,7 +87,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getUrl = jest.fn(() => 'test-url');
       client.getStringWithLocale = jest.fn(() => 'test-string');
 
-      await expect(service.getObject('test-url')).resolves.toEqual(
+      await expect(service.get('test-url')).resolves.toEqual(
         expect.objectContaining({
           uri: 'test-url',
           name: 'test-string',

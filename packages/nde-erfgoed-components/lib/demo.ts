@@ -12,6 +12,7 @@ import { DemoSVGComponent } from './demo/demo-svg.component';
 import { DemoNDECardComponent } from './demo/demo-card.component';
 import { CardComponent } from './collections/card.component';
 import { CollectionCardComponent } from './collections/collection-card.component';
+import { SidebarItemComponent } from './sidebar/sidebar-item.component';
 
 /**
  * Register tags for components.
@@ -30,3 +31,4 @@ customElements.define('nde-demo-sidebar-list', DemoSidebarListComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-demo-content-header', DemoContentHeaderComponent);
 customElements.define('nde-demo-svg', DemoSVGComponent);
+customElements.define('nde-sidebar-item', SidebarItemComponent);
