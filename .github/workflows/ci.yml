@@ -2,9 +2,6 @@ name: CI
 
 on: push
 
-env:
-  NPM_TOKEN: ${{secrets.GA_TOKEN}}
-
 jobs:
   test:
     name: Run tests
@@ -27,11 +24,14 @@ jobs:
       - name: Check branch
         run: echo ${{ steps.extract-branch.outputs.branch }}
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
@@ -75,6 +75,8 @@ jobs:
           registry-url: https://npm.pkg.github.com/
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
@@ -118,7 +120,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GA_TOKEN }}
+          password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Build and push pods
         id: docker_build_pods
@@ -128,7 +130,7 @@ jobs:
           push: true
           tags: ghcr.io/digita-ai/nde-erfgoed-pods:latest,ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GA_TOKEN}}
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
       - name: Build and push manage
         id: docker_build_manage
@@ -138,7 +140,7 @@ jobs:
           push: true
           tags: ghcr.io/digita-ai/nde-erfgoed-manage:latest,ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GA_TOKEN}}
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
   deploy-develop:
     name: Deploy to develop
@@ -163,7 +165,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GA_TOKEN }}
+          password: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - name: Deploy pods on develop
         uses: 'azure/aci-deploy@v1'
