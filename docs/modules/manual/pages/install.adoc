@@ -1,7 +1,7 @@
 = Install instructions 
 :description: Install instructions to run the app
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
 :imagesdir: ../images
 
 == Run locally

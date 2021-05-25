@@ -1,7 +1,7 @@
 = Authenticeer
-:description: Een omschrijving van de architectuur van het project.
+:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling Solid CBS.
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
 :imagesdir: ../images
 
 == Hoe log ik in op het Collectiebeheersysteem van mijn erfgoedinstelling?
@@ -10,7 +10,7 @@ Dit document toont je hoe je inlogt op het collectiebeheersysteem en wat je moet
 
 
 === Vereisten
-Om te kunnen inloggen is een *WebID* vereist. Heb je nog geen WebID, dan vind je link:url[hier] de nodige info om er een aan te maken.
+Om te kunnen inloggen is een *WebID* vereist. Heb je nog geen WebID, dan vind je in link:url[dit document] de nodige info om er een aan te maken.
 
 === Stap 1: Geef je WebID in
 Wanneer de WebID correct is ingevoerd en correct werd gelinkt aan een profielpagina, zal de verbindknop rechts van het kadertje actief worden. 
@@ -33,3 +33,10 @@ Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersyste
 
 === Stap 4: Succesvolle authenticatie
 Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem en ben je ingelogd bij jouw erfgoedinstelling. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 
+
+:sectnums!:
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+
+* xref:collecties.adoc[Collecties]
+* xref:search.adoc[Zoeken]
+* xref:objecten.adoc[Objecten]
