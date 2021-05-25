@@ -110,8 +110,7 @@ jobs:
 
   publish-docker:
     name: Publish Docker images
-    # TODO: needs publish-npm
-    needs: [variables]
+    needs: [variables, publish-npm]
     runs-on: ubuntu-latest
     # TODO: restore
 #    if: startsWith(github.ref, 'refs/tags/')
