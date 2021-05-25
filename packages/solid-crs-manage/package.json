@@ -4,6 +4,7 @@
   "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-manage.umd.js",
+  "license": "EUPL-1.2",
   "types": "./dist/index.d.ts",
   "module": "./dist/solid-crs-manage.es.js",
   "exports": {

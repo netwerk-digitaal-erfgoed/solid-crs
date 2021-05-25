@@ -4,6 +4,7 @@
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-core.umd.js",
+  "license": "EUPL-1.2",
   "types": "./dist/index.d.ts",
   "module": "./dist/solid-crs-core.es.js",
   "exports": {

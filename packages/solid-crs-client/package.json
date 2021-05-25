@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "Re-bundled version of the Solid client.",
   "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "EUPL-1.2",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
