@@ -137,7 +137,7 @@ export class ObjectRootComponent extends RxLitElement {
     return this.object ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-      ${this.state.matches(ObjectStates.EDITING)
+      ${this.state?.matches(ObjectStates.EDITING)
     ? html`
           <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
             <input autofocus type="text" slot="input" class="name" value="${this.object.name}"/>
@@ -156,8 +156,8 @@ export class ObjectRootComponent extends RxLitElement {
         `
 }
 
-      ${ this.state.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ this.state.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ this.state?.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ this.state?.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
     <div class="content">

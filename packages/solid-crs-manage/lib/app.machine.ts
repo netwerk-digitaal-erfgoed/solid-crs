@@ -265,7 +265,7 @@ export const appMachine = (
             invoke: [
               {
                 id: AppActors.OBJECT_MACHINE,
-                src: objectMachine(collectionStore, objectStore),
+                src: objectMachine(objectStore),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

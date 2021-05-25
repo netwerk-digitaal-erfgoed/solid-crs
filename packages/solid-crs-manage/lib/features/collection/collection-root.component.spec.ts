@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryStore, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -13,21 +13,25 @@ describe('CollectionRootComponent', () => {
   let component: CollectionRootComponent;
   let machine: Interpreter<CollectionContext>;
 
-  const collection1 = {
+  const collection1: Collection = {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
+    objectsUri: null,
+    distribution: null,
   };
 
-  const collection2 = {
+  const collection2: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
+    objectsUri: null,
+    distribution: null,
   };
 
   beforeEach(() => {
 
-    const collectionStore = new MemoryStore<Collection>([ collection1, collection2 ]);
+    const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
     const objectStore = new CollectionObjectMemoryStore([
       {

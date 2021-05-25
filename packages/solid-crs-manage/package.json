@@ -24,6 +24,7 @@
     "lint:staged": "lint-staged",
     "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
+    "test:watch": "jest --watch --no-coverage",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
@@ -80,10 +81,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 90.81,
-        "branches": 83.66,
-        "lines": 90.66,
-        "functions": 80.22
+        "statements": 88.9,
+        "branches": 82.39,
+        "lines": 89.27,
+        "functions": 73.66
       }
     },
     "automock": false,

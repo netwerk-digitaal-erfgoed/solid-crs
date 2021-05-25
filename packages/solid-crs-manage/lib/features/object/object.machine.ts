@@ -4,7 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
@@ -39,7 +39,7 @@ export enum ObjectStates {
 /**
  * The object machine.
  */
-export const objectMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
+export const objectMachine = (objectStore: CollectionObjectStore) =>
   createMachine<ObjectContext, ObjectEvent, State<ObjectStates, ObjectContext>>({
     id: ObjectActors.OBJECT_MACHINE,
     context: { },
