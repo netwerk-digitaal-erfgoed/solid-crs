@@ -1,7 +1,7 @@
 = Install instructions 
 :description: Install instructions to run the app
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Run locally
@@ -33,7 +33,7 @@ You can run the application by using docker. To use the latest published version
 
 [source,bash]
 ----
-$ docker run -p 3002:3002 ghcr.io/digita-ai/nde-erfgoed-manage:latest
+$ docker run -p 3002:3002 ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest
 ----
 
 Alternatively, you can build and run an image locally.
@@ -41,13 +41,13 @@ Alternatively, you can build and run an image locally.
 [source,bash]
 ----
 # Build on Mac
-$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t cbs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/nde-erfgoed-manage/
 
 # Build on Windows
-$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t cbs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/nde-erfgoed-manage/
 
 # Run local image
-$ docker run -p 3002:3002 cbs:local
+$ docker run -p 3002:3002 crs:local
 ----
 
 == Configure Git
@@ -64,7 +64,7 @@ To be safe, backup all of your existing repositories, or simply create a new fol
 
 [source,text]
 ----
-$ git clone git@github.com:digita-ai/nde-erfgoedinstellingen.git
+$ git clone git@github.com:netwerk-digitaal-erfgoed/solid-crs.git
 ----
 
 In order to pull and publish packages from GitHub, you need to https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry[authenticate by using a personal access token]. Start by generating one which has at least the `+write:packages+` and `+read:packages+` scopes on https://github.com/settings/tokens[this page]. Note that you will not be able to recover or view the token after it has been created, so keep it somewhere safe.

@@ -1,0 +1,110 @@
+= Technical Documentation: Set up collection object feature
+
+== Author(s)
+
+* Stijn Taelemans
+
+
+== References
+
+* https://www.wrike.com/open.htm?id=692044114[Wrike task]
+* Branch: `feat/set-up-collection-object-feature`
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
+
+== Introduction
+
+=== Overview
+
+This document is about the set up of the collection object machine, which should allow editing and deleting of a certain collection object.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Collection Object Feature
+
+Under 'lib/features', under new 'collection-object' directory, create following files.
+
+* collection-object.machine.ts
+* collection-object.events.ts
+* collection-object-root.component.ts 
+
+
+==== App Events
+
+Following event should be added to the `AppEvents`, which can invoke the `CollectionObjectMachine` with a given `CollectionObject`, for example when a search result is clicked:
+
+[options="header"]
+|======================================
+| Event 	| Payload
+
+| `CollectionObjectEvents.SELECTED_COLLECTION_OBJECT`
+| `object: CollectionObject`
+
+|======================================
+
+==== Collection Object Machine & States
+
+The collection object machine is the brains of the `CollectionObjectRootComponent`. (Almost) every button clicked on that page should translate to an event in this machine.
+
+Use the file structure and naming convention of the authenticate feature.
+
+
+The `CollectionObjectMachine` has four possible states: 
+
+* `CollectionObjectStates.IDLE` (initial)
+* `CollectionObjectStates.EDITING`
+* `CollectionObjectStates.SAVING`
+* `CollectionObjectStates.DELETING`
+
+The `CollectionObjectStates.IDLE` state is the initial state of the machine. Take a look at the events described below for a better picture of how the machine can transition.
+
+When `CollectionObjectEvents.CLICKED_DELETE` is fired, `object` should be removed from the `CollectionContext.objects`. The `CollectionMachine` should be reinvoked to go back to the collection of the deleted object.
+
+`CollectionObjectEvents.CLICKED_EDIT` is should transition the `CollectionObjectMachine` to `CollectionObjectStates.EDITING`. It can exit this state if the `CollectionObjectEvents.CANCELLED_EDIT` event is fired while `EDITING`.
+
+`CollectionObjectEvents.CLICKED_SAVED` transitions to `CollectionObjectStates.SAVING`, where the store will save the edited collection object. When saved, return to `CollectionObjectStates.IDLE`.
+
+
+==== Collection Object Context
+
+The context of the `CollectionObjectMachine` consists of one item: the current collection object.
+[source, js]
+----
+{
+  object: CollectionObject,
+}
+----
+
+==== Collection Object Events
+
+Create following events in 'lib/features/collection-object/collection-object.events.ts'
+
+[options="header"]
+|======================================
+| Event 	| Payload
+
+| `CollectionObjectEvents.CLICKED_DELETE`
+| No payload
+
+| `CollectionObjectEvents.CLICKED_EDIT`
+| No payload
+
+| `CollectionObjectEvents.CANCELLED_EDIT`
+| No payload
+
+| `CollectionObjectEvents.CLICKED_SAVE`
+| `collection: Collection`
+
+|======================================
+
+
+==== Collection Machine, Events
+
+When clicking or creating a collection in the collection root page, an event should be fired to the app machine (described above), which transitions the app machine and invokes the `CollectionObjectMachine` with the collection object from the event's payload.
+
+
+==== AppRootComponent
+
+Make sure the collection selected in the sidebar is related to the collection object when the collection object page is active.

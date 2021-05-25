@@ -1,0 +1,77 @@
+{
+  "name": "@netwerk-digitaal-erfgoed/solid-crs-core",
+  "version": "0.3.0",
+  "description": "Core logic of the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "main": "./dist/solid-crs-core.umd.js",
+  "license": "EUPL-1.2",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/solid-crs-core.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/solid-crs-core.es.js",
+      "require": "./dist/solid-crs-core.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf ./dist && vite build && tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:staged": "lint-staged",
+    "test": "jest",
+    "test:ci": "jest --silent --runInBand --passWithNoTests",
+    "test:watch": "jest --watch --no-coverage",
+    "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
+  },
+  "devDependencies": {
+    "@digita-ai/typescript-config": "^0.3.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^14.14.44",
+    "@types/uuid": "8.3.0",
+    "eslint": "^7.16.0",
+    "jest": "^26.6.3",
+    "jest-coverage-thresholds-bumper": "0.0.4",
+    "lint-staged": "^10.5.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "vite": "2.2.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netwerk-digitaal-erfgoed/solid-crs.git",
+    "directory": "packages/solid-crs-core"
+  },
+  "bugs": {
+    "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
+  },
+  "dependencies": {
+    "moment": "^2.29.1",
+    "rxjs": "^6.6.7",
+    "uuid": "8.3.2"
+  },
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 86.36,
+        "statements": 87.56,
+        "lines": 87.5,
+        "functions": 89.19
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*\\.conf(ig)?.ts",
+      "<rootDir>/lib/index.ts"
+    ],
+    "displayName": "core",
+    "preset": "@digita-ai/jest-config"
+  }
+}
