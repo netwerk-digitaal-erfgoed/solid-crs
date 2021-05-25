@@ -1,7 +1,7 @@
 = Install instructions 
 :description: Install instructions to run the app
 :sectanchors:
-:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Run locally
@@ -41,13 +41,13 @@ Alternatively, you can build and run an image locally.
 [source,bash]
 ----
 # Build on Mac
-$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t cbs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/nde-erfgoed-manage/
 
 # Build on Windows
-$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t cbs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/nde-erfgoed-manage/
 
 # Run local image
-$ docker run -p 3002:3002 cbs:local
+$ docker run -p 3002:3002 crs:local
 ----
 
 == Configure Git
