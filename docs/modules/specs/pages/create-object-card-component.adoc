@@ -1,6 +1,6 @@
 = Technical Documentation: Create object card component
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=684057264[Wrike task]
 * Branch: `feat/create-object-card-component`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
 
 
 == Introduction
@@ -24,7 +24,7 @@ This document is about the creation of a reusable object card, which will be dis
 
 === Assumptions
 
-All components are to be made in the '@digita-ai/nde-erfgoed-components' package.
+All components are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-components' package.
 
 
 == Solution
@@ -68,7 +68,7 @@ The finished component should look like this:
 
 image::../images/collections/collection-object-component.svg[ObjectCardComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/collection-object/object-card.component.ts', with tag `<nde-object-card>`
+Generate in '@netwerk-digitaal-erfgoed/solid-crs-components' package under 'lib/collection-object/object-card.component.ts', with tag `<nde-object-card>`
 
 The component should feature an input property for a `CollectionObject`. The `name` and `description` should go in the title and subtitle of the component. The `image` is the top part of the component and should fit the whole area. 
 

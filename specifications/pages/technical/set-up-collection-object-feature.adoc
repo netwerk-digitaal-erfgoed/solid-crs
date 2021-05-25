@@ -9,7 +9,7 @@
 
 * https://www.wrike.com/open.htm?id=692044114[Wrike task]
 * Branch: `feat/set-up-collection-object-feature`
-* Project: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 == Introduction
 

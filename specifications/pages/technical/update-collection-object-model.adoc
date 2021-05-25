@@ -9,7 +9,7 @@
 
 * https://www.wrike.com/open.htm?id=691826164[Wrike task]
 * Branch: `feat/update-collection-object-model`
-* Project: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 == Introduction
 

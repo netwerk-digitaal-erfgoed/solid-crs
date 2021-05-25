@@ -1,6 +1,6 @@
 = Technical Documentation: Set up authenticate feature
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=674718417[Wrike task]
 * Branch: `feat/599439372-set-up-authenticate-feature`
-* Project: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 == Introduction
 
@@ -84,7 +84,7 @@ The initial value of `session` should be `new Session()`.
 
 Create following events in 'lib/features/authenticate/authenticate.events.ts'
 
-Take a look at https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.events.ts[collections.events.ts] and https://github.com/digita-ai/nde-erfgoedinstellingen/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.actions.ts[collections.actions.ts].
+Take a look at https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.events.ts[collections.events.ts] and https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.actions.ts[collections.actions.ts].
 
 [options="header"]
 |======================================
@@ -144,7 +144,7 @@ Take a look at 'lib/features/collections/collections.services.ts' for inspiratio
 
 ===== SolidService
 
-Create in '@digita-ai/nde-erfgoed-core' package under 'lib/solid/solid.service.ts'.
+Create in '@netwerk-digitaal-erfgoed/solid-crs-core' package under 'lib/solid/solid.service.ts'.
 
 This service handles everything Solid-related, from authenticating to fetching data. It relies mostly on Inrupt's open source SDKs.  Take a look at the https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/restore-session-browser-refresh/#enable-session-restore[authentication in a browser environment example].
 
