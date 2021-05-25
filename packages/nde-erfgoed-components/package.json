@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "EUPL-1.2",
   "main": "./dist/nde-erfgoed-components.umd.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/nde-erfgoed-components.es.js",
