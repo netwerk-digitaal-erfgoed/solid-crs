@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "EUPL-1.2",
   "main": "./dist/nde-erfgoed-core.umd.js",
   "types": "./dist/index.d.ts",
   "module": "./dist/nde-erfgoed-core.es.js",
