@@ -1,5 +1,6 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { v4 } from 'uuid';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 
@@ -79,11 +80,15 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
   }
 
   /**
-   * Deletes a single Collection from a pod
+   * Deletes a single Collection from a pod\
    *
    * @param resource The Collection to delete
    */
   async delete(resource: CollectionObject): Promise<CollectionObject> {
+
+    // remove thing from objects file
+
+    // remove reference from collection's distribution
 
     throw new Error('Method not implemented.');
 
@@ -94,9 +99,36 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    *
    * @param resource The Collection to save
    */
-  async save(resource: CollectionObject): Promise<CollectionObject> {
+  async save(object: CollectionObject): Promise<CollectionObject> {
 
-    throw new Error('Method not implemented.');
+    if (!object) {
+
+      throw new ArgumentError('Argument object should be set', object);
+
+    }
+
+    if (!object.collection) {
+
+      throw new ArgumentError('The object must be linked to a collection', object);
+
+    }
+
+    // retrieve the catalog
+    const catalogDataset = await getSolidDataset(object.collection, { fetch });
+
+    // find out where to save this object based on its collection
+    const collectionThing = getThing(catalogDataset, object.collection);
+    const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+    const distributionThing = getThing(catalogDataset, distributionUri);
+    const contentUrl = getUrl(distributionThing, 'http://schema.org/contentUrl');
+    const objectUri = object.uri || new URL(`#object-${v4()}`, contentUrl).toString();
+
+    // transform and save the object to the dataset of objects
+    const objectsDataset = await getSolidDataset(objectUri, { fetch });
+    const updatedObjectsDataset = setThing(objectsDataset, CollectionObjectSolidStore.toThing(object));
+    await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
+
+    return { ...object, uri: objectUri };
 
   }
 
@@ -117,28 +149,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     let result = createThing({ url: object.uri });
 
     // identification
-    result = addStringNoLocale(result, 'http://schema.org/dateModified', object.updated);
-    result = addUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type);
-    result = addUrl(result, 'http://schema.org/additionalType', object.additionalType);
-    result = addStringNoLocale(result, 'http://schema.org/identifier', object.identifier);
-    result = addStringWithLocale(result, 'http://schema.org/name', 'nl', object.name);
-    result = addStringWithLocale(result, 'http://schema.org/description', 'nl', object.description);
-    result = addUrl(result, 'http://schema.org/isPartOf', object.collection);
-    result = addUrl(result, 'http://schema.org/maintainer', object.maintainer);
+    result = object.updated ? addStringNoLocale(result, 'http://schema.org/dateModified', object.updated) : result;
+    result = object.type ? addUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type) : result;
+    result = object.additionalType ? addUrl(result, 'http://schema.org/additionalType', object.additionalType) : result;
+    result = object.identifier ? addStringNoLocale(result, 'http://schema.org/identifier', object.identifier) : result;
+    result = object.name ? addStringWithLocale(result, 'http://schema.org/name', object.name, 'nl') : result;
+    result = object.description ? addStringWithLocale(result, 'http://schema.org/description', object.description, 'nl') : result;
+    result = object.collection ? addUrl(result, 'http://schema.org/isPartOf', object.collection) : result;
+    result = object.maintainer ? addUrl(result, 'http://schema.org/maintainer', object.maintainer) : result;
 
     // creation
-    result = addUrl(result, 'http://schema.org/creator', object.creator);
-    result = addUrl(result, 'http://schema.org/locationCreated', object.locationCreated);
-    result = addUrl(result, 'http://schema.org/material', object.material);
-    result = addStringNoLocale(result, 'http://schema.org/dateCreated', object.dateCreated);
+    result = object.creator ? addUrl(result, 'http://schema.org/creator', object.creator) : result;
+    result = object.locationCreated ? addUrl(result, 'http://schema.org/locationCreated', object.locationCreated) : result;
+    result = object.material ? addUrl(result, 'http://schema.org/material', object.material) : result;
+    result = object.dateCreated ? addStringNoLocale(result, 'http://schema.org/dateCreated', object.dateCreated) : result;
 
     // representation
     // dimensions
     // => todo figure out blank nodes
 
     // other
-    result = addUrl(result, 'http://schema.org/image', object.image);
-    result = addUrl(result, 'http://schema.org/mainEntityOfPage', object.mainEntityOfPage);
+    result =  object.image ? addUrl(result, 'http://schema.org/image', object.image) : result;
+    result =  object.mainEntityOfPage ? addUrl(result, 'http://schema.org/mainEntityOfPage', object.mainEntityOfPage) : result;
 
     return result;
 
