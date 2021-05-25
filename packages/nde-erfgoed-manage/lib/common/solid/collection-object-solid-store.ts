@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, Thing, getStringNoLocale, getDatetime, getUrlAll } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, Thing, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -108,7 +108,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   static toThing(collection: CollectionObject): Thing {
 
-    return null;
+    throw new Error('Method not implemented.');
 
   }
 

@@ -20,7 +20,7 @@ describe('CollectionObjectMemoryStore', () => {
       image: null,
       subject: null,
       type: null,
-      updated: 0,
+      updated: undefined,
       collection: 'collection-uri-1',
     },
     {
@@ -30,7 +30,7 @@ describe('CollectionObjectMemoryStore', () => {
       image: null,
       subject: null,
       type: null,
-      updated: 0,
+      updated: undefined,
       collection: 'collection-uri-1',
     },
     {
@@ -40,7 +40,7 @@ describe('CollectionObjectMemoryStore', () => {
       image: null,
       subject: null,
       type: null,
-      updated: 0,
+      updated: undefined,
       collection: 'collection-uri-2',
     },
   ];
@@ -50,6 +50,8 @@ describe('CollectionObjectMemoryStore', () => {
   beforeEach(async () => {
 
     service = new CollectionObjectMemoryStore(resources);
+
+    jest.clearAllMocks();
 
   });
 
@@ -80,7 +82,7 @@ describe('CollectionObjectMemoryStore', () => {
         image: null,
         subject: null,
         type: null,
-        updated: 0,
+        updated: undefined,
         collection: 'collection-uri-1',
       },
       {
@@ -90,7 +92,7 @@ describe('CollectionObjectMemoryStore', () => {
         image: null,
         subject: null,
         type: null,
-        updated: 0,
+        updated: undefined,
         collection: 'collection-uri-1',
       } ]);
 

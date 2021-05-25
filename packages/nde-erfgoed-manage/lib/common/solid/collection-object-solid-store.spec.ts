@@ -1,4 +1,5 @@
 import * as client from '@digita-ai/nde-erfgoed-client';
+import { Collection } from '@digita-ai/nde-erfgoed-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
 describe('CollectionObjectSolidStore', () => {
@@ -6,11 +7,11 @@ describe('CollectionObjectSolidStore', () => {
   let service: CollectionObjectSolidStore;
 
   const mockCollection = {
-    uri: 'test-uri',
+    uri: 'http://test.uri/',
     name: 'test-name',
     description: 'test-description',
     objectsUri: 'test-url',
-  };
+  } as Collection;
 
   beforeEach(() => {
 
@@ -45,7 +46,7 @@ describe('CollectionObjectSolidStore', () => {
     it('should return empty list when no object was found', async () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThingAll = jest.fn(() => null);
+      client.getThingAll = jest.fn(() => []);
 
       await expect(service.getObjectsForCollection(mockCollection)).resolves.toEqual([]);
 
@@ -53,19 +54,25 @@ describe('CollectionObjectSolidStore', () => {
 
     it('should return collection objects', async () => {
 
-      client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThingAll = jest.fn(() => [ 'test-thing' ]);
-      client.getStringWithLocale = jest.fn(() => 'test-string');
-      client.asUrl = jest.fn(() => 'test-url');
+      let objectThing = client.createThing({ url: 'http://test.url/' });
+      objectThing = client.addUrl(objectThing, 'http://schema.org/isPartOf', mockCollection.uri);
 
-      const result = await service.getObjectsForCollection(mockCollection)
-;
+      client.getUrl = jest.fn(() => mockCollection.uri);
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThingAll = jest.fn(() => [ objectThing ]);
+
+      CollectionObjectSolidStore.fromThing = jest.fn(() => ({
+        uri: mockCollection.objectsUri,
+        collection: mockCollection.uri,
+      }));
+
+      const result = await service.getObjectsForCollection(mockCollection);
+
+      expect(result.length).toBeTruthy();
 
       expect(result[0]).toEqual(expect.objectContaining({
         uri: mockCollection.objectsUri,
         collection: mockCollection.uri,
-        name: 'test-string',
-        description: 'test-string',
       }));
 
     });
@@ -126,6 +133,22 @@ describe('CollectionObjectSolidStore', () => {
       await expect(service.save(undefined)).rejects.toThrow();
 
     });
+
+  });
+
+  describe('fromThing', () => {
+
+    it('should throw', async () => {
+
+      await expect(CollectionObjectSolidStore.fromThing(undefined)).rejects.toThrow();
+
+    });
+
+  });
+
+  it('should ', () => {
+
+    expect(true).toBeTruthy();
 
   });
 
