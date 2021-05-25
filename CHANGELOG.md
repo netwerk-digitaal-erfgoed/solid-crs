@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.3.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.3.0...v0.3.1) (2021-05-25)
+
+
+### **Bug Fixes**
+
+* various styling fixes ([#212](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/212)) ([58746ae](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/58746ae089403c4107c19ac45c9ae3eadb93191f))
+
+
+### **Features**
+
+* search collections and objects ([#202](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/202)) ([5a837d9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5a837d9339399d63e16cc3c1ef90d88293c2fc8f))
+* Set up object feature ([#231](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/231)) ([801c0af](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/801c0af8952ca6e54e9816235eb0708587fd4a85))
+
+
+### **Documentation**
+
+* collection object feature specs ([#220](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/220)) ([01c3eed](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/01c3eed91f729f5f8a8730de9009c5c387c24c03))
+* moved specs to antora ([#222](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/222)) ([3d84952](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3d84952ca8f0819985ecc4a2abbb6f9b2d514518))
+* user manual for collections ([#228](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/228)) ([a64186d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a64186d1f09fe8c70e4bd83fd10715beaed19185))
+
+
+
 ## [0.3.0](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.1...v0.3.0) (2021-05-18)
 
 
