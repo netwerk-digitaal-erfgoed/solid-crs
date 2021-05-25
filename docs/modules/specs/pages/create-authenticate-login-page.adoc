@@ -1,6 +1,6 @@
 = Technical Documentation: Create authenticate login page
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -13,7 +13,7 @@
 * https://www.wrike.com/open.htm?id=675145293[Wrike task]
 * https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[Test plan]
 * Branch: `feat/675145293-create-authentication-login-page`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage, nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage, nde-erfgoed-components]
 
 
 == Introduction
@@ -31,7 +31,7 @@ Routing for the application should not be considered for this feature. This will
 
 The authenticate feature setup is complete.
 
-All components and services are to be made in the '@digita-ai/nde-erfgoed-manage' package, unless specified otherwise.
+All components and services are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-manage' package, unless specified otherwise.
 
 
 == Solution
@@ -52,7 +52,7 @@ The finished component should look like this:
 
 image::../images/authenticate/button.svg[ButtonComponent]
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/common/button/button.component.ts', with tag `<nde-button>`
+Generate in '@netwerk-digitaal-erfgoed/solid-crs-components' package under 'lib/common/button/button.component.ts', with tag `<nde-button>`
 
 These buttons consist of three parts:
 

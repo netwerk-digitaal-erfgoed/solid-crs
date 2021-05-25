@@ -1,7 +1,7 @@
 = Authenticeer
-:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling Solid CBS.
+:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling Solid CRS.
 :sectanchors:
-:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Hoe log ik in op het Collectiebeheersysteem van mijn erfgoedinstelling?

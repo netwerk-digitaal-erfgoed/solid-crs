@@ -6,27 +6,27 @@
     },
     {
       "name": "manage",
-      "path": "packages/solid-cbs-manage"
+      "path": "packages/solid-crs-manage"
     },
     {
       "name": "components",
-      "path": "packages/solid-cbs-components"
+      "path": "packages/solid-crs-components"
     },
     {
       "name": "client",
-      "path": "packages/solid-cbs-client"
+      "path": "packages/solid-crs-client"
     },
     {
       "name": "core",
-      "path": "packages/solid-cbs-core"
+      "path": "packages/solid-crs-core"
     },
     {
       "name": "theme",
-      "path": "packages/solid-cbs-theme"
+      "path": "packages/solid-crs-theme"
     },
     {
       "name": "pods",
-      "path": "packages/solid-cbs-pods"
+      "path": "packages/solid-crs-pods"
     },
   ],
   "settings": {

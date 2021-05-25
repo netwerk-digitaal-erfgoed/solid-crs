@@ -1,6 +1,6 @@
 = Technical Documentation: Create content header 
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=682525025[Wrike task]
 * Branch: `feat/create-content-header-component`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
 
 
 == Introduction
@@ -24,7 +24,7 @@ This document is about the creation of a reusable content header component.
 
 === Assumptions
 
-All components are to be made in the '@digita-ai/nde-erfgoed-components' package.
+All components are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-components' package.
 
 
 == Solution
@@ -38,7 +38,7 @@ The finished component should look like this:
 image::../images/collections/content-header.svg[ContentHeaderComponent]
 
 
-Generate in '@digita-ai/nde-erfgoed-components' package under 'lib/header/content-header.component.ts', with tag `<nde-content-header>`
+Generate in '@netwerk-digitaal-erfgoed/solid-crs-components' package under 'lib/header/content-header.component.ts', with tag `<nde-content-header>`
 
 Make use of https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#slot[named slots] for the icon on the left, the title, subtitle and actions to the right. The component should be able to switch colors (see image) based on an 'inverse' property. Take a look at `FormElementComponent`, where it is used to disable the blue border. This component also makes use of slots.
 

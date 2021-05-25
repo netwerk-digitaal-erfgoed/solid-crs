@@ -1,0 +1,99 @@
+{
+  "name": "@netwerk-digitaal-erfgoed/solid-crs-components",
+  "version": "0.3.0",
+  "description": "Collection of Semantic Components for the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "main": "./dist/solid-crs-components.umd.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/solid-crs-components.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/solid-crs-components.es.js",
+      "require": "./dist/solid-crs-components.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "start": "npm run start:watch",
+    "start:watch": "vite --config vite.serve.config.ts",
+    "build": "rimraf ./dist && vite build --config vite.build.config.ts && tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:staged": "lint-staged",
+    "test": "jest",
+    "test:ci": "jest --silent --runInBand --passWithNoTests",
+    "test:watch": "jest --watch --no-coverage",
+    "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
+  },
+  "dependencies": {
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.3.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.3.0",
+    "@digita-ai/semcom-core": "0.3.4",
+    "lit-element": "2.4.0",
+    "rx-lit": "1.0.1",
+    "rxjs": "^6.6.7",
+    "xstate": "^4.17.1"
+  },
+  "devDependencies": {
+    "@digita-ai/typescript-config": "^0.3.3",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^14.14.44",
+    "eslint": "^7.16.0",
+    "jest": "^26.6.3",
+    "jest-coverage-thresholds-bumper": "0.0.4",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
+    "lint-staged": "^10.5.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "vite": "2.2.3"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netwerk-digitaal-erfgoed/solid-crs.git",
+    "directory": "packages/solid-crs-components"
+  },
+  "bugs": {
+    "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
+  },
+  "jest": {
+    "displayName": "components",
+    "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "setupFiles": [
+      "<rootDir>/tests/setup.ts"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(lit-element|lit-html|rx-lit)/)"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 81.32,
+        "functions": 86.89,
+        "lines": 95.7,
+        "statements": 95.19
+      }
+    },
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*\\.conf(ig)?.ts",
+      "<rootDir>/lib/index.ts",
+      "<rootDir>/lib/demo.ts",
+      "<rootDir>/lib/demo/"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.spec.json",
+        "diagnostics": {
+          "warnOnly": true
+        }
+      }
+    }
+  }
+}

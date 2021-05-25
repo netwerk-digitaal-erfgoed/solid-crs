@@ -8,7 +8,7 @@
 
 * https://www.wrike.com/open.htm?id=684058826[Wrike task]
 * Branch: `feat/create-object-root-page`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 
 == Introduction
@@ -37,7 +37,7 @@ The finished component should look like this:
 
 image::../../assets/objects/object-details.svg[CollectionObjectRootComponent]
 
-Create in '@digita-ai/nde-erfgoed-manage' package under 'lib/collection-object/collection-object-root.component'.
+Create in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/collection-object/collection-object-root.component'.
 
 The component contains a `ContentHeaderComponent` at the top, followed by the `CollectionObjectFormComponent`. The header contains the title and description of the current collection object. These should be made so that, when their text is clicked, they can be edited with input fields, just like collections. The value of these input fields can be saved by clicked the save action on the right, which replaces the edit icon. When editing (`CollectionObjectState.EDITING`), a new cancel icon is shown as well, to leave the editing state. The delete icon in the header should fire the `CollectCollectionObjectEventsionEvents.CLICKED_DELETE` event.
 
@@ -50,7 +50,7 @@ To the right of the `CollectionObjectFormComponent` is a secondary sidebar (inve
 * Other
 * (Acquisition)
 
-The subjects in Figma are outdated. The ones listed above can be found in the https://github.com/digita-ai/nde-erfgoedinstellingen/discussions/163[data model for collection objects], communicated by NDE. 
+The subjects in Figma are outdated. The ones listed above can be found in the https://github.com/netwerk-digitaal-erfgoed/solid-crs/discussions/163[data model for collection objects], communicated by NDE. 
 
 Each of these subjects, ideally, will have their own Semantic Component. Clicking subjects in the sidebar should automatically scroll to the right component in the `CollectionObjectFormComponent`.
 

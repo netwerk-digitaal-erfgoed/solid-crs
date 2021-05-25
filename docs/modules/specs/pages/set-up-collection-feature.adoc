@@ -1,6 +1,6 @@
 = Technical Documentation: Set up collection feature
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=684057269[Wrike task]
 * Branch: `feat/599439372-set-up-collection-feature`
-* Project: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 == Introduction
 

@@ -1,6 +1,6 @@
 = Technical Documentation: Create Solid store
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=684597956[Wrike task]
 * Branch: `feat/create-solid-store`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-manage]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
 
 
 == Introduction
@@ -24,7 +24,7 @@ This document is about the creation a Solid store, used for retrieving and stori
 
 === Assumptions
 
-The `SolidStore` is to be made in the '@digita-ai/nde-erfgoed-manage' package. Don't use core, as the current way of bundling Inrupt's SDK messes up bundled file sizes.
+The `SolidStore` is to be made in the '@netwerk-digitaal-erfgoed/solid-crs-manage' package. Don't use core, as the current way of bundling Inrupt's SDK messes up bundled file sizes.
 
 The predicates used for collections and collection objects are communicated by NDE.
 
@@ -34,7 +34,7 @@ The predicates used for collections and collection objects are communicated by N
 
 ==== ProfileInfo model
 
-Create in '@digita-ai/nde-erfgoed-core' package under 'lib/profile/profile-info.ts'.
+Create in '@netwerk-digitaal-erfgoed/solid-crs-core' package under 'lib/profile/profile-info.ts'.
 
 This model is mainly to fill in the information at the top of the primary navigation.
 
@@ -51,7 +51,7 @@ The model should look as follows:
 
 ==== SolidStore 
 
-Create in '@digita-ai/nde-erfgoed-manage' package under 'lib/common/solid/solid-store.ts'.
+Create in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/common/solid/solid-store.ts'.
 
 This service should allow for the retrieval of Pod data, specifically its `Collections`, `CollectionObjects`, as well as some profile information. (name, name of institution , ...)
 

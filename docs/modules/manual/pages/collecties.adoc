@@ -1,7 +1,7 @@
 = Hoe beheer ik de collecties van mijn erfgoedinstelling?
-:description: Een gebruikershandleiding voor het beheren van collecties in Solid CBS.
+:description: Een gebruikershandleiding voor het beheren van collecties in Solid CRS.
 :sectanchors:
-:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-cbs
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 :sectnums:
 
