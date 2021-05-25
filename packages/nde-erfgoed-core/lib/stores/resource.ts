@@ -9,5 +9,5 @@ export interface Resource {
   /**
    * When the resource was last updated
    */
-  updated?: number;
+  updated?: string;
 }

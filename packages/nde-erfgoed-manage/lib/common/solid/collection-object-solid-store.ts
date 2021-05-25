@@ -122,7 +122,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     return {
       uri: asUrl(collection),
-      updated: getUrl(collection, 'http://schema.org/dateModified'),
+      updated: getStringNoLocale(collection, 'http://schema.org/dateModified'),
       type: getUrl(collection, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
       additionalType: getUrl(collection, 'http://schema.org/additionalType'),
       identifier: getStringNoLocale(collection, 'http://schema.org/identifier'),

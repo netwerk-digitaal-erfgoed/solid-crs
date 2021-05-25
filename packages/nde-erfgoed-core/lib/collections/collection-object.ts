@@ -52,7 +52,7 @@ export interface CollectionObject extends Resource {
   /**
    * The creation date of the object.
    */
-  dateCreated?: number;
+  dateCreated?: string;
 
   /**
    * The creation location of the object.
