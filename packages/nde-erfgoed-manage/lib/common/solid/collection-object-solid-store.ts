@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, Thing, getStringNoLocale } from '@digita-ai/nde-erfgoed-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, Thing, getStringNoLocale, createThing, addStringNoLocale, addUrl, addStringWithLocale } from '@digita-ai/nde-erfgoed-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError } from '@digita-ai/nde-erfgoed-core';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -103,43 +103,86 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
   /**
    * Converts a Collection to a Thing
    *
-   * @param collection The collection to convert
+   * @param object The collection to convert
    * @returns a Thing
    */
-  static toThing(collection: CollectionObject): Thing {
+  static toThing(object: CollectionObject): ThingPersisted {
 
-    throw new Error('Method not implemented.');
+    if (!object) {
+
+      throw new ArgumentError('Argument object should be set', object);
+
+    }
+
+    let result = createThing({ url: object.uri });
+
+    // identification
+    result = addStringNoLocale(result, 'http://schema.org/dateModified', object.updated);
+    result = addUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type);
+    result = addUrl(result, 'http://schema.org/additionalType', object.additionalType);
+    result = addStringNoLocale(result, 'http://schema.org/identifier', object.identifier);
+    result = addStringWithLocale(result, 'http://schema.org/name', 'nl', object.name);
+    result = addStringWithLocale(result, 'http://schema.org/description', 'nl', object.description);
+    result = addUrl(result, 'http://schema.org/isPartOf', object.collection);
+    result = addUrl(result, 'http://schema.org/maintainer', object.maintainer);
+
+    // creation
+    result = addUrl(result, 'http://schema.org/creator', object.creator);
+    result = addUrl(result, 'http://schema.org/locationCreated', object.locationCreated);
+    result = addUrl(result, 'http://schema.org/material', object.material);
+    result = addStringNoLocale(result, 'http://schema.org/dateCreated', object.dateCreated);
+
+    // representation
+    // dimensions
+    // => todo figure out blank nodes
+
+    // other
+    result = addUrl(result, 'http://schema.org/image', object.image);
+    result = addUrl(result, 'http://schema.org/mainEntityOfPage', object.mainEntityOfPage);
+
+    return result;
 
   }
 
   /**
    * Creates a Collection from a ThingPersisted
    *
-   * @param collection The collection to convert
+   * @param object The collection to convert
    * @returns a Collection
    */
-  static fromThing(collection: ThingPersisted): CollectionObject {
+  static fromThing(object: ThingPersisted): CollectionObject {
+
+    if (!object) {
+
+      throw new ArgumentError('Argument object should be set', object);
+
+    }
 
     return {
-      uri: asUrl(collection),
-      updated: getStringNoLocale(collection, 'http://schema.org/dateModified'),
-      type: getUrl(collection, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-      additionalType: getUrl(collection, 'http://schema.org/additionalType'),
-      identifier: getStringNoLocale(collection, 'http://schema.org/identifier'),
-      name: getStringWithLocale(collection, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(collection, 'http://schema.org/description', 'nl'),
-      collection: getUrl(collection, 'http://schema.org/isPartOf'),
-      maintainer: getUrl(collection, 'http://schema.org/maintainer'),
+      // identification
+      uri: asUrl(object),
+      updated: getStringNoLocale(object, 'http://schema.org/dateModified'),
+      type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+      additionalType: getUrl(object, 'http://schema.org/additionalType'),
+      identifier: getStringNoLocale(object, 'http://schema.org/identifier'),
+      name: getStringWithLocale(object, 'http://schema.org/name', 'nl'),
+      description: getStringWithLocale(object, 'http://schema.org/description', 'nl'),
+      collection: getUrl(object, 'http://schema.org/isPartOf'),
+      maintainer: getUrl(object, 'http://schema.org/maintainer'),
 
-      creator: getUrl(collection, 'http://schema.org/creator'),
-      locationCreated: getUrl(collection, 'http://schema.org/locationCreated'),
-      material: getUrl(collection, 'http://schema.org/material'),
-      dateCreated: getStringNoLocale(collection, 'http://schema.org/dateCreated'),
+      // creation
+      creator: getUrl(object, 'http://schema.org/creator'),
+      locationCreated: getUrl(object, 'http://schema.org/locationCreated'),
+      material: getUrl(object, 'http://schema.org/material'),
+      dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated'),
 
-      // todo figure out blank nodes
+      // representation
+      // dimensions
+      // => todo figure out blank nodes
 
-      image: getUrl(collection, 'http://schema.org/image'),
-      mainEntityOfPage: getUrl(collection, 'http://schema.org/mainEntityOfPage'),
+      // other
+      image: getUrl(object, 'http://schema.org/image'),
+      mainEntityOfPage: getUrl(object, 'http://schema.org/mainEntityOfPage'),
     } as CollectionObject;
 
   }

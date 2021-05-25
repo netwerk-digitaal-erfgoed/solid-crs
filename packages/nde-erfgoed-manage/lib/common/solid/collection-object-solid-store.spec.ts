@@ -138,17 +138,21 @@ describe('CollectionObjectSolidStore', () => {
 
   describe('fromThing', () => {
 
-    it('should throw', async () => {
+    it.each([ null, undefined ])('should error when object is %s', async (value) => {
 
-      await expect(CollectionObjectSolidStore.fromThing(undefined)).rejects.toThrow();
+      await expect(CollectionObjectSolidStore.fromThing(value)).rejects.toThrow('Argument object should be set');
 
     });
 
   });
 
-  it('should ', () => {
+  describe('toThing', () => {
 
-    expect(true).toBeTruthy();
+    it.each([ null, undefined ])('should error when object is %s', async (value) => {
+
+      await expect(CollectionObjectSolidStore.toThing(value)).rejects.toThrow('Argument object should be set');
+
+    });
 
   });
 

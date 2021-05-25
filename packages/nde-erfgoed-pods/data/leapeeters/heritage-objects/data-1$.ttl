@@ -1,201 +1,150 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix schema: <http://schema.org/> .
 
-# Heritage object: description of a 'real' heritage object
-
 <#object-1>
-    ########################################
-    # Group: "Identificatie"
-    ########################################
 
-    # Field: "Type"
-    # To discuss: which types should we (initially) support? For example: schema:Photograph, schema:VisualArtwork, schema:Drawing
+    # IDENTICATION
+
     rdf:type schema:Photograph ;
-
-    # Field: "Objectnaam"
     schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
-    # To discuss: the type of the external resource can be anything. Should we make this explicit? E.g.:
-    # schema:additionalType [
-    #     rdf:type schema:DefinedTerm ;
-    #     schema:name "bidprentjes" ;
-    #     schema:sameAs <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c>
-    # ] ;
-
-    # Field: "Objectnummer"
     schema:identifier "SK-A-1115" ;
-
-     # Field: "Titel"
     schema:name "De Slag bij Waterloo"@nl ;
-
-     # Field: "Korte beschrijving"
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
-
-    # Field: "Collectie"
-    schema:isPartOf <https://data.hetlageland.org/datasets/1234> ;
-
-    # Field: "Bewaarinstelling".
-    # To discusss: should we use this property? It is proposed, not official. Or should the 'schema:maintainer' be part of the dataset description?
+    schema:isPartOf <http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1> ;
     schema:maintainer <https://data.hetlageland.org/> ;
 
-    ########################################
-    # Group: "Vervaardiging"
-    ########################################
 
-    # Field: "Vervaardiger"
+    # CREATION
+
     schema:creator <https://data.rkd.nl/artists/63369> ;
-    # To discuss: the type of the external resource may not be a schema:Person or schema:Organization. Should we make this explicit? E.g.:
-    # schema:creator [
-    #     rdf:type schema:Person ;
-    #     schema:name "Jan Willem Pieneman" ;
-    #     schema:sameAs <https://data.rkd.nl/artists/63369>
-    # ] ;
-
-    # Field: "Plaats"
     schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
-    # To discuss: the type of the external resource may not be a schema:Place. Should we make this explicit? E.g.:
-    # schema:locationCreated [
-    #     rdf:type schema:Place ;
-    #     schema:name "Delft" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q33432813>
-    # ] ;
-
-    # Field: "Materiaal"
     schema:material <http://vocab.getty.edu/aat/300015050> ;
-    # To discuss: the type of the external resource can be anything. Should we make this explicit? E.g.:
-    # schema:material [
-    #     rdf:type schema:DefinedTerm ;
-    #     schema:name "olieverf" ;
-    #     schema:sameAs <http://vocab.getty.edu/aat/300015050>
-    # ] ;
-
-    # Field: "Einddatum"
-    # To discuss: Schema.org doesn't have properties for the 'Begindatum' and 'Einddatum' of creation. How to handle this?
     schema:dateCreated "1824-07-24" ;
 
-    # To discuss: rather than using the properties above we can also use actions (see also 'Group: Verwerving'):
-    # schema:potentialAction [
-    #     rdf:type schema:CreateAction ;
-    #     schema:agent <https://data.rkd.nl/artists/63369> ; # Field: "Vervaardiger"
-    #     schema:location <http://www.wikidata.org/entity/Q33432813> ; # Field: "Plaats"
-    #     schema:startTime "1824-02-12" ; # Field: "Begindatum"
-    #     schema:endTime "1824-07-24" # Field: "Einddatum"
-    # ] ;
 
-    ########################################
-    # Group: "Voorstelling"
-    ########################################
+    # REPRESENTATION
 
-    # Field: "Onderwerp"
     schema:about [
         rdf:type schema:DefinedTerm ;
         schema:name "veldslagen" ;
         schema:sameAs <http://vocab.getty.edu/aat/300185692>
     ] ;
-
-    # Field: "Locatie"
-    # To discuss: or use 'schema:contentLocation'?
     schema:about [
         rdf:type schema:Place ;
         schema:name "Waterloo" ;
         schema:sameAs <http://www.wikidata.org/entity/Q31579578>
     ] ;
-
-    # Field: "Persoon of instelling"
     schema:about [
-        rdf:type schema:Person ; # Or: schema:Organization
+        rdf:type schema:Person ;
         schema:name "Arthur Wellesley of Wellington" ;
         schema:sameAs <http://www.wikidata.org/entity/Q131691>
     ] ;
-
-    # Field: "Gebeurtenis"
     schema:about [
         rdf:type schema:Event ;
         schema:name "Slag bij Waterloo" ;
         schema:sameAs <http://www.wikidata.org/entity/Q48314>
     ] ;
 
-    ########################################
-    # Group: "Verwerving"
-    ########################################
 
-    # To discuss: can we register this information, but not publish it?
-    # It may contain sensitive data, e.g. prices and names of persons. How to handle this?
-    schema:potentialAction [
-        # Field: "Type"
-        # To discuss: is there a specific class for denoting a 'Verwerving' in Schema.org? E.g. schema:TransferAction, schema:TradeAction?
-        rdf:type schema:Action ;
+    # DIMENSIONS
 
-        # Field: "Methode"
-        schema:additionalType <http://vocab.getty.edu/aat/300138913> ;
-        # To discuss: the type of the external resource can be anything. Should we make this explicit? E.g.:
-        # schema:additionalType [
-        #     rdf:type schema:DefinedTerm ;
-        #     schema:name "schenkingen" ;
-        #     schema:sameAs <http://vocab.getty.edu/aat/300138913>
-        # ] ;
-
-        # Field: "Datum"
-        schema:startTime "1986-06-17" ;
-
-        # Field: "Datum" (same value as 'schema:startTime')
-        schema:endTime "1986-06-17" ;
-
-        # Field: "Bron"
-        schema:agent [
-            rdf:type schema:Person ;
-            schema:name "Gijsbert van Loosdrecht"
-        ] ;
-
-        # Field: "Aankoopprijs"
-        schema:price 1000 ;
-
-        # Field: "Valuta aankoopprijs" (ISO-421)
-        schema:priceCurrency "EUR"
-    ] ;
-
-    ########################################
-    # Group: "Afmetingen"
-    ########################################
-
-    # To discuss: Schema.org doesn't support all dimensions of the 'Basisregistratie', such as 'scale' and 'diameter'. How to handle these?
-    # Alternatively, we could use a generic 'schema:size' property, with a textual string (e.g. 'hoogte: 56,7cm; breedte: 82,3cm')
-
-    # Field: "Dimensie": "hoogte"
     schema:height [
         rdf:type: schema:QuantitativeValue ;
-        schema:unitCode: "CMT" ; # Field: "Eenheid" (UN/CEFACT Common Code)
-        schema:value: 567 # Field: "Waarde"
+        schema:unitCode: "CMT" ;
+        schema:value: 56
     ] ;
-
-    # Field: "Dimensie": "breedte"
     schema:width [
         rdf:type: schema:QuantitativeValue ;
-        schema:unitCode: "CMT" ; # Field: "Eenheid" (UN/CEFACT Common Code)
-        schema:value: 823 # Field: "Waarde"
+        schema:unitCode: "CMT" ;
+        schema:value: 82
     ] ;
-
-    # Field: "Dimensie": "diepte"
     schema:depth [
         rdf:type: schema:QuantitativeValue ;
-        schema:unitCode: "CMT" ; # Field: "Eenheid" (UN/CEFACT Common Code)
-        schema:value: 25 # Field: "Waarde"
+        schema:unitCode: "CMT" ;
+        schema:value: 2
     ] ;
-
-    # Field: "Dimensie": "gewicht"
     schema:weight [
         rdf:type: schema:QuantitativeValue ;
-        schema:unitCode: "KGM" ; # Field: "Eenheid" (UN/CEFACT Common Code)
-        schema:value: 1200 # Field: "Waarde"
+        schema:unitCode: "KGM" ;
+        schema:value: 120
     ] ;
 
-    ########################################
-    # Group: "Overig"
-    ########################################
 
-    # To discuss: Schema.org doesn't have properties for denoting the 'Toestand' and 'Huidige standplaats' of things.
-    # How to handle these? Perhaps omit these properties for the time being?
+    # OTHER
 
-    # For linking the heritage object to the digital object
     schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234> .
-    # To discuss: the type pointed to in 'schema:mainEntityOfPage' can be anything. Is it useful to have a 'convenience property' to the image? E.g.:
-    # schema:image <https://data.hetlageland.org/digital-objects/1234> .
+
+
+
+<#object-2>
+
+    # IDENTICATION
+
+    rdf:type schema:Photograph ;
+    schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
+    schema:identifier "SK-A-1115" ;
+    schema:name "De Slag bij Waterloo"@nl ;
+    schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
+    schema:isPartOf <http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1> ;
+    schema:maintainer <https://data.hetlageland.org/> ;
+
+
+    # CREATION
+
+    schema:creator <https://data.rkd.nl/artists/63369> ;
+    schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
+    schema:material <http://vocab.getty.edu/aat/300015050> ;
+    schema:dateCreated "1824-07-24" ;
+
+
+    # REPRESENTATION
+
+    schema:about [
+        rdf:type schema:DefinedTerm ;
+        schema:name "veldslagen" ;
+        schema:sameAs <http://vocab.getty.edu/aat/300185692>
+    ] ;
+    schema:about [
+        rdf:type schema:Place ;
+        schema:name "Waterloo" ;
+        schema:sameAs <http://www.wikidata.org/entity/Q31579578>
+    ] ;
+    schema:about [
+        rdf:type schema:Person ;
+        schema:name "Arthur Wellesley of Wellington" ;
+        schema:sameAs <http://www.wikidata.org/entity/Q131691>
+    ] ;
+    schema:about [
+        rdf:type schema:Event ;
+        schema:name "Slag bij Waterloo" ;
+        schema:sameAs <http://www.wikidata.org/entity/Q48314>
+    ] ;
+
+
+    # DIMENSIONS
+
+    schema:height [
+        rdf:type: schema:QuantitativeValue ;
+        schema:unitCode: "CMT" ;
+        schema:value: 56
+    ] ;
+    schema:width [
+        rdf:type: schema:QuantitativeValue ;
+        schema:unitCode: "CMT" ;
+        schema:value: 82
+    ] ;
+    schema:depth [
+        rdf:type: schema:QuantitativeValue ;
+        schema:unitCode: "CMT" ;
+        schema:value: 2
+    ] ;
+    schema:weight [
+        rdf:type: schema:QuantitativeValue ;
+        schema:unitCode: "KGM" ;
+        schema:value: 120
+    ] ;
+
+
+    # OTHER
+
+    schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234> .
