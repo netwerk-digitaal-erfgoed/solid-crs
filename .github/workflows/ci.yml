@@ -137,7 +137,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_pods }}:latest
-#            ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
 
       - name: Build and push manage
         uses: docker/build-push-action@v2
@@ -146,6 +146,6 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_manage }}:latest
-#            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
