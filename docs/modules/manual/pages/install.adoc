@@ -67,6 +67,13 @@ To be safe, backup all of your existing repositories, or simply create a new fol
 $ git clone git@github.com:digita-ai/nde-erfgoedinstellingen.git
 ----
 
-In order to pull and publish packages from Github, you need to authenticate by using a personal access token. Start by generating one which has at least the `+write:packages+` and `+read:packages+` scopes on https://github.com/settings/tokens[this page]. Note that you will not be able to recover or view the token after it has been created, so keep it somewhere safe.
+In order to pull and publish packages from GitHub, you need to https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry[authenticate by using a personal access token]. Start by generating one which has at least the `+write:packages+` and `+read:packages+` scopes on https://github.com/settings/tokens[this page]. Note that you will not be able to recover or view the token after it has been created, so keep it somewhere safe.
 
-Set this token to an environment variable with key 'NPM_TOKEN' (https://gist.github.com/iest/58692bf1001b0424c257[bash, zsh, fish], https://superuser.com/questions/949560/how-do-i-set-system-environment-variables-in-windows-10[Windows]).
+[source,bash]
+----
+$ npm login --registry=https://npm.pkg.github.com
+Username: [your GitHub username]
+Password: [your personal access token]
+Email: [your GitHub e-mail address]
+----
+
