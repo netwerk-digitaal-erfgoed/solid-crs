@@ -1,0 +1,202 @@
+[
+    {
+        "key": "nde.app.root.title",
+        "locale": "nl-NL",
+        "value": "App"
+    },
+    {
+        "key": "nde.root.alerts.error",
+        "locale": "nl-NL",
+        "value": "Er ging iets fout"
+    },
+    {
+        "key": "nde.collections.alerts.created-collection",
+        "locale": "nl-NL",
+        "value": "Collectie aangemaakt"
+    },
+    {
+        "key": "nde.navigation.search.title",
+        "locale": "nl-NL",
+        "value": "Zoeken"
+    },
+    {
+        "key": "nde.navigation.collections.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.collections.card.name-unavailable",
+        "locale": "nl-NL",
+        "value": "Naam onbekend"
+    },
+    {
+        "key": "nde.collections.card.subject-unavailable",
+        "locale": "nl-NL",
+        "value": "Onderwerp onbekend"
+    },
+    {
+        "key": "nde.features.collections.root.empty.create-object-title",
+        "locale": "nl-NL",
+        "value": "Maak je eerste object aan"
+    },
+    {
+        "key": "nde.features.collections.root.empty.create-object-button",
+        "locale": "nl-NL",
+        "value": "Object aanmaken"
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.no-webid",
+        "locale": "nl-NL",
+        "value": "Gelieve een WebID in te voeren."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.invalid-url",
+        "locale": "nl-NL",
+        "value": "Gelieve een geldig WebID in te voeren."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.no-profile",
+        "locale": "nl-NL",
+        "value": "Er werd geen actieve profielpagina gevonden voor deze WebID."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.no-oidc-registration",
+        "locale": "nl-NL",
+        "value": "De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ."
+    },
+    {
+        "key": "nde.features.authenticate.error.invalid-webid.invalid-oidc-registration",
+        "locale": "nl-NL",
+        "value": "De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ."
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.title",
+        "locale": "nl-NL",
+        "value": "Collectiebeheersysteem"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.webid-placeholder",
+        "locale": "nl-NL",
+        "value": "bv. https://profile.janjanssens.nl/"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.webid-label",
+        "locale": "nl-NL",
+        "value": "WebID"
+    },
+    {
+        "key": "nde.features.authenticate.pages.login.create-webid",
+        "locale": "nl-NL",
+        "value": "Nog geen WebID? Klik <a href=\"https://pods.nde.nl\">hier</a>."
+    },
+    {
+        "key": "nde.features.collections.alerts.created-collection",
+        "locale": "nl-NL",
+        "value": "Collectie aangemaakt"
+    },
+    {
+        "key": "nde.features.collections.root.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.features.collections.card.name-unavailable",
+        "locale": "nl-NL",
+        "value": "Naam onbekend"
+    },
+    {
+        "key": "nde.features.collections.card.subject-unavailable",
+        "locale": "nl-NL",
+        "value": "Onderwerp onbekend"
+    },
+    {
+        "key": "nde.features.collections.new-collection-name",
+        "locale": "nl-NL",
+        "value": "Nieuwe collectie"
+    },
+    {
+        "key": "nde.features.collections.new-collection-description",
+        "locale": "nl-NL",
+        "value": "Beschrijving van deze collectie"
+    },
+    {
+        "key": "nde.features.search.header.search-results-for",
+        "locale": "nl-NL",
+        "value": "Zoekresultaten voor"
+    },
+    {
+        "key": "nde.features.search.header.subtitle",
+        "locale": "nl-NL",
+        "value": "We hebben dit gevonden"
+    },
+    {
+        "key": "nde.features.search.root.empty.no-search-results",
+        "locale": "nl-NL",
+        "value": "Geen zoekresultaten voor deze zoekterm!"
+    },
+    {
+        "key": "nde.features.search.root.empty.go-back",
+        "locale": "nl-NL",
+        "value": "Ga terug"
+    },
+    {
+        "key": "nde.features.search.root.objects",
+        "locale": "nl-NL",
+        "value": "Objecten"
+    },
+    {
+        "key": "nde.features.search.root.collections",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.common.date.just-now",
+        "locale": "nl-NL",
+        "value": "enkele ogenblikken geleden"
+    },
+    {
+        "key": "nde.common.date.minutes-ago",
+        "locale": "nl-NL",
+        "value": "minuten geleden"
+    },
+    {
+        "key": "nde.common.date.hour-ago",
+        "locale": "nl-NL",
+        "value": "uur geleden"
+    },
+    {
+        "key": "nde.common.date.hours-ago",
+        "locale": "nl-NL",
+        "value": "uur geleden"
+    },
+    {
+        "key": "nde.common.date.day-ago",
+        "locale": "nl-NL",
+        "value": "dag geleden"
+    },
+    {
+        "key": "nde.common.date.days-ago",
+        "locale": "nl-NL",
+        "value": "dagen geleden"
+    },
+    {
+        "key": "nde.common.date.month-ago",
+        "locale": "nl-NL",
+        "value": "maand geleden"
+    },
+    {
+        "key": "nde.common.date.months-ago",
+        "locale": "nl-NL",
+        "value": "maanden geleden"
+    },
+    {
+        "key": "nde.common.date.year-ago",
+        "locale": "nl-NL",
+        "value": "jaar geleden"
+    },
+    {
+        "key": "nde.common.date.years-ago",
+        "locale": "nl-NL",
+        "value": "jaar geleden"
+    }
+]

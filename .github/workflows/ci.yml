@@ -80,19 +80,19 @@ jobs:
 
       - run: npm run build:all
 
-      - run: npm publish packages/nde-erfgoed-theme
+      - run: npm publish packages/solid-crs-theme
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-core
+      - run: npm publish packages/solid-crs-core
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-components
+      - run: npm publish packages/solid-crs-components
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-client
+      - run: npm publish packages/solid-crs-client
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
@@ -126,9 +126,9 @@ jobs:
         id: docker_build_pods
         uses: docker/build-push-action@v2
         with:
-          context: packages/nde-erfgoed-pods/
+          context: packages/solid-crs-pods/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-pods:latest,ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
+          tags: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:latest,ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
@@ -136,9 +136,9 @@ jobs:
         id: docker_build_manage
         uses: docker/build-push-action@v2
         with:
-          context: packages/nde-erfgoed-manage/
+          context: packages/solid-crs-manage/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-manage:latest,ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
+          tags: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest,ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
           build-args: |
             NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
@@ -171,12 +171,12 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: nde-erfgoed-pods-develop
-          image: ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
+          dns-name-label: solid-crs-pods-develop
+          image: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods:${{ steps.extract-tag.outputs.tag }}
           registry-login-server: ghcr.io
           registry-username: ${{ secrets.GA_USERNAME }}
           registry-password: ${{ secrets.GA_TOKEN }}
-          name: nde-erfgoed-pods-develop
+          name: solid-crs-pods-develop
           location: 'west europe'
           ports: 80
           command-line: ./node_modules/.bin/community-solid-server -b https://pods.nde.digita.ai -p 80 --rootFilePath /tmp/css -c config/config-file.json -l debug
@@ -186,12 +186,12 @@ jobs:
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: nde-erfgoed-manage-develop
-          image: ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
+          dns-name-label: solid-crs-manage-develop
+          image: ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:${{ steps.extract-tag.outputs.tag }}
           registry-login-server: ghcr.io
           registry-username: ${{ secrets.GA_USERNAME }}
           registry-password: ${{ secrets.GA_TOKEN }}
-          name: nde-erfgoed-manage-develop
+          name: solid-crs-manage-develop
           location: 'west europe'
           ports: 3002
           # ip-address: 'Private'

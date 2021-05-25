@@ -1,6 +1,6 @@
 = Technical Documentation: Create collection overview page
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=682525025[Wrike task]
 * Branch: `feat/create-content-header-component`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
 
 
 == Introduction
@@ -40,7 +40,7 @@ The finished component should look like this:
 
 image::../images/collections/collection-root.svg[CollectionRootComponent]
 
-Create in '@digita-ai/nde-erfgoed-manage' package under 'lib/collections/pages/collection-root.component'. (might already exist)
+Create in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/collections/pages/collection-root.component'. (might already exist)
 
 The component contains a `ContentHeaderComponent` at the top, followed by a https://css-tricks.com/snippets/css/complete-guide-grid/[grid] of `ObjectCardComponents`. The header contains the title and description of the current component. These should be made so that, when the edit action icon is clicked, they can be edited with input fields. The value of these input fields can be saved by clicked the save action on the right, which replaces the edit icon. When editing (`CollectionsState.EDITING`), a new cancel icon is shown as well, to leave the editing state. The other two action icons in the header, create and delete, should fire the `CollectionEvents.CLICKED_CREATE_OBJECT` and `CollectionEvents.CLICKED_DELETE` events, respectively.
 
@@ -58,7 +58,7 @@ The finished component should look like this:
 
 image::../images/collections/app-root.svg[AppRootComponent]
 
-Exists in '@digita-ai/nde-erfgoed-manage' package under 'lib/'.
+Exists in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/'.
 
 The component consists of the sidebar component, with a `ContentHeaderComponent`, an input field (`FormElementComponent`) and all found collections as `SidebarListItemComponents` in a `SidebarListComponent`. A detailed view of the currently selected collection (`CollectionRootComponent`) is visible on the right. (using a `CollectionRootComponent`)
 

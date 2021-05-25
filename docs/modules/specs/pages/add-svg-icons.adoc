@@ -1,6 +1,6 @@
 = Technical Documentation: Add svg icons
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
 == Author(s)
@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=682525025[Wrike task]
 * Branch: `feat/add-svg-icons`
-* Projects: https://github.com/digita-ai/nde-erfgoedinstellingen[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
 
 
 == Introduction
@@ -24,7 +24,7 @@ This document is about the creation of new, reusable svg icons.
 
 === Assumptions
 
-All changes are to be made in the '@digita-ai/nde-erfgoed-theme' package.
+All changes are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-theme' package.
 
 
 == Solution
@@ -39,7 +39,7 @@ image::../images/collections/icons-1.svg[Icons]
 image::../images/collections/icons-2.svg[Icons]
 
 
-Create in '@digita-ai/nde-erfgoed-theme' package under 'lib/icon/'.
+Create in '@netwerk-digitaal-erfgoed/solid-crs-theme' package under 'lib/icon/'.
 
 I suggest the following names:
 
