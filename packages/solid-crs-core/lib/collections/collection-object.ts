@@ -13,7 +13,7 @@ export interface CollectionObject extends Resource {
   type: string;
 
   /**
-   * The additionalType of the object.
+   * The name of the object.
    */
   additionalType?: string;
 
@@ -23,7 +23,7 @@ export interface CollectionObject extends Resource {
   identifier?: string;
 
   /**
-   * The name of the object.
+   * The title of the object.
    */
   name: string;
 
@@ -148,4 +148,9 @@ export interface CollectionObject extends Resource {
    * A link to the digital representation of this object.
    */
   mainEntityOfPage?: string;
+
+  /**
+   * The license of this object
+   */
+  license?: string;
 }

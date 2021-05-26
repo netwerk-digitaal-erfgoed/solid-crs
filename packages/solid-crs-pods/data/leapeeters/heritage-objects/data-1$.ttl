@@ -70,6 +70,7 @@
     schema:DefinedTerm "veldslagen" ;
     schema:Place "Waterloo" ;
     schema:Person "Arthur Wellesley of Wellington" ;
+    schema:Organization "Onbekend" ;
     schema:Event "Slag bij Waterloo" ;
 
 

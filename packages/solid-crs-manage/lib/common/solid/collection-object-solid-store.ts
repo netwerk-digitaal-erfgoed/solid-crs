@@ -177,6 +177,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     result = object.subject ? addStringNoLocale(result, 'http://schema.org/DefinedTerm', object.subject) : result;
     result = object.location ? addStringNoLocale(result, 'http://schema.org/Place', object.location) : result;
     result = object.person ? addStringNoLocale(result, 'http://schema.org/Person', object.person) : result;
+    result = object.organization ? addStringNoLocale(result, 'http://schema.org/Organization', object.organization) : result;
     result = object.event ? addStringNoLocale(result, 'http://schema.org/Event', object.event) : result;
 
     // dimensions
@@ -229,6 +230,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       subject: getStringNoLocale(object, 'http://schema.org/DefinedTerm') || undefined,
       location: getStringNoLocale(object, 'http://schema.org/Place') || undefined,
       person: getStringNoLocale(object, 'http://schema.org/Person') || undefined,
+      organization: getStringNoLocale(object, 'http://schema.org/Organization') || undefined,
       event: getStringNoLocale(object, 'http://schema.org/Event') || undefined,
 
       // dimensions
