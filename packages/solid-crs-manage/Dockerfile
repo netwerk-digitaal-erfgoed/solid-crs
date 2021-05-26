@@ -1,23 +1,19 @@
-FROM node:14-alpine
-
-LABEL org.opencontainers.image.source https://github.com/netwerk-digitaal-erfgoed/solid-crs
-
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-# Install app dependencies
+FROM node:14-alpine AS build
 ARG NPM_TOKEN
-COPY package.json /usr/src/app/
-COPY .npmrc /usr/src/app/
-RUN npm install
-
-# Bundle app source
-COPY . /usr/src/app
-
-RUN rm -f /usr/src/app/.npmrc
+WORKDIR /usr/src/app
+COPY package*.json ./
+COPY .npmrc ./
+RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
+    cat .npmrc && \
+    npm install && \
+    rm -f .npmrc
+COPY . .
 RUN npm run build
 
-# Expose ports.
+FROM node:14-alpine
+LABEL org.opencontainers.image.source=https://github.com/digita-ai/nde-erfgoedinstellingen
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY . .
 EXPOSE 3002
 CMD npm start
