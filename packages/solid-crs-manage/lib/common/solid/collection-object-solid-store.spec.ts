@@ -219,10 +219,19 @@ describe('CollectionObjectSolidStore', () => {
       expect(getStringWithLocale(result, 'http://schema.org/description', 'nl')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/isPartOf')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/maintainer')).toBeFalsy();
-      expect(getUrl(result, 'http://schema.org/creator')).toBeFalsy();
-      expect(getUrl(result, 'http://schema.org/locationCreated')).toBeFalsy();
-      expect(getUrl(result, 'http://schema.org/material')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/creator')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/locationCreated')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/material')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/dateCreated')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/DefinedTerm')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/Place')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/Person')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/Organization')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/Event')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/height')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/width')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/depth')).toBeFalsy();
+      expect(getStringNoLocale(result, 'http://schema.org/weight')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/image')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/mainEntityOfPage')).toBeFalsy();
 
@@ -244,6 +253,15 @@ describe('CollectionObjectSolidStore', () => {
         locationCreated: 'http://test.url/',
         material: 'http://test.url/',
         dateCreated: 'test',
+        subject: 'subject',
+        location: 'location',
+        person: 'person',
+        organization: 'organization',
+        event: 'event',
+        height: 0,
+        width: 0,
+        depth: 0,
+        weight: 0,
         image: 'http://test.url/',
         mainEntityOfPage: 'http://test.url',
       } as CollectionObject;
