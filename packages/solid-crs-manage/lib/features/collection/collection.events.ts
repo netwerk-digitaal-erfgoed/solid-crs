@@ -24,7 +24,7 @@ export enum CollectionEvents {
 /**
  * Fired when the user clicks the delete collection button.
  */
-export interface ClickedDeleteEvent extends Event<CollectionEvents> {
+export interface ClickedDeleteCollectionEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_DELETE;
   collection: Collection;
 }
@@ -77,7 +77,7 @@ export interface SavedCollectionEvent extends Event<CollectionEvents> {
  */
 export type CollectionEvent =
   SelectedCollectionEvent
-  | ClickedDeleteEvent
+  | ClickedDeleteCollectionEvent
   | ClickedEditEvent
   | ClickedSaveEvent
   | CancelledEditEvent

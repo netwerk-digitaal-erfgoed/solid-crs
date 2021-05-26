@@ -355,6 +355,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
+              [ObjectEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
