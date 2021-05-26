@@ -67,19 +67,9 @@ export interface CollectionObject extends Resource {
   // REPRESENTATION
 
   /**
-   * The subject name of the object.
-   */
-  subjectName?: string;
-
-  /**
    * The subject of the object.
    */
   subject?: string;
-
-  /**
-   * The location name of the object.
-   */
-  locationName?: string;
 
   /**
    * The location of the object.
@@ -87,29 +77,14 @@ export interface CollectionObject extends Resource {
   location?: string;
 
   /**
-   * The person name of the object.
-   */
-  personName?: string;
-
-  /**
    * The person of the object.
    */
   person?: string;
 
   /**
-   * The organization name of the object.
-   */
-  organizationName?: string;
-
-  /**
    * The organization of the object.
    */
   organization?: string;
-
-  /**
-   * The event name of the object.
-   */
-  eventName?: string;
 
   /**
    * The event of the object.
