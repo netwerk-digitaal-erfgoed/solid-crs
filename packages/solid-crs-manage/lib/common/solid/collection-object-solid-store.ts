@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getInteger, addInteger } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 
@@ -168,14 +168,22 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     result = object.maintainer ? addUrl(result, 'http://schema.org/maintainer', object.maintainer) : result;
 
     // creation
-    result = object.creator ? addUrl(result, 'http://schema.org/creator', object.creator) : result;
-    result = object.locationCreated ? addUrl(result, 'http://schema.org/locationCreated', object.locationCreated) : result;
-    result = object.material ? addUrl(result, 'http://schema.org/material', object.material) : result;
+    result = object.creator ? addStringNoLocale(result, 'http://schema.org/creator', object.creator) : result;
+    result = object.locationCreated ? addStringNoLocale(result, 'http://schema.org/locationCreated', object.locationCreated) : result;
+    result = object.material ? addStringNoLocale(result, 'http://schema.org/material', object.material) : result;
     result = object.dateCreated ? addStringNoLocale(result, 'http://schema.org/dateCreated', object.dateCreated) : result;
 
     // representation
+    result = object.subject ? addStringNoLocale(result, 'http://schema.org/DefinedTerm', object.subject) : result;
+    result = object.location ? addStringNoLocale(result, 'http://schema.org/Place', object.location) : result;
+    result = object.person ? addStringNoLocale(result, 'http://schema.org/Person', object.person) : result;
+    result = object.event ? addStringNoLocale(result, 'http://schema.org/Event', object.event) : result;
+
     // dimensions
-    // => todo figure out blank nodes
+    result = object.height ? addInteger(result, 'http://schema.org/height', object.height) : result;
+    result = object.width ? addInteger(result, 'http://schema.org/width', object.width) : result;
+    result = object.depth ? addInteger(result, 'http://schema.org/depth', object.depth) : result;
+    result = object.weight ? addInteger(result, 'http://schema.org/weight', object.weight) : result;
 
     // other
     result =  object.image ? addUrl(result, 'http://schema.org/image', object.image) : result;
@@ -212,19 +220,26 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       maintainer: getUrl(object, 'http://schema.org/maintainer') || undefined,
 
       // creation
-      creator: getUrl(object, 'http://schema.org/creator') || undefined,
-      locationCreated: getUrl(object, 'http://schema.org/locationCreated') || undefined,
-      material: getUrl(object, 'http://schema.org/material') || undefined,
+      creator: getStringNoLocale(object, 'http://schema.org/creator') || undefined,
+      locationCreated: getStringNoLocale(object, 'http://schema.org/locationCreated') || undefined,
+      material: getStringNoLocale(object, 'http://schema.org/material') || undefined,
       dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated') || undefined,
 
       // representation
+      subject: getStringNoLocale(object, 'http://schema.org/DefinedTerm') || undefined,
+      location: getStringNoLocale(object, 'http://schema.org/Place') || undefined,
+      person: getStringNoLocale(object, 'http://schema.org/Person') || undefined,
+      event: getStringNoLocale(object, 'http://schema.org/Event') || undefined,
+
       // dimensions
-      // => todo figure out blank nodes
+      height: getInteger(object, 'http://schema.org/height') || undefined,
+      width: getInteger(object, 'http://schema.org/width') || undefined,
+      depth: getInteger(object, 'http://schema.org/depth') || undefined,
+      weight: getInteger(object, 'http://schema.org/weight') || undefined,
 
       // other
       image: getUrl(object, 'http://schema.org/image') || undefined,
       mainEntityOfPage: getUrl(object, 'http://schema.org/mainEntityOfPage') || undefined,
-      subject: undefined,
     } as CollectionObject;
 
   }

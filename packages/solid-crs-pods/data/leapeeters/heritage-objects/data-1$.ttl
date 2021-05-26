@@ -16,58 +16,26 @@
 
     # CREATION
 
-    schema:creator <https://data.rkd.nl/artists/63369> ;
-    schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
-    schema:material <http://vocab.getty.edu/aat/300015050> ;
+    schema:creator "Jan Willem Pieneman" ;
+    schema:locationCreated "Delft" ;
+    schema:material "olieverf" ;
     schema:dateCreated "1824-07-24" ;
 
 
     # REPRESENTATION
 
-    # schema:about [
-    #     rdf:type schema:DefinedTerm ;
-    #     schema:name "veldslagen" ;
-    #     schema:sameAs <http://vocab.getty.edu/aat/300185692>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Place ;
-    #     schema:name "Waterloo" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q31579578>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Person ;
-    #     schema:name "Arthur Wellesley of Wellington" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q131691>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Event ;
-    #     schema:name "Slag bij Waterloo" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q48314>
-    # ] ;
+    schema:DefinedTerm "veldslagen" ;
+    schema:Place "Waterloo" ;
+    schema:Person "Arthur Wellesley of Wellington" ;
+    schema:Event "Slag bij Waterloo" ;
 
 
     # DIMENSIONS
 
-    # schema:height [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 56
-    # ] ;
-    # schema:width [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 82
-    # ] ;
-    # schema:depth [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 2
-    # ] ;
-    # schema:weight [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "KGM" ;
-    #     schema:value: 120
-    # ] ;
+    schema:height 56 ;
+    schema:width 82 ;
+    schema:depth 2 ;
+    schema:weight 120 ;
 
 
     # OTHER
@@ -91,58 +59,26 @@
 
     # CREATION
 
-    schema:creator <https://data.rkd.nl/artists/63369> ;
-    schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
-    schema:material <http://vocab.getty.edu/aat/300015050> ;
+    schema:creator "Jan Willem Pieneman" ;
+    schema:locationCreated "Delft" ;
+    schema:material "olieverf" ;
     schema:dateCreated "1824-07-24" ;
 
 
     # REPRESENTATION
 
-    # schema:about [
-    #     rdf:type schema:DefinedTerm ;
-    #     schema:name "veldslagen" ;
-    #     schema:sameAs <http://vocab.getty.edu/aat/300185692>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Place ;
-    #     schema:name "Waterloo" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q31579578>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Person ;
-    #     schema:name "Arthur Wellesley of Wellington" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q131691>
-    # ] ;
-    # schema:about [
-    #     rdf:type schema:Event ;
-    #     schema:name "Slag bij Waterloo" ;
-    #     schema:sameAs <http://www.wikidata.org/entity/Q48314>
-    # ] ;
+    schema:DefinedTerm "veldslagen" ;
+    schema:Place "Waterloo" ;
+    schema:Person "Arthur Wellesley of Wellington" ;
+    schema:Event "Slag bij Waterloo" ;
 
 
     # DIMENSIONS
 
-    # schema:height [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 56
-    # ] ;
-    # schema:width [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 82
-    # ] ;
-    # schema:depth [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "CMT" ;
-    #     schema:value: 2
-    # ] ;
-    # schema:weight [
-    #     rdf:type: schema:QuantitativeValue ;
-    #     schema:unitCode: "KGM" ;
-    #     schema:value: 120
-    # ] ;
+    schema:height 56 ;
+    schema:width 82 ;
+    schema:depth 2 ;
+    schema:weight 120 ;
 
 
     # OTHER

@@ -125,7 +125,7 @@ export interface CollectionObject extends Resource {
   /**
    * The height of the object.
    */
-  height?: string;
+  height?: number;
 
   /**
    * The height unit of the object.
@@ -135,7 +135,7 @@ export interface CollectionObject extends Resource {
   /**
    * The width of the object.
    */
-  width?: string;
+  width?: number;
 
   /**
    * The width unit of the object.
@@ -145,7 +145,7 @@ export interface CollectionObject extends Resource {
   /**
    * The depth of the object.
    */
-  depth?: string;
+  depth?: number;
 
   /**
    * The depth unit of the object.
@@ -155,7 +155,7 @@ export interface CollectionObject extends Resource {
   /**
    * The weight of the object.
    */
-  weight?: string;
+  weight?: number;
 
   /**
    * The weight unit of the object.
