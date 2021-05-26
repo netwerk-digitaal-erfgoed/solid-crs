@@ -62,9 +62,9 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         invoke: {
           src: (context, event) => objectStore.save(context.object),
           onDone: ObjectStates.IDLE,
-          // onError: {
-          //   actions: sendParent(AppEvents.ERROR),
-          // },
+          onError: {
+            actions: sendParent(AppEvents.ERROR),
+          },
         },
       },
       [ObjectStates.EDITING]: {
