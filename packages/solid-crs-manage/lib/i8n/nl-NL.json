@@ -150,6 +150,16 @@
         "value": "Collecties"
     },
     {
+        "key": "nde.features.object.new-object-name",
+        "locale": "nl-NL",
+        "value": "Nieuwe collectie"
+    },
+    {
+        "key": "nde.features.object.new-object-description",
+        "locale": "nl-NL",
+        "value": "Beschrijving van deze collectie"
+    },
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"

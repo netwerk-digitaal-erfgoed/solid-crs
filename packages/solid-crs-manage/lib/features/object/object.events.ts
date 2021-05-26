@@ -57,4 +57,5 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | ClickedSaveEvent
 | CancelledEditEvent
 | SelectedObjectEvent
-| FormSubmittedEvent;
+| FormSubmittedEvent
+| ClickedDeleteObjectEvent;
