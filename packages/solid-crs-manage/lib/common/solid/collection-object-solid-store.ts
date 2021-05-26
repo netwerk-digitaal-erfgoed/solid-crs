@@ -28,7 +28,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const objectThings = getThingAll(dataset).filter((thing) =>
       getUrl(thing, 'http://schema.org/isPartOf') === collection.uri); // a list of CollectionObject Things
 
-    if (!objectThings) {
+    if (!objectThings || objectThings.length === 0) {
 
       return [];
 
@@ -193,28 +193,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     return {
       // identification
       uri: asUrl(object),
-      updated: getStringNoLocale(object, 'http://schema.org/dateModified'),
-      type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
-      additionalType: getUrl(object, 'http://schema.org/additionalType'),
-      identifier: getStringNoLocale(object, 'http://schema.org/identifier'),
-      name: getStringWithLocale(object, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(object, 'http://schema.org/description', 'nl'),
-      collection: getUrl(object, 'http://schema.org/isPartOf'),
-      maintainer: getUrl(object, 'http://schema.org/maintainer'),
+      updated: getStringNoLocale(object, 'http://schema.org/dateModified') || undefined,
+      type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') || undefined,
+      additionalType: getUrl(object, 'http://schema.org/additionalType') || undefined,
+      identifier: getStringNoLocale(object, 'http://schema.org/identifier') || undefined,
+      name: getStringWithLocale(object, 'http://schema.org/name', 'nl') || undefined,
+      description: getStringWithLocale(object, 'http://schema.org/description', 'nl') || undefined,
+      collection: getUrl(object, 'http://schema.org/isPartOf') || undefined,
+      maintainer: getUrl(object, 'http://schema.org/maintainer') || undefined,
 
       // creation
-      creator: getUrl(object, 'http://schema.org/creator'),
-      locationCreated: getUrl(object, 'http://schema.org/locationCreated'),
-      material: getUrl(object, 'http://schema.org/material'),
-      dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated'),
+      creator: getUrl(object, 'http://schema.org/creator') || undefined,
+      locationCreated: getUrl(object, 'http://schema.org/locationCreated') || undefined,
+      material: getUrl(object, 'http://schema.org/material') || undefined,
+      dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated') || undefined,
 
       // representation
       // dimensions
       // => todo figure out blank nodes
 
       // other
-      image: getUrl(object, 'http://schema.org/image'),
-      mainEntityOfPage: getUrl(object, 'http://schema.org/mainEntityOfPage'),
+      image: getUrl(object, 'http://schema.org/image') || undefined,
+      mainEntityOfPage: getUrl(object, 'http://schema.org/mainEntityOfPage') || undefined,
       subject: undefined,
     } as CollectionObject;
 
