@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 
@@ -84,13 +84,22 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    *
    * @param resource The Collection to delete
    */
-  async delete(resource: CollectionObject): Promise<CollectionObject> {
+  async delete(object: CollectionObject): Promise<CollectionObject> {
 
-    // remove thing from objects file
+    if (!object) {
 
-    // remove reference from collection's distribution
+      throw new ArgumentError('Argument object should be set', object);
 
-    throw new Error('Method not implemented.');
+    }
+
+    // retrieve the objects dataset
+    const objectDataset = await getSolidDataset(object.uri, { fetch });
+    // remove thing from objects dataset
+    const updatedDataset = removeThing(objectDataset, object.uri);
+    // save the dataset
+    await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
+
+    return object;
 
   }
 

@@ -14,7 +14,6 @@ describe('CollectionObjectSolidStore', () => {
 
     service = new CollectionObjectSolidStore();
 
-    jest.clearAllMocks();
     jest.resetAllMocks();
 
     mockCollection = {
@@ -128,9 +127,24 @@ describe('CollectionObjectSolidStore', () => {
 
   describe('delete()', () => {
 
-    it('should throw', async () => {
+    it.each([ null, undefined ])('should error when object is %s', async (value) => {
 
-      await expect(service.delete(undefined)).rejects.toThrow();
+      await expect(service.delete(value)).rejects.toThrow('Argument object should be set');
+
+    });
+
+    it('should return collection when deleted', () => {
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.removeUrl = jest.fn(() => 'test-thing');
+      client.setThing = jest.fn(() => 'test-dataset');
+      client.removeThing = jest.fn(() => 'test-thing');
+      client.getUrl = jest.fn(() => 'test-url');
+      client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.deleteFile = jest.fn(async () => 'test-file');
+
+      expect(service.delete(mockObject)).resolves.toEqual(mockObject);
 
     });
 
