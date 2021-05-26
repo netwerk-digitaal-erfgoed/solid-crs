@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getInteger, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection, CollectionObject, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
@@ -228,10 +228,10 @@ describe('CollectionObjectSolidStore', () => {
       expect(getStringNoLocale(result, 'http://schema.org/Person')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/Organization')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/Event')).toBeFalsy();
-      expect(getStringNoLocale(result, 'http://schema.org/height')).toBeFalsy();
-      expect(getStringNoLocale(result, 'http://schema.org/width')).toBeFalsy();
-      expect(getStringNoLocale(result, 'http://schema.org/depth')).toBeFalsy();
-      expect(getStringNoLocale(result, 'http://schema.org/weight')).toBeFalsy();
+      expect(getInteger(result, 'http://schema.org/height')).toBeFalsy();
+      expect(getInteger(result, 'http://schema.org/width')).toBeFalsy();
+      expect(getInteger(result, 'http://schema.org/depth')).toBeFalsy();
+      expect(getInteger(result, 'http://schema.org/weight')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/image')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/mainEntityOfPage')).toBeFalsy();
 
@@ -258,10 +258,10 @@ describe('CollectionObjectSolidStore', () => {
         person: 'person',
         organization: 'organization',
         event: 'event',
-        height: 0,
-        width: 0,
-        depth: 0,
-        weight: 0,
+        height: 2,
+        width: 2,
+        depth: 2,
+        weight: 2,
         image: 'http://test.url/',
         mainEntityOfPage: 'http://test.url',
       } as CollectionObject;
