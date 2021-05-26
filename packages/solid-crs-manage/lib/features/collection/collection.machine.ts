@@ -42,6 +42,7 @@ export enum CollectionStates {
   EDITING   = '[CollectionsState: Editing]',
   DELETING  = '[CollectionsState: Deleting]',
   DETERMINING_COLLECTION  = '[CollectionsState: Determining collection]',
+  CREATING_OBJECT  = '[CollectionsState: Creating object]',
 }
 
 /**
@@ -54,7 +55,11 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
     initial: CollectionStates.DETERMINING_COLLECTION,
     on: {
       [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
+      [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
       [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+      [ObjectEvents.CLICKED_DELETE]: {
+        actions: sendParent((context, event) => event),
+      },
       [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
       [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
       [CollectionEvents.SELECTED_COLLECTION]: {
@@ -180,6 +185,27 @@ export const collectionMachine = (collectionStore: CollectionStore, objectStore:
             actions: [
               sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
             ],
+          },
+          onError: {
+            actions: sendParent(AppEvents.ERROR),
+          },
+        },
+      },
+      /**
+       * Creating a new object.
+       */
+      [CollectionStates.CREATING_OBJECT]: {
+        invoke: {
+          /**
+           * Save object to the store.
+           */
+          src: (context) => objectStore.save({
+            collection: context.collection.uri,
+            name: 'Nieuw object',
+            description: 'Beschrijving van dit object',
+          }),
+          onDone: {
+            target: CollectionStates.LOADING,
           },
           onError: {
             actions: sendParent(AppEvents.ERROR),
