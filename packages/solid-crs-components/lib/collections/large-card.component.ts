@@ -29,13 +29,10 @@ export class LargeCardComponent extends LitElement {
         .large-card {
           display: flex;
           flex-direction: column;
-          gap
-          : 0;
-        }
-        .header, .content {
-          background-color: var(--colors-foreground-inverse);
+          gap: 0;
         }
         .content {
+          background-color: var(--colors-foreground-inverse);
           padding: var(--gap-large);
         }
         .image {
@@ -50,32 +47,6 @@ export class LargeCardComponent extends LitElement {
           height: 200px;
           width: 100%;
           object-fit: cover;
-        }
-        .header slot[name="icon"]::slotted(*) {
-          padding-left: var(--gap-normal);
-          width: 25px;
-          padding-right: var(--gap-normal);
-          fill: var(--colors-foreground-light);
-          flex-shrink: 0;
-        }
-        .header {
-          padding: var(--gap-normal);
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-        .header slot[name="title"]::slotted(*) {
-          color: var(--colors-foreground-normal);
-          font-size: var(--font-size-normal);
-        }
-        .header slot[name="subtitle"]::slotted(*) {
-          color: var(--colors-foreground-light);
-          font-size: var(--font-size-small);
-        }
-        .header .titles {
-          display: flex;
-          flex-direction: column;
-          line-height: var(--line-height-large);
         }
         .reduced-top-padding {
           padding-top: var(--gap-normal);
@@ -92,13 +63,11 @@ export class LargeCardComponent extends LitElement {
 
         ${this.showHeader
     ? html`
-            <div class="header">
-              <slot name="icon"></slot>
-              <div class="titles">
-                <slot name="title"></slot>
-                <slot name="subtitle"></slot>
-              </div>
-            </div>
+            <nde-content-header inverse>
+              <slot name="icon" slot="icon"></slot>
+              <slot name="title" slot="title"></slot>
+              <slot name="subtitle" slot="subtitle"></slot>
+            </nde-content-header>
           `
     : html``
 }

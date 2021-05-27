@@ -8,8 +8,8 @@ export class DemoLargeCardComponent extends LitElement {
 
     return html`
       <nde-large-card>
-        <span slot="title">Beeldmateriaal</span>
-        <span slot="subtitle">Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel</span>
+        <div slot="title">Beeldmateriaal</div>
+        <div slot="subtitle">Dit is een ondertitel Dit is een ondertitel Dit is een ondertitel!</div>
         <div slot="icon">
           ${unsafeSVG(Image)}
         </div>
@@ -22,8 +22,8 @@ export class DemoLargeCardComponent extends LitElement {
       <p></p>
 
       <nde-large-card .showImage="${false}">
-        <span slot="title">Zonder image deze keer</span>
-        <span slot="subtitle">Dit is een ondertitel</span>
+        <div slot="title">Zonder image deze keer</div>
+        <div slot="subtitle">Dit is een ondertitel</div>
         <div slot="icon">
           ${unsafeSVG(CollectionIcon)}
         </div>
@@ -35,8 +35,8 @@ export class DemoLargeCardComponent extends LitElement {
       <p></p>
 
       <nde-large-card .showContent="${false}">
-        <span slot="title">Zonder content deze keer</span>
-        <span slot="subtitle">Dit is een ondertitel</span>
+        <div slot="title">Zonder content deze keer</div>
+        <div slot="subtitle">Dit is een ondertitel</div>
         <div slot="icon">
           ${unsafeSVG(CollectionIcon)}
         </div>

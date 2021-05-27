@@ -30,7 +30,7 @@ describe('LargeCardComponent', () => {
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('.header')).toBeTruthy();
+    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
@@ -44,7 +44,7 @@ describe('LargeCardComponent', () => {
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('.header')).not.toBeTruthy();
+    expect(largeCard.querySelector('nde-content-header')).not.toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
@@ -58,7 +58,7 @@ describe('LargeCardComponent', () => {
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('.header')).toBeTruthy();
+    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).not.toBeTruthy();
     expect(largeCard.querySelector('.content')).toBeTruthy();
 
@@ -72,7 +72,7 @@ describe('LargeCardComponent', () => {
 
     const largeCard = window.document.body.getElementsByTagName(tag)[0].shadowRoot;
 
-    expect(largeCard.querySelector('.header')).toBeTruthy();
+    expect(largeCard.querySelector('nde-content-header')).toBeTruthy();
     expect(largeCard.querySelector('.image')).toBeTruthy();
     expect(largeCard.querySelector('.content')).not.toBeTruthy();
 
