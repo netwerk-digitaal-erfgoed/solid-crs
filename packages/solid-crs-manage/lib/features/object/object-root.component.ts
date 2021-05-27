@@ -173,16 +173,8 @@ export class ObjectRootComponent extends RxLitElement {
     <div class="content-and-sidebar">
 
     <nde-sidebar>
-      <nde-sidebar-item>
-        <div slot="content">
-          Een week geleden aangepast door Pieter Pieters
-        </div>
-      </nde-sidebar-item>
       <nde-sidebar-item .padding="${false}" .showBorder="${false}">
         <nde-sidebar-list slot="content">
-          <nde-sidebar-list-item slot="item" isTitle>
-            <div slot="title">${this.translator?.translate('nde.features.object.sidebar.title')}</div>
-          </nde-sidebar-list-item>
           ${sidebarItems.map((item) => html`
           <nde-sidebar-list-item slot="item"
             ?selected="${ false }"
