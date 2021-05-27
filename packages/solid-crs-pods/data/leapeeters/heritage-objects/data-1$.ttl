@@ -3,7 +3,7 @@
 
 <#object-1>
 
-    # IDENTICATION
+    # IDENTIFICATION
 
     rdf:type schema:Photograph ;
     schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
@@ -40,13 +40,19 @@
 
     # OTHER
 
-    schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234> .
+    schema:mainEntityOfPage <#object-1-digital> .
+
+<#object-1-digital>
+    rdf:type schema:ImageObject ;
+    schema:contentUrl <https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg/1920px-De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg> ;
+    schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ;
+    schema:mainEntity <#object-1> .
 
 
 
 <#object-2>
 
-    # IDENTICATION
+    # IDENTIFICATION
 
     rdf:type schema:Photograph ;
     schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
@@ -84,4 +90,10 @@
 
     # OTHER
 
-    schema:mainEntityOfPage <https://data.hetlageland.org/digital-objects/1234> .
+    schema:mainEntityOfPage <#object-2-digital> .
+
+<#object-2-digital>
+    rdf:type schema:ImageObject ;
+    schema:contentUrl <https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg/1920px-De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg> ;
+    schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ;
+    schema:mainEntity <#object-2> .

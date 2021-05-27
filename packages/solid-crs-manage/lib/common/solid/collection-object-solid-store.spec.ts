@@ -1,6 +1,6 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { getInteger, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { Collection, CollectionObject, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
 describe('CollectionObjectSolidStore', () => {
@@ -31,6 +31,7 @@ describe('CollectionObjectSolidStore', () => {
       description: 'test-description',
       type: 'http://test.type',
       image: 'http://test.image',
+      mainEntityOfPage: 'http://test.uri/',
     };
 
   });
@@ -74,6 +75,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getUrl = jest.fn(() => mockCollection.uri);
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThingAll = jest.fn(() => [ objectThing ]);
+      client.getThing = jest.fn(() => objectThing);
 
       const result = await service.getObjectsForCollection(mockCollection);
 
@@ -102,6 +104,9 @@ describe('CollectionObjectSolidStore', () => {
       client.getThing = jest.fn(() =>  'test-thing');
       client.getUrl = jest.fn(() => 'test-url');
       client.getStringWithLocale = jest.fn(() => 'test-string');
+      client.getStringNoLocale = jest.fn(() => 'test-string');
+      client.getInteger = jest.fn(() => 1);
+      client.asUrl = jest.fn(() => 'test-url');
 
       await expect(service.get('test-url')).resolves.toEqual(
         expect.objectContaining({
@@ -173,6 +178,10 @@ describe('CollectionObjectSolidStore', () => {
       client.getUrl = jest.fn(() => 'test-url');
       client.setThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.addUrl = jest.fn(() => 'test-url');
+      client.addStringNoLocale = jest.fn(() => 'test-url');
+      client.addStringWithLocale = jest.fn(() => 'test-url');
+      client.addInteger = jest.fn(() => 'test-url');
 
       await expect(service.save(mockObject)).resolves.toEqual(mockObject);
 
@@ -209,7 +218,7 @@ describe('CollectionObjectSolidStore', () => {
 
       const mockObject2 = { uri: mockObject.uri } as CollectionObject;
 
-      const result = CollectionObjectSolidStore.toThing(mockObject2);
+      const { object: result, digitalObject } = CollectionObjectSolidStore.toThing(mockObject2);
 
       expect(getStringNoLocale(result, 'http://schema.org/dateModified')).toBeFalsy();
       expect(getUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')).toBeFalsy();
@@ -234,6 +243,7 @@ describe('CollectionObjectSolidStore', () => {
       expect(getInteger(result, 'http://schema.org/weight')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/image')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/mainEntityOfPage')).toBeFalsy();
+      expect(getUrl(result, 'http://schema.org/license')).toBeFalsy();
 
     });
 
@@ -264,6 +274,7 @@ describe('CollectionObjectSolidStore', () => {
         weight: 2,
         image: 'http://test.url/',
         mainEntityOfPage: 'http://test.url',
+        license: 'http://test.url',
       } as CollectionObject;
 
       const result = CollectionObjectSolidStore.toThing(mockObject2);
@@ -278,7 +289,7 @@ describe('CollectionObjectSolidStore', () => {
 
     it('should error when object is null', () => {
 
-      expect(() => CollectionObjectSolidStore.fromThing(null)).toThrow();
+      expect(() => CollectionObjectSolidStore.fromThing(null, null)).toThrow();
 
     });
 
@@ -287,8 +298,11 @@ describe('CollectionObjectSolidStore', () => {
       client.getUrl = jest.fn(() => undefined);
       client.getStringNoLocale = jest.fn(() => undefined);
       client.getStringWithLocale = jest.fn(() => undefined);
+      client.asUrl = jest.fn(() => undefined);
 
-      const result = CollectionObjectSolidStore.fromThing(client.createThing({ url: mockObject.uri }));
+      const objectThing = client.createThing({ url: mockObject.uri });
+
+      const result = CollectionObjectSolidStore.fromThing(objectThing, objectThing);
 
       expect(result.updated).toEqual(undefined);
       expect(result.type).toEqual(undefined);
@@ -331,6 +345,22 @@ describe('CollectionObjectSolidStore', () => {
       const result = await service.search(mockObject.name, objects);
       expect(result).toBeTruthy();
       expect(result.length).toEqual(2);
+
+    });
+
+  });
+
+  describe('getDigitalObjectUri()', () => {
+
+    it('should error when object is null', () => {
+
+      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(null)).toThrow();
+
+    });
+
+    it('should return correct uri', () => {
+
+      expect(CollectionObjectSolidStore.getDigitalObjectUri(mockObject)).toEqual(`${mockObject.uri}-digital`);
 
     });
 
