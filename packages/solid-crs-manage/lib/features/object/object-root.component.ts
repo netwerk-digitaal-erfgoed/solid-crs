@@ -134,6 +134,16 @@ export class ObjectRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
+    const sidebarItems = [
+      'nde.features.object.sidebar.image',
+      'nde.features.object.sidebar.identification',
+      'nde.features.object.sidebar.terms',
+      'nde.features.object.sidebar.representation',
+      'nde.features.object.sidebar.creation',
+      'nde.features.object.sidebar.dimensions',
+      'nde.features.object.sidebar.other',
+    ];
+
     return this.object ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
@@ -160,11 +170,29 @@ export class ObjectRootComponent extends RxLitElement {
       ${ this.state?.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
+    <div class="content-and-sidebar">
+
+    <nde-sidebar>
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+        <nde-sidebar-list slot="content">
+          ${sidebarItems.map((item) => html`
+          <nde-sidebar-list-item slot="item"
+            ?selected="${ false }"
+            @click="${() => this.logger.info('this', `clicked: ${item}`)}"
+          >
+            <div slot="title">${this.translator?.translate(item)}</div>
+          </nde-sidebar-list-item>
+          `)}
+        </nde-sidebar-list>
+      </nde-sidebar-item>
+    </nde-sidebar>
+
     <div class="content">
       ${ alerts }
-      
-      FORMULIEREN
 
+      FORMULIEREN
+    </div>
+    
     </div>
   ` : html` this.object is undefined, dit zou niet mogen voorvallen`;
 
@@ -186,13 +214,19 @@ export class ObjectRootComponent extends RxLitElement {
           scrollbar-color: var(--colors-foreground-light) var(--colors-background-normal);
           display: flex;
           flex-direction: column;
+          overflow: hidden;
+          max-height: 100%;
+        }
+        .content-and-sidebar {
+          margin-top: 1px;
+          display: flex;
+          flex-direction: row;
+          overflow: hidden;
           height: 100%;
+          flex: 1 1;
         }
         .content {
-          margin-top: 1px;
           padding: var(--gap-large);
-          height: 100%;
-          overflow-y: auto;
         }
         nde-content-header nde-form-element input {
           height: var(--gap-normal);
@@ -208,6 +242,9 @@ export class ObjectRootComponent extends RxLitElement {
         }
         .description {
           margin-top: var(--gap-tiny);
+        }
+        nde-sidebar-list > slot[name="title"] {
+          font-weight: bold;
         }
       `,
     ];

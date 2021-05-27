@@ -160,6 +160,46 @@
         "value": "Beschrijving van deze collectie"
     },
     {
+        "key": "nde.features.object.sidebar.title",
+        "locale": "nl-NL",
+        "value": "Onderdelen"
+    },
+    {
+        "key": "nde.features.object.sidebar.image",
+        "locale": "nl-NL",
+        "value": "Beeldmateriaal"
+    },
+    {
+        "key": "nde.features.object.sidebar.identification",
+        "locale": "nl-NL",
+        "value": "Identificatie"
+    },
+    {
+        "key": "nde.features.object.sidebar.terms",
+        "locale": "nl-NL",
+        "value": "Termen"
+    },
+    {
+        "key": "nde.features.object.sidebar.representation",
+        "locale": "nl-NL",
+        "value": "Voorstelling"
+    },
+    {
+        "key": "nde.features.object.sidebar.creation",
+        "locale": "nl-NL",
+        "value": "Verwerving"
+    },
+    {
+        "key": "nde.features.object.sidebar.dimensions",
+        "locale": "nl-NL",
+        "value": "Afmetingen"
+    },
+    {
+        "key": "nde.features.object.sidebar.other",
+        "locale": "nl-NL",
+        "value": "Overige"
+    },
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"
