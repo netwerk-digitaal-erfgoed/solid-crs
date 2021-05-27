@@ -165,11 +165,6 @@
         "value": "Identificatie"
     },
     {
-        "key": "nde.features.object.sidebar.terms",
-        "locale": "nl-NL",
-        "value": "Termen"
-    },
-    {
         "key": "nde.features.object.sidebar.representation",
         "locale": "nl-NL",
         "value": "Voorstelling"
@@ -177,7 +172,7 @@
     {
         "key": "nde.features.object.sidebar.creation",
         "locale": "nl-NL",
-        "value": "Verwerving"
+        "value": "Vervaardiging"
     },
     {
         "key": "nde.features.object.sidebar.dimensions",

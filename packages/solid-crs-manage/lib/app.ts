@@ -1,4 +1,4 @@
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, LargeCardComponent, ObjectCardComponent, SidebarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { inspect } from '@xstate/inspect';
 import { SearchRootComponent } from './features/search/search-root.component';
 import { AppRootComponent } from './app-root.component';
@@ -30,6 +30,7 @@ customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('nde-object-card', ObjectCardComponent);
+customElements.define('nde-large-card', LargeCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
 customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
 customElements.define('nde-sidebar-list', SidebarListComponent);

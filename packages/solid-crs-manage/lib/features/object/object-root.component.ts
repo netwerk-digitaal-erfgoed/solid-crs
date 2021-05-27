@@ -1,11 +1,11 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
 import { ArgumentError, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Image, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { ObjectContext, ObjectStates } from './object.machine';
@@ -16,6 +16,11 @@ import { ObjectEvents } from './object.events';
  */
 export class ObjectRootComponent extends RxLitElement {
 
+  /**
+   * The form cards in this component
+   */
+  @queryAll('nde-large-card')
+  private formCards: LargeCardComponent[];
   /**
    * The component's logger.
    */
@@ -137,9 +142,8 @@ export class ObjectRootComponent extends RxLitElement {
     const sidebarItems = [
       'nde.features.object.sidebar.image',
       'nde.features.object.sidebar.identification',
-      'nde.features.object.sidebar.terms',
-      'nde.features.object.sidebar.representation',
       'nde.features.object.sidebar.creation',
+      'nde.features.object.sidebar.representation',
       'nde.features.object.sidebar.dimensions',
       'nde.features.object.sidebar.other',
     ];
@@ -172,26 +176,161 @@ export class ObjectRootComponent extends RxLitElement {
     </nde-content-header>
     <div class="content-and-sidebar">
 
-    <nde-sidebar>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
-        <nde-sidebar-list slot="content">
-          ${sidebarItems.map((item) => html`
-          <nde-sidebar-list-item slot="item"
-            ?selected="${ false }"
-            @click="${() => this.logger.info('this', `clicked: ${item}`)}"
-          >
-            <div slot="title">${this.translator?.translate(item)}</div>
-          </nde-sidebar-list-item>
-          `)}
-        </nde-sidebar-list>
-      </nde-sidebar-item>
-    </nde-sidebar>
+      <nde-sidebar>
+        <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+          <nde-sidebar-list slot="content">
+            ${sidebarItems.map((item) => html`
+            <nde-sidebar-list-item slot="item"
+              ?selected="${ false }"
+              @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
+            >
+              <div slot="title">${this.translator?.translate(item)}</div>
+            </nde-sidebar-list-item>
+            `)}
+          </nde-sidebar-list>
+        </nde-sidebar-item>
+      </nde-sidebar>
 
-    <div class="content">
-      ${ alerts }
+      <div class="content">
 
-      FORMULIEREN
-    </div>
+        ${ alerts }
+        
+        <nde-large-card id="nde.features.object.sidebar.image">
+          <div slot="title">Beeldmateriaal</div>
+          <div slot="subtitle">Het beeldmateriaal van dit object.</div>
+          <div slot="icon">
+            ${unsafeSVG(Image)}
+          </div>
+          <img slot="image" src="${this.object.image}">
+          <div slot="content">
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="image">
+              <label slot="label" for="image">Bestand</label>
+              <input type="text" slot="input" name="image" placeholder="http://images.net/image.jpg" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="license">
+              <label slot="label" for="license">Licentie</label>
+              <input type="text" slot="input" name="license" placeholder="EEPL, MIT, ..." />
+            </nde-form-element>
+          </div>
+        </nde-large-card>
+
+        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.identification">
+          <div slot="title">Identificatie</div>
+          <div slot="subtitle">De identificatie van dit object.</div>
+          <div slot="icon">
+            ${unsafeSVG(Identity)}
+          </div>
+          <div slot="content">
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Objectnummer</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Objectnaam</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Type</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Titel</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Korte beschrijving</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Collectie</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+          </div>
+        </nde-large-card>
+
+        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.creation">
+          <div slot="title">Vervaardiging</div>
+          <div slot="subtitle">De vervaardiging van dit object.</div>
+          <div slot="icon">
+            ${unsafeSVG(ObjectIcon)}
+          </div>
+          <div slot="content">
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Vervaardiger</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Plaats</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Materiaal</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Datum</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+          </div>
+        </nde-large-card>
+
+        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.representation">
+          <div slot="title">Voorstelling</div>
+          <div slot="subtitle">De voorstelling van dit object.</div>
+          <div slot="icon">
+            ${unsafeSVG(ObjectIcon)}
+          </div>
+          <div slot="content">
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Onderwerp</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Locatie</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Persoon</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Organisatie</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Gebeurtenis</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+          </div>
+        </nde-large-card>
+
+        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.dimensions">
+          <div slot="title">Afmetingen</div>
+          <div slot="subtitle">De afmetingen van dit object.</div>
+          <div slot="icon">
+            ${unsafeSVG(Connect)}
+          </div>
+          <div slot="content">
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Lengte</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Breedte</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Hoogte</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+            <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
+              <label slot="label" for="TODO">Gewicht</label>
+              <input type="text" slot="input" name="TODO" placeholder="" />
+            </nde-form-element>
+          </div>
+        </nde-large-card>
+
+      </div>
     
     </div>
   ` : html` this.object is undefined, dit zou niet mogen voorvallen`;
@@ -214,8 +353,7 @@ export class ObjectRootComponent extends RxLitElement {
           scrollbar-color: var(--colors-foreground-light) var(--colors-background-normal);
           display: flex;
           flex-direction: column;
-          overflow: hidden;
-          max-height: 100%;
+          height: 100%;
         }
         .content-and-sidebar {
           margin-top: 1px;
@@ -227,6 +365,11 @@ export class ObjectRootComponent extends RxLitElement {
         }
         .content {
           padding: var(--gap-large);
+          width: 100%;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-content-header nde-form-element input {
           height: var(--gap-normal);
@@ -245,6 +388,11 @@ export class ObjectRootComponent extends RxLitElement {
         }
         nde-sidebar-list > slot[name="title"] {
           font-weight: bold;
+        }
+        nde-large-card div[slot="content"] {
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap-normal);
         }
       `,
     ];
