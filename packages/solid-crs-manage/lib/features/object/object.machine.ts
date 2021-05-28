@@ -37,6 +37,50 @@ export enum ObjectStates {
 }
 
 /**
+ * Validate the values of a collection object
+ *
+ * @param context the context of the object to be validated
+ * @returns a list of validator results
+ */
+const validateObjectForm = (context: FormContext<CollectionObject>): Observable<FormValidatorResult[]> => {
+
+  const res = [];
+
+  // the description of an object can not be longer than 10.000 characters
+  if (context.data.description && context.data.description.length > 10000) {
+
+    res.push({
+      field: 'description',
+      message: 'nde.features.object.card.identification.field.description.validation.max-characters',
+    });
+
+  }
+
+  // the name/title of an object can not be empty
+  if (!context.data.name) {
+
+    res.push({
+      field: 'name',
+      message: 'nde.features.object.card.identification.field.title.validation.empty',
+    });
+
+  }
+
+  // the name/title of an object can not be longer than 100 characters
+  if (context.data.name && context.data.name.length > 100) {
+
+    res.push({
+      field: 'name',
+      message: 'nde.features.object.card.identification.field.title.validation.max-characters',
+    });
+
+  }
+
+  return of(res);
+
+};
+
+/**
  * The object machine.
  */
 export const objectMachine = (objectStore: CollectionObjectStore) =>
@@ -77,9 +121,9 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         invoke: [
           {
             id: FormActors.FORM_MACHINE,
-            src: formMachine<{ name: string; description: string }>(
-              (): Observable<FormValidatorResult[]> => of([]),
-              async (c: FormContext<{ name: string; description: string }>) => c.data
+            src: formMachine<CollectionObject>(
+              (context) => validateObjectForm(context),
+              async (c: FormContext<CollectionObject>) => c.data
             ),
             data: (context) => ({
               data: { ...context.object },

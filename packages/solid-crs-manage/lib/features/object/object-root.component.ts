@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
 import { ArgumentError, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, LargeCardComponent, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -70,6 +70,12 @@ export class ObjectRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
+   * Indicates if the form can be submitted.
+   */
+  @internalProperty()
+  canSubmit? = false;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -93,6 +99,15 @@ export class ObjectRootComponent extends RxLitElement {
 
         this.subscribe('isSubmitting', from(this.formActor).pipe(
           map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+        ));
+
+        this.subscribe('canSubmit', from(this.formActor).pipe(
+          map((state) => state.matches({
+            [FormSubmissionStates.NOT_SUBMITTED]:{
+              [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+              [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+            },
+          })),
         ));
 
       }
@@ -155,24 +170,8 @@ export class ObjectRootComponent extends RxLitElement {
     return this.object ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-      ${editing
-    ? html`
-          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-            <input autofocus type="text" slot="input" class="name" value="${this.object.name}"/>
-          </nde-form-element>
-          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.object.description}"/>
-          </nde-form-element>
-        `
-    : html`
-          <div slot="title" @click="${() => this.actor.send(ObjectEvents.CLICKED_EDIT)}">
-            ${this.object.name}
-          </div>
-          <div slot="subtitle" @click="${() => this.actor.send(ObjectEvents.CLICKED_EDIT)}">
-            ${this.object.description}
-          </div>
-        `
-}
+      <div slot="title"> ${this.object.name} </div>
+      <div slot="subtitle"> ${this.object.description} </div>
 
       ${ editing ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
@@ -242,7 +241,7 @@ export class ObjectRootComponent extends RxLitElement {
               <input type="text" slot="input" name="name" value="${this.object.name}" @click="${initializeFormMachine}"/>
             </nde-form-element>
             <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
-              <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.short-description')}</label>
+              <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
               <input type="text" slot="input" name="description" value="${this.object.description}" @click="${initializeFormMachine}"/>
             </nde-form-element>
             <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
@@ -379,9 +378,6 @@ export class ObjectRootComponent extends RxLitElement {
           height: var(--gap-normal);
           padding: 0;
           line-height: var(--gap-normal);
-        }
-        nde-content-header div[slot="title"]:hover, nde-content-header div[slot="subtitle"]:hover {
-          cursor: pointer;
         }
         .name {
           font-weight: bold;

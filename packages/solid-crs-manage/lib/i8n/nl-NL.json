@@ -245,9 +245,14 @@
         "value": "Titel"
     },
     {
-        "key": "nde.features.object.card.identification.field.short-description",
+        "key": "nde.features.object.card.identification.field.description",
         "locale": "nl-NL",
         "value": "Korte beschrijving"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.description.validation.max-characters",
+        "locale": "nl-NL",
+        "value": "De beschrijving mag maximum 10000 karakters lang zijn!"
     },
     {
         "key": "nde.features.object.card.identification.field.collection",
