@@ -15,7 +15,7 @@ export enum ObjectEvents {
 /**
  * Fired when the user clicks the delete object button.
  */
-export interface ClickedDeleteEvent extends Event<ObjectEvents> {
+export interface ClickedDeleteObjectEvent extends Event<ObjectEvents> {
   type: ObjectEvents.CLICKED_DELETE;
   object: CollectionObject;
 }
@@ -52,9 +52,10 @@ export interface CancelledEditEvent extends Event<ObjectEvents> {
 /**
  * Events for the object machine.
  */
-export type ObjectEvent = ClickedDeleteEvent
+export type ObjectEvent = ClickedDeleteObjectEvent
 | ClickedEditEvent
 | ClickedSaveEvent
 | CancelledEditEvent
 | SelectedObjectEvent
-| FormSubmittedEvent;
+| FormSubmittedEvent
+| ClickedDeleteObjectEvent;
