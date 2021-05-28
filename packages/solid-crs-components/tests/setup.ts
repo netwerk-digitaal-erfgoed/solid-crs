@@ -9,6 +9,7 @@ import { CollectionCardComponent } from '../lib/collections/collection-card.comp
 import { ObjectCardComponent } from '../lib/collections/object-card.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
 import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
+import { LargeCardComponent } from '../lib/collections/large-card.component';
 
 /**
  * Register tags for components.
@@ -24,3 +25,4 @@ customElements.define('nde-content-header', ContentHeaderComponent);
 customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
 customElements.define('nde-card', CardComponent);
+customElements.define('nde-large-card', LargeCardComponent);
