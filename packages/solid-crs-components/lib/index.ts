@@ -5,6 +5,7 @@ export * from './alerts/alert';
 export * from './alerts/alert.component';
 export * from './alerts/alert.component';
 export * from './collections/card.component';
+export * from './collections/large-card.component';
 export * from './collections/object-card.component';
 export * from './collections/collection-card.component';
 export * from './forms/form-element.component';

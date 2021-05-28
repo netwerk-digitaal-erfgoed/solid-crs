@@ -21,6 +21,12 @@ export class SidebarComponent extends RxLitElement {
   public logger: Logger;
 
   /**
+   * Display inverted colors
+   */
+  @property({ type: Boolean })
+  public inverse = false;
+
+  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
@@ -28,7 +34,7 @@ export class SidebarComponent extends RxLitElement {
   render() {
 
     return html`
-    <div class="sidebar primary">
+    <div class="sidebar${this.inverse ? ' inverse' : ''} primary">
       <slot></slot>
     </div>
   `;
@@ -55,6 +61,10 @@ export class SidebarComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           gap: var(--gap-normal);
+          background-color: var(--colors-foreground-inverse);
+          color: var(--colors-primary-dark);
+        }
+        .sidebar.inverse slot {
           background-color: var(--colors-primary-dark);
           color: var(--colors-foreground-inverse);
         }
