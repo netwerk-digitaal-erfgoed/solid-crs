@@ -13,14 +13,18 @@ import { DemoNDECardComponent } from './demo/demo-card.component';
 import { CardComponent } from './collections/card.component';
 import { CollectionCardComponent } from './collections/collection-card.component';
 import { SidebarItemComponent } from './sidebar/sidebar-item.component';
+import { LargeCardComponent } from './collections/large-card.component';
+import { DemoLargeCardComponent } from './demo/demo-large-card.component';
 
 /**
  * Register tags for components.
  */
 customElements.define('nde-card', CardComponent);
+customElements.define('nde-large-card', LargeCardComponent);
 customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
 customElements.define('nde-demo-nde-card', DemoNDECardComponent);
+customElements.define('nde-demo-large-card', DemoLargeCardComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-demo-form', DemoFormComponent);
 customElements.define('nde-alert', AlertComponent);
