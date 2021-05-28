@@ -196,135 +196,135 @@ export class ObjectRootComponent extends RxLitElement {
         ${ alerts }
         
         <nde-large-card id="nde.features.object.sidebar.image">
-          <div slot="title">Beeldmateriaal</div>
-          <div slot="subtitle">Het beeldmateriaal van dit object.</div>
+          <div slot="title">${this.translator?.translate('nde.features.object.card.image.title')}</div>
+          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.image.subtitle')}</div>
           <div slot="icon">
             ${unsafeSVG(Image)}
           </div>
           <img slot="image" src="${this.object.image}">
           <div slot="content">
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="image">
-              <label slot="label" for="image">Bestand</label>
+              <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.image.field.file')}</label>
               <input type="text" slot="input" name="image" placeholder="http://images.net/image.jpg" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="license">
-              <label slot="label" for="license">Licentie</label>
+              <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
               <input type="text" slot="input" name="license" placeholder="EEPL, MIT, ..." />
             </nde-form-element>
           </div>
         </nde-large-card>
 
         <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.identification">
-          <div slot="title">Identificatie</div>
-          <div slot="subtitle">De identificatie van dit object.</div>
+          <div slot="title">${this.translator?.translate('nde.features.object.card.identification.title')}</div>
+          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.identification.subtitle')}</div>
           <div slot="icon">
             ${unsafeSVG(Identity)}
           </div>
           <div slot="content">
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Objectnummer</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.object-number')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Objectnaam</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Type</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.type')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Titel</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Korte beschrijving</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.short-description')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Collectie</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
           </div>
         </nde-large-card>
 
         <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.creation">
-          <div slot="title">Vervaardiging</div>
-          <div slot="subtitle">De vervaardiging van dit object.</div>
+          <div slot="title">${this.translator?.translate('nde.features.object.card.creation.title')}</div>
+          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.creation.subtitle')}</div>
           <div slot="icon">
             ${unsafeSVG(ObjectIcon)}
           </div>
           <div slot="content">
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Vervaardiger</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.creation.field.creator')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Plaats</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.creation.field.location')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Materiaal</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.creation.field.material')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Datum</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.creation.field.date')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
           </div>
         </nde-large-card>
 
         <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.representation">
-          <div slot="title">Voorstelling</div>
-          <div slot="subtitle">De voorstelling van dit object.</div>
+          <div slot="title">${this.translator?.translate('nde.features.object.card.representation.title')}</div>
+          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.representation.subtitle')}</div>
           <div slot="icon">
             ${unsafeSVG(ObjectIcon)}
           </div>
           <div slot="content">
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Onderwerp</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.representation.field.subject')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Locatie</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.representation.field.location')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Persoon</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.representation.field.person')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Organisatie</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.representation.field.organization')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Gebeurtenis</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.representation.field.event')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
           </div>
         </nde-large-card>
 
         <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.dimensions">
-          <div slot="title">Afmetingen</div>
-          <div slot="subtitle">De afmetingen van dit object.</div>
+          <div slot="title">${this.translator?.translate('nde.features.object.card.dimensions.title')}</div>
+          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.dimensions.subtitle')}</div>
           <div slot="icon">
             ${unsafeSVG(Connect)}
           </div>
           <div slot="content">
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Lengte</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.dimensions.field.length')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Breedte</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.dimensions.field.width')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Hoogte</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.dimensions.field.height')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
             <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="TODO">
-              <label slot="label" for="TODO">Gewicht</label>
+              <label slot="label" for="TODO">${this.translator?.translate('nde.features.object.card.dimensions.field.weight')}</label>
               <input type="text" slot="input" name="TODO" placeholder="" />
             </nde-form-element>
           </div>

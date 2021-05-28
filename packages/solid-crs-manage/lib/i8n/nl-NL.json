@@ -185,6 +185,161 @@
         "value": "Overige"
     },
     {
+        "key": "nde.features.object.card.image.title",
+        "locale": "nl-NL",
+        "value": "Beeldmateriaal"
+    },
+    {
+        "key": "nde.features.object.card.image.subtitle",
+        "locale": "nl-NL",
+        "value": "Het beeldmateriaal van dit object."
+    },
+    {
+        "key": "nde.features.object.card.image.field.file",
+        "locale": "nl-NL",
+        "value": "Bestand"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license",
+        "locale": "nl-NL",
+        "value": "Licensie"
+    },
+    {
+        "key": "nde.features.object.card.identification.title",
+        "locale": "nl-NL",
+        "value": "Identificatie"
+    },
+    {
+        "key": "nde.features.object.card.identification.subtitle",
+        "locale": "nl-NL",
+        "value": "De identificatie van dit object."
+    },
+    {
+        "key": "nde.features.object.card.identification.field.object-number",
+        "locale": "nl-NL",
+        "value": "Objectnummer"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.object-name",
+        "locale": "nl-NL",
+        "value": "Objectnaam"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.type",
+        "locale": "nl-NL",
+        "value": "Type"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.title",
+        "locale": "nl-NL",
+        "value": "Titel"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.short-description",
+        "locale": "nl-NL",
+        "value": "Korte beschrijving"
+    },
+    {
+        "key": "nde.features.object.card.identification.field.collection",
+        "locale": "nl-NL",
+        "value": "Collectie"
+    },
+    {
+        "key": "nde.features.object.card.creation.title",
+        "locale": "nl-NL",
+        "value": "Vervaardiging"
+    },
+    {
+        "key": "nde.features.object.card.creation.subtitle",
+        "locale": "nl-NL",
+        "value": "De vervaardiging van dit object."
+    },
+    {
+        "key": "nde.features.object.card.creation.field.creator",
+        "locale": "nl-NL",
+        "value": "Vervaardiger"
+    },
+    {
+        "key": "nde.features.object.card.creation.field.location",
+        "locale": "nl-NL",
+        "value": "Plaats"
+    },
+    {
+        "key": "nde.features.object.card.creation.field.material",
+        "locale": "nl-NL",
+        "value": "Materiaal"
+    },
+    {
+        "key": "nde.features.object.card.creation.field.date",
+        "locale": "nl-NL",
+        "value": "Datum"
+    },
+    {
+        "key": "nde.features.object.card.representation.title",
+        "locale": "nl-NL",
+        "value": "Voorstelling"
+    },
+    {
+        "key": "nde.features.object.card.representation.subtitle",
+        "locale": "nl-NL",
+        "value": "De voorstelling van dit object."
+    },
+    {
+        "key": "nde.features.object.card.representation.field.subject",
+        "locale": "nl-NL",
+        "value": "Onderwerp"
+    },
+    {
+        "key": "nde.features.object.card.representation.field.location",
+        "locale": "nl-NL",
+        "value": "Locatie"
+    },
+    {
+        "key": "nde.features.object.card.representation.field.person",
+        "locale": "nl-NL",
+        "value": "Persoon"
+    },
+    {
+        "key": "nde.features.object.card.representation.field.organization",
+        "locale": "nl-NL",
+        "value": "Organisatie"
+    },
+    {
+        "key": "nde.features.object.card.representation.field.event",
+        "locale": "nl-NL",
+        "value": "Gebeurtenis"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.title",
+        "locale": "nl-NL",
+        "value": "Afmetingen"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.subtitle",
+        "locale": "nl-NL",
+        "value": "De afmetingen van dit object."
+    },
+    {
+        "key": "nde.features.object.card.dimensions.field.length",
+        "locale": "nl-NL",
+        "value": "Lengte"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.field.width",
+        "locale": "nl-NL",
+        "value": "Breedte"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.field.height",
+        "locale": "nl-NL",
+        "value": "Hoogte"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.field.weight",
+        "locale": "nl-NL",
+        "value": "Gewicht"
+    },
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"
