@@ -219,7 +219,7 @@ export class AppRootComponent extends RxLitElement {
 
     return html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
-    <nde-sidebar>
+    <nde-sidebar inverse>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">${this.profile?.name}</div>
@@ -277,19 +277,12 @@ export class AppRootComponent extends RxLitElement {
           max-height: 100%;
         }
 
-        :host > * {
+        :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
 
-        :host nde-sidebar {
-          flex: 0 0 var(--size-sidebar);
-        }
-
         nde-sidebar {
-          max-height: inherit;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
+          width: var(--size-sidebar);
         }
 
         nde-content-header div[slot="icon"] svg {
