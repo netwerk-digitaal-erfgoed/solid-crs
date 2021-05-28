@@ -6,6 +6,7 @@ import { formMachine,
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Observable, of } from 'rxjs';
+import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -75,6 +76,7 @@ export const collectionMachine =
        * Loads the objects associated with the current collection.
        */
         [CollectionStates.LOADING]: {
+
           invoke: {
             src: (context) =>
               objectStore.getObjectsForCollection(context.collection),
@@ -87,12 +89,12 @@ export const collectionMachine =
               }),
               target: CollectionStates.IDLE,
             },
-            onError: {
-            /**
-             * Notify the parent machine when something goes wrong.
-             */
-              actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
-            },
+            // onError: {
+            // /**
+            //  * Notify the parent machine when something goes wrong.
+            //  */
+            //   actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+            // },
           },
         },
         /**

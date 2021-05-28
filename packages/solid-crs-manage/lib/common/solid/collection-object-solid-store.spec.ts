@@ -289,7 +289,13 @@ describe('CollectionObjectSolidStore', () => {
 
     it('should error when object is null', () => {
 
-      expect(() => CollectionObjectSolidStore.fromThing(null, null)).toThrow();
+      expect(() => CollectionObjectSolidStore.fromThing(null, client.createThing({ url: mockObject.uri }))).toThrow();
+
+    });
+
+    it('should error when digitalObject is null', () => {
+
+      expect(() => CollectionObjectSolidStore.fromThing(client.createThing({ url: mockObject.uri }), null)).toThrow();
 
     });
 
@@ -355,6 +361,14 @@ describe('CollectionObjectSolidStore', () => {
     it('should error when object is null', () => {
 
       expect(() => CollectionObjectSolidStore.getDigitalObjectUri(null)).toThrow();
+
+    });
+
+    it('should error when object uri is not set', () => {
+
+      delete mockObject.uri;
+
+      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(mockObject)).toThrow();
 
     });
 

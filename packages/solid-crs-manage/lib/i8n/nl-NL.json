@@ -152,12 +152,12 @@
     {
         "key": "nde.features.object.new-object-name",
         "locale": "nl-NL",
-        "value": "Nieuwe collectie"
+        "value": "Nieuw object"
     },
     {
         "key": "nde.features.object.new-object-description",
         "locale": "nl-NL",
-        "value": "Beschrijving van deze collectie"
+        "value": "Beschrijving van dit object"
     },
     {
         "key": "nde.features.object.sidebar.title",

@@ -132,7 +132,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     // transform and save the object to the dataset of objects
     const objectsDataset = await getSolidDataset(objectUri, { fetch });
-    const { object: objectThing, digitalObject: digitalObjectThing } = CollectionObjectSolidStore.toThing(object);
+
+    const { object: objectThing, digitalObject: digitalObjectThing }
+      = CollectionObjectSolidStore.toThing({ ...object, uri: objectUri });
+
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, digitalObjectThing);
     await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
@@ -193,10 +196,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // digital object
     let digitalObjectThing = createThing({ url: digitalObjectUri });
 
-    digitalObjectThing = addUrl(objectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/ImageObject');
-    digitalObjectThing = object.image ? addUrl(objectThing, 'http://schema.org/contentUrl', object.image) : digitalObjectThing;
-    digitalObjectThing = object.license ? addUrl(objectThing, 'http://schema.org/license', object.license) : digitalObjectThing;
-    digitalObjectThing = addUrl(objectThing, 'http://schema.org/mainEntity', object.uri);
+    digitalObjectThing = addUrl(digitalObjectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/ImageObject');
+    digitalObjectThing = object.image ? addUrl(digitalObjectThing, 'http://schema.org/contentUrl', object.image) : digitalObjectThing;
+    digitalObjectThing = object.license ? addUrl(digitalObjectThing, 'http://schema.org/license', object.license) : digitalObjectThing;
+    digitalObjectThing = addUrl(digitalObjectThing, 'http://schema.org/mainEntity', object.uri);
 
     return { object: objectThing, digitalObject: digitalObjectThing };
 
@@ -213,6 +216,12 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     if (!object) {
 
       throw new ArgumentError('Argument object should be set', object);
+
+    }
+
+    if (!digitalObject) {
+
+      throw new ArgumentError('Argument digitalObject should be set', digitalObject);
 
     }
 
@@ -291,6 +300,12 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     if (!object) {
 
       throw new ArgumentError('Argument object should be set.', object);
+
+    }
+
+    if (!object.uri) {
+
+      throw new ArgumentError('Argument object uri should be set.', object);
 
     }
 
