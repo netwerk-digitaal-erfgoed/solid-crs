@@ -12,12 +12,16 @@ describe('CollectionMachine', () => {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
+    objectsUri: 'http://test.uri/',
+    distribution: 'http://test.uri/',
   };
 
   const collection2 = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
+    objectsUri: 'http://test.uri/',
+    distribution: 'http://test.uri/',
   };
 
   let machine: Interpreter<CollectionContext>;
@@ -71,14 +75,19 @@ describe('CollectionMachine', () => {
 
       }
 
+      if(state.matches(CollectionStates.IDLE)) {
+
+        machine.send(CollectionEvents.CLICKED_EDIT);
+
+      }
+
     });
 
     machine.start();
-    machine.send(CollectionEvents.CLICKED_EDIT);
 
   });
 
-  it('should transition to deleting when clicked edit was emitted', async (done) => {
+  it('should transition to deleting when clicked delete was emitted', async (done) => {
 
     machine.onTransition((state) => {
 
@@ -88,10 +97,15 @@ describe('CollectionMachine', () => {
 
       }
 
+      if(state.matches(CollectionStates.IDLE)) {
+
+        machine.send(CollectionEvents.CLICKED_DELETE);
+
+      }
+
     });
 
     machine.start();
-    machine.send(CollectionEvents.CLICKED_DELETE);
 
   });
 
@@ -134,11 +148,19 @@ describe('CollectionMachine', () => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+      if(state.matches(CollectionStates.IDLE)) {
 
-        expect(collectionStore.save).toHaveBeenCalledTimes(1);
+        machine.send(CollectionEvents.CLICKED_EDIT);
 
-        expect(collectionStore.save).toHaveBeenCalledWith(collection1);
+      }
+
+      if(state.matches(CollectionStates.EDITING)) {
+
+        machine.send(CollectionEvents.CLICKED_SAVE);
+
+      }
+
+      if(state.matches(CollectionStates.SAVING)) {
 
         done();
 
@@ -147,9 +169,6 @@ describe('CollectionMachine', () => {
     });
 
     machine.start();
-    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
-
-    machine.send(CollectionEvents.CLICKED_SAVE);
 
   });
 

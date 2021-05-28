@@ -6,7 +6,6 @@ import { formMachine,
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Observable, of } from 'rxjs';
-import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -56,14 +55,6 @@ export const collectionMachine =
       context: { },
       initial: CollectionStates.DETERMINING_COLLECTION,
       on: {
-        [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
-        [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
-        [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
-        [ObjectEvents.CLICKED_DELETE]: {
-          actions: sendParent((context, event) => event),
-        },
-        [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
-        [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
         [CollectionEvents.SELECTED_COLLECTION]: {
           actions: assign({
             collection: (context, event) => event.collection,
@@ -89,12 +80,12 @@ export const collectionMachine =
               }),
               target: CollectionStates.IDLE,
             },
-            // onError: {
-            // /**
-            //  * Notify the parent machine when something goes wrong.
-            //  */
-            //   actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
-            // },
+            onError: {
+            /**
+             * Notify the parent machine when something goes wrong.
+             */
+              actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+            },
           },
         },
         /**
@@ -117,6 +108,12 @@ export const collectionMachine =
         [CollectionStates.IDLE]: {
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
+              actions: sendParent((context, event) => event),
+            },
+            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
+            [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
+            [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+            [ObjectEvents.CLICKED_DELETE]: {
               actions: sendParent((context, event) => event),
             },
           },
@@ -142,6 +139,11 @@ export const collectionMachine =
          * Editing the collection metadata.
          */
         [CollectionStates.EDITING]: {
+          on: {
+            [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
+            [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
+            [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
+          },
           invoke: [
           /**
            * Invoke a form machine which controls the form.
@@ -173,9 +175,6 @@ export const collectionMachine =
               },
             },
           ],
-          on: {
-            [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
-          },
         },
         /**
          * Deleting the current collection.
