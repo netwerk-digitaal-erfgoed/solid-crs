@@ -330,9 +330,9 @@
         "value": "De afmetingen van dit object."
     },
     {
-        "key": "nde.features.object.card.dimensions.field.length",
+        "key": "nde.features.object.card.dimensions.field.depth",
         "locale": "nl-NL",
-        "value": "Lengte"
+        "value": "Diepte"
     },
     {
         "key": "nde.features.object.card.dimensions.field.width",

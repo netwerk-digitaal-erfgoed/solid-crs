@@ -45,10 +45,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
     context: { },
     initial: ObjectStates.IDLE,
     on: {
-      [ObjectEvents.CLICKED_EDIT]: ObjectStates.EDITING,
-      [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
-      [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
-      [ObjectEvents.CANCELLED_EDIT]: ObjectStates.IDLE,
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: assign({
           object: (context, event) => event.object,
@@ -57,7 +53,12 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
     },
     states: {
-      [ObjectStates.IDLE]: { },
+      [ObjectStates.IDLE]: {
+        on: {
+          [ObjectEvents.CLICKED_EDIT]: ObjectStates.EDITING,
+          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
+        },
+      },
       [ObjectStates.SAVING]: {
         invoke: {
           src: (context, event) => objectStore.save(context.object),
@@ -68,6 +69,11 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         },
       },
       [ObjectStates.EDITING]: {
+        on: {
+          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
+          [ObjectEvents.CANCELLED_EDIT]: ObjectStates.IDLE,
+          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
+        },
         invoke: [
           {
             id: FormActors.FORM_MACHINE,
@@ -76,18 +82,14 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               async (c: FormContext<{ name: string; description: string }>) => c.data
             ),
             data: (context) => ({
-              data: { name: context.object.name, description: context.object.description },
-              original: { name: context.object.name, description: context.object.description },
+              data: { ...context.object },
+              original: { ...context.object },
             }),
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
                 assign((context, event) => ({
-                  object: {
-                    ...context.object,
-                    name: event.data.data.name,
-                    description: event.data.data.description,
-                  },
+                  object: { ...event.data.data },
                 })),
               ],
             },
@@ -96,9 +98,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             },
           },
         ],
-        on: {
-          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
-        },
       },
       [ObjectStates.DELETING]: {
         invoke: {
