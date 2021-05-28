@@ -38,7 +38,7 @@ describe('AuthenticateRootComponent', () => {
         image: null,
         subject: null,
         type: null,
-        updated: 0,
+        updated: undefined,
         collection: 'collection-uri-1',
       },
     ]);

@@ -57,12 +57,20 @@ export class AppRootComponent extends RxLitElement {
       new CollectionSolidStore(),
       new CollectionObjectSolidStore(),
       {
-        uri: null,
+        uri: undefined,
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
         objectsUri: undefined,
         distribution: undefined,
       },
+      {
+        uri: undefined,
+        name: this.translator.translate('nde.features.object.new-object-name'),
+        description: this.translator.translate('nde.features.object.new-object-description'),
+        collection: undefined,
+        type: undefined,
+        image: undefined,
+      }
     )).withContext({
       alerts: [],
     }), { devTools: true },

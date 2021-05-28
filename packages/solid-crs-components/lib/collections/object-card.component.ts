@@ -46,7 +46,7 @@ export class ObjectCardComponent extends LitElement {
    */
   render() {
 
-    const timeAgo = getFormattedTimeAgo(this.object.updated, this.translator);
+    const timeAgo = getFormattedTimeAgo(+this.object.updated, this.translator);
 
     return html`
       <nde-card>
