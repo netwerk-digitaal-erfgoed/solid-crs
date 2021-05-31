@@ -1,8 +1,6 @@
 import { formMachine, State, FormActors, FormValidatorResult } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { createMachine } from 'xstate';
 import { send } from 'xstate/lib/actions';
-import { catchError, map } from 'rxjs/operators';
-import { from, Observable, of } from 'rxjs';
 import { SolidSession } from '../../common/solid/solid-session';
 import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
@@ -80,11 +78,10 @@ export const authenticateMachine = (solid: SolidService) =>
             /**
              * Validates the form.
              */
-              (context): Observable<FormValidatorResult[]> =>
-                from(solid.getIssuer(context.data?.webId)).pipe(
-                  map((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ]),
-                  catchError((err: Error) => of([ { field: 'webId', message: err.message } ])),
-                ),
+              async (context): Promise<FormValidatorResult[]> =>
+                solid.getIssuer(context.data?.webId)
+                  .then((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ])
+                  .catch((err: Error) => [ { field: 'webId', message: err.message } ]),
               /**
                * Redirects the user to the identity provider.
                *

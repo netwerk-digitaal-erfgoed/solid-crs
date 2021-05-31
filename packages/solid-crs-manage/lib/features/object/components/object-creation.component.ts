@@ -95,7 +95,7 @@ export class ObjectCreationComponent extends RxLitElement {
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="dateCreated">
           <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.creation.field.date')}</label>
-          <input type="text" slot="input" name="dateCreated" value="${this.object.dateCreated}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="dateCreated" value="${this.object.dateCreated}" @click="${initializeFormMachine}" placeholder="YYYY-MM-DD"/>
         </nde-form-element>
       </div>
     </nde-large-card>
