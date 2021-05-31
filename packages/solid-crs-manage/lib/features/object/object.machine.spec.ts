@@ -138,6 +138,7 @@ describe('ObjectMachine', () => {
 
     });
 
+    machine.send(ObjectEvents.CLICKED_EDIT);
     machine.send(ObjectEvents.CLICKED_SAVE);
 
   });
