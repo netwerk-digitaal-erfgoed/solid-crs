@@ -76,6 +76,16 @@ const validateObjectForm = (context: FormContext<CollectionObject>): Observable<
 
   }
 
+  // the identifier of an object can not be empty
+  if (!context.data.identifier) {
+
+    res.push({
+      field: 'identifier',
+      message: 'nde.features.object.card.identification.field.identifier.validation.empty',
+    });
+
+  }
+
   return of(res);
 
 };
