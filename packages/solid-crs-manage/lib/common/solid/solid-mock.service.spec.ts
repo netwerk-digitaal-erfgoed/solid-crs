@@ -11,7 +11,7 @@ describe('SolidMockService', () => {
 
   });
 
-  describe('getIssuer', () => {
+  describe('getIssuer()', () => {
 
     it('should throw when webid is undefined', async () => {
 
@@ -41,7 +41,7 @@ describe('SolidMockService', () => {
 
   });
 
-  describe('getSession', () => {
+  describe('getSession()', () => {
 
     it('should throw when profiles is undefined', async () => {
 
@@ -52,7 +52,7 @@ describe('SolidMockService', () => {
 
   });
 
-  describe('login', () => {
+  describe('login()', () => {
 
     it('should throw when webId is undefined', async () => {
 
@@ -63,6 +63,7 @@ describe('SolidMockService', () => {
     it('should throw when issuer is undefined', async () => {
 
       (service as any).profiles = [ { webId: 'https://test.com', issuer: undefined } ];
+      service.getIssuer = jest.fn().mockReturnValueOnce(false);
       await expect(service.login('https://test.com')).rejects.toThrow(ArgumentError);
 
     });
@@ -71,6 +72,23 @@ describe('SolidMockService', () => {
 
       (service as any).profiles = [ { webId: 'https://test.com', issuer: 'test' } ];
       await expect(service.login('https://test.com')).resolves.toBeUndefined();
+
+    });
+
+  });
+
+  describe('getProfile()', () => {
+
+    it('should throw when webId is undefined', async () => {
+
+      await expect(service.getProfile(undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return a mock profile', async () => {
+
+      const uri = 'uri';
+      await expect(service.getProfile(uri)).resolves.toEqual(expect.objectContaining({ uri }));
 
     });
 

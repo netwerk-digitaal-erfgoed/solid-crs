@@ -153,8 +153,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     const editing = this.state?.matches(ObjectStates.EDITING);
 
-    const initializeFormMachine = () => { if (!editing) { this.actor.send(ObjectEvents.CLICKED_EDIT); } };
-
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
