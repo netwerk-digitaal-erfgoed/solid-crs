@@ -2,7 +2,6 @@ import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@net
 import { Collection, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -298,7 +297,7 @@ export const appMachine = (
               {
                 id: FormActors.FORM_MACHINE,
                 src: formMachine<{ searchTerm: string }>(
-                  (): Observable<FormValidatorResult[]> => of([]),
+                  async (): Promise<FormValidatorResult[]> => [],
                 ),
                 data: {
                   data: { searchTerm: '' },

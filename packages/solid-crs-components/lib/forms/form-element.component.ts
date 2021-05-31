@@ -183,7 +183,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
       // Set the input field's default value.
       const fieldData = data[this.field];
-      element.value = typeof fieldData === 'string' ? fieldData : '';
+      element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
 
       // Send event when input field's value changes.
       element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));

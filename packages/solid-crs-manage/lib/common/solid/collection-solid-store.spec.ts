@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionSolidStore } from './collection-solid-store';
 
 describe('CollectionSolidStore', () => {
@@ -302,6 +302,32 @@ describe('CollectionSolidStore', () => {
       client.overwriteFile = jest.fn(() => 'test-file');
 
       await service.createCatalog('test-uri');
+
+    });
+
+  });
+
+  describe('search()', () => {
+
+    it.each([ null, undefined ])('should error when collections is %s', async (value) => {
+
+      await expect(service.search('searchterm', value)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it.each([ null, undefined ])('should error when searchTerm is %s', async (value) => {
+
+      await expect(service.search(value, [ mockCollection ])).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return filtered list', async () => {
+
+      const collections = [ mockCollection, mockCollection, { ...mockCollection, name: undefined } ];
+
+      const result = await service.search(mockCollection.name, collections);
+      expect(result).toBeTruthy();
+      expect(result.length).toEqual(2);
 
     });
 

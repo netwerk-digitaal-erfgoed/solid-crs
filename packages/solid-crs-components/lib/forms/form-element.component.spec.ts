@@ -16,7 +16,7 @@ describe('FormElementComponent', () => {
 
     machine = interpret(
       formMachine<Collection>(
-        (context: FormContext<Collection>, event: FormEvent): Observable<FormValidatorResult[]> => of([
+        async (context: FormContext<Collection>, event: FormEvent): Promise<FormValidatorResult[]> => ([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),

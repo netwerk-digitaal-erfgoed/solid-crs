@@ -1,8 +1,13 @@
 import { SidebarListComponent } from './sidebar-list.component';
+import { SidebarListItemComponent } from './sidebar-list-item.component';
 
 describe('SidebarListComponent', () => {
 
   let component = new SidebarListComponent();
+
+  let firstListItem: SidebarListItemComponent;
+  let secondListItem: SidebarListItemComponent;
+  let thirdListItem: SidebarListItemComponent;
 
   it('should be correctly instantiated', () => {
 
@@ -13,6 +18,17 @@ describe('SidebarListComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement('nde-sidebar-list') as SidebarListComponent;
+
+    firstListItem = window.document.createElement('nde-sidebar-list-item') as SidebarListItemComponent;
+    firstListItem.setAttribute('selected', '');
+    firstListItem.setAttribute('slot', 'item');
+    secondListItem = window.document.createElement('nde-sidebar-list-item') as SidebarListItemComponent;
+    firstListItem.setAttribute('slot', 'item');
+    thirdListItem = window.document.createElement('nde-sidebar-list-item') as SidebarListItemComponent;
+    firstListItem.setAttribute('slot', 'item');
+    component.appendChild(firstListItem);
+    component.appendChild(secondListItem);
+    component.appendChild(thirdListItem);
 
   });
 

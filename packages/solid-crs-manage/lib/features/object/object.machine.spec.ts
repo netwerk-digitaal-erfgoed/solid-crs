@@ -3,7 +3,7 @@ import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectEvents, SelectedObjectEvent } from './object.events';
-import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
+import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 
 describe('ObjectMachine', () => {
 
@@ -138,6 +138,7 @@ describe('ObjectMachine', () => {
 
     });
 
+    machine.send(ObjectEvents.CLICKED_EDIT);
     machine.send(ObjectEvents.CLICKED_SAVE);
 
   });
@@ -157,6 +158,68 @@ describe('ObjectMachine', () => {
     machine.start();
 
     machine.send({ type: ObjectEvents.SELECTED_OBJECT, object: object2 } as SelectedObjectEvent);
+
+  });
+
+  describe('validateObjectForm()', () => {
+
+    let context = {};
+
+    beforeEach(() => {
+
+      context = {
+        data: {
+          description: 'description',
+          name: 'name',
+          identifier: 'identifier',
+          dateCreated: '2021',
+          type: undefined,
+          collection: undefined,
+          uri: undefined,
+          image: undefined,
+        },
+      };
+
+    });
+
+    it('should return an empty list if no problems were found', async () => {
+
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(0);
+
+    });
+
+    it('should return an error when name is an empty string', async () => {
+
+      context.data = { ...context.data, name: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when name is longer than 100 characters', async () => {
+
+      context.data = { ...context.data, name: 'abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when identifer is an empty string', async () => {
+
+      context.data = { ...context.data, identifier: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when dateCreated is a random string', async () => {
+
+      context.data = { ...context.data, dateCreated: 'StringThatDoesNotMakeSense' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
 
   });
 

@@ -1,5 +1,4 @@
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormEvent, FormEvents } from './form.events';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
@@ -12,16 +11,15 @@ describe('FormMachine', () => {
 
     machine = interpret<FormContext<Collection>>(
       formMachine(
-        (context: FormContext<Collection>, event: FormEvent) => of([
+        async (context: FormContext<Collection>, event: FormEvent) => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
-        ]),
-      )
-        .withContext({
-          data: { uri: '', name: 'Test' },
-          original: { uri: '', name: 'Test' },
-          validation: [],
-        }),
+        ],
+      ).withContext({
+        data: { uri: '', name: 'Test' },
+        original: { uri: '', name: 'Test' },
+        validation: [],
+      }),
     );
 
   });
@@ -48,23 +46,31 @@ describe('FormMachine', () => {
 
     }
 
-    // Validation rules should be set correctly
-    expect(machine.state.context.validation).toEqual(results);
+    machine.onTransition((state) => {
 
-    // Data should be updated
-    expect(machine.state.context.data).toEqual(data);
+      if(state.matches(FormValidationStates.VALID || FormValidationStates.INVALID)){
 
-    // States should be updated
-    expect(machine.state.matches(
-      submission === FormSubmissionStates.SUBMITTED ?
-        FormSubmissionStates.SUBMITTED :
-        {
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: cleanliness,
-            [FormRootStates.VALIDATION]: validation,
-          },
-        },
-    )).toBeTruthy();
+        // Validation rules should be set correctly
+        expect(machine.state.context.validation).toEqual(results);
+
+        // Data should be updated
+        expect(machine.state.context.data).toEqual(data);
+
+        // States should be updated
+        expect(machine.state.matches(
+          submission === FormSubmissionStates.SUBMITTED ?
+            FormSubmissionStates.SUBMITTED :
+            {
+              [FormSubmissionStates.NOT_SUBMITTED]:{
+                [FormRootStates.CLEANLINESS]: cleanliness,
+                [FormRootStates.VALIDATION]: validation,
+              },
+            },
+        )).toBeTruthy();
+
+      }
+
+    });
 
   });
 
@@ -127,7 +133,7 @@ describe('FormMachine', () => {
 
     machine = interpret<FormContext<Collection>>(
       formMachine(
-        (context: FormContext<Collection>, event: FormEvent) => of([]),
+        async (context: FormContext<Collection>, event: FormEvent) => [],
         submitter,
       )
         .withContext({
