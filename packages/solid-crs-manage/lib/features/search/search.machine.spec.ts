@@ -29,14 +29,14 @@ describe('SearchMachine', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '1',
     collection: 'collection-uri-1',
   };
 
   let machine: Interpreter<SearchContext>;
   let collectionStore: CollectionStore;
   let objectStore: CollectionObjectStore;
-  const searchTerm = 'collection 2';
+  const searchTerm = 'uri';
 
   beforeEach(() => {
 
@@ -50,7 +50,8 @@ describe('SearchMachine', () => {
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {}
+      collection1,
+      object1
     ));
 
   });
@@ -63,16 +64,13 @@ describe('SearchMachine', () => {
 
   it('should start without errors', async (done) => {
 
-    const collectionStoreSearch = jest.spyOn(collectionStore, 'search');
     const objectStoreSearch = jest.spyOn(objectStore, 'search');
 
     machine.onTransition((state) => {
 
-      if(state.matches(SearchStates.IDLE) && state.context?.collections) {
+      if(state.matches(SearchStates.IDLE)) {
 
-        expect(state.context?.collections).toEqual([ collection2 ]);
-        expect(collectionStoreSearch).toHaveBeenCalledTimes(1);
-        expect(collectionStoreSearch).toHaveBeenCalledWith(searchTerm, [ collection1, collection2 ]);
+        expect(state.context?.objects).toEqual([ object1 ]);
         expect(objectStoreSearch).toHaveBeenCalledTimes(1);
         expect(objectStoreSearch).toHaveBeenCalledWith(searchTerm, [ object1 ]);
         done();

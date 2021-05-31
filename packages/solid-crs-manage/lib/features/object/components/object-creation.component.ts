@@ -29,7 +29,7 @@ export class ObjectCreationComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @internalProperty()
+  @property()
   object?: CollectionObject;
 
   /**
