@@ -83,19 +83,19 @@ export class ObjectDimensionsComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depth">
           <label slot="label" for="depth">${this.translator?.translate('nde.features.object.card.dimensions.field.depth')}</label>
-          <input type="text" slot="input" name="depth" value="${this.object.depth}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="depth" value="${this.object.depth||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="width">
           <label slot="label" for="width">${this.translator?.translate('nde.features.object.card.dimensions.field.width')}</label>
-          <input type="text" slot="input" name="width" value="${this.object.width}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="width" value="${this.object.width||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="height">
           <label slot="label" for="height">${this.translator?.translate('nde.features.object.card.dimensions.field.height')}</label>
-          <input type="text" slot="input" name="height" value="${this.object.height}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="height" value="${this.object.height||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weight">
           <label slot="label" for="weight">${this.translator?.translate('nde.features.object.card.dimensions.field.weight')}</label>
-          <input type="text" slot="input" name="weight" value="${this.object.weight}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="weight" value="${this.object.weight||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
       </div>
     </nde-large-card>
