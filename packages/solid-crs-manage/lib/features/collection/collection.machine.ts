@@ -5,7 +5,6 @@ import { formMachine,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -151,7 +150,7 @@ export const collectionMachine =
             {
               id: FormActors.FORM_MACHINE,
               src: formMachine<{ name: string; description: string }>(
-                (): Observable<FormValidatorResult[]> => of([]),
+                async (): Promise<FormValidatorResult[]> => [],
                 async (c: FormContext<{ name: string; description: string }>) => c.data
               ),
               data: (context) => ({

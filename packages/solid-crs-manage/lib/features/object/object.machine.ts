@@ -5,7 +5,7 @@ import { formMachine,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
+import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
 
@@ -42,7 +42,7 @@ export enum ObjectStates {
  * @param context the context of the object to be validated
  * @returns a list of validator results
  */
-const validateObjectForm = (context: FormContext<CollectionObject>): Observable<FormValidatorResult[]> => {
+export const validateObjectForm = async (context: FormContext<CollectionObject>): Promise<FormValidatorResult[]> => {
 
   const res = [];
 
@@ -61,7 +61,7 @@ const validateObjectForm = (context: FormContext<CollectionObject>): Observable<
 
     res.push({
       field: 'name',
-      message: 'nde.features.object.card.identification.field.title.validation.empty',
+      message: 'nde.features.object.card.common.empty',
     });
 
   }
@@ -81,12 +81,57 @@ const validateObjectForm = (context: FormContext<CollectionObject>): Observable<
 
     res.push({
       field: 'identifier',
-      message: 'nde.features.object.card.identification.field.identifier.validation.empty',
+      message: 'nde.features.object.card.common.empty',
     });
 
   }
 
-  return of(res);
+  // the image url should be valid and return png/jpeg mime type
+  if (context.data.image) {
+
+    try {
+
+      const contentTypes = [
+        'image/png',
+        'image/jpeg',
+      ];
+
+      const url = new URL(context.data.image);
+
+      const response = await fetch(context.data.image, { method: 'HEAD' });
+
+      if (!response.ok || !contentTypes.includes(response.headers.get('Content-Type').toLowerCase())) {
+
+        throw Error();
+
+      }
+
+    } catch (error) {
+
+      res.push({
+        field: 'image',
+        message: 'nde.features.object.card.image.field.file.validation.invalid',
+      });
+
+    }
+
+  }
+
+  // the date should be valid EDTF
+  try {
+
+    const parsed = edtf.parse(context.data.dateCreated);
+
+  } catch (error) {
+
+    res.push({
+      field: 'dateCreated',
+      message: 'nde.features.object.card.creation.field.date.validation.invalid',
+    });
+
+  }
+
+  return res;
 
 };
 

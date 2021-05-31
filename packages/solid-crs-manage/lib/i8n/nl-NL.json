@@ -195,6 +195,11 @@
         "value": "Overige"
     },
     {
+        "key": "nde.features.object.card.common.empty",
+        "locale": "nl-NL",
+        "value": "Dit veld is verplicht."
+    },
+    {
         "key": "nde.features.object.card.image.title",
         "locale": "nl-NL",
         "value": "Beeldmateriaal"
@@ -208,6 +213,11 @@
         "key": "nde.features.object.card.image.field.file",
         "locale": "nl-NL",
         "value": "Bestand"
+    },
+    {
+        "key": "nde.features.object.card.image.field.file.validation.invalid",
+        "locale": "nl-NL",
+        "value": "De ingegeven URL is niet geldig."
     },
     {
         "key": "nde.features.object.card.image.field.license",
@@ -288,6 +298,11 @@
         "key": "nde.features.object.card.creation.field.date",
         "locale": "nl-NL",
         "value": "Datum"
+    },
+    {
+        "key": "nde.features.object.card.creation.field.date.validation.invalid",
+        "locale": "nl-NL",
+        "value": "De ingegeven datum is niet geldig."
     },
     {
         "key": "nde.features.object.card.representation.title",

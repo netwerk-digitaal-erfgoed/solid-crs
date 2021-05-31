@@ -83,19 +83,19 @@ export class ObjectCreationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="creator">
           <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.creation.field.creator')}</label>
-          <input type="text" slot="input" name="creator" value="${this.object.creator}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="creator" value="${this.object.creator||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="locationCreated">
           <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.creation.field.location')}</label>
-          <input type="text" slot="input" name="locationCreated" value="${this.object.locationCreated}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="locationCreated" value="${this.object.locationCreated||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="material">
           <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.creation.field.material')}</label>
-          <input type="text" slot="input" name="material" value="${this.object.material}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="material" value="${this.object.material||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="dateCreated">
           <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.creation.field.date')}</label>
-          <input type="text" slot="input" name="dateCreated" value="${this.object.dateCreated}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="dateCreated" value="${this.object.dateCreated||''}" @click="${initializeFormMachine}" placeholder="YYYY-MM-DD"/>
         </nde-form-element>
       </div>
     </nde-large-card>

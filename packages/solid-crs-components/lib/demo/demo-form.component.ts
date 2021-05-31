@@ -18,7 +18,7 @@ import { FormSubmitter } from '../forms/form-submitter';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = (context, event) => of([
+export const validator: FormValidator<Collection> = async (context, event) => ([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
 ]);

@@ -84,11 +84,11 @@ export class ObjectImageryComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="image">
           <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.image.field.file')}</label>
-          <input type="text" slot="input" name="image" value="${this.object.image}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="image" value="${this.object.image||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
           <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
-          <input type="text" slot="input" name="license" value="${this.object.license}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="license" value="${this.object.license||''}" @click="${initializeFormMachine}"/>
         </nde-form-element>
       </div>
     </nde-large-card>
