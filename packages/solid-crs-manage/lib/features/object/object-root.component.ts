@@ -19,8 +19,8 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form cards in this component
    */
-  @queryAll('nde-large-card')
-  private formCards: LargeCardComponent[];
+  @queryAll('.form-card')
+  private formCards: RxLitElement[];
   /**
    * The component's logger.
    */
@@ -54,7 +54,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @internalProperty()
+  @property()
   object?: CollectionObject;
 
   /**
@@ -164,7 +164,6 @@ export class ObjectRootComponent extends RxLitElement {
       'nde.features.object.sidebar.creation',
       'nde.features.object.sidebar.representation',
       'nde.features.object.sidebar.dimensions',
-      'nde.features.object.sidebar.other',
     ];
 
     return this.object ? html`
@@ -197,141 +196,56 @@ export class ObjectRootComponent extends RxLitElement {
       <div class="content">
 
         ${ alerts }
-        
-        <nde-large-card id="nde.features.object.sidebar.image">
-          <div slot="title">${this.translator?.translate('nde.features.object.card.image.title')}</div>
-          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.image.subtitle')}</div>
-          <div slot="icon">
-            ${unsafeSVG(Image)}
-          </div>
-          <img slot="image" src="${this.object.image}">
-          <div slot="content">
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="image">
-              <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.image.field.file')}</label>
-              <input type="text" slot="input" name="image" value="${this.object.image}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
-              <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
-              <input type="text" slot="input" name="license" value="${this.object.license}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-          </div>
-        </nde-large-card>
 
-        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.identification">
-          <div slot="title">${this.translator?.translate('nde.features.object.card.identification.title')}</div>
-          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.identification.subtitle')}</div>
-          <div slot="icon">
-            ${unsafeSVG(Identity)}
-          </div>
-          <div slot="content">
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="identifier">
-              <label slot="label" for="identifier">${this.translator?.translate('nde.features.object.card.identification.field.object-number')}</label>
-              <input type="text" slot="input" name="identifier" value="${this.object.identifier}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="type">
-              <label slot="label" for="type">${this.translator?.translate('nde.features.object.card.identification.field.type')}</label>
-              <input type="text" slot="input" name="type" value="${this.object.type}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
-              <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
-              <input type="text" slot="input" name="additionalType" value="${this.object.additionalType}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
-              <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>
-              <input type="text" slot="input" name="name" value="${this.object.name}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
-              <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
-              <input type="text" slot="input" name="description" value="${this.object.description}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
-              <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
-              <input type="text" slot="input" name="collection" value="${this.object.collection}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-          </div>
-        </nde-large-card>
+        <nde-object-imagery
+          id="nde.features.object.sidebar.image"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-imagery>
 
-        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.creation">
-          <div slot="title">${this.translator?.translate('nde.features.object.card.creation.title')}</div>
-          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.creation.subtitle')}</div>
-          <div slot="icon">
-            ${unsafeSVG(ObjectIcon)}
-          </div>
-          <div slot="content">
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="creator">
-              <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.creation.field.creator')}</label>
-              <input type="text" slot="input" name="creator" value="${this.object.creator}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="locationCreated">
-              <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.creation.field.location')}</label>
-              <input type="text" slot="input" name="locationCreated" value="${this.object.locationCreated}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="material">
-              <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.creation.field.material')}</label>
-              <input type="text" slot="input" name="material" value="${this.object.material}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="dateCreated">
-              <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.creation.field.date')}</label>
-              <input type="text" slot="input" name="dateCreated" value="${this.object.dateCreated}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-          </div>
-        </nde-large-card>
+        <nde-object-identification
+          id="nde.features.object.sidebar.identification"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-identification>
 
-        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.representation">
-          <div slot="title">${this.translator?.translate('nde.features.object.card.representation.title')}</div>
-          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.representation.subtitle')}</div>
-          <div slot="icon">
-            ${unsafeSVG(ObjectIcon)}
-          </div>
-          <div slot="content">
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="subject">
-              <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.representation.field.subject')}</label>
-              <input type="text" slot="input" name="subject" value="${this.object.subject}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="location">
-              <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.representation.field.location')}</label>
-              <input type="text" slot="input" name="location" value="${this.object.location}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="person">
-              <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.representation.field.person')}</label>
-              <input type="text" slot="input" name="person" value="${this.object.person}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="organization">
-              <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.representation.field.organization')}</label>
-              <input type="text" slot="input" name="organization" value="${this.object.organization}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="event">
-              <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.representation.field.event')}</label>
-              <input type="text" slot="input" name="event" value="${this.object.event}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-          </div>
-        </nde-large-card>
+        <nde-object-creation
+          id="nde.features.object.sidebar.creation"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-creation>
 
-        <nde-large-card .showImage="${false}" id="nde.features.object.sidebar.dimensions">
-          <div slot="title">${this.translator?.translate('nde.features.object.card.dimensions.title')}</div>
-          <div slot="subtitle">${this.translator?.translate('nde.features.object.card.dimensions.subtitle')}</div>
-          <div slot="icon">
-            ${unsafeSVG(Connect)}
-          </div>
-          <div slot="content">
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depth">
-              <label slot="label" for="depth">${this.translator?.translate('nde.features.object.card.dimensions.field.depth')}</label>
-              <input type="text" slot="input" name="depth" value="${this.object.depth}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="width">
-              <label slot="label" for="width">${this.translator?.translate('nde.features.object.card.dimensions.field.width')}</label>
-              <input type="text" slot="input" name="width" value="${this.object.width}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="height">
-              <label slot="label" for="height">${this.translator?.translate('nde.features.object.card.dimensions.field.height')}</label>
-              <input type="text" slot="input" name="height" value="${this.object.height}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-            <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weight">
-              <label slot="label" for="weight">${this.translator?.translate('nde.features.object.card.dimensions.field.weight')}</label>
-              <input type="text" slot="input" name="weight" value="${this.object.weight}" @click="${initializeFormMachine}"/>
-            </nde-form-element>
-          </div>
-        </nde-large-card>
+        <nde-object-representation
+          id="nde.features.object.sidebar.representation"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-representation>
+
+        <nde-object-dimensions
+          id="nde.features.object.sidebar.dimensions"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-dimensions>
 
       </div>
     
@@ -388,11 +302,6 @@ export class ObjectRootComponent extends RxLitElement {
         }
         nde-sidebar-list > slot[name="title"] {
           font-weight: bold;
-        }
-        nde-large-card div[slot="content"] {
-          display: flex;
-          flex-direction: column;
-          gap: var(--gap-normal);
         }
       `,
     ];
