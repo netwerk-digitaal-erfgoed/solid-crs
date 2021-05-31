@@ -5,13 +5,13 @@ import { SolidMockService } from '../../../common/solid/solid-mock.service';
 import { SearchContext } from '../../search/search.machine';
 import { ObjectRootComponent } from '../object-root.component';
 import { objectMachine } from '../object.machine';
-import { ObjectCreationComponent } from './object-creation.component';
 import { ObjectDimensionsComponent } from './object-dimensions.component';
 
 describe('ObjectDimensionsComponent', () => {
 
   let component: ObjectDimensionsComponent;
   let machine: Interpreter<SearchContext>;
+  const tag = 'nde-object-dimensions';
 
   const collection1 = {
     uri: 'collection-uri-1',
@@ -53,10 +53,8 @@ describe('ObjectDimensionsComponent', () => {
       object1,
     ));
 
-    component = window.document.createElement('nde-object-creation') as ObjectRootComponent;
-
+    component = window.document.createElement(tag) as ObjectRootComponent;
     component.actor = machine;
-
     component.translator = new MemoryTranslator([], 'nl-NL');
 
   });

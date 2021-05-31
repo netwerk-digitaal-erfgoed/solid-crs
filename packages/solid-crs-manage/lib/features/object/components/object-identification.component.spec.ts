@@ -11,6 +11,7 @@ describe('ObjectIdentificationComponent', () => {
 
   let component: ObjectIdentificationComponent;
   let machine: Interpreter<SearchContext>;
+  const tag = 'nde-object-identification';
 
   const collection1 = {
     uri: 'collection-uri-1',
@@ -52,10 +53,8 @@ describe('ObjectIdentificationComponent', () => {
       object1,
     ));
 
-    component = window.document.createElement('nde-object-creation') as ObjectRootComponent;
-
+    component = window.document.createElement(tag) as ObjectRootComponent;
     component.actor = machine;
-
     component.translator = new MemoryTranslator([], 'nl-NL');
 
   });

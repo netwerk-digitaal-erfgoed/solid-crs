@@ -11,6 +11,7 @@ describe('ObjectImageryComponent', () => {
 
   let component: ObjectImageryComponent;
   let machine: Interpreter<SearchContext>;
+  const tag = 'nde-object-imagery';
 
   const collection1 = {
     uri: 'collection-uri-1',
@@ -52,10 +53,8 @@ describe('ObjectImageryComponent', () => {
       object1,
     ));
 
-    component = window.document.createElement('nde-object-creation') as ObjectRootComponent;
-
+    component = window.document.createElement(tag) as ObjectRootComponent;
     component.actor = machine;
-
     component.translator = new MemoryTranslator([], 'nl-NL');
 
   });
