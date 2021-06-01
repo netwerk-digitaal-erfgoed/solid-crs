@@ -266,6 +266,9 @@ export const appMachine = (
               {
                 id: AppActors.OBJECT_MACHINE,
                 src: objectMachine(objectStore),
+                data: (context) => ({
+                  collections: context.collections,
+                }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },

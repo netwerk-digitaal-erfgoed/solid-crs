@@ -83,7 +83,7 @@ export class AppRootComponent extends RxLitElement {
   state: State<AppContext>;
 
   /**
-   * The state of this component.
+   * A list of all collections.
    */
   @internalProperty()
   collections: Collection[];
