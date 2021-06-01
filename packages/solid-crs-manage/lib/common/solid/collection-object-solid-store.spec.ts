@@ -177,6 +177,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getThing = jest.fn(() =>  'test-thing');
       client.getUrl = jest.fn(() => 'test-url');
       client.setThing = jest.fn(() => 'test-thing');
+      client.removeThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
       client.addUrl = jest.fn(() => 'test-url');
       client.addStringNoLocale = jest.fn(() => 'test-url');
@@ -195,6 +196,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getThing = jest.fn(() =>  'test-thing');
       client.getUrl = jest.fn(() => 'http://test-url/');
       client.setThing = jest.fn(() => 'test-thing');
+      client.removeThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
 
       const result = await service.save(mockObject);
