@@ -15,7 +15,7 @@ export class SidebarListComponent extends RxLitElement {
 
     const element = event.composedPath().find((el: Element) => el.localName === 'nde-sidebar-list-item') as Element;
 
-    if(element && !element.hasAttribute('isTitle')){
+    if(element && (element as HTMLSlotElement).name === 'item'){
 
       for(let i = 0; i < this.children.length; i++) {
 

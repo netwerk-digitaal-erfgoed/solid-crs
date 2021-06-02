@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
-import { ArgumentError, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Reset } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { ObjectContext, ObjectStates } from './object.machine';
@@ -50,6 +50,12 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   state?: State<ObjectContext>;
+
+  /**
+   * A list of all collections.
+   */
+  @internalProperty()
+  collections?: Collection[];
 
   /**
    * The object to be displayed and/or edited.
@@ -102,6 +108,10 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('state', from(this.actor));
+
+      this.subscribe('collections', from(this.actor).pipe(
+        map((state) => state.context.collections),
+      ));
 
       this.subscribe('object', from(this.actor)
         .pipe(map((state) => state.context?.object)));
@@ -222,6 +232,7 @@ export class ObjectRootComponent extends RxLitElement {
           id="nde.features.object.sidebar.identification"
           class="form-card"
           .object="${this.object}"
+          .collections="${this.collections}"
           .formActor="${this.formActor}"
           .actor="${this.actor}"
           .translator="${this.translator}"

@@ -54,6 +54,8 @@ describe.each([
 
     component.translator = new MemoryTranslator([], 'nl-NL');
 
+    component.collections = [ collection1 ];
+
   });
 
   afterEach(() => {
@@ -134,4 +136,3 @@ describe.each([
   });
 
 });
-

@@ -176,17 +176,30 @@ export class FormElementComponent<T> extends RxLitElement {
     }
 
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
-      (element) => element instanceof HTMLInputElement
+      (element) => element instanceof HTMLInputElement || element instanceof HTMLSelectElement
     ).map((element) => element as HTMLInputElement);
 
     this.inputs?.forEach((element) => {
 
-      // Set the input field's default value.
       const fieldData = data[this.field];
-      element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
 
-      // Send event when input field's value changes.
-      element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
+      if (element instanceof HTMLSelectElement) {
+
+        // Set the input field's default value.
+        element.namedItem(fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '').selected = true;
+
+        // Send event when input field's value changes.
+        element.addEventListener('input', () => actor.send({ type: FormEvents.FORM_UPDATED, value: element.options[element.selectedIndex].id, field } as FormUpdatedEvent));
+
+      } else {
+
+        // Set the input field's default value.
+        element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
+
+        // Send event when input field's value changes.
+        element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
+
+      }
 
       // Listen for Enter presses to submit
       if (this.submitOnEnter) {
@@ -290,7 +303,7 @@ export class FormElementComponent<T> extends RxLitElement {
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
         }
-        .form-element .content .field ::slotted(input) {
+        .form-element .content .field ::slotted(input), .form-element .content .field ::slotted(select) {
           padding: 0 var(--gap-normal);
           flex: 1 0;
           height: 44px;

@@ -4,7 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
@@ -17,6 +17,10 @@ export interface ObjectContext {
    * The currently selected object.
    */
   object?: CollectionObject;
+  /**
+   * A list of all collections.
+   */
+  collections?: Collection[];
 }
 
 /**
