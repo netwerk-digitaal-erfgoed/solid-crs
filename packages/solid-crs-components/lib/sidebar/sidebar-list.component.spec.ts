@@ -38,10 +38,11 @@ describe('SidebarListComponent', () => {
 
   });
 
-  it('should call select when select is clicked', async () => {
+  it('should set selected when item is clicked', async () => {
 
     const event = document.createEvent('MouseEvent');
-    const el = document.createElement('nde-sidebar-list-item');
+    const el = document.createElement('nde-sidebar-list-item') as HTMLSlotElement;
+    el.name = 'item';
 
     expect(el.hasAttribute('selected')).toBeFalsy();
 
@@ -55,6 +56,27 @@ describe('SidebarListComponent', () => {
 
     expect(selectSpy).toHaveBeenCalledTimes(1);
     expect(el.hasAttribute('selected')).toBeTruthy();
+
+  });
+
+  it('should not set selected when title is clicked', async () => {
+
+    const event = document.createEvent('MouseEvent');
+    const el = document.createElement('nde-sidebar-list-item') as HTMLSlotElement;
+    el.name = 'title';
+
+    expect(el.hasAttribute('selected')).toBeFalsy();
+
+    const selectSpy = spyOn(component, 'select').and.callThrough();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    event.composedPath = jest.fn(() => [ el ]);
+    component.select(event);
+
+    expect(selectSpy).toHaveBeenCalledTimes(1);
+    expect(el.hasAttribute('selected')).toBeFalsy();
 
   });
 

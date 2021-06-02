@@ -128,7 +128,29 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
     const distributionThing = getThing(catalogDataset, distributionUri);
     const contentUrl = getUrl(distributionThing, 'http://schema.org/contentUrl');
-    const objectUri = object.uri || new URL(`#object-${v4()}`, contentUrl).toString();
+    let objectUri: string;
+
+    // check if the collection changed (aka contentUrl changed)
+    if (!object.uri || object.uri.includes(contentUrl)) {
+
+      // the collection's contentUrl matches the object's URI, or is not set (new object)
+      objectUri = object.uri || new URL(`#object-${v4()}`, contentUrl).toString();
+
+    } else {
+
+      // the collection's contentUrl changed
+      // -> move the object to that contentUrl
+      objectUri = new URL(`#object-${v4()}`, contentUrl).toString();
+
+      // -> delete object from old contentUrl
+      const oldDataset = await getSolidDataset(object.uri, { fetch });
+      const oldObjectThing = getThing(oldDataset, object.uri);
+      const oldDigitalObjectThing = getThing(oldDataset, CollectionObjectSolidStore.getDigitalObjectUri(object));
+      let updatedOldObjectsDataset = removeThing(oldDataset, oldObjectThing);
+      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDigitalObjectThing);
+      await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
+
+    }
 
     // transform and save the object to the dataset of objects
     const objectsDataset = await getSolidDataset(objectUri, { fetch });
@@ -159,7 +181,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     }
 
     let objectThing = createThing({ url: object.uri });
-    const digitalObjectUri = object.mainEntityOfPage || CollectionObjectSolidStore.getDigitalObjectUri(object);
+    const digitalObjectUri = CollectionObjectSolidStore.getDigitalObjectUri(object);
 
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
