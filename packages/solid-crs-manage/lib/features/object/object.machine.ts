@@ -152,12 +152,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
     },
     states: {
-      [ObjectStates.IDLE]: {
-        on: {
-          [ObjectEvents.CLICKED_EDIT]: ObjectStates.EDITING,
-          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
-        },
-      },
       [ObjectStates.SAVING]: {
         invoke: {
           src: (context, event) => objectStore.save(context.object),
@@ -167,10 +161,11 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           },
         },
       },
-      [ObjectStates.EDITING]: {
+      [ObjectStates.IDLE]: {
         on: {
           [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CANCELLED_EDIT]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
         },
         invoke: [
@@ -191,9 +186,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                   object: { ...event.data.data },
                 })),
               ],
-            },
-            onError: {
-              target: ObjectStates.IDLE,
             },
           },
         ],
