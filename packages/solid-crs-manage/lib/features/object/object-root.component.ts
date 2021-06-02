@@ -184,7 +184,7 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="subtitle"> ${this.object.description} </div>
 
       ${ editing && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Reset)}</button></div>` : '' }
+      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
       <!-- ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' } -->
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
