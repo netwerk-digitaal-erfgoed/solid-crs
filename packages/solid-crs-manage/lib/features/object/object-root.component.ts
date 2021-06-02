@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
 import { ArgumentError, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, LargeCardComponent, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Image, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Reset } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { ObjectContext, ObjectStates } from './object.machine';
@@ -184,7 +184,7 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="subtitle"> ${this.object.description} </div>
 
       ${ editing ? html`<div slot="actions"><button class="no-padding inverse save${!this.isValid || !this.isDirty ? ' disabled' : ''}" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse reset${!this.isDirty ? ' disabled' : ''}" @click="${() => { if(this.isDirty) { console.log('placeholder function'); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ editing ? html`<div slot="actions"><button class="no-padding inverse reset${!this.isDirty ? ' disabled' : ''}" @click="${() => { if(this.isDirty) { console.log('placeholder function'); } }}">${unsafeSVG(Reset)}</button></div>` : '' }
       <!-- ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' } -->
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
