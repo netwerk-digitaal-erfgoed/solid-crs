@@ -1,6 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import { done } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
@@ -324,14 +325,14 @@ describe('CollectionRootComponent', () => {
 
     });
 
-    it('should send dismiss alert event to parent', async (done) => {
+    it('should send dismiss alert event to parent', async (donedone) => {
 
       machine.parent.onEvent((event) => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
           expect(event.alert).toEqual(alert);
-          done();
+          donedone();
 
         }
 

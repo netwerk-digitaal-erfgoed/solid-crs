@@ -107,6 +107,29 @@ describe('SolidService', () => {
 
     });
 
+    it('should error when profile is null', async () => {
+
+      const webId = 'https://pod.inrupt.com';
+
+      client.getSolidDataset = jest.fn().mockReturnValueOnce(validProfileDataset);
+      client.getThing = jest.fn().mockReturnValueOnce(null);
+
+      await expect(service.getIssuer(webId)).rejects.toThrow();
+
+    });
+
+    it('should error when issuer is null', async () => {
+
+      const webId = 'https://pod.inrupt.com';
+
+      client.getSolidDataset = jest.fn().mockReturnValueOnce(validProfileDataset);
+      client.getThing = jest.fn().mockReturnValueOnce(validProfileThing);
+      client.getUrl = jest.fn().mockReturnValueOnce(null);
+
+      await expect(service.getIssuer(webId)).rejects.toThrow();
+
+    });
+
     it('should error when oidcIssuer openid config is not found', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
@@ -131,6 +154,12 @@ describe('SolidService', () => {
     it('should error when WebID is null', async () => {
 
       await expect(service.getProfile(null)).rejects.toThrow();
+
+    });
+
+    it('should error when WebID is not a valid url', async () => {
+
+      await expect(service.getProfile('noURL')).rejects.toThrow();
 
     });
 

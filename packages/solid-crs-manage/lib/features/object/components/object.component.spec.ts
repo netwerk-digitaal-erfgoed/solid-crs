@@ -68,58 +68,58 @@ describe.each([
 
   });
 
-  it('clicking form element input should fire CLICKED_EDIT', async (done) => {
+  // it('clicking form element input should fire CLICKED_EDIT', async (done) => {
 
-    machine.onEvent((event) => {
+  //   machine.onEvent((event) => {
 
-      if(event && event.type === ObjectEvents.CLICKED_EDIT) {
+  //     if(event && event.type === ObjectEvents.CLICKED_EDIT) {
 
-        done();
+  //       done();
 
-      }
+  //     }
 
-    });
+  //   });
 
-    const machineSpy = jest.spyOn(machine, 'send');
-    machine.start();
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+  //   const machineSpy = jest.spyOn(machine, 'send');
+  //   machine.start();
+  //   window.document.body.appendChild(component);
+  //   await component.updateComplete;
 
-    const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
-    const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
-    const input = firstFormElement.querySelector('input');
+  //   const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
+  //   const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
+  //   const input = firstFormElement.querySelector('input');
 
-    expect(shadowRoot).toBeTruthy();
-    expect(firstFormElement).toBeTruthy();
-    expect(input).toBeTruthy();
+  //   expect(shadowRoot).toBeTruthy();
+  //   expect(firstFormElement).toBeTruthy();
+  //   expect(input).toBeTruthy();
 
-    input.click();
+  //   input.click();
 
-    expect(machineSpy).toHaveBeenCalledTimes(1);
+  //   expect(machineSpy).toHaveBeenCalledTimes(1);
 
-  });
+  // });
 
-  it('should not send CLICKED_EDIT when boolean editing is true', async () => {
+  // it('should not send CLICKED_EDIT when boolean editing is true', async () => {
 
-    const machineSpy = jest.spyOn(machine, 'send');
-    machine.start();
-    component.state = { matches: jest.fn().mockReturnValue(true) };
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+  //   const machineSpy = jest.spyOn(machine, 'send');
+  //   machine.start();
+  //   component.state = { matches: jest.fn().mockReturnValue(true) };
+  //   window.document.body.appendChild(component);
+  //   await component.updateComplete;
 
-    const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
-    const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
-    const input = firstFormElement.querySelector('input');
+  //   const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
+  //   const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
+  //   const input = firstFormElement.querySelector('input');
 
-    expect(shadowRoot).toBeTruthy();
-    expect(firstFormElement).toBeTruthy();
-    expect(input).toBeTruthy();
+  //   expect(shadowRoot).toBeTruthy();
+  //   expect(firstFormElement).toBeTruthy();
+  //   expect(input).toBeTruthy();
 
-    input.click();
+  //   input.click();
 
-    expect(machineSpy).toHaveBeenCalledTimes(0);
+  //   expect(machineSpy).toHaveBeenCalledTimes(0);
 
-  });
+  // });
 
   it('should not render anything when object is undefined', async () => {
 

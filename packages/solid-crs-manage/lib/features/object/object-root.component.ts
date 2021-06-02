@@ -108,7 +108,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if(changed.has('formActor') && this.formActor){
+    if(changed?.has('formActor') && this.formActor){
 
       this.subscribe('isSubmitting', from(this.formActor).pipe(
         map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
