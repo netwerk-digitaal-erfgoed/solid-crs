@@ -32,4 +32,17 @@ describe('SidebarItemComponent', () => {
 
   });
 
+  it('should remove border and padding class when properties are set', async () => {
+
+    component.padding = false;
+    component.showBorder = false;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.padding').length).toEqual(0);
+    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.border').length).toEqual(0);
+
+  });
+
 });
