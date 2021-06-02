@@ -13,7 +13,9 @@ form nde-form-element:last-child {
   margin-bottom: 0;
 }
 
-nde-form-element * {
+nde-form-element input,
+nde-form-element select,
+nde-form-element textarea {
   color: var(--colors-foreground-normal);
   border: none;
   font-size: var(--font-size-small);

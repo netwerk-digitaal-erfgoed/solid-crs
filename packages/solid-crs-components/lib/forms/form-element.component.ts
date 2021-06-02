@@ -309,6 +309,10 @@ export class FormElementComponent<T> extends RxLitElement {
           padding: 0 var(--gap-normal);
           flex: 1 0;
           height: 44px;
+        }
+        .form-element .content .field ::slotted(input),
+        .form-element .content .field ::slotted(select), 
+        .form-element .content .field ::slotted(textarea) {
           box-sizing: border-box;
         }
         .form-element .content .field ::slotted(textarea) {
