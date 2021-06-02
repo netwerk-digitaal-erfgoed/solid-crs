@@ -1,5 +1,5 @@
 import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
@@ -24,7 +24,7 @@ describe('FormElementComponent', () => {
         .withContext({
           data: { uri: '', name: 'Test', description: 'description' },
           original: { uri: '', name: 'Test', description: 'description' },
-          validation: [],
+          validation: [ { field: 'name', message: 'lorem' } ],
         }),
     );
 
@@ -84,7 +84,27 @@ describe('FormElementComponent', () => {
 
   });
 
-  xit('should send SUBMITTED event when enter keypress', async (done) => {
+  it('should allow slotted select field', async () => {
+
+    component.field = 'description';
+    const select = window.document.createElement('select');
+    select.slot = 'input';
+    const option = window.document.createElement('option');
+    option.id = 'description';
+    select.appendChild(option);
+    component.appendChild(select);
+    component.removeChild(input);
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).children.length).toBe(1);
+
+  });
+
+  it('should send SUBMITTED event when enter keypress', async (done) => {
+
+    component.submitOnEnter = true;
 
     machine.onEvent(((event) => {
 
@@ -95,6 +115,8 @@ describe('FormElementComponent', () => {
       }
 
     }));
+
+    machine.start();
 
     window.document.body.appendChild(component);
     await component.updateComplete;

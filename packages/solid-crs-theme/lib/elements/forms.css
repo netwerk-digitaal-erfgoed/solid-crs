@@ -23,6 +23,17 @@ nde-form-element input {
   width: 100%;
 }
 
+nde-form-element select {
+  color: var(--colors-foreground-normal);
+  border: none;
+  font-size: var(--font-size-small);
+  font-family: var(--font-family);
+  outline: none;
+  display: block;
+  width: 100%;
+  margin-right: var(--gap-normal);
+}
+
 nde-form-element input:disabled {
   color: var(--colors-foreground-light);
 }

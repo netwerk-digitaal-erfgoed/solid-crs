@@ -175,15 +175,26 @@ describe('CollectionObjectSolidStore', () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() =>  'test-thing');
-      client.getUrl = jest.fn(() => 'test-url');
+      client.getUrl = jest.fn(() => 'http://test-uri/');
       client.setThing = jest.fn(() => 'test-thing');
+      client.removeThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
       client.addUrl = jest.fn(() => 'test-url');
       client.addStringNoLocale = jest.fn(() => 'test-url');
       client.addStringWithLocale = jest.fn(() => 'test-url');
       client.addInteger = jest.fn(() => 'test-url');
 
-      await expect(service.save(mockObject)).resolves.toEqual(mockObject);
+      const result = await service.save(mockObject)
+;
+
+      expect(result).toEqual(expect.objectContaining({
+        description: mockObject.description,
+        image: mockObject.image,
+        name: mockObject.name,
+        type: mockObject.type,
+      }));
+
+      expect(result.uri).toMatch(/http:\/\/test-uri\/#.*/i);
 
     });
 
@@ -195,6 +206,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getThing = jest.fn(() =>  'test-thing');
       client.getUrl = jest.fn(() => 'http://test-url/');
       client.setThing = jest.fn(() => 'test-thing');
+      client.removeThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
 
       const result = await service.save(mockObject);
