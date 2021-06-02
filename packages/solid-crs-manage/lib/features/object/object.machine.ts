@@ -167,6 +167,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           [ObjectEvents.CANCELLED_EDIT]: ObjectStates.IDLE,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
+          [ObjectEvents.CLICKED_RESET]: ObjectStates.IDLE,
         },
         invoke: [
           {

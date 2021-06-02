@@ -68,10 +68,6 @@ export class ObjectIdentificationComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const editing = this.state?.matches(ObjectStates.EDITING);
-
-    const initializeFormMachine = () => { if (!editing) { this.actor.send(ObjectEvents.CLICKED_EDIT); } };
-
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
@@ -83,27 +79,27 @@ export class ObjectIdentificationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="identifier">
           <label slot="label" for="identifier">${this.translator?.translate('nde.features.object.card.identification.field.object-number')}</label>
-          <input type="text" slot="input" name="identifier" value="${this.object.identifier||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="identifier"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="type">
           <label slot="label" for="type">${this.translator?.translate('nde.features.object.card.identification.field.type')}</label>
-          <input type="text" slot="input" name="type" value="${this.object.type||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="type"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
-          <input type="text" slot="input" name="additionalType" value="${this.object.additionalType||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="additionalType"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
           <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>
-          <input type="text" slot="input" name="name" value="${this.object.name||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="name"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
           <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
-          <input type="text" slot="input" name="description" value="${this.object.description||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="description"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
-          <input type="text" slot="input" name="collection" value="${this.object.collection||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="collection"/>
         </nde-form-element>
       </div>
     </nde-large-card>

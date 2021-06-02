@@ -183,8 +183,8 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="title"> ${this.object.name} </div>
       <div slot="subtitle"> ${this.object.description} </div>
 
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse save${!this.isValid || !this.isDirty ? ' disabled' : ''}" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse reset${!this.isDirty ? ' disabled' : ''}" @click="${() => { if(this.isDirty) { console.log('placeholder function'); } }}">${unsafeSVG(Reset)}</button></div>` : '' }
+      ${ editing && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Reset)}</button></div>` : '' }
       <!-- ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' } -->
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
@@ -314,9 +314,6 @@ export class ObjectRootComponent extends RxLitElement {
         }
         nde-sidebar-list > slot[name="title"] {
           font-weight: bold;
-        }
-        .disabled {
-          display: none;
         }
       `,
     ];

@@ -8,6 +8,7 @@ export enum ObjectEvents {
   CLICKED_DELETE              = '[ObjectsEvent: Clicked Delete]',
   CLICKED_EDIT                = '[ObjectsEvent: Clicked Edit]',
   CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
+  CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
   CANCELLED_EDIT              = '[ObjectsEvent: Cancelled Edit]',
   SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
 }
@@ -36,6 +37,13 @@ export interface ClickedEditEvent extends Event<ObjectEvents> {
 }
 
 /**
+ * Fired when the user clicks the reset button.
+ */
+export interface ClickedResetEvent extends Event<ObjectEvents> {
+  type: ObjectEvents.CLICKED_RESET;
+}
+
+/**
  * Fired when the user clicks the save button.
  */
 export interface ClickedSaveEvent extends Event<ObjectEvents> {
@@ -58,4 +66,5 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | CancelledEditEvent
 | SelectedObjectEvent
 | FormSubmittedEvent
-| ClickedDeleteObjectEvent;
+| ClickedDeleteObjectEvent
+| ClickedResetEvent;
