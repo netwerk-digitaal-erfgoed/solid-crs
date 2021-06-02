@@ -1,13 +1,12 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Interpreter, SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { from } from 'rxjs';
-import { ObjectContext, ObjectStates } from '../object.machine';
-import { ObjectEvents } from '../object.events';
+import { ObjectContext } from '../object.machine';
 
 /**
  * The root page of the object feature.
@@ -49,6 +48,12 @@ export class ObjectIdentificationComponent extends RxLitElement {
    */
   @internalProperty()
   state?: State<ObjectContext>;
+
+  /**
+   * A list of all collections
+   */
+  @internalProperty()
+  collections?: Collection[];
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -99,7 +104,9 @@ export class ObjectIdentificationComponent extends RxLitElement {
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
-          <input type="text" slot="input" name="collection"/>
+          <select slot="input" name="collection">
+            ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object.collection}">${collection.name}</option>`)}
+          </select>
         </nde-form-element>
       </div>
     </nde-large-card>

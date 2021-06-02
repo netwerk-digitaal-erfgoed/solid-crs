@@ -6,8 +6,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Image } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { from } from 'rxjs';
-import { ObjectContext, ObjectStates } from '../object.machine';
-import { ObjectEvents } from '../object.events';
+import { ObjectContext } from '../object.machine';
 
 /**
  * The root page of the object feature.
@@ -51,6 +50,25 @@ export class ObjectImageryComponent extends RxLitElement {
   state?: State<ObjectContext>;
 
   /**
+   * A list of licenses
+   */
+  @internalProperty()
+  licenses?: { name: string; uri: string }[] = [
+    {
+      name: 'CC0 1.0',
+      uri: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
+    },
+    {
+      name: 'CC BY 4.0',
+      uri: 'https://creativecommons.org/licenses/by/4.0/deed.nl',
+    },
+    {
+      name: 'CC BY-SA 2.0',
+      uri: 'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
+    },
+  ];
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   firstUpdated(changed: PropertyValues): void {
@@ -84,7 +102,9 @@ export class ObjectImageryComponent extends RxLitElement {
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
           <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
-          <input type="text" slot="input" name="license"/>
+          <select slot="input" name="license">
+            ${this.licenses.map((license) => html`<option id="${license.uri}" ?selected="${license.uri === this.object.license}">${license.name}</option>`)}
+          </select>
         </nde-form-element>
       </div>
     </nde-large-card>
