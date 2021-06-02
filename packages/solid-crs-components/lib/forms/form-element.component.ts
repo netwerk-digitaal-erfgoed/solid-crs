@@ -193,7 +193,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
         element.addEventListener('keypress', (event) => {
 
-          if (event.key === 'Enter') {
+          if (event.key === 'Enter' && this.validationResults?.length < 1) {
 
             actor.send({ type: FormEvents.FORM_SUBMITTED });
 
