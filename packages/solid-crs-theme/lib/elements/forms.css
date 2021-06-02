@@ -13,7 +13,7 @@ form nde-form-element:last-child {
   margin-bottom: 0;
 }
 
-nde-form-element input {
+nde-form-element * {
   color: var(--colors-foreground-normal);
   border: none;
   font-size: var(--font-size-small);
@@ -24,14 +24,12 @@ nde-form-element input {
 }
 
 nde-form-element select {
-  color: var(--colors-foreground-normal);
-  border: none;
-  font-size: var(--font-size-small);
-  font-family: var(--font-family);
-  outline: none;
-  display: block;
-  width: 100%;
   margin-right: var(--gap-normal);
+}
+
+nde-form-element textarea {
+  resize: vertical;
+  min-height: 132px;
 }
 
 nde-form-element input:disabled {
