@@ -1,3 +1,4 @@
+import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
@@ -163,7 +164,7 @@ describe('ObjectMachine', () => {
 
   describe('validateObjectForm()', () => {
 
-    let context = {};
+    let context: FormContext<CollectionObject>;
 
     beforeEach(() => {
 
@@ -199,7 +200,15 @@ describe('ObjectMachine', () => {
 
     it('should return an error when name is longer than 100 characters', async () => {
 
-      context.data = { ...context.data, name: 'abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabc' };
+      context.data = { ...context.data, name: 'a'.repeat(101) };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when description is longer than 10000 characters', async () => {
+
+      context.data = { ...context.data, description: 'a'.repeat(10001) };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 
@@ -216,6 +225,14 @@ describe('ObjectMachine', () => {
     it('should return an error when dateCreated is a random string', async () => {
 
       context.data = { ...context.data, dateCreated: 'StringThatDoesNotMakeSense' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when image is not a URL', async () => {
+
+      context.data = { ...context.data, image: 'StringThatDoesNotMakeSense' };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

@@ -122,16 +122,22 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
   }
 
   // the date should be valid EDTF
-  try {
+  const dateCreated = context.data.dateCreated;
 
-    const parsed = edtf.parse(context.data.dateCreated);
+  if (dateCreated && dateCreated.length > 0) {
 
-  } catch (error) {
+    try {
 
-    res.push({
-      field: 'dateCreated',
-      message: 'nde.features.object.card.creation.field.date.validation.invalid',
-    });
+      edtf.parse(context.data.dateCreated);
+
+    } catch (error) {
+
+      res.push({
+        field: 'dateCreated',
+        message: 'nde.features.object.card.creation.field.date.validation.invalid',
+      });
+
+    }
 
   }
 
