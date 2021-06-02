@@ -16,7 +16,7 @@ export class SolidSDKService extends SolidService {
    */
   constructor(
     private logger: Logger,
-    private clientName = 'NDE Collectiebeheersysteem',
+    private clientName = 'Solid CRS',
   ) {
 
     super();
