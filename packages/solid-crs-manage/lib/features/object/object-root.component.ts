@@ -95,27 +95,27 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
-      if(changed.has('formActor') && this.formActor){
-
-        this.subscribe('isSubmitting', from(this.formActor).pipe(
-          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-        ));
-
-        this.subscribe('canSubmit', from(this.formActor).pipe(
-          map((state) => state.matches({
-            [FormSubmissionStates.NOT_SUBMITTED]:{
-              [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-              [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-            },
-          })),
-        ));
-
-      }
-
       this.subscribe('state', from(this.actor));
 
       this.subscribe('object', from(this.actor)
         .pipe(map((state) => state.context?.object)));
+
+    }
+
+    if(changed.has('formActor') && this.formActor){
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('canSubmit', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+      ));
 
     }
 
@@ -170,7 +170,7 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="title"> ${this.object.name} </div>
       <div slot="subtitle"> ${this.object.description} </div>
 
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ editing ? html`<div slot="actions"><button class="no-padding inverse save${!this.canSubmit ? ' disabled' : ''}" @click="${() => { if(this.canSubmit) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
@@ -300,6 +300,9 @@ export class ObjectRootComponent extends RxLitElement {
         }
         nde-sidebar-list > slot[name="title"] {
           font-weight: bold;
+        }
+        .disabled {
+          display: none;
         }
       `,
     ];
