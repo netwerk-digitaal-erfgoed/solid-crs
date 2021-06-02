@@ -205,7 +205,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           {
             id: FormActors.FORM_MACHINE,
             src: formMachine<CollectionObject>(
-              (context, event) => validateObjectForm(context, event),
+              (context) => validateObjectForm(context),
               async (c: FormContext<CollectionObject>) => c.data
             ),
             data: (context) => ({
