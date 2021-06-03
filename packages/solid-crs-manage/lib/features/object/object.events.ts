@@ -6,9 +6,8 @@ import { CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
  */
 export enum ObjectEvents {
   CLICKED_DELETE              = '[ObjectsEvent: Clicked Delete]',
-  CLICKED_EDIT                = '[ObjectsEvent: Clicked Edit]',
   CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
-  CANCELLED_EDIT              = '[ObjectsEvent: Cancelled Edit]',
+  CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
   SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
 }
 
@@ -29,10 +28,10 @@ export interface SelectedObjectEvent extends Event<ObjectEvents> {
 }
 
 /**
- * Fired when the user clicks the edit button.
+ * Fired when the user clicks the reset button.
  */
-export interface ClickedEditEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CLICKED_EDIT;
+export interface ClickedResetEvent extends Event<ObjectEvents> {
+  type: ObjectEvents.CLICKED_RESET;
 }
 
 /**
@@ -43,19 +42,11 @@ export interface ClickedSaveEvent extends Event<ObjectEvents> {
 }
 
 /**
- * Fired when the user clicks the cancel button when editing.
- */
-export interface CancelledEditEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CANCELLED_EDIT;
-}
-
-/**
  * Events for the object machine.
  */
 export type ObjectEvent = ClickedDeleteObjectEvent
-| ClickedEditEvent
 | ClickedSaveEvent
-| CancelledEditEvent
 | SelectedObjectEvent
 | FormSubmittedEvent
-| ClickedDeleteObjectEvent;
+| ClickedDeleteObjectEvent
+| ClickedResetEvent;

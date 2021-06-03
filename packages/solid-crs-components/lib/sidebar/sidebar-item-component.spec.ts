@@ -32,11 +32,10 @@ describe('SidebarItemComponent', () => {
 
   });
 
-  it('should remove border and padding class when properties are set', async () => {
+  it('should not add border and padding class when booleans are false', async () => {
 
-    component.padding = false;
     component.showBorder = false;
-
+    component.padding = false;
     window.document.body.appendChild(component);
     await component.updateComplete;
 

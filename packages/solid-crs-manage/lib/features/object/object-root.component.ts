@@ -1,11 +1,11 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, LargeCardComponent, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Image, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppEvents } from '../../app.events';
 import { ObjectContext, ObjectStates } from './object.machine';
@@ -79,7 +79,13 @@ export class ObjectRootComponent extends RxLitElement {
    * Indicates if the form can be submitted.
    */
   @internalProperty()
-  canSubmit? = false;
+  isValid? = false;
+
+  /**
+   * Indicates if the form can be submitted.
+   */
+  @internalProperty()
+  isDirty? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -101,31 +107,38 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
+      this.subscribe('state', from(this.actor));
+
       this.subscribe('collections', from(this.actor).pipe(
         map((state) => state.context.collections),
       ));
 
-      if(changed.has('formActor') && this.formActor){
-
-        this.subscribe('isSubmitting', from(this.formActor).pipe(
-          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-        ));
-
-        this.subscribe('canSubmit', from(this.formActor).pipe(
-          map((state) => state.matches({
-            [FormSubmissionStates.NOT_SUBMITTED]:{
-              [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-              [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-            },
-          })),
-        ));
-
-      }
-
-      this.subscribe('state', from(this.actor));
-
       this.subscribe('object', from(this.actor)
         .pipe(map((state) => state.context?.object)));
+
+    }
+
+    if(changed?.has('formActor') && this.formActor){
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('isValid', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+      ));
+
+      this.subscribe('isDirty', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          },
+        })),
+      ));
 
     }
 
@@ -161,7 +174,7 @@ export class ObjectRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const editing = this.state?.matches(ObjectStates.EDITING);
+    const editing = this.state?.matches(ObjectStates.IDLE);
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
@@ -180,8 +193,8 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="title"> ${this.object.name} </div>
       <div slot="subtitle"> ${this.object.description} </div>
 
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ editing ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ editing && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
     <div class="content-and-sidebar">
