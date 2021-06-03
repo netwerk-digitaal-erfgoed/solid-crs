@@ -68,10 +68,6 @@ export class ObjectRepresentationComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const editing = this.state?.matches(ObjectStates.EDITING);
-
-    const initializeFormMachine = () => { if (!editing) { this.actor.send(ObjectEvents.CLICKED_EDIT); } };
-
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
@@ -83,23 +79,23 @@ export class ObjectRepresentationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="subject">
           <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.representation.field.subject')}</label>
-          <input type="text" slot="input" name="subject" value="${this.object.subject||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="subject"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="location">
           <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.representation.field.location')}</label>
-          <input type="text" slot="input" name="location" value="${this.object.location||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="location"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="person">
           <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.representation.field.person')}</label>
-          <input type="text" slot="input" name="person" value="${this.object.person||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="person"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="organization">
           <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.representation.field.organization')}</label>
-          <input type="text" slot="input" name="organization" value="${this.object.organization||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="organization"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="event">
           <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.representation.field.event')}</label>
-          <input type="text" slot="input" name="event" value="${this.object.event||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="event"/>
         </nde-form-element>
       </div>
     </nde-large-card>

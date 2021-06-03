@@ -120,8 +120,6 @@ describe('FormElementComponent', () => {
 
   it('should send SUBMITTED event when enter keypress', async (done) => {
 
-    component.submitOnEnter = true;
-
     machine.onEvent(((event) => {
 
       if(event.type === FormEvents.FORM_SUBMITTED) {
@@ -134,9 +132,11 @@ describe('FormElementComponent', () => {
 
     machine.start();
 
+    component.submitOnEnter = true;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
+    component.validationResults = [];
     input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
 
   });

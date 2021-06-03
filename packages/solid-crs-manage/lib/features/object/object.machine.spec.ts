@@ -76,11 +76,11 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to editing when clicked edit was emitted', async (done) => {
+  it('should transition to IDLE when clicked reset was emitted', async (done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(ObjectStates.EDITING)) {
+      if(state.matches(ObjectStates.IDLE)) {
 
         done();
 
@@ -89,7 +89,24 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_EDIT);
+    machine.send(ObjectEvents.CLICKED_RESET);
+
+  });
+
+  it('should transition to SAVING when clicked save was emitted', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(ObjectEvents.CLICKED_SAVE);
 
   });
 
@@ -139,7 +156,6 @@ describe('ObjectMachine', () => {
 
     });
 
-    machine.send(ObjectEvents.CLICKED_EDIT);
     machine.send(ObjectEvents.CLICKED_SAVE);
 
   });
@@ -248,9 +264,17 @@ describe('ObjectMachine', () => {
 
     });
 
-    it('should return an error when image is not a URL', async () => {
+    it('should return an error when image is not a real url', async () => {
 
       context.data = { ...context.data, image: 'StringThatDoesNotMakeSense' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when image is not an url to an image', async () => {
+
+      context.data = { ...context.data, image: 'http://www.google.com' };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

@@ -1,4 +1,4 @@
-import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
@@ -246,10 +246,9 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should only show save and cancel buttons when editing', async (done) => {
+  it('should only show save and cancel buttons when form is dirty', async () => {
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_EDIT);
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -259,24 +258,6 @@ describe('ObjectRootComponent', () => {
 
     expect(save).toBeFalsy();
     expect(cancel).toBeFalsy();
-
-    machine.onTransition(async (state) => {
-
-      if(state.matches(ObjectStates.EDITING)) {
-
-        await component.updateComplete;
-        const saveButton = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-        const cancelButton = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
-
-        if(saveButton && cancelButton) {
-
-          done();
-
-        }
-
-      }
-
-    });
 
   });
 
@@ -373,7 +354,7 @@ describe('ObjectRootComponent', () => {
 
     component.updated(map);
 
-    expect(component.subscribe).toHaveBeenCalledTimes(5);
+    expect(component.subscribe).toHaveBeenCalledTimes(8);
 
   });
 

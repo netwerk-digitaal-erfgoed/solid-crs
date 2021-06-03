@@ -6,8 +6,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Image } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { from } from 'rxjs';
-import { ObjectContext, ObjectStates } from '../object.machine';
-import { ObjectEvents } from '../object.events';
+import { ObjectContext } from '../object.machine';
 
 /**
  * The root page of the object feature.
@@ -87,10 +86,6 @@ export class ObjectImageryComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const editing = this.state?.matches(ObjectStates.EDITING);
-
-    const initializeFormMachine = () => { if (!editing) { this.actor.send(ObjectEvents.CLICKED_EDIT); } };
-
     return this.object ? html`
         
     <nde-large-card>
@@ -103,11 +98,11 @@ export class ObjectImageryComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="image">
           <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.image.field.file')}</label>
-          <input type="text" slot="input" name="image" value="${this.object.image||''}" @click="${initializeFormMachine}"/>
+          <input type="text" slot="input" name="image"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
           <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
-          <select slot="input" name="license" @click="${initializeFormMachine}">
+          <select slot="input" name="license">
             ${this.licenses.map((license) => html`<option id="${license.uri}" ?selected="${license.uri === this.object.license}">${license.name}</option>`)}
           </select>
         </nde-form-element>
