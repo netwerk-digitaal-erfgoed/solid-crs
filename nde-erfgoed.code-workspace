@@ -28,6 +28,10 @@
       "name": "pods",
       "path": "packages/solid-crs-pods"
     },
+    {
+      "name": "semcom",
+      "path": "packages/solid-crs-semcom-node"
+    },
   ],
   "settings": {
     "eslint.format.enable": true,

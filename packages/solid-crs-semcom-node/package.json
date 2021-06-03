@@ -1,0 +1,15 @@
+{
+  "name": "@netwerk-digitaal-erfgoed/solid-crs-semcom-node",
+  "version": "0.3.0",
+  "description": "Semcom node for the demo environment of the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "EUPL-1.2",
+  "scripts": {
+    "start": "semcom-node",
+    "start:watch": "npm run start"
+  },
+  "dependencies": {
+    "@digita-ai/semcom-node": "^0.4.0",
+    "typescript": "^4.3.2"
+  }
+}
