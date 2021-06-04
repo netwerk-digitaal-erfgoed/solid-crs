@@ -29,8 +29,12 @@
       "path": "packages/solid-crs-pods"
     },
     {
-      "name": "semcom",
+      "name": "semcom-node",
       "path": "packages/solid-crs-semcom-node"
+    },
+    {
+      "name": "semcom-components",
+      "path": "packages/solid-crs-semcom-components"
     },
   ],
   "settings": {

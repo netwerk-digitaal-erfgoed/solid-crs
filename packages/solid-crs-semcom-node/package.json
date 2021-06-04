@@ -5,7 +5,7 @@
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "semcom-node -c config/config-crs.json -m ./",
+    "start": "semcom-node -c config/config-crs.json -m ./ -p 3003",
     "start:watch": "npm run start"
   },
   "repository": {
@@ -14,7 +14,6 @@
     "directory": "packages/solid-crs-semcom-node"
   },
   "dependencies": {
-    "@digita-ai/semcom-node": "^0.4.0",
-    "typescript": "^4.3.2"
+    "@digita-ai/semcom-node": "^0.4.0"
   }
 }
