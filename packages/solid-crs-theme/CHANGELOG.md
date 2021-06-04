@@ -17,6 +17,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 * various bug fixes ([#269](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/269)) ([c4326b1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/c4326b15067d76fd40c61e14a2b0c4c6770923d3))
 
+### [0.3.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.3.0...v0.3.1) (2021-05-25)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
 
 
 ## [0.3.0](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.1...v0.3.0) (2021-05-18)
