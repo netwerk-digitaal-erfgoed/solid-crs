@@ -69,6 +69,7 @@ export class AppRootComponent extends RxLitElement {
         description: this.translator.translate('nde.features.object.new-object-description'),
         collection: undefined,
         type: 'http://schema.org/CreativeWork',
+        identifier: this.translator.translate('nde.features.object.new-object-name').toLowerCase().replace(' ', '-'),
         image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
       }
     )).withContext({

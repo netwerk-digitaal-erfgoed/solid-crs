@@ -45,6 +45,9 @@ export class SidebarItemComponent extends RxLitElement {
         div.content-container {
           height: 100%;
         }
+        div.content-container.border {
+          height: auto;
+        }
         .border {
           border-bottom: 1px solid var(--colors-primary-normal);
         }
