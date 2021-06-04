@@ -42,5 +42,37 @@
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
+  },
+  "jest": {
+    "displayName": "semcom-components",
+    "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "setupFiles": [
+      "<rootDir>/tests/setup.ts"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(lit-element|lit-html|rx-lit)/)"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "lines": 0,
+        "functions": 0
+      }
+    },
+    "automock": false,
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/dist/",
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*\\.conf(ig)?.ts",
+      "<rootDir>/lib/index.ts",
+      "<rootDir>/.*\\.d.ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "<rootDir>/tsconfig.spec.json"
+      }
+    }
   }
 }

@@ -1,9 +1,5 @@
-import { FormElementComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { CollectionObjectMemoryStore, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
-import { interpret, Interpreter } from 'xstate';
-import { ObjectEvents } from '../object.events';
-import { ObjectContext, objectMachine, ObjectStates } from '../object.machine';
 
 describe.each([
   [ 'ObjectCreationComponent', 'nde-object-creation' ],
@@ -14,7 +10,6 @@ describe.each([
 ])('%s', (name, tag) => {
 
   let component: RxLitElement;
-  let machine: Interpreter<ObjectContext>;
 
   const collection1 = {
     uri: 'collection-uri-1',
@@ -37,24 +32,10 @@ describe.each([
 
   beforeEach(() => {
 
-    const objectStore = new CollectionObjectMemoryStore([
-      object1,
-    ]);
-
-    machine = interpret(objectMachine(objectStore)
-      .withContext({
-        object: object1,
-      }));
-
     component = window.document.createElement(tag) as RxLitElement;
-
-    component.actor = machine;
-
-    component.object = object1;
-
-    component.translator = new MemoryTranslator([], 'nl-NL');
-
-    component.collections = [ collection1 ];
+    (component as any).object = object1;
+    (component as any).translator = new MemoryTranslator([], 'nl-NL');
+    (component as any).collections = [ collection1 ];
 
   });
 
@@ -70,63 +51,20 @@ describe.each([
 
   });
 
-  // it('clicking form element input should fire CLICKED_EDIT', async (done) => {
+  it('should render when object is set', async () => {
 
-  //   machine.onEvent((event) => {
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
-  //     if(event && event.type === ObjectEvents.CLICKED_EDIT) {
+    const root = window.document.body.querySelector(tag);
+    expect(root).toBeTruthy();
+    expect(root.shadowRoot.querySelector('nde-large-card')).toBeTruthy();
 
-  //       done();
-
-  //     }
-
-  //   });
-
-  //   const machineSpy = jest.spyOn(machine, 'send');
-  //   machine.start();
-  //   window.document.body.appendChild(component);
-  //   await component.updateComplete;
-
-  //   const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
-  //   const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
-  //   const input = firstFormElement.querySelector('input');
-
-  //   expect(shadowRoot).toBeTruthy();
-  //   expect(firstFormElement).toBeTruthy();
-  //   expect(input).toBeTruthy();
-
-  //   input.click();
-
-  //   expect(machineSpy).toHaveBeenCalledTimes(1);
-
-  // });
-
-  // it('should not send CLICKED_EDIT when boolean editing is true', async () => {
-
-  //   const machineSpy = jest.spyOn(machine, 'send');
-  //   machine.start();
-  //   component.state = { matches: jest.fn().mockReturnValue(true) };
-  //   window.document.body.appendChild(component);
-  //   await component.updateComplete;
-
-  //   const shadowRoot = window.document.body.querySelector(tag).shadowRoot;
-  //   const firstFormElement: FormElementComponent<string> = shadowRoot.querySelector('nde-form-element');
-  //   const input = firstFormElement.querySelector('input');
-
-  //   expect(shadowRoot).toBeTruthy();
-  //   expect(firstFormElement).toBeTruthy();
-  //   expect(input).toBeTruthy();
-
-  //   input.click();
-
-  //   expect(machineSpy).toHaveBeenCalledTimes(0);
-
-  // });
+  });
 
   it('should not render anything when object is undefined', async () => {
 
-    component.object = undefined;
-    machine.start();
+    (component as any).object = undefined;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
