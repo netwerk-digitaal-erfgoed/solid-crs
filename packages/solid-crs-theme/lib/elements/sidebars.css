@@ -1,0 +1,7 @@
+nde-sidebar {
+  max-height: inherit;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 var(--size-sidebar);
+}

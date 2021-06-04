@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-manage",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-manage.umd.js",
@@ -30,11 +30,12 @@
   },
   "dependencies": {
     "@digita-ai/semcom-core": "0.3.4",
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.3.1",
-    "@netwerk-digitaal-erfgoed/solid-crs-components": "0.3.1",
-    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.3.1",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.3.1",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.4.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-components": "0.4.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.4.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.4.0",
     "@xstate/inspect": "^0.4.1",
+    "edtf": "^3.1.0",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
@@ -82,10 +83,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 88.9,
-        "branches": 82.39,
-        "lines": 89.27,
-        "functions": 73.66
+        "statements": 93.13,
+        "branches": 90.34,
+        "lines": 93.77,
+        "functions": 78.99
       }
     },
     "automock": false,
@@ -94,7 +95,8 @@
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
-      "<rootDir>/lib/app.ts"
+      "<rootDir>/lib/app.ts",
+      "<rootDir>/.*\\.d.ts"
     ],
     "globals": {
       "ts-jest": {

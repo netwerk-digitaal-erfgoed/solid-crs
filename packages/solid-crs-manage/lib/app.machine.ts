@@ -1,8 +1,7 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { Observable, of } from 'rxjs';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -106,7 +105,8 @@ export const appMachine = (
   solid: SolidService,
   collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
-  template: Collection,
+  collectionTemplate: Collection,
+  objectTemplate: CollectionObject,
 ) =>
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
@@ -167,7 +167,7 @@ export const appMachine = (
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
-                src: collectionMachine(collectionStore, objectStore),
+                src: collectionMachine(collectionStore, objectStore, objectTemplate),
                 data: (context, event) => ({
                   collection: context.selected,
                 }),
@@ -266,6 +266,9 @@ export const appMachine = (
               {
                 id: AppActors.OBJECT_MACHINE,
                 src: objectMachine(objectStore),
+                data: (context) => ({
+                  collections: context.collections,
+                }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
                 },
@@ -297,7 +300,7 @@ export const appMachine = (
               {
                 id: FormActors.FORM_MACHINE,
                 src: formMachine<{ searchTerm: string }>(
-                  (): Observable<FormValidatorResult[]> => of([]),
+                  async (): Promise<FormValidatorResult[]> => [],
                 ),
                 data: {
                   data: { searchTerm: '' },
@@ -355,6 +358,7 @@ export const appMachine = (
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
               [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
+              [ObjectEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
@@ -397,7 +401,7 @@ export const appMachine = (
               /**
                * Save collection to the store.
                */
-              src: () => collectionStore.save(template), // TODO: Update
+              src: () => collectionStore.save(collectionTemplate), // TODO: Update
               onDone: {
                 target: AppDataStates.IDLE,
                 actions: [

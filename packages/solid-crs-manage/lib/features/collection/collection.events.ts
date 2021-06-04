@@ -2,7 +2,7 @@ import { Alert, Event, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/soli
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
-import { SelectedObjectEvent } from 'features/object/object.events';
+import { ClickedDeleteObjectEvent, SelectedObjectEvent } from '../object/object.events';
 
 /**
  * Event references for the collection machine, with readable log format.
@@ -24,7 +24,7 @@ export enum CollectionEvents {
 /**
  * Fired when the user clicks the delete collection button.
  */
-export interface ClickedDeleteEvent extends Event<CollectionEvents> {
+export interface ClickedDeleteCollectionEvent extends Event<CollectionEvents> {
   type: CollectionEvents.CLICKED_DELETE;
   collection: Collection;
 }
@@ -77,14 +77,15 @@ export interface SavedCollectionEvent extends Event<CollectionEvents> {
  */
 export type CollectionEvent =
   SelectedCollectionEvent
-  | ClickedDeleteEvent
+  | ClickedDeleteCollectionEvent
   | ClickedEditEvent
   | ClickedSaveEvent
   | CancelledEditEvent
   | ClickedCreateObjectEvent
   | FormSubmittedEvent
   | SelectedObjectEvent
-  | SavedCollectionEvent;
+  | SavedCollectionEvent
+  | ClickedDeleteObjectEvent;
 
 /**
  * Adds an alert to the machine's parent.

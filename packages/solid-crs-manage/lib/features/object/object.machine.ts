@@ -2,10 +2,10 @@ import { formMachine,
   FormActors,
   FormValidatorResult,
   FormContext,
-  FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+  FormEvents, State, FormUpdatedEvent, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
+import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
 
@@ -17,6 +17,10 @@ export interface ObjectContext {
    * The currently selected object.
    */
   object?: CollectionObject;
+  /**
+   * A list of all collections.
+   */
+  collections?: Collection[];
 }
 
 /**
@@ -37,6 +41,129 @@ export enum ObjectStates {
 }
 
 /**
+ * Validate the values of a collection object
+ *
+ * @param context the context of the object to be validated
+ * @returns a list of validator results
+ */
+export const validateObjectForm = async (context: FormContext<CollectionObject>): Promise<FormValidatorResult[]> => {
+
+  const res: FormValidatorResult[]  = [];
+
+  // only validate dirty fields
+  const dirtyFields = Object.keys(context.data).filter((field) =>
+    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
+
+  for (const field of dirtyFields) {
+
+    const value = context.data[field as keyof CollectionObject];
+
+    // the description of an object can not be longer than 10.000 characters
+    if (field === 'description' && value && (value as typeof context.data[typeof field]).length > 10000) {
+
+      res.push({
+        field: 'description',
+        message: 'nde.features.object.card.identification.field.description.validation.max-characters',
+      });
+
+    }
+
+    // the name/title of an object can not be empty
+    if (field === 'name' && !value) {
+
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+    // the name/title of an object can not be longer than 100 characters
+    if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
+
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.identification.field.title.validation.max-characters',
+      });
+
+    }
+
+    // the identifier of an object can not be empty
+    if (field === 'identifier' && !value) {
+
+      res.push({
+        field: 'identifier',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+    // the identifier of an object can not be empty
+    if (field === 'image' && !value) {
+
+      res.push({
+        field: 'image',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+    // the image url should be valid and return png/jpeg mime type
+    if (field === 'image' && value) {
+
+      try {
+
+        const contentTypes = [
+          'image/png',
+          'image/jpeg',
+        ];
+
+        const url = new URL((value as typeof context.data[typeof field]));
+
+        const response = await fetch(url.toString(), { method: 'HEAD' });
+
+        if (!response.ok || !contentTypes.includes(response.headers.get('Content-Type').toLowerCase())) {
+
+          throw Error();
+
+        }
+
+      } catch (error) {
+
+        res.push({
+          field: 'image',
+          message: 'nde.features.object.card.image.field.file.validation.invalid',
+        });
+
+      }
+
+    }
+
+    // the date should be valid EDTF
+    if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
+
+      try {
+
+        edtf.parse(value);
+
+      } catch (error) {
+
+        res.push({
+          field: 'dateCreated',
+          message: 'nde.features.object.card.creation.field.date.validation.invalid',
+        });
+
+      }
+
+    }
+
+  }
+
+  return res;
+
+};
+
+/**
  * The object machine.
  */
 export const objectMachine = (objectStore: CollectionObjectStore) =>
@@ -45,10 +172,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
     context: { },
     initial: ObjectStates.IDLE,
     on: {
-      [ObjectEvents.CLICKED_EDIT]: ObjectStates.EDITING,
-      [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
-      [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
-      [ObjectEvents.CANCELLED_EDIT]: ObjectStates.IDLE,
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: assign({
           object: (context, event) => event.object,
@@ -57,7 +180,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
     },
     states: {
-      [ObjectStates.IDLE]: { },
       [ObjectStates.SAVING]: {
         invoke: {
           src: (context, event) => objectStore.save(context.object),
@@ -67,38 +189,34 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           },
         },
       },
-      [ObjectStates.EDITING]: {
+      [ObjectStates.IDLE]: {
+        on: {
+          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
+          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
+          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
+          [ObjectEvents.CLICKED_RESET]: ObjectStates.IDLE,
+        },
         invoke: [
           {
             id: FormActors.FORM_MACHINE,
-            src: formMachine<{ name: string; description: string }>(
-              (): Observable<FormValidatorResult[]> => of([]),
-              async (c: FormContext<{ name: string; description: string }>) => c.data
+            src: formMachine<CollectionObject>(
+              (context) => validateObjectForm(context),
+              async (c: FormContext<CollectionObject>) => c.data
             ),
             data: (context) => ({
-              data: { name: context.object.name, description: context.object.description },
-              original: { name: context.object.name, description: context.object.description },
+              data: { ...context.object },
+              original: { ...context.object },
             }),
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
                 assign((context, event) => ({
-                  object: {
-                    ...context.object,
-                    name: event.data.data.name,
-                    description: event.data.data.description,
-                  },
+                  object: { ...event.data.data },
                 })),
               ],
             },
-            onError: {
-              target: ObjectStates.IDLE,
-            },
           },
         ],
-        on: {
-          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
-        },
       },
       [ObjectStates.DELETING]: {
         invoke: {

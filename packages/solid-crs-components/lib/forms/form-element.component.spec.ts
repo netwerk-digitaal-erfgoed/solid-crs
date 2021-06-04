@@ -1,5 +1,5 @@
 import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
@@ -16,7 +16,7 @@ describe('FormElementComponent', () => {
 
     machine = interpret(
       formMachine<Collection>(
-        (context: FormContext<Collection>, event: FormEvent): Observable<FormValidatorResult[]> => of([
+        async (context: FormContext<Collection>, event: FormEvent): Promise<FormValidatorResult[]> => ([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),
@@ -24,7 +24,7 @@ describe('FormElementComponent', () => {
         .withContext({
           data: { uri: '', name: 'Test', description: 'description' },
           original: { uri: '', name: 'Test', description: 'description' },
-          validation: [],
+          validation: [ { field: 'name', message: 'lorem' } ],
         }),
     );
 
@@ -84,7 +84,41 @@ describe('FormElementComponent', () => {
 
   });
 
-  xit('should send SUBMITTED event when enter keypress', async (done) => {
+  it('should allow slotted select field', async () => {
+
+    component.field = 'description';
+    const select = window.document.createElement('select');
+    select.slot = 'input';
+    const option = window.document.createElement('option');
+    option.id = 'description';
+    select.appendChild(option);
+    component.appendChild(select);
+    component.removeChild(input);
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).children.length).toBe(1);
+
+  });
+
+  it('should allow slotted textarea field', async () => {
+
+    component.field = 'description';
+    const select = window.document.createElement('textarea');
+    select.slot = 'input';
+    select.innerText = 'test description';
+    component.appendChild(select);
+    component.removeChild(input);
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).innerText).toEqual(select.innerText);
+
+  });
+
+  it('should send SUBMITTED event when enter keypress', async (done) => {
 
     machine.onEvent(((event) => {
 
@@ -96,9 +130,13 @@ describe('FormElementComponent', () => {
 
     }));
 
+    machine.start();
+
+    component.submitOnEnter = true;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
+    component.validationResults = [];
     input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
 
   });

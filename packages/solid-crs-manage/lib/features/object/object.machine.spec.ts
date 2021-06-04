@@ -1,9 +1,10 @@
+import { FormContext, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectEvents, SelectedObjectEvent } from './object.events';
-import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
+import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 
 describe('ObjectMachine', () => {
 
@@ -75,11 +76,11 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to editing when clicked edit was emitted', async (done) => {
+  it('should transition to IDLE when clicked reset was emitted', async (done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(ObjectStates.EDITING)) {
+      if(state.matches(ObjectStates.IDLE)) {
 
         done();
 
@@ -88,7 +89,24 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_EDIT);
+    machine.send(ObjectEvents.CLICKED_RESET);
+
+  });
+
+  it('should transition to SAVING when clicked save was emitted', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(ObjectEvents.CLICKED_SAVE);
 
   });
 
@@ -157,6 +175,110 @@ describe('ObjectMachine', () => {
     machine.start();
 
     machine.send({ type: ObjectEvents.SELECTED_OBJECT, object: object2 } as SelectedObjectEvent);
+
+  });
+
+  describe('validateObjectForm()', () => {
+
+    let context: FormContext<CollectionObject>;
+
+    beforeEach(() => {
+
+      context = {
+        data: {
+          description: 'description',
+          name: 'name',
+          identifier: 'identifier',
+          dateCreated: '2021',
+          type: undefined,
+          collection: undefined,
+          uri: undefined,
+          image: undefined,
+        },
+        original: {
+          description: 'description',
+          name: 'name',
+          identifier: 'identifier',
+          dateCreated: '2021',
+          type: undefined,
+          collection: undefined,
+          uri: undefined,
+          image: undefined,
+        },
+      };
+
+    });
+
+    it('should return an empty list if no problems were found', async () => {
+
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(0);
+
+    });
+
+    it('should return an error when name is an empty string', async () => {
+
+      context.data = { ...context.data, name: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when name is longer than 100 characters', async () => {
+
+      context.data = { ...context.data, name: 'a'.repeat(101) };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when description is longer than 10000 characters', async () => {
+
+      context.data = { ...context.data, description: 'a'.repeat(10001) };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when identifer is an empty string', async () => {
+
+      context.data = { ...context.data, identifier: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when dateCreated is a random string', async () => {
+
+      context.data = { ...context.data, dateCreated: 'StringThatDoesNotMakeSense' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when image is an empty string', async () => {
+
+      context.data = { ...context.data, image: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when image is not a real url', async () => {
+
+      context.data = { ...context.data, image: 'StringThatDoesNotMakeSense' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when image is not an url to an image', async () => {
+
+      context.data = { ...context.data, image: 'http://www.google.com' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
 
   });
 

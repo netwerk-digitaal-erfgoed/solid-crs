@@ -5,7 +5,6 @@ import { formMachine,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Observable, of } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -42,149 +41,173 @@ export enum CollectionStates {
   EDITING   = '[CollectionsState: Editing]',
   DELETING  = '[CollectionsState: Deleting]',
   DETERMINING_COLLECTION  = '[CollectionsState: Determining collection]',
+  CREATING_OBJECT  = '[CollectionsState: Creating object]',
 }
 
 /**
  * The collection machine.
  */
-export const collectionMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
-  createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
-    id: CollectionActors.COLLECTION_MACHINE,
-    context: { },
-    initial: CollectionStates.DETERMINING_COLLECTION,
-    on: {
-      [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
-      [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
-      [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
-      [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
-      [CollectionEvents.SELECTED_COLLECTION]: {
-        actions: assign({
-          collection: (context, event) => event.collection,
-        }),
-        target: CollectionStates.DETERMINING_COLLECTION,
+export const collectionMachine =
+  (collectionStore: CollectionStore, objectStore: CollectionObjectStore, objectTemplate: CollectionObject) =>
+    createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
+      id: CollectionActors.COLLECTION_MACHINE,
+      context: { },
+      initial: CollectionStates.DETERMINING_COLLECTION,
+      on: {
+        [CollectionEvents.SELECTED_COLLECTION]: {
+          actions: assign({
+            collection: (context, event) => event.collection,
+          }),
+          target: CollectionStates.DETERMINING_COLLECTION,
+        },
       },
-    },
-    states: {
+      states: {
       /**
        * Loads the objects associated with the current collection.
        */
-      [CollectionStates.LOADING]: {
-        invoke: {
-          src: (context) =>
-            objectStore.getObjectsForCollection(context.collection),
-          onDone: {
+        [CollectionStates.LOADING]: {
+
+          invoke: {
+            src: (context) =>
+              objectStore.getObjectsForCollection(context.collection),
+            onDone: {
             /**
              * When done, assign objects to the context and transition to idle.
              */
-            actions: assign({
-              objects: (context, event) => event.data,
-            }),
-            target: CollectionStates.IDLE,
-          },
-          onError: {
+              actions: assign({
+                objects: (context, event) => event.data,
+              }),
+              target: CollectionStates.IDLE,
+            },
+            onError: {
             /**
              * Notify the parent machine when something goes wrong.
              */
-            actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+              actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+            },
           },
         },
-      },
-      /**
-       * Determining collection
-       */
-      [CollectionStates.DETERMINING_COLLECTION]: {
-        always: [
-          {
-            target: CollectionStates.LOADING,
-            cond: (context, event) => context?.collection ? true : false,
-          },
-          {
-            target: CollectionStates.IDLE,
-          },
-        ],
-      },
-      /**
-       * Objects for the current collection are loaded.
-       */
-      [CollectionStates.IDLE]: {
-        on: {
-          [ObjectEvents.SELECTED_OBJECT]: {
-            actions: sendParent((context, event) => event),
+        /**
+         * Determining collection
+         */
+        [CollectionStates.DETERMINING_COLLECTION]: {
+          always: [
+            {
+              target: CollectionStates.LOADING,
+              cond: (context, event) => context?.collection ? true : false,
+            },
+            {
+              target: CollectionStates.IDLE,
+            },
+          ],
+        },
+        /**
+         * Objects for the current collection are loaded.
+         */
+        [CollectionStates.IDLE]: {
+          on: {
+            [ObjectEvents.SELECTED_OBJECT]: {
+              actions: sendParent((context, event) => event),
+            },
+            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
+            [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
+            [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+            [ObjectEvents.CLICKED_DELETE]: {
+              actions: sendParent((context, event) => event),
+            },
           },
         },
-      },
-      /**
-       * Saving changesto the collection's metadata.
-       */
-      [CollectionStates.SAVING]: {
-        invoke: {
-          src: (context) => collectionStore.save(context.collection),
-          onDone: {
-            target: CollectionStates.DETERMINING_COLLECTION,
-            actions: [
-              sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
-            ],
-          },
-          onError: {
-            actions: sendParent(AppEvents.ERROR),
-          },
-        },
-      },
-      /**
-       * Editing the collection metadata.
-       */
-      [CollectionStates.EDITING]: {
-        invoke: [
-          /**
-           * Invoke a form machine which controls the form.
-           */
-          {
-            id: FormActors.FORM_MACHINE,
-            src: formMachine<{ name: string; description: string }>(
-              (): Observable<FormValidatorResult[]> => of([]),
-              async (c: FormContext<{ name: string; description: string }>) => c.data
-            ),
-            data: (context) => ({
-              data: { name: context.collection.name, description: context.collection.description },
-              original: { name: context.collection.name, description: context.collection.description },
-            }),
+        /**
+         * Saving changesto the collection's metadata.
+         */
+        [CollectionStates.SAVING]: {
+          invoke: {
+            src: (context) => collectionStore.save(context.collection),
             onDone: {
-              target: CollectionStates.SAVING,
+              target: CollectionStates.DETERMINING_COLLECTION,
               actions: [
-                assign((context, event) => ({
-                  collection: {
-                    ...context.collection,
-                    name: event.data.data.name,
-                    description: event.data.data.description,
-                  },
-                })),
+                sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
               ],
             },
             onError: {
-              target: CollectionStates.IDLE,
+              actions: sendParent(AppEvents.ERROR),
             },
           },
-        ],
-        on: {
-          [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
+        },
+        /**
+         * Editing the collection metadata.
+         */
+        [CollectionStates.EDITING]: {
+          on: {
+            [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
+            [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
+            [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
+          },
+          invoke: [
+          /**
+           * Invoke a form machine which controls the form.
+           */
+            {
+              id: FormActors.FORM_MACHINE,
+              src: formMachine<{ name: string; description: string }>(
+                async (): Promise<FormValidatorResult[]> => [],
+                async (c: FormContext<{ name: string; description: string }>) => c.data
+              ),
+              data: (context) => ({
+                data: { name: context.collection.name, description: context.collection.description },
+                original: { name: context.collection.name, description: context.collection.description },
+              }),
+              onDone: {
+                target: CollectionStates.SAVING,
+                actions: [
+                  assign((context, event) => ({
+                    collection: {
+                      ...context.collection,
+                      name: event.data.data.name,
+                      description: event.data.data.description,
+                    },
+                  })),
+                ],
+              },
+              onError: {
+                target: CollectionStates.IDLE,
+              },
+            },
+          ],
+        },
+        /**
+         * Deleting the current collection.
+         */
+        [CollectionStates.DELETING]: {
+          invoke: {
+            src: (context) => collectionStore.delete(context.collection),
+            onDone: {
+              target: CollectionStates.IDLE,
+              actions: [
+                sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
+              ],
+            },
+            onError: {
+              actions: sendParent(AppEvents.ERROR),
+            },
+          },
+        },
+        /**
+         * Creating a new object.
+         */
+        [CollectionStates.CREATING_OBJECT]: {
+          invoke: {
+          /**
+           * Save object to the store.
+           */
+            src: (context) => objectStore.save({ ...objectTemplate, collection: context.collection.uri }),
+            onDone: {
+              target: CollectionStates.LOADING,
+            },
+            onError: {
+              actions: sendParent(AppEvents.ERROR),
+            },
+          },
         },
       },
-      /**
-       * Deleting the current collection.
-       */
-      [CollectionStates.DELETING]: {
-        invoke: {
-          src: (context) => collectionStore.delete(context.collection),
-          onDone: {
-            target: CollectionStates.IDLE,
-            actions: [
-              sendParent((context) => ({ type: CollectionEvents.CLICKED_DELETE, collection: context.collection })),
-            ],
-          },
-          onError: {
-            actions: sendParent(AppEvents.ERROR),
-          },
-        },
-      },
-    },
-  });
+    });

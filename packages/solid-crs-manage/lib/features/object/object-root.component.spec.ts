@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectRootComponent } from './object-root.component';
@@ -36,7 +36,7 @@ describe('ObjectRootComponent', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -51,20 +51,29 @@ describe('ObjectRootComponent', () => {
     machine = interpret(objectMachine(objectStore)
       .withContext({
         object: object1,
+        collections: [ collection1, collection2 ],
       }));
 
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {},
-    ));
+      { ...collection1 },
+      { ...object1 },
+    ).withContext({
+      collections: [ collection1, collection2 ],
+      alerts: [],
+    }));
 
     component = window.document.createElement('nde-object-root') as ObjectRootComponent;
 
     component.actor = machine;
 
     component.translator = new MemoryTranslator([], 'nl-NL');
+
+    component.object = object1;
+
+    component.collections = [ collection1, collection2 ];
 
   });
 
@@ -99,7 +108,7 @@ describe('ObjectRootComponent', () => {
     const alerts = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelectorAll('nde-alert');
 
     expect(alerts).toBeTruthy();
-    expect(alerts.length).toBe(0);
+    expect(alerts.length).toBe(1);
 
   });
 
@@ -237,93 +246,47 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should send event when edit is clicked', async () => {
+  it('should only show save and cancel buttons when form is dirty', async () => {
 
     machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    machine.onTransition((state) => {
+    const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
+    const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
 
-      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
-
-        machine.send = jest.fn();
-
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
-
-        if(button) {
-
-          button.click();
-
-          expect(machine.send).toHaveBeenCalledTimes(1);
-
-        }
-
-      }
-
-    });
+    expect(save).toBeFalsy();
+    expect(cancel).toBeFalsy();
 
   });
 
-  it('should hide save and cancel buttons and show edit button when not editing', async () => {
-
-    machine.onTransition(async (state) => {
-
-      if(state.matches(ObjectStates.IDLE)) {
-
-        const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-        const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
-        const edit = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
-
-        expect(save).toBeFalsy();
-        expect(cancel).toBeFalsy();
-        expect(edit).toBeTruthy();
-
-      }
-
-    });
-
-    machine.start();
+  it('should select sidebar item when content is scrolled', async () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
+
+    const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
+    content.dispatchEvent(new CustomEvent('scroll'));
+
+    expect(component.visibleCard).toBeTruthy();
 
   });
 
-  it('should show save and cancel buttons and hide edit button when editing', async () => {
+  describe('updateSelected()', () => {
 
-    machine.onTransition(async (state) => {
+    it('should set this.visibleCard to the currently visible card', async () => {
 
-      if(state.matches(ObjectStates.IDLE)) {
+      window.document.body.appendChild(component);
+      await component.updateComplete;
 
-        const edit = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
+      component.updateSelected();
+      await component.updateComplete;
 
-        expect(edit).toBeTruthy();
-
-        (edit as HTMLButtonElement).click();
-
-      }
-
-      if (state.matches(ObjectStates.EDITING)) {
-
-        const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-        const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
-        const edit = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
-
-        expect(save).toBeTruthy();
-        expect(cancel).toBeTruthy();
-        expect(edit).toBeFalsy();
-
-      }
+      expect(component.visibleCard).toBeTruthy();
+      expect(component.visibleCard).toEqual(component.formCards[0].id);
 
     });
-
-    machine.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
 
   });
 
@@ -363,7 +326,7 @@ describe('ObjectRootComponent', () => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
-          expect(event.alert).toEqual(alert);
+          expect((event as DismissAlertEvent).alert).toEqual(alert);
           done();
 
         }
@@ -391,7 +354,7 @@ describe('ObjectRootComponent', () => {
 
     component.updated(map);
 
-    expect(component.subscribe).toHaveBeenCalledTimes(4);
+    expect(component.subscribe).toHaveBeenCalledTimes(8);
 
   });
 

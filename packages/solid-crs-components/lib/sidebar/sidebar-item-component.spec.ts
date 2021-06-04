@@ -32,4 +32,16 @@ describe('SidebarItemComponent', () => {
 
   });
 
+  it('should not add border and padding class when booleans are false', async () => {
+
+    component.showBorder = false;
+    component.padding = false;
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.padding').length).toEqual(0);
+    expect(window.document.body.getElementsByTagName('nde-sidebar-item')[0].shadowRoot.querySelectorAll('.border').length).toEqual(0);
+
+  });
+
 });

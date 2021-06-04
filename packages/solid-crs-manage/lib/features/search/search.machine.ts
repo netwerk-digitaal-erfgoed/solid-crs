@@ -95,7 +95,7 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
 
             return {
               objects: await objectStore.search(context.searchTerm, objects),
-              collections: await collectionStore.search(context.searchTerm, collections),
+              // collections: await collectionStore.search(context.searchTerm, collections),
             };
 
           },
@@ -105,7 +105,7 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
           onDone: {
             actions: assign({
               objects: (context, event) => event?.data.objects,
-              collections: (context, event) => event?.data.collections,
+              // collections: (context, event) => event?.data.collections,
             }),
             target: SearchStates.IDLE,
           },

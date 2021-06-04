@@ -157,9 +157,9 @@ export class SearchRootComponent extends RxLitElement {
 
           ${this.objects?.length
     ? html`
-              <div class="title">
+              <!-- <div class="title">
                 ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
-              </div>
+              </div> -->
               <div class='three-column-content-grid'>
                 ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.parent?.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
               </div>

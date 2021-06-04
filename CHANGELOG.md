@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.3.0...v0.4.0) (2021-06-04)
+
+
+### **Documentation**
+
+* collection object feature specs ([#220](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/220)) ([01c3eed](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/01c3eed91f729f5f8a8730de9009c5c387c24c03))
+* moved specs to antora ([#222](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/222)) ([3d84952](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3d84952ca8f0819985ecc4a2abbb6f9b2d514518))
+* user manual for collections ([#228](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/228)) ([a64186d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a64186d1f09fe8c70e4bd83fd10715beaed19185))
+
+
+### **Features**
+
+* add secondary sidebar to object root page ([#246](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/246)) ([fb481f1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fb481f1bb131704817059dbbf0b9f8773c525868))
+* change Solid service name ([#265](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/265)) ([0795d97](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/0795d97747adfaafb965a8621335a55305324128))
+* create nde-large-card and tests ([#243](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/243)) ([dc99b95](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/dc99b957fc8dc85b2939d79eaac467a0c94943ca))
+* Integrate form cards into object page ([#249](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/249)) ([cbfd9a3](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/cbfd9a3c24e3403e83f21215a474c22ebee2d811))
+* link to Inrupt.com signup ([#266](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/266)) ([d3697a0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/d3697a08444838ae4e2d2b4f32548527f98639bf))
+* object form improvements ([#268](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/268)) ([215970d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/215970d594a7616255805ddc957152dcadda51e6))
+* search collections and objects ([#202](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/202)) ([5a837d9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5a837d9339399d63e16cc3c1ef90d88293c2fc8f))
+* Set up object feature ([#231](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/231)) ([801c0af](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/801c0af8952ca6e54e9816235eb0708587fd4a85))
+* Support collection object transfer ([#267](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/267)) ([5b37a82](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5b37a826198e0f0a4bd423e817722d50f5e384a2))
+* Update collection model and store ([#227](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/227)) ([28ce5b9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/28ce5b96f69599f46a05c95ebf88d41c35097077))
+
+
+### **Bug Fixes**
+
+* various bug fixes ([#269](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/269)) ([c4326b1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/c4326b15067d76fd40c61e14a2b0c4c6770923d3))
+* various styling fixes ([#212](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/212)) ([58746ae](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/58746ae089403c4107c19ac45c9ae3eadb93191f))
+
+
 ### [0.3.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.3.0...v0.3.1) (2021-05-25)
 
 

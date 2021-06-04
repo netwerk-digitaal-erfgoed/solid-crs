@@ -3,13 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.3.0...v0.4.0) (2021-06-04)
+
+
+### **Features**
+
+* add secondary sidebar to object root page ([#246](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/246)) ([fb481f1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fb481f1bb131704817059dbbf0b9f8773c525868))
+* change Solid service name ([#265](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/265)) ([0795d97](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0795d97747adfaafb965a8621335a55305324128))
+* Integrate form cards into object page ([#249](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/249)) ([cbfd9a3](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/cbfd9a3c24e3403e83f21215a474c22ebee2d811))
+* link to Inrupt.com signup ([#266](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/266)) ([d3697a0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/d3697a08444838ae4e2d2b4f32548527f98639bf))
+* object form improvements ([#268](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/268)) ([215970d](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/215970d594a7616255805ddc957152dcadda51e6))
+* Support collection object transfer ([#267](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/267)) ([5b37a82](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5b37a826198e0f0a4bd423e817722d50f5e384a2))
+* Update collection model and store ([#227](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/227)) ([28ce5b9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/28ce5b96f69599f46a05c95ebf88d41c35097077))
+
+
+### **Bug Fixes**
+
+* various bug fixes ([#269](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/269)) ([c4326b1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/c4326b15067d76fd40c61e14a2b0c4c6770923d3))
+
 ### [0.3.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.3.0...v0.3.1) (2021-05-25)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
-
-
-
-
 
 ## [0.3.0](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.1...v0.3.0) (2021-05-18)
 

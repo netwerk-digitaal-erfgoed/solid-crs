@@ -1,6 +1,6 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { ArgumentError, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -16,6 +16,16 @@ import { ObjectEvents } from './object.events';
  */
 export class ObjectRootComponent extends RxLitElement {
 
+  /**
+   * The form cards in this component
+   */
+  @queryAll('.form-card')
+  formCards: RxLitElement[];
+  /**
+   * The id of the currently visible form card
+   */
+  @internalProperty()
+  visibleCard: string;
   /**
    * The component's logger.
    */
@@ -47,9 +57,15 @@ export class ObjectRootComponent extends RxLitElement {
   state?: State<ObjectContext>;
 
   /**
-   * The object to be displayed and/or edited.
+   * A list of all collections.
    */
   @internalProperty()
+  collections?: Collection[];
+
+  /**
+   * The object to be displayed and/or edited.
+   */
+  @property()
   object?: CollectionObject;
 
   /**
@@ -63,6 +79,18 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   isSubmitting? = false;
+
+  /**
+   * Indicates if the form can be submitted.
+   */
+  @internalProperty()
+  isValid? = false;
+
+  /**
+   * Indicates if the form can be submitted.
+   */
+  @internalProperty()
+  isDirty? = false;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -84,18 +112,44 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
-      if(changed.has('formActor') && this.formActor){
-
-        this.subscribe('isSubmitting', from(this.formActor).pipe(
-          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-        ));
-
-      }
-
       this.subscribe('state', from(this.actor));
+
+      this.subscribe('collections', from(this.actor).pipe(
+        map((state) => state.context.collections),
+      ));
 
       this.subscribe('object', from(this.actor)
         .pipe(map((state) => state.context?.object)));
+
+    }
+
+    if(changed?.has('formActor') && this.formActor){
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('isValid', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+      ));
+
+      this.subscribe('isDirty', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          },
+        })),
+      ));
+
+    }
+
+    if (this.formCards?.length > 0 && !this.visibleCard) {
+
+      this.visibleCard = this.formCards[0].id;
 
     }
 
@@ -125,46 +179,124 @@ export class ObjectRootComponent extends RxLitElement {
   }
 
   /**
+   * Sets this.selected to the currently visible form card's id
+   */
+  updateSelected = (): void => {
+
+    this.visibleCard = Array.from(this.formCards).find((formCard) => {
+
+      const box = formCard.getBoundingClientRect();
+
+      return box.top > -(box.height / 3);
+
+    })?.id;
+
+  };
+
+  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
   render(): TemplateResult {
 
+    const editing = this.state?.matches(ObjectStates.IDLE);
+
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
+
+    const sidebarItems = [
+      'nde.features.object.sidebar.image',
+      'nde.features.object.sidebar.identification',
+      'nde.features.object.sidebar.creation',
+      'nde.features.object.sidebar.representation',
+      'nde.features.object.sidebar.dimensions',
+    ];
 
     return this.object ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-      ${this.state?.matches(ObjectStates.EDITING)
-    ? html`
-          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-            <input autofocus type="text" slot="input" class="name" value="${this.object.name}"/>
-          </nde-form-element>
-          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.object.description}"/>
-          </nde-form-element>
-        `
-    : html`
-          <div slot="title" @click="${() => this.actor.send(ObjectEvents.CLICKED_EDIT)}">
-            ${this.object.name}
-          </div>
-          <div slot="subtitle" @click="${() => this.actor.send(ObjectEvents.CLICKED_EDIT)}">
-            ${this.object.description}
-          </div>
-        `
-}
+      <div slot="title"> ${this.object.name} </div>
+      <div slot="subtitle"> ${this.object.description} </div>
 
-      ${ this.state?.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ this.state?.matches(ObjectStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(ObjectEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ editing && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
-    <div class="content">
-      ${ alerts }
-      
-      FORMULIEREN
+    <div class="content-and-sidebar">
 
+      <nde-sidebar>
+        <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+          <nde-sidebar-list slot="content">
+            ${sidebarItems.map((item) => html`
+            <nde-sidebar-list-item slot="item"
+              ?selected="${ item === this.visibleCard }"
+              @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
+            >
+              <div slot="title">${this.translator?.translate(item)}</div>
+            </nde-sidebar-list-item>
+            `)}
+          </nde-sidebar-list>
+        </nde-sidebar-item>
+      </nde-sidebar>
+
+      <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
+
+        ${ alerts }
+
+        <nde-object-imagery
+          id="nde.features.object.sidebar.image"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-imagery>
+
+        <nde-object-identification
+          id="nde.features.object.sidebar.identification"
+          class="form-card"
+          .object="${this.object}"
+          .collections="${this.collections}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-identification>
+
+        <nde-object-creation
+          id="nde.features.object.sidebar.creation"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-creation>
+
+        <nde-object-representation
+          id="nde.features.object.sidebar.representation"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-representation>
+
+        <nde-object-dimensions
+          id="nde.features.object.sidebar.dimensions"
+          class="form-card"
+          .object="${this.object}"
+          .formActor="${this.formActor}"
+          .actor="${this.actor}"
+          .translator="${this.translator}"
+          .logger="${this.logger}">
+        </nde-object-dimensions>
+
+      </div>
+    
     </div>
   ` : html` this.object is undefined, dit zou niet mogen voorvallen`;
 
@@ -188,19 +320,26 @@ export class ObjectRootComponent extends RxLitElement {
           flex-direction: column;
           height: 100%;
         }
-        .content {
+        .content-and-sidebar {
           margin-top: 1px;
-          padding: var(--gap-large);
+          display: flex;
+          flex-direction: row;
+          overflow: hidden;
           height: 100%;
+          flex: 1 1;
+        }
+        .content {
+          padding: var(--gap-large);
+          width: 100%;
           overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-content-header nde-form-element input {
           height: var(--gap-normal);
           padding: 0;
           line-height: var(--gap-normal);
-        }
-        nde-content-header div[slot="title"]:hover, nde-content-header div[slot="subtitle"]:hover {
-          cursor: pointer;
         }
         .name {
           font-weight: bold;
@@ -208,6 +347,9 @@ export class ObjectRootComponent extends RxLitElement {
         }
         .description {
           margin-top: var(--gap-tiny);
+        }
+        nde-sidebar-list > slot[name="title"] {
+          font-weight: bold;
         }
       `,
     ];

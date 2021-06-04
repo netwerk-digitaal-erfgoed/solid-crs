@@ -38,7 +38,7 @@ describe('AuthenticateRootComponent', () => {
         image: null,
         subject: null,
         type: null,
-        updated: 0,
+        updated: undefined,
         collection: 'collection-uri-1',
       },
     ]);
@@ -117,6 +117,22 @@ describe('AuthenticateRootComponent', () => {
     const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector('button[slot="action"]');
 
     expect(button.disabled).toBe(!canSubmit);
+
+  });
+
+  it.each([ true, false ])('should disable button when is submitting', async (isSubmitting) => {
+
+    machine.start();
+
+    component.canSubmit = true;
+    component.isSubmitting = isSubmitting;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector('button[slot="action"]');
+
+    expect(button.disabled).toBe(isSubmitting);
 
   });
 

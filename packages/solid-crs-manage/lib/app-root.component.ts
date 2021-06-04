@@ -57,12 +57,21 @@ export class AppRootComponent extends RxLitElement {
       new CollectionSolidStore(),
       new CollectionObjectSolidStore(),
       {
-        uri: null,
+        uri: undefined,
         name: this.translator.translate('nde.features.collections.new-collection-name'),
         description: this.translator.translate('nde.features.collections.new-collection-description'),
         objectsUri: undefined,
         distribution: undefined,
       },
+      {
+        uri: undefined,
+        name: this.translator.translate('nde.features.object.new-object-name'),
+        description: this.translator.translate('nde.features.object.new-object-description'),
+        collection: undefined,
+        type: 'http://schema.org/CreativeWork',
+        identifier: this.translator.translate('nde.features.object.new-object-name').toLowerCase().replace(' ', '-'),
+        image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+      }
     )).withContext({
       alerts: [],
     }), { devTools: true },
@@ -75,7 +84,7 @@ export class AppRootComponent extends RxLitElement {
   state: State<AppContext>;
 
   /**
-   * The state of this component.
+   * A list of all collections.
    */
   @internalProperty()
   collections: Collection[];
@@ -219,7 +228,7 @@ export class AppRootComponent extends RxLitElement {
 
     return html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
-    <nde-sidebar>
+    <nde-sidebar inverse>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">${this.profile?.name}</div>
@@ -277,19 +286,12 @@ export class AppRootComponent extends RxLitElement {
           max-height: 100%;
         }
 
-        :host > * {
+        :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
 
-        :host nde-sidebar {
-          flex: 0 0 var(--size-sidebar);
-        }
-
         nde-sidebar {
-          max-height: inherit;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
+          width: var(--size-sidebar);
         }
 
         nde-content-header div[slot="icon"] svg {
