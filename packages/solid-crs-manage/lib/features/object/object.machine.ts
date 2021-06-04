@@ -2,9 +2,9 @@ import { formMachine,
   FormActors,
   FormValidatorResult,
   FormContext,
-  FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+  FormEvents, State, FormUpdatedEvent, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
@@ -48,90 +48,114 @@ export enum ObjectStates {
  */
 export const validateObjectForm = async (context: FormContext<CollectionObject>): Promise<FormValidatorResult[]> => {
 
-  const res = [];
+  const res: FormValidatorResult[]  = [];
 
-  // the description of an object can not be longer than 10.000 characters
-  if (context.data.description && context.data.description.length > 10000) {
+  // only validate dirty fields
+  const dirtyFields = Object.keys(context.data).filter((field) =>
+    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
 
-    res.push({
-      field: 'description',
-      message: 'nde.features.object.card.identification.field.description.validation.max-characters',
-    });
+  for (const field of dirtyFields) {
 
-  }
+    const value = context.data[field as keyof CollectionObject];
 
-  // the name/title of an object can not be empty
-  if (!context.data.name) {
-
-    res.push({
-      field: 'name',
-      message: 'nde.features.object.card.common.empty',
-    });
-
-  }
-
-  // the name/title of an object can not be longer than 100 characters
-  if (context.data.name && context.data.name.length > 100) {
-
-    res.push({
-      field: 'name',
-      message: 'nde.features.object.card.identification.field.title.validation.max-characters',
-    });
-
-  }
-
-  // the identifier of an object can not be empty
-  if (!context.data.identifier) {
-
-    res.push({
-      field: 'identifier',
-      message: 'nde.features.object.card.common.empty',
-    });
-
-  }
-
-  // the image url should be valid and return png/jpeg mime type
-  if (context.data.image) {
-
-    try {
-
-      const contentTypes = [
-        'image/png',
-        'image/jpeg',
-      ];
-
-      const url = new URL(context.data.image);
-
-      const response = await fetch(context.data.image, { method: 'HEAD' });
-
-      if (!response.ok || !contentTypes.includes(response.headers.get('Content-Type').toLowerCase())) {
-
-        throw Error();
-
-      }
-
-    } catch (error) {
+    // the description of an object can not be longer than 10.000 characters
+    if (field === 'description' && value && (value as typeof context.data[typeof field]).length > 10000) {
 
       res.push({
-        field: 'image',
-        message: 'nde.features.object.card.image.field.file.validation.invalid',
+        field: 'description',
+        message: 'nde.features.object.card.identification.field.description.validation.max-characters',
       });
 
     }
 
-  }
+    // the name/title of an object can not be empty
+    if (field === 'name' && !value) {
 
-  // the date should be valid EDTF
-  try {
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.common.empty',
+      });
 
-    const parsed = edtf.parse(context.data.dateCreated);
+    }
 
-  } catch (error) {
+    // the name/title of an object can not be longer than 100 characters
+    if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
 
-    res.push({
-      field: 'dateCreated',
-      message: 'nde.features.object.card.creation.field.date.validation.invalid',
-    });
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.identification.field.title.validation.max-characters',
+      });
+
+    }
+
+    // the identifier of an object can not be empty
+    if (field === 'identifier' && !value) {
+
+      res.push({
+        field: 'identifier',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+    // the identifier of an object can not be empty
+    if (field === 'image' && !value) {
+
+      res.push({
+        field: 'image',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+    // the image url should be valid and return png/jpeg mime type
+    if (field === 'image' && value) {
+
+      try {
+
+        const contentTypes = [
+          'image/png',
+          'image/jpeg',
+        ];
+
+        const url = new URL((value as typeof context.data[typeof field]));
+
+        const response = await fetch(url.toString(), { method: 'HEAD' });
+
+        if (!response.ok || !contentTypes.includes(response.headers.get('Content-Type').toLowerCase())) {
+
+          throw Error();
+
+        }
+
+      } catch (error) {
+
+        res.push({
+          field: 'image',
+          message: 'nde.features.object.card.image.field.file.validation.invalid',
+        });
+
+      }
+
+    }
+
+    // the date should be valid EDTF
+    if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
+
+      try {
+
+        edtf.parse(value);
+
+      } catch (error) {
+
+        res.push({
+          field: 'dateCreated',
+          message: 'nde.features.object.card.creation.field.date.validation.invalid',
+        });
+
+      }
+
+    }
 
   }
 

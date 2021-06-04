@@ -20,7 +20,12 @@ export class ObjectRootComponent extends RxLitElement {
    * The form cards in this component
    */
   @queryAll('.form-card')
-  private formCards: RxLitElement[];
+  formCards: RxLitElement[];
+  /**
+   * The id of the currently visible form card
+   */
+  @internalProperty()
+  visibleCard: string;
   /**
    * The component's logger.
    */
@@ -142,6 +147,12 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
+    if (this.formCards?.length > 0 && !this.visibleCard) {
+
+      this.visibleCard = this.formCards[0].id;
+
+    }
+
   }
 
   /**
@@ -166,6 +177,21 @@ export class ObjectRootComponent extends RxLitElement {
     this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
 
   }
+
+  /**
+   * Sets this.selected to the currently visible form card's id
+   */
+  updateSelected = (): void => {
+
+    this.visibleCard = Array.from(this.formCards).find((formCard) => {
+
+      const box = formCard.getBoundingClientRect();
+
+      return box.top > -(box.height / 3);
+
+    })?.id;
+
+  };
 
   /**
    * Renders the component as HTML.
@@ -204,7 +230,7 @@ export class ObjectRootComponent extends RxLitElement {
           <nde-sidebar-list slot="content">
             ${sidebarItems.map((item) => html`
             <nde-sidebar-list-item slot="item"
-              ?selected="${ false }"
+              ?selected="${ item === this.visibleCard }"
               @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
             >
               <div slot="title">${this.translator?.translate(item)}</div>
@@ -214,7 +240,7 @@ export class ObjectRootComponent extends RxLitElement {
         </nde-sidebar-item>
       </nde-sidebar>
 
-      <div class="content">
+      <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
         ${ alerts }
 

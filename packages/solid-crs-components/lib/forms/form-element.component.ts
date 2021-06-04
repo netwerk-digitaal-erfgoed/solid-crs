@@ -176,7 +176,9 @@ export class FormElementComponent<T> extends RxLitElement {
     }
 
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
-      (element) => element instanceof HTMLInputElement || element instanceof HTMLSelectElement
+      (element) => element instanceof HTMLInputElement ||
+                    element instanceof HTMLSelectElement ||
+                    element instanceof HTMLTextAreaElement
     ).map((element) => element as HTMLInputElement);
 
     this.inputs?.forEach((element) => {
@@ -303,10 +305,19 @@ export class FormElementComponent<T> extends RxLitElement {
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
         }
-        .form-element .content .field ::slotted(input), .form-element .content .field ::slotted(select) {
+        .form-element .content .field ::slotted(*) {
           padding: 0 var(--gap-normal);
           flex: 1 0;
           height: 44px;
+        }
+        .form-element .content .field ::slotted(input),
+        .form-element .content .field ::slotted(select), 
+        .form-element .content .field ::slotted(textarea) {
+          box-sizing: border-box;
+        }
+        .form-element .content .field ::slotted(textarea) {
+          padding: var(--gap-normal);
+          height: 132px;
         }
         .form-element .content .field .icon {
           height: 100%;

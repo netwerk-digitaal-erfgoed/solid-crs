@@ -102,6 +102,22 @@ describe('FormElementComponent', () => {
 
   });
 
+  it('should allow slotted textarea field', async () => {
+
+    component.field = 'description';
+    const select = window.document.createElement('textarea');
+    select.slot = 'input';
+    select.innerText = 'test description';
+    component.appendChild(select);
+    component.removeChild(input);
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).innerText).toEqual(select.innerText);
+
+  });
+
   it('should send SUBMITTED event when enter keypress', async (done) => {
 
     machine.onEvent(((event) => {
