@@ -1,0 +1,76 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/semcom-node/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@digita-ai/semcom-core/^0.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "files-dasn:config/presets/logger.json",
+    "files-dasn:config/presets/serializer.json",
+    "files-dasn:config/presets/component.json",
+    "files-dasn:config/presets/handlers.json",
+    "files-dasn:config/presets/server.json"
+  ],
+  "@graph": [
+    {
+      "@id": "urn:semcom-node:default:ComponentStore",
+      "@type": "ComponentInMemoryStore",
+      "ComponentInMemoryStore:_components": [
+        {
+          "@type": "ComponentMetadata",
+          "ComponentMetadata:_description": "Digita SemCom component voor beeldmateriaal informatie.",
+          "ComponentMetadata:_label": "Erfgoedobject Beeldmateriaal",
+          "ComponentMetadata:_uri": "https://components.semcom.digita.ai/components/imagery.js",
+          "ComponentMetadata:_shapes": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
+          "ComponentMetadata:_author": "https://digita.ai",
+          "ComponentMetadata:_tag": "beeldmateriaal",
+          "ComponentMetadata:_version": "0.1.0",
+          "ComponentMetadata:_latest": true
+        },
+        {
+          "@type": "ComponentMetadata",
+          "ComponentMetadata:_description": "Digita SemCom component voor identificatie informatie.",
+          "ComponentMetadata:_label": "Erfgoedobject Identificatie",
+          "ComponentMetadata:_uri": "https://components.semcom.digita.ai/components/identification.js",
+          "ComponentMetadata:_shapes": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
+          "ComponentMetadata:_author": "https://digita.ai",
+          "ComponentMetadata:_tag": "identification",
+          "ComponentMetadata:_version": "0.1.0",
+          "ComponentMetadata:_latest": true
+        },
+        {
+          "@type": "ComponentMetadata",
+          "ComponentMetadata:_description": "Digita SemCom component voor vervaardiging informatie.",
+          "ComponentMetadata:_label": "Erfgoedobject Vervaardiging",
+          "ComponentMetadata:_uri": "https://components.semcom.digita.ai/components/creation.js",
+          "ComponentMetadata:_shapes": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
+          "ComponentMetadata:_author": "https://digita.ai",
+          "ComponentMetadata:_tag": "creation",
+          "ComponentMetadata:_version": "0.1.0",
+          "ComponentMetadata:_latest": true
+        },
+        {
+          "@type": "ComponentMetadata",
+          "ComponentMetadata:_description": "Digita SemCom component voor voorstellingsinformatie.",
+          "ComponentMetadata:_label": "Erfgoedobject Voorstelling",
+          "ComponentMetadata:_uri": "https://components.semcom.digita.ai/components/representation.js",
+          "ComponentMetadata:_shapes": "http://digita.ai/voc/input#input",
+          "ComponentMetadata:_author": "https://digita.ai",
+          "ComponentMetadata:_tag": "representation",
+          "ComponentMetadata:_version": "0.1.0",
+          "ComponentMetadata:_latest": true
+        },
+        {
+          "@type": "ComponentMetadata",
+          "ComponentMetadata:_description": "Digita SemCom component voor afmeting informatie.",
+          "ComponentMetadata:_label": "Erfgoedobject Afmetingen",
+          "ComponentMetadata:_uri": "https://components.semcom.digita.ai/components/dimensions.js",
+          "ComponentMetadata:_shapes": "http://digita.ai/voc/payslip#payslip",
+          "ComponentMetadata:_author": "https://digita.ai",
+          "ComponentMetadata:_tag": "dimensions",
+          "ComponentMetadata:_version": "0.1.0",
+          "ComponentMetadata:_latest": true
+        }
+      ]
+    }
+  ]
+}
