@@ -89,3 +89,5 @@ export class ObjectDimensionsComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectDimensionsComponent;

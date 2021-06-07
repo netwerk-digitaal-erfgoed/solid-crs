@@ -83,7 +83,7 @@ export class ObjectImageryComponent extends RxLitElement {
         </nde-form-element>
       </div>
     </nde-large-card>
-  ` : html``;
+  ` : html`abc`;
 
   }
 
@@ -103,3 +103,5 @@ export class ObjectImageryComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectImageryComponent;

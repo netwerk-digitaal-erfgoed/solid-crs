@@ -105,3 +105,5 @@ export class ObjectIdentificationComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectIdentificationComponent;

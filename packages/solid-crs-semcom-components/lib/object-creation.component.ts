@@ -89,3 +89,5 @@ export class ObjectCreationComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectCreationComponent;

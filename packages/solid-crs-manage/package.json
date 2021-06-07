@@ -29,8 +29,8 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
-    "@digita-ai/semcom-core": "0.4.0",
-    "@digita-ai/semcom-sdk": "0.4.0",
+    "@digita-ai/semcom-core": "0.4.1",
+    "@digita-ai/semcom-sdk": "0.4.1",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.4.0",
     "@netwerk-digitaal-erfgoed/solid-crs-components": "0.4.0",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.4.0",
@@ -55,6 +55,7 @@
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
+    "rdf-js": "^4.0.2",
     "rimraf": "^3.0.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "ts-node": "^9.1.1",

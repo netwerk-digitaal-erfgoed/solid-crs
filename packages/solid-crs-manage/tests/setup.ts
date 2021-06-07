@@ -31,8 +31,3 @@ customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-form-element', FormElementComponent);
-customElements.define('nde-object-imagery', ObjectImageryComponent);
-customElements.define('nde-object-identification', ObjectIdentificationComponent);
-customElements.define('nde-object-representation', ObjectRepresentationComponent);
-customElements.define('nde-object-creation', ObjectCreationComponent);
-customElements.define('nde-object-dimensions', ObjectDimensionsComponent);

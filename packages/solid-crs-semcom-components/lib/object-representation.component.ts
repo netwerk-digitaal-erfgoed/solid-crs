@@ -93,3 +93,5 @@ export class ObjectRepresentationComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectRepresentationComponent;
