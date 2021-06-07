@@ -3,7 +3,9 @@
   "version": "0.4.0",
   "description": "Semcom components for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
+  "main": "./dist/index.js",
   "license": "EUPL-1.2",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "start": "http-server --cors='*' -p 3004 --gzip --brotli --proxy 'http://localhost:3004?' dist/",
     "start:watch": "npm run build && npm run start",

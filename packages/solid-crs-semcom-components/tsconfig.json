@@ -12,8 +12,7 @@
       "strict": false,
       "noImplicitAny": true,
       "noImplicitReturns": true,
-      "experimentalDecorators": true,
-      "emitDeclarationOnly": true
+      "experimentalDecorators": true
     },
     "files": [ "node_modules/vite/client.d.ts" ],
     "include": [ "lib" ],
