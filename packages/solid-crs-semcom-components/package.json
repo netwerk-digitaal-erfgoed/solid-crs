@@ -1,40 +1,26 @@
 {
-  "name": "@netwerk-digitaal-erfgoed/solid-crs-manage",
+  "name": "@netwerk-digitaal-erfgoed/solid-crs-semcom-components",
   "version": "0.5.0",
-  "description": "App for the NDE-project.",
+  "description": "Semcom components for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
-  "main": "./dist/solid-crs-manage.umd.js",
+  "main": "./dist/index.js",
   "license": "EUPL-1.2",
   "types": "./dist/index.d.ts",
-  "module": "./dist/solid-crs-manage.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/solid-crs-manage.es.js",
-      "require": "./dist/solid-crs-manage.umd.js"
-    }
-  },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
-    "start:watch": "vite --config vite.config.ts",
-    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
+    "start": "http-server --cors='*' -p 3004 --gzip --brotli --proxy 'http://localhost:3004?' dist/",
+    "start:watch": "npm run build && npm run start",
+    "build": "rimraf ./dist && tsc && vite build --config vite-build.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
     "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
-    "test:watch": "jest --watch --no-coverage",
-    "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
+    "test:watch": "jest --watch --no-coverage"
   },
   "dependencies": {
-    "@digita-ai/semcom-core": "0.4.1",
-    "@digita-ai/semcom-sdk": "0.4.1",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.5.0",
     "@netwerk-digitaal-erfgoed/solid-crs-components": "0.5.0",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.5.0",
-    "@netwerk-digitaal-erfgoed/solid-crs-semcom-components": "0.5.0",
     "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.5.0",
     "@xstate/inspect": "^0.4.1",
     "edtf": "^3.1.0",
@@ -42,8 +28,7 @@
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
     "uuid": "^8.3.2",
-    "xstate": "^4.17.1",
-    "xstate-codegen": "0.1.0-next.8"
+    "xstate": "^4.17.1"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
@@ -56,26 +41,13 @@
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
-    "rdf-js": "^4.0.2",
     "rimraf": "^3.0.2",
-    "rollup-plugin-node-polyfills": "^0.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "vite": "2.2.3"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/netwerk-digitaal-erfgoed/solid-crs.git",
-    "directory": "packages/solid-crs-manage"
-  },
-  "bugs": {
-    "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
-  },
   "jest": {
-    "displayName": "manage",
+    "displayName": "semcom-components",
     "preset": "@digita-ai/jest-config",
     "testEnvironment": "jest-environment-jsdom-sixteen",
     "setupFiles": [
@@ -86,10 +58,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 93.14,
-        "branches": 90.73,
-        "lines": 93.81,
-        "functions": 79.18
+        "statements": 0,
+        "branches": 0,
+        "lines": 0,
+        "functions": 0
       }
     },
     "automock": false,
@@ -98,15 +70,11 @@
       "<rootDir>/node_modules/",
       "<rootDir>/.*\\.conf(ig)?.ts",
       "<rootDir>/lib/index.ts",
-      "<rootDir>/lib/app.ts",
       "<rootDir>/.*\\.d.ts"
     ],
     "globals": {
       "ts-jest": {
-        "tsconfig": "<rootDir>/tsconfig.spec.json",
-        "diagnostics": {
-          "warnOnly": true
-        }
+        "tsconfig": "<rootDir>/tsconfig.spec.json"
       }
     }
   }

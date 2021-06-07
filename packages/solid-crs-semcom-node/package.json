@@ -1,0 +1,19 @@
+{
+  "name": "@netwerk-digitaal-erfgoed/solid-crs-semcom-node",
+  "version": "0.5.0",
+  "description": "Semcom node for the demo environment of the NDE-project.",
+  "author": "Wouter Janssens <wouter@digita.ai>",
+  "license": "EUPL-1.2",
+  "scripts": {
+    "start": "semcom-node -c config/config-crs.json -m ./ -p 3003",
+    "start:watch": "npm run start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:netwerk-digitaal-erfgoed/solid-crs.git",
+    "directory": "packages/solid-crs-semcom-node"
+  },
+  "dependencies": {
+    "@digita-ai/semcom-node": "^0.4.0"
+  }
+}

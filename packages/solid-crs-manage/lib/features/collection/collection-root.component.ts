@@ -150,7 +150,7 @@ export class CollectionRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = this.state||false;
+    const loading = this.actor||false;
 
     return loading && this.collection ? html`
     <nde-content-header inverse>
