@@ -22,7 +22,7 @@
           "ComponentMetadata:_uri": "http://localhost:3004/object-imagery.component.js",
           "ComponentMetadata:_shapes": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
           "ComponentMetadata:_author": "https://digita.ai",
-          "ComponentMetadata:_tag": "nde-object-beeldmateriaal",
+          "ComponentMetadata:_tag": "nde-object-imagery",
           "ComponentMetadata:_version": "0.1.0",
           "ComponentMetadata:_latest": true
         },

@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll, query } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
@@ -6,8 +6,9 @@ import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Component } from '@digita-ai/semcom-core';
+import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { AppEvents } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
@@ -22,7 +23,8 @@ export class ObjectRootComponent extends RxLitElement {
    * The form cards in this component
    */
   @internalProperty()
-  formCards: Component[];
+  formCards: ObjectImageryComponent | ObjectCreationComponent
+  | ObjectIdentificationComponent | ObjectRepresentationComponent | ObjectDimensionsComponent[];
   /**
    * The id of the currently visible form card
    */
@@ -99,6 +101,7 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   semComService? = new SemComService();
+
   /**
    * The content element to append SemComs to
    */
@@ -106,39 +109,26 @@ export class ObjectRootComponent extends RxLitElement {
   contentElement: HTMLDivElement;
 
   /**
-   * Hook called on at first update after connection to the DOM.
+   * The ComponentMetadata of the SemComs
+   */
+  @internalProperty()
+  components: ComponentMetadata[];
+
+  /**
+   * Hook called on first update after connection to the DOM.
    */
   async firstUpdated(changed: PropertyValues): Promise<void> {
 
     super.firstUpdated(changed);
 
-    // get all components
-    const components = await this.semComService.queryComponents({ latest: true });
-
-    // register and add all components
-    for (const component of components) {
-
-      // eslint-disable-next-line no-eval
-      const elementComponent = await eval(`import("${component.uri}")`);
-
-      const ctor = customElements.get(component.tag) || customElements.define(component.tag, elementComponent.default);
-
-      const element = document.createElement(component.tag) as any;
-      element.object = this.object;
-      element.formActor = this.formActor;
-      element.translator = this.translator;
-      element.collections = this.collections;
-      this.contentElement.appendChild(element);
-      this.formCards = this.formCards ? [ ...this.formCards, element ] : [];
-
-    }
+    this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
 
   }
 
   /**
    * Hook called on at every update after connection to the DOM.
    */
-  updated(changed: PropertyValues): void {
+  async updated(changed: PropertyValues): Promise<void> {
 
     super.updated(changed);
 
@@ -190,9 +180,79 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
+    if (this.formCards && this.object && this.translator && this.formActor) {
+
+      this.formCards.forEach((formCard) => {
+
+        formCard.object = this.object;
+        formCard.formActor = this.formActor;
+        formCard.translator = this.translator;
+
+      });
+
+    }
+
     if (this.formCards?.length > 0 && !this.visibleCard) {
 
       this.visibleCard = this.formCards[0].id;
+
+    }
+
+    if (!this.formCards && this.components) {
+
+      // register and add all components
+      for (const component of this.components) {
+
+        if (!customElements.get(component.tag)) {
+
+          // eslint-disable-next-line no-eval
+          const elementComponent = await eval(`import("${component.uri}")`);
+
+          const ctor = customElements.get(component.tag)
+            || customElements.define(component.tag, elementComponent.default);
+
+        }
+
+        let element;
+
+        if (component.tag.includes('imagery')) {
+
+          element = document.createElement(component.tag) as ObjectImageryComponent;
+          element.id = 'nde.features.object.sidebar.image';
+
+        } else if (component.tag.includes('creation')) {
+
+          element = document.createElement(component.tag) as ObjectCreationComponent;
+          element.id = 'nde.features.object.sidebar.creation';
+
+        } else if (component.tag.includes('identification')) {
+
+          element = document.createElement(component.tag) as ObjectIdentificationComponent;
+          element.collections = this.collections;
+          element.id = 'nde.features.object.sidebar.identification';
+
+        } else if (component.tag.includes('representation')) {
+
+          element = document.createElement(component.tag) as ObjectRepresentationComponent;
+          element.id = 'nde.features.object.sidebar.representation';
+
+        } else if (component.tag.includes('dimensions')) {
+
+          element = document.createElement(component.tag) as ObjectDimensionsComponent;
+          element.id = 'nde.features.object.sidebar.dimensions';
+
+        }
+
+        element.object = this.object;
+        element.formActor = this.formActor;
+        element.translator = this.translator;
+
+        this.contentElement.appendChild(element);
+
+        this.formCards = this.formCards?.includes(element)
+          ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
+
+      }
 
     }
 
@@ -224,7 +284,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * Sets this.selected to the currently visible form card's id
    */
-  updateSelected = (): void => {
+  updateSelected(): void {
 
     this.visibleCard = Array.from(this.formCards).find((formCard) => {
 
@@ -234,7 +294,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     })?.id;
 
-  };
+  }
 
   /**
    * Renders the component as HTML.

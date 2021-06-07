@@ -261,35 +261,6 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should select sidebar item when content is scrolled', async () => {
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
-    content.dispatchEvent(new CustomEvent('scroll'));
-
-    expect(component.visibleCard).toBeTruthy();
-
-  });
-
-  describe('updateSelected()', () => {
-
-    it('should set this.visibleCard to the currently visible card', async () => {
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      component.updateSelected();
-      await component.updateComplete;
-
-      expect(component.visibleCard).toBeTruthy();
-      expect(component.visibleCard).toEqual(component.formCards[0].id);
-
-    });
-
-  });
-
   describe('handleDismiss', () => {
 
     const alert: Alert = { message: 'foo', type: 'success' };

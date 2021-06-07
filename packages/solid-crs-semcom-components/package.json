@@ -7,7 +7,7 @@
   "scripts": {
     "start": "http-server --cors='*' -p 3004 --gzip --brotli --proxy 'http://localhost:3004?' dist/",
     "start:watch": "npm run build && npm run start",
-    "build": "rimraf ./dist && vite build --config vite-build.config.ts",
+    "build": "rimraf ./dist && vite build --config vite-build.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",

@@ -33,6 +33,7 @@
     "@digita-ai/semcom-sdk": "0.4.1",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.4.0",
     "@netwerk-digitaal-erfgoed/solid-crs-components": "0.4.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-semcom-components": "0.4.0",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.4.0",
     "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.4.0",
     "@xstate/inspect": "^0.4.1",
