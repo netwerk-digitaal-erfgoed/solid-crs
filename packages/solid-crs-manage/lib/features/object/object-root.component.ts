@@ -1,10 +1,9 @@
-import { AnyPtrRecord } from 'dns';
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, Interpreter, SpawnedActorRef, State } from 'xstate';
+import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -209,11 +208,8 @@ export class ObjectRootComponent extends RxLitElement {
 
         if (!customElements.get(component.tag)) {
 
-          // eslint-disable-next-line no-eval
-          const elementComponent = await eval(`import("${component.uri}")`);
-
-          const ctor = customElements.get(component.tag)
-            || customElements.define(component.tag, elementComponent.default);
+          component.tag = customElements.get(component.tag)
+            ? component.tag : await this.semComService.registerComponent(component);
 
         }
 

@@ -1,5 +1,7 @@
+import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -359,13 +361,112 @@ describe('ObjectRootComponent', () => {
 
     component.subscribe = jest.fn();
 
+    const div = document.createElement('div');
+    div.id = 'nde.features.object.sidebar.image';
+
+    component.formCards = [ div ];
+
     const map = new Map<string, string>();
     map.set('actor', 'bla');
     map.set('formActor', 'bla');
 
-    component.updated(map);
+    await component.updated(map);
 
-    expect(component.subscribe).toHaveBeenCalledTimes(8);
+    expect(component.subscribe).toHaveBeenCalledTimes(11);
+
+  });
+
+  it('should set formCard attributes when updated is called', async () => {
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    customElements.define('nde-object-imagery', ObjectImageryComponent);
+    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+    div.id = 'nde.features.object.sidebar.image';
+
+    component.formCards = [ div ];
+
+    const map = new Map<string, string>();
+    map.set('actor', 'bla');
+    map.set('formActor', 'bla');
+
+    await component.updated(map);
+
+    expect(div.object).toBeTruthy();
+
+  });
+
+  it('should create customElements for this.components', async () => {
+
+    window.eval = jest.fn(() => ObjectImageryComponent);
+    customElements.define = jest.fn((tag, module) => ObjectImageryComponent);
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    component.components = [
+      {
+        description: 'Digita SemCom component voor beeldmateriaal informatie.',
+        label: 'Erfgoedobject Beeldmateriaal',
+        uri: 'http://localhost:3004/object-imagery.component.js',
+        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-imagery',
+        version: '0.1.0',
+        latest: true,
+      },
+      {
+        description: 'Digita SemCom component voor identificatie informatie.',
+        label: 'Erfgoedobject Identificatie',
+        uri: 'http://localhost:3004/object-identification.component.js',
+        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-identification',
+        version: '0.1.0',
+        latest: true,
+      },
+      {
+        description: 'Digita SemCom component voor vervaardiging informatie.',
+        label: 'Erfgoedobject Vervaardiging',
+        uri: 'http://localhost:3004/object-creation.component.js',
+        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-creation',
+        version: '0.1.0',
+        latest: true,
+      },
+      {
+        description: 'Digita SemCom component voor voorstellingsinformatie.',
+        label: 'Erfgoedobject Voorstelling',
+        uri: 'http://localhost:3004/object-representation.component.js',
+        shapes: [ 'http://digita.ai/voc/input#input' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-representation',
+        version: '0.1.0',
+        latest: true,
+      },
+      {
+        description: 'Digita SemCom component voor afmeting informatie.',
+        label: 'Erfgoedobject Afmetingen',
+        uri: 'http://localhost:3004/object-dimensions.component.js',
+        shapes: [ 'http://digita.ai/voc/payslip#payslip' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-dimensions',
+        version: '0.1.0',
+        latest: true,
+      },
+    ];
+
+    const map = new Map<string, string>();
+    map.set('actor', 'bla');
+    map.set('formActor', 'bla');
+
+    await component.updated(map);
 
   });
 
