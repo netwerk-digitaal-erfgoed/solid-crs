@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, queryAll } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
@@ -6,8 +6,11 @@ import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { AppEvents } from '../../app.events';
+import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
 import { ObjectEvents } from './object.events';
 
@@ -19,8 +22,12 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form cards in this component
    */
-  @queryAll('.form-card')
-  formCards: RxLitElement[];
+  @internalProperty()
+  formCards: (ObjectImageryComponent
+  | ObjectCreationComponent
+  | ObjectIdentificationComponent
+  | ObjectRepresentationComponent
+  | ObjectDimensionsComponent)[];
   /**
    * The id of the currently visible form card
    */
@@ -93,9 +100,38 @@ export class ObjectRootComponent extends RxLitElement {
   isDirty? = false;
 
   /**
+   * The semcom service to use in this component
+   */
+  @internalProperty()
+  semComService? = new SemComService();
+
+  /**
+   * The content element to append SemComs to
+   */
+  @query('.content')
+  contentElement: HTMLDivElement;
+
+  /**
+   * The ComponentMetadata of the SemComs
+   */
+  @internalProperty()
+  components: ComponentMetadata[];
+
+  /**
+   * Hook called on first update after connection to the DOM.
+   */
+  async firstUpdated(changed: PropertyValues): Promise<void> {
+
+    super.firstUpdated(changed);
+
+    this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
+
+  }
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
-  updated(changed: PropertyValues): void {
+  async updated(changed: PropertyValues): Promise<void> {
 
     super.updated(changed);
 
@@ -147,9 +183,79 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
+    if (this.formCards && this.object && this.translator && this.formActor) {
+
+      this.formCards.forEach((formCard) => {
+
+        formCard.object = this.object;
+        formCard.formActor = this.formActor as any;
+        formCard.translator = this.translator;
+
+      });
+
+    }
+
     if (this.formCards?.length > 0 && !this.visibleCard) {
 
       this.visibleCard = this.formCards[0].id;
+
+    }
+
+    if (!this.formCards && this.components) {
+
+      // register and add all components
+      for (const component of this.components) {
+
+        if (!customElements.get(component.tag)) {
+
+          // eslint-disable-next-line no-eval
+          const elementComponent = await eval(`import("${component.uri}")`);
+
+          const ctor = customElements.get(component.tag)
+            || customElements.define(component.tag, elementComponent.default);
+
+        }
+
+        let element;
+
+        if (component.tag.includes('imagery')) {
+
+          element = document.createElement(component.tag) as ObjectImageryComponent;
+          element.id = 'nde.features.object.sidebar.image';
+
+        } else if (component.tag.includes('creation')) {
+
+          element = document.createElement(component.tag) as ObjectCreationComponent;
+          element.id = 'nde.features.object.sidebar.creation';
+
+        } else if (component.tag.includes('identification')) {
+
+          element = document.createElement(component.tag) as ObjectIdentificationComponent;
+          element.collections = this.collections;
+          element.id = 'nde.features.object.sidebar.identification';
+
+        } else if (component.tag.includes('representation')) {
+
+          element = document.createElement(component.tag) as ObjectRepresentationComponent;
+          element.id = 'nde.features.object.sidebar.representation';
+
+        } else if (component.tag.includes('dimensions')) {
+
+          element = document.createElement(component.tag) as ObjectDimensionsComponent;
+          element.id = 'nde.features.object.sidebar.dimensions';
+
+        }
+
+        element.object = this.object;
+        element.formActor = this.formActor as any;
+        element.translator = this.translator;
+
+        this.contentElement.appendChild(element);
+
+        this.formCards = this.formCards?.includes(element)
+          ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
+
+      }
 
     }
 
@@ -181,7 +287,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * Sets this.selected to the currently visible form card's id
    */
-  updateSelected = (): void => {
+  updateSelected(): void {
 
     this.visibleCard = Array.from(this.formCards).find((formCard) => {
 
@@ -191,7 +297,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     })?.id;
 
-  };
+  }
 
   /**
    * Renders the component as HTML.
@@ -205,13 +311,7 @@ export class ObjectRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const sidebarItems = [
-      'nde.features.object.sidebar.image',
-      'nde.features.object.sidebar.identification',
-      'nde.features.object.sidebar.creation',
-      'nde.features.object.sidebar.representation',
-      'nde.features.object.sidebar.dimensions',
-    ];
+    const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
     return this.object ? html`
     <nde-content-header inverse>
@@ -228,14 +328,14 @@ export class ObjectRootComponent extends RxLitElement {
       <nde-sidebar>
         <nde-sidebar-item .padding="${false}" .showBorder="${false}">
           <nde-sidebar-list slot="content">
-            ${sidebarItems.map((item) => html`
+            ${sidebarItems?.map((item) => this.formCards ? html`
             <nde-sidebar-list-item slot="item"
               ?selected="${ item === this.visibleCard }"
               @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
             >
               <div slot="title">${this.translator?.translate(item)}</div>
             </nde-sidebar-list-item>
-            `)}
+            ` : html``)}
           </nde-sidebar-list>
         </nde-sidebar-item>
       </nde-sidebar>
@@ -243,57 +343,6 @@ export class ObjectRootComponent extends RxLitElement {
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
         ${ alerts }
-
-        <nde-object-imagery
-          id="nde.features.object.sidebar.image"
-          class="form-card"
-          .object="${this.object}"
-          .formActor="${this.formActor}"
-          .actor="${this.actor}"
-          .translator="${this.translator}"
-          .logger="${this.logger}">
-        </nde-object-imagery>
-
-        <nde-object-identification
-          id="nde.features.object.sidebar.identification"
-          class="form-card"
-          .object="${this.object}"
-          .collections="${this.collections}"
-          .formActor="${this.formActor}"
-          .actor="${this.actor}"
-          .translator="${this.translator}"
-          .logger="${this.logger}">
-        </nde-object-identification>
-
-        <nde-object-creation
-          id="nde.features.object.sidebar.creation"
-          class="form-card"
-          .object="${this.object}"
-          .formActor="${this.formActor}"
-          .actor="${this.actor}"
-          .translator="${this.translator}"
-          .logger="${this.logger}">
-        </nde-object-creation>
-
-        <nde-object-representation
-          id="nde.features.object.sidebar.representation"
-          class="form-card"
-          .object="${this.object}"
-          .formActor="${this.formActor}"
-          .actor="${this.actor}"
-          .translator="${this.translator}"
-          .logger="${this.logger}">
-        </nde-object-representation>
-
-        <nde-object-dimensions
-          id="nde.features.object.sidebar.dimensions"
-          class="form-card"
-          .object="${this.object}"
-          .formActor="${this.formActor}"
-          .actor="${this.actor}"
-          .translator="${this.translator}"
-          .logger="${this.logger}">
-        </nde-object-dimensions>
 
       </div>
     

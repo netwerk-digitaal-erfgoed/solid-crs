@@ -1,10 +1,11 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
-import { AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
+import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
 import { CollectionEvents } from './features/collection/collection.events';
+import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 describe('AppMachine', () => {
 
@@ -20,6 +21,17 @@ describe('AppMachine', () => {
     description: 'This is collection 2',
   };
 
+  const object1: CollectionObject = {
+    uri: 'object-uri-1',
+    name: 'Object 1',
+    description: 'This is object 1',
+    image: null,
+    subject: null,
+    type: null,
+    updated: '0',
+    collection: 'collection-uri-1',
+  };
+
   let machine: Interpreter<AppContext>;
 
   beforeEach(() => {
@@ -28,18 +40,9 @@ describe('AppMachine', () => {
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
         new MemoryStore<Collection>([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([
-          {
-            uri: 'object-uri-1',
-            name: 'Object 1',
-            description: 'This is object 1',
-            image: null,
-            subject: null,
-            type: null,
-            updated: 0,
-            collection: 'collection-uri-1',
-          },
-        ])
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1
       )
         .withContext({
           alerts: [],
@@ -70,24 +73,18 @@ describe('AppMachine', () => {
 
     const alert: Alert = { type: 'success', message: 'foo' };
 
-    machine = interpret<AppContext>(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-      new MemoryStore<Collection>([ collection1, collection2 ]),
-      new CollectionObjectMemoryStore([
-        {
-          uri: 'object-uri-1',
-          name: 'Object 1',
-          description: 'This is object 1',
-          image: null,
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-      ])
-    ).withContext({
-      alerts: [ alert ],
-    }));
+    machine = interpret<AppContext>(
+      appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1
+      )
+        .withContext({
+          alerts: [ alert ],
+        }),
+    );
 
     machine.start();
     machine.send(AppEvents.ADD_ALERT, { alert });
@@ -120,25 +117,18 @@ describe('AppMachine', () => {
 
     const alert: Alert = { type: 'success', message: 'foo' };
 
-    machine = interpret<AppContext>(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-      new MemoryStore<Collection>([ collection1, collection2 ]),
-      new CollectionObjectMemoryStore([
-        {
-          uri: 'object-uri-1',
-          name: 'Object 1',
-          description: 'This is object 1',
-          image: null,
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
-      ])
-    )
-      .withContext({
-        alerts: [ alert ],
-      }));
+    machine = interpret<AppContext>(
+      appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1
+      )
+        .withContext({
+          alerts: [ alert ],
+        }),
+    );
 
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);
@@ -216,22 +206,15 @@ describe('AppMachine', () => {
     const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
     machine = interpret<AppContext>(
-      appMachine(solid,
+      appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
         new MemoryStore<Collection>([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([
-          {
-            uri: 'object-uri-1',
-            name: 'Object 1',
-            description: 'This is object 1',
-            image: null,
-            subject: null,
-            type: null,
-            updated: 0,
-            collection: 'collection-uri-1',
-          },
-        ]))
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1
+      )
         .withContext({
-          alerts: [],
+          alerts: [ alert ],
           session: { webId: 'lorem' },
         }),
     );
@@ -261,21 +244,11 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(solid,
         new MemoryStore<Collection>([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([
-          {
-            uri: 'object-uri-1',
-            name: 'Object 1',
-            description: 'This is object 1',
-            image: null,
-            subject: null,
-            type: null,
-            updated: 0,
-            collection: 'collection-uri-1',
-          },
-        ]))
-        .withContext({
-          alerts: [],
-        }),
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1).withContext({
+        alerts: [],
+      }),
     );
 
     machine.onEvent((event) => {
@@ -297,6 +270,30 @@ describe('AppMachine', () => {
     machine.onEvent((event) => {
 
       if(event.type === CollectionEvents.SELECTED_COLLECTION) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
+
+  });
+
+  it('should transition to SEARCH when SEARCH_UPDATED is fired', (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION })) {
+
+        machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: 'test' } as SearchUpdatedEvent);
+
+      }
+
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH })) {
 
         done();
 

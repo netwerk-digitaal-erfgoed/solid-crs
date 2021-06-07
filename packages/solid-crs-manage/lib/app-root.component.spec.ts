@@ -5,6 +5,7 @@ import { AppEvents } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 import { SolidMockService } from './common/solid/solid-mock.service';
+import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
@@ -170,15 +171,12 @@ describe('AppRootComponent', () => {
       if(
         state.matches({
           [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED,
-          [AppRootStates.DATA]: AppDataStates.IDLE,
-        })
-      &&
-        state.context?.collections?.length > 0){
+        })){
 
         done();
 
         await component.updateComplete;
-        const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-sidebar');
+        const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelector('nde-sidebar');
         expect(sidebar).toBeTruthy();
 
         const listItem = sidebar[0].querySelectorAll('nde-sidebar-list-item')[0];
@@ -211,7 +209,6 @@ describe('AppRootComponent', () => {
           [AppRootStates.DATA]: AppDataStates.IDLE,
         })) {
 
-        done();
         machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } });
         await component.updateComplete;
 
@@ -222,6 +219,7 @@ describe('AppRootComponent', () => {
     machine.start();
 
     window.document.body.appendChild(component);
+    component.firstUpdated(undefined);
     await component.updateComplete;
 
   });

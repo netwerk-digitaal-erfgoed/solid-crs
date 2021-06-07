@@ -1,12 +1,10 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Interpreter, SpawnedActorRef, State } from 'xstate';
+import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Image } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { from } from 'rxjs';
-import { ObjectContext } from '../object.machine';
 
 /**
  * The root page of the object feature.
@@ -28,7 +26,7 @@ export class ObjectImageryComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @internalProperty()
+  @property()
   object?: CollectionObject;
 
   /**
@@ -38,21 +36,9 @@ export class ObjectImageryComponent extends RxLitElement {
   formActor: SpawnedActorRef<FormEvent>;
 
   /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<ObjectContext>;
-
-  /**
-   * The state of the actor.
-   */
-  @internalProperty()
-  state?: State<ObjectContext>;
-
-  /**
    * A list of licenses
    */
-  @internalProperty()
+  @property()
   licenses?: { name: string; uri: string }[] = [
     {
       name: 'CC0 1.0',
@@ -67,17 +53,6 @@ export class ObjectImageryComponent extends RxLitElement {
       uri: 'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
     },
   ];
-
-  /**
-   * Hook called on at every update after connection to the DOM.
-   */
-  firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    this.subscribe('state', from(this.actor));
-
-  }
 
   /**
    * Renders the component as HTML.
@@ -108,7 +83,7 @@ export class ObjectImageryComponent extends RxLitElement {
         </nde-form-element>
       </div>
     </nde-large-card>
-  ` : html``;
+  ` : html`abc`;
 
   }
 
@@ -128,3 +103,5 @@ export class ObjectImageryComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectImageryComponent;

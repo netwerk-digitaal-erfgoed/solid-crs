@@ -1,13 +1,10 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Interpreter, SpawnedActorRef, State } from 'xstate';
+import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Object as ObjectIcon } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { from } from 'rxjs';
-import { ObjectContext, ObjectStates } from '../object.machine';
-import { ObjectEvents } from '../object.events';
 
 /**
  * The root page of the object feature.
@@ -37,29 +34,6 @@ export class ObjectCreationComponent extends RxLitElement {
    */
   @property()
   formActor: SpawnedActorRef<FormEvent>;
-
-  /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<ObjectContext>;
-
-  /**
-   * The state of the actor.
-   */
-  @internalProperty()
-  state?: State<ObjectContext>;
-
-  /**
-   * Hook called on at every update after connection to the DOM.
-   */
-  firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    this.subscribe('state', from(this.actor));
-
-  }
 
   /**
    * Renders the component as HTML.
@@ -115,3 +89,5 @@ export class ObjectCreationComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectCreationComponent;
