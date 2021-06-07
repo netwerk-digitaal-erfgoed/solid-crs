@@ -1,12 +1,10 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Interpreter, SpawnedActorRef, State } from 'xstate';
+import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { from } from 'rxjs';
-import { ObjectContext } from '../object.machine';
 
 /**
  * The root page of the object feature.
@@ -28,7 +26,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @internalProperty()
+  @property()
   object?: CollectionObject;
 
   /**
@@ -38,33 +36,10 @@ export class ObjectIdentificationComponent extends RxLitElement {
   formActor: SpawnedActorRef<FormEvent>;
 
   /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<ObjectContext>;
-
-  /**
-   * The state of the actor.
-   */
-  @internalProperty()
-  state?: State<ObjectContext>;
-
-  /**
    * A list of all collections
    */
-  @internalProperty()
+  @property()
   collections?: Collection[];
-
-  /**
-   * Hook called on at every update after connection to the DOM.
-   */
-  firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    this.subscribe('state', from(this.actor));
-
-  }
 
   /**
    * Renders the component as HTML.
@@ -100,7 +75,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
           <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
-          <textarea type="text" slot="input" name="description"/></textarea>
+          <input type="text" slot="input" name="description"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
@@ -130,3 +105,5 @@ export class ObjectIdentificationComponent extends RxLitElement {
   }
 
 }
+
+export default ObjectIdentificationComponent;

@@ -5,11 +5,6 @@ import { AppRootComponent } from '../lib/app-root.component';
 import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
 import { SearchRootComponent } from '../lib/features/search/search-root.component';
 import { ObjectRootComponent } from '../lib/features/object/object-root.component';
-import { ObjectImageryComponent } from '../lib/features/object/components/object-imagery.component';
-import { ObjectIdentificationComponent } from '../lib/features/object/components/object-identification.component';
-import { ObjectDimensionsComponent } from '../lib/features/object/components/object-dimensions.component';
-import { ObjectRepresentationComponent } from '../lib/features/object/components/object-representation.component';
-import { ObjectCreationComponent } from '../lib/features/object/components/object-creation.component';
 
 /**
  * Enable mocks for fetch.
@@ -31,8 +26,3 @@ customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-form-element', FormElementComponent);
-customElements.define('nde-object-imagery', ObjectImageryComponent);
-customElements.define('nde-object-identification', ObjectIdentificationComponent);
-customElements.define('nde-object-representation', ObjectRepresentationComponent);
-customElements.define('nde-object-creation', ObjectCreationComponent);
-customElements.define('nde-object-dimensions', ObjectDimensionsComponent);
