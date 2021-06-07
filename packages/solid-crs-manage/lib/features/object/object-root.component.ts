@@ -208,8 +208,11 @@ export class ObjectRootComponent extends RxLitElement {
 
         if (!customElements.get(component.tag)) {
 
-          component.tag = customElements.get(component.tag)
-            ? component.tag : await this.semComService.registerComponent(component);
+          // eslint-disable-next-line no-eval
+          const elementComponent = await eval(`import("${component.uri}")`);
+
+          const ctor = customElements.get(component.tag)
+            || customElements.define(component.tag, elementComponent.default);
 
         }
 
@@ -308,13 +311,7 @@ export class ObjectRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const sidebarItems = [
-      'nde.features.object.sidebar.image',
-      'nde.features.object.sidebar.identification',
-      'nde.features.object.sidebar.creation',
-      'nde.features.object.sidebar.representation',
-      'nde.features.object.sidebar.dimensions',
-    ];
+    const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
     return this.object ? html`
     <nde-content-header inverse>
@@ -331,7 +328,7 @@ export class ObjectRootComponent extends RxLitElement {
       <nde-sidebar>
         <nde-sidebar-item .padding="${false}" .showBorder="${false}">
           <nde-sidebar-list slot="content">
-            ${sidebarItems.map((item) => this.formCards ? html`
+            ${sidebarItems?.map((item) => this.formCards ? html`
             <nde-sidebar-list-item slot="item"
               ?selected="${ item === this.visibleCard }"
               @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
