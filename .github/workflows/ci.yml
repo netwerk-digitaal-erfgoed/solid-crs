@@ -108,6 +108,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
+      - run: npm publish packages/solid-crs-semcom-node
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/solid-crs-semcom-components
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
   publish-docker:
     name: Publish Docker images
     needs: [variables, publish-npm]
