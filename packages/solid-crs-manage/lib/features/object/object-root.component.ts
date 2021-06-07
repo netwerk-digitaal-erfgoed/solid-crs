@@ -400,6 +400,10 @@ export class ObjectRootComponent extends RxLitElement {
         nde-sidebar-list > slot[name="title"] {
           font-weight: bold;
         }
+        button svg {
+          max-width: var(--gap-normal);
+          height: var(--gap-normal);
+        }
       `,
     ];
 
