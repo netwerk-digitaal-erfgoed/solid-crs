@@ -11,6 +11,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 * Update collection model and store ([#227](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/227)) ([28ce5b9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/28ce5b96f69599f46a05c95ebf88d41c35097077))
 
 
+### [0.3.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.3.0...v0.3.1) (2021-05-25)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-client
 
 ## [0.3.0](https://github.com/digita-ai/nde-erfgoedinstellingen/compare/v0.2.1...v0.3.0) (2021-05-18)
 
