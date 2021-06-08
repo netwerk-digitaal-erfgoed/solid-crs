@@ -23,4 +23,4 @@ COPY . /usr/src/app
 
 # Expose ports.
 EXPOSE 80
-CMD ./node_modules/.bin/semcom-node -p ${PORT} -c ${CONFIG} -m ./
+CMD ./node_modules/.bin/semcom-node -p ${PORT} -c ${CONFIG} -m ./ -h 0.0.0.0
