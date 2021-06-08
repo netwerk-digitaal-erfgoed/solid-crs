@@ -12,6 +12,10 @@ WORKDIR /usr/src/app
 # Install app dependencies
 ARG NPM_TOKEN
 COPY package.json /usr/src/app/
+COPY .npmrc ./
+RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
+    npm install && \
+    rm -f .npmrc
 RUN npm install
 
 # Bundle app source
