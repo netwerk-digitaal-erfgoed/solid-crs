@@ -17,6 +17,8 @@ jobs:
           echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
           echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
           echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
+          echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
+          echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
 
   test:
     name: Run tests
