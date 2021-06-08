@@ -1,6 +1,6 @@
 name: solid-crs
 title: Solid voor kleine erfgoedinstellingen
-version: 0.5.2
+version: 0.5.3
 nav:
   - modules/ROOT/nav.adoc
   - modules/manual/nav.adoc
