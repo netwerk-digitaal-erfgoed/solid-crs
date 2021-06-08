@@ -10,6 +10,8 @@ jobs:
       tag: ${{ steps.vars.outputs.tag }}
       image_manage: ${{ steps.vars.outputs.image_manage }}
       image_pods: ${{ steps.vars.outputs.image_pods }}
+      image_semcom_node: ${{ steps.vars.outputs.image_semcom_node }}
+      image_semcom_components: ${{ steps.vars.outputs.image_semcom_components }}
     steps:
       - name: Set variables
         id: vars
