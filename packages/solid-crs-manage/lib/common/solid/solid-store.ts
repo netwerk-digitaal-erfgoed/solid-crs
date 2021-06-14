@@ -146,6 +146,12 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
   async createTypeIndexes(webId: string): Promise<{ privateTypeIndex: string; publicTypeIndex: string }> {
 
+    if (!webId) {
+
+      throw new ArgumentError('Argument webId should be set', webId);
+
+    }
+
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
 
