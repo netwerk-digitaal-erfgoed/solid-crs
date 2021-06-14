@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
-    "start:watch": "vite --config vite.config.ts",
+    "start:watch": "vite serve --config vite.config.ts",
     "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
