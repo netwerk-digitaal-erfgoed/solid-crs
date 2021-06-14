@@ -126,7 +126,7 @@ export class SolidSDKService extends SolidService {
 
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
-    const session = await handleIncomingRedirect({ restorePreviousSession: true });
+    const session = await handleIncomingRedirect();
 
     return session && session.isLoggedIn ? { webId: session.webId } : null;
 
