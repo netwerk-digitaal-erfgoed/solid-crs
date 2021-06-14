@@ -389,7 +389,8 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                actions: log((err) => err),
+                // send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
               },
             },
           },

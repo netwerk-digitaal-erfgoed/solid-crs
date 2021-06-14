@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, asUrl, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection, CollectionStore, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { SolidStore } from './solid-store';
