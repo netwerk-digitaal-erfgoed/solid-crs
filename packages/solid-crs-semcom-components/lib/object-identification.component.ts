@@ -75,7 +75,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
           <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
-          <input type="text" slot="input" name="description"/>
+          <textarea type="text" slot="input" name="description"/></textarea>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
