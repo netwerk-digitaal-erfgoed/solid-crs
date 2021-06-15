@@ -150,9 +150,12 @@ export class CollectionRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = this.actor||false;
+    const loaded = this.actor||false;
 
-    return loading && this.collection ? html`
+    const showLoading = !(this.state?.matches(CollectionStates.IDLE)
+      || this.state?.matches(CollectionStates.EDITING));
+
+    return loaded && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.state.matches(CollectionStates.EDITING)
@@ -179,6 +182,7 @@ export class CollectionRootComponent extends RxLitElement {
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
+    ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
     <div class="content">
       ${ alerts }
       
