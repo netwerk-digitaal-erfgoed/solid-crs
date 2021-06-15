@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.6...v0.5.7) (2021-06-15)
+
+
+### **Bug Fixes**
+
+* added default value for object license ([#286](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/286)) ([411f0bd](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/411f0bd1d4735538a1869bddbfd71b113fac69c7))
+* create type index file when missing ([#288](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/288)) ([4e8824e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/4e8824e3aa9469ff689179b530a6643c17206f59))
+* made semcom node uri dynamic ([#285](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/285)) ([b4e0e46](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b4e0e46de7434205b6505b297af82d135bc0f81b))
+* now navigates to idp on firefox ([#293](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/293)) ([754bbe6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/754bbe6d2a390ce2de914e081ee10b1980432229))
+* xstate devtools show only in dev mode ([#291](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/291)) ([67f21fc](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/67f21fcf7783028758422779c3f73859ba4be5b5))
+
+
+
 ### [0.5.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.5...v0.5.6) (2021-06-08)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage

@@ -34,6 +34,16 @@ describe('SolidStore', () => {
 
     });
 
+    it('should return null when no type index reference was found in profile', async () => {
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.getUrl = jest.fn(() => null);
+
+      await expect(service.getInstanceForClass('test-webid', 'test-forClass')).resolves.toEqual(null);
+
+    });
+
     it('should return null when no type registration was found', async () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
@@ -90,55 +100,92 @@ describe('SolidStore', () => {
 
     });
 
-    it('should return instance when registration is already present', async () => {
+  });
 
-      client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() => 'test-thing');
-      client.getThingAll = jest.fn(() => [ 'test-thing' ]);
+  it('should return instance when registration is already present', async () => {
 
-      client.getUrl = jest.fn((thing, predicate) => {
+    client.getSolidDataset = jest.fn(async () => 'test-dataset');
+    client.getThing = jest.fn(() => 'test-thing');
+    client.getThingAll = jest.fn(() => [ 'test-thing' ]);
 
-        if (predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex') {
+    client.getUrl = jest.fn((thing, predicate) => {
 
-          return 'https://test.url/';
+      if (predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex') {
 
-        } else if (predicate === 'http://www.w3.org/ns/pim/space#storage') {
+        return 'https://test.url/';
 
-          return 'https://test.url/test-storage';
+      } else if (predicate === 'http://www.w3.org/ns/pim/space#storage') {
 
-        } else if (predicate === 'http://www.w3.org/ns/solid/terms#forClass') {
+        return 'https://test.url/test-storage';
 
-          return 'https://test.url/test-forClass';
+      } else if (predicate === 'http://www.w3.org/ns/solid/terms#forClass') {
 
-        } else if (predicate === 'http://www.w3.org/ns/solid/terms#instance') {
+        return 'https://test.url/test-forClass';
 
-          return 'https://test.url/test-storage/test-location';
+      } else if (predicate === 'http://www.w3.org/ns/solid/terms#instance') {
 
-        }
+        return 'https://test.url/test-storage/test-location';
 
-      });
-
-      await expect(service.saveInstanceForClass('test-webid', 'https://test.url/test-forClass', 'https://test.url/test-storage/test-location'))
-        .resolves.toEqual('https://test.url/test-storage/test-location');
+      }
 
     });
 
-    it('should save new instance when registration was not present', async () => {
+    await expect(service.saveInstanceForClass('test-webid', 'https://test.url/test-forClass', 'https://test.url/test-storage/test-location'))
+      .resolves.toEqual('https://test.url/test-storage/test-location');
 
-      client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() => 'test-thing');
-      client.getThingAll = jest.fn(() => []);
-      client.createThing = jest.fn(() => 'test-thing');
-      client.addUrl = jest.fn(() => 'test-thing');
-      client.setThing = jest.fn(() => 'test-dataset');
-      client.saveSolidDatasetAt = jest.fn(() => 'test-dataset');
+  });
 
-      await expect(service.saveInstanceForClass('test-webid', 'https://test.url/test-forClass', 'https://test.url/test-storage/test-location'))
-        .resolves.toEqual('https://test.url/test-storage/test-location');
+  it('should save new instance when registration was not present', async () => {
 
-      expect(client.saveSolidDatasetAt).toHaveBeenCalledTimes(1);
+    client.getSolidDataset = jest.fn(async () => 'test-dataset');
+    client.getThing = jest.fn(() => 'test-thing');
+    client.getThingAll = jest.fn(() => []);
+    client.createThing = jest.fn(() => 'test-thing');
+    client.addUrl = jest.fn(() => 'test-thing');
+    client.setThing = jest.fn(() => 'test-dataset');
+    client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+
+    await expect(service.saveInstanceForClass('test-webid', 'https://test.url/test-forClass', 'https://test.url/test-storage/test-location'))
+      .resolves.toEqual('https://test.url/test-storage/test-location');
+
+    expect(client.saveSolidDatasetAt).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should call this.createTypeIndexes when no typeindex was found', async () => {
+
+    const createTypeIndexSpy = jest.spyOn(service, 'createTypeIndexes');
+
+    client.getSolidDataset = jest.fn(async () => 'test-dataset');
+    client.getThing = jest.fn(() => 'test-thing');
+    client.getThingAll = jest.fn(() => [ 'test-thing' ]);
+
+    client.getUrl = jest.fn((thing, predicate) => {
+
+      if (predicate === 'http://www.w3.org/ns/solid/terms#publicTypeIndex') {
+
+        return null;
+
+      } else if (predicate === 'http://www.w3.org/ns/pim/space#storage') {
+
+        return 'https://test.url/test-storage';
+
+      } else if (predicate === 'http://www.w3.org/ns/solid/terms#forClass') {
+
+        return 'https://test.url/test-forClass';
+
+      } else if (predicate === 'http://www.w3.org/ns/solid/terms#instance') {
+
+        return 'https://test.url/test-storage/test-location';
+
+      }
 
     });
+
+    await expect(service.saveInstanceForClass('https://test.webid/profile/card#me', 'https://test.url/test-forClass', 'https://test.url/test-storage/test-location'))
+      .resolves.toEqual('https://test.url/test-storage/test-location');
+
+    expect(createTypeIndexSpy).toHaveBeenCalled();
 
   });
 
@@ -177,6 +224,47 @@ describe('SolidStore', () => {
     it('should throw', async () => {
 
       await expect(service.get(undefined)).rejects.toThrow();
+
+    });
+
+  });
+
+  describe('createTypeIndexes()', () => {
+
+    client.getSolidDataset = jest.fn(async () => 'test-dataset');
+    client.getThing = jest.fn(() => 'test-thing');
+    client.overwriteFile = jest.fn(async () => 'test-result');
+    client.addUrl = jest.fn(() => 'test-thing');
+    client.setThing = jest.fn(() => 'test-dataset');
+    client.saveSolidDatasetAt = jest.fn(async () => 'test-result');
+
+    client.access = {
+      setPublicAccess: async () => null,
+    };
+    // client.access.setPublicAccess = jest.fn(async () => null);
+
+    it.each([ null, undefined ])('should error when webId is %s', async (value) => {
+
+      await expect(service.createTypeIndexes(value)).rejects.toThrow('Argument webId should be set');
+
+    });
+
+    it('should throw when webId does not ends with "profile/card#me"', async () => {
+
+      await expect(service.createTypeIndexes('http://test')).rejects.toThrow('Could not create type indexes for webId');
+
+    });
+
+    it('should write files and return private and public type index URLs', async () => {
+
+      const result = await service.createTypeIndexes('http://test.url/profile/card#me');
+
+      expect(result.privateTypeIndex).toEqual('http://test.url/settings/privateTypeIndex.ttl');
+      expect(result.publicTypeIndex).toEqual('http://test.url/settings/publicTypeIndex.ttl');
+
+      expect(client.saveSolidDatasetAt).toHaveBeenCalled();
+      // expect(client.access.setPublicAccess).toHaveBeenCalled();
+      expect(client.overwriteFile).toHaveBeenCalledTimes(2);
 
     });
 

@@ -71,10 +71,11 @@ export class AppRootComponent extends RxLitElement {
         type: 'http://schema.org/CreativeWork',
         identifier: this.translator.translate('nde.features.object.new-object-name').toLowerCase().replace(' ', '-'),
         image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+        license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
       }
     )).withContext({
       alerts: [],
-    }), { devTools: true },
+    }), { devTools: process.env.MODE === 'DEV' },
   );
 
   /**

@@ -6,7 +6,7 @@
     "emitDeclarationOnly": true,
     "resolveJsonModule": true,
     // Recommended by Lit Element
-    "module": "es2015",
+    "module": "es2020",
     "target": "es2017",
     // Strict should actually be true
     "strict": false,

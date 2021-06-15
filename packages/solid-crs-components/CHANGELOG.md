@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.6...v0.5.7) (2021-06-15)
+
+
+### **Bug Fixes**
+
+* made semcom node uri dynamic ([#285](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/285)) ([b4e0e46](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b4e0e46de7434205b6505b297af82d135bc0f81b))
+
+
+
 ### [0.5.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.5...v0.5.6) (2021-06-08)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-components
