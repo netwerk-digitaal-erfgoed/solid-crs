@@ -53,23 +53,23 @@ export class ObjectRepresentationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="subject">
           <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.representation.field.subject')}</label>
-          <input type="text" slot="input" id="subject"/>
+          <input type="text" slot="input" name="subject" id="subject"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="location">
           <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.representation.field.location')}</label>
-          <input type="text" slot="input" id="location"/>
+          <input type="text" slot="input" name="location" id="location"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="person">
           <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.representation.field.person')}</label>
-          <input type="text" slot="input" id="person"/>
+          <input type="text" slot="input" name="person" id="person"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="organization">
           <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.representation.field.organization')}</label>
-          <input type="text" slot="input" id="organization"/>
+          <input type="text" slot="input" name="organization" id="organization"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="event">
           <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.representation.field.event')}</label>
-          <input type="text" slot="input" id="event"/>
+          <input type="text" slot="input" name="event" id="event"/>
         </nde-form-element>
       </div>
     </nde-large-card>
