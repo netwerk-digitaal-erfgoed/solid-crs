@@ -59,27 +59,27 @@ export class ObjectIdentificationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="identifier">
           <label slot="label" for="identifier">${this.translator?.translate('nde.features.object.card.identification.field.object-number')}</label>
-          <input type="text" slot="input" name="identifier"/>
+          <input type="text" slot="input" id="identifier"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="type">
           <label slot="label" for="type">${this.translator?.translate('nde.features.object.card.identification.field.type')}</label>
-          <input type="text" slot="input" name="type"/>
+          <input type="text" slot="input" id="type"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
-          <input type="text" slot="input" name="additionalType"/>
+          <input type="text" slot="input" id="additionalType"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
           <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>
-          <input type="text" slot="input" name="name"/>
+          <input type="text" slot="input" id="name"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
           <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.identification.field.description')}</label>
-          <textarea type="text" slot="input" name="description"/></textarea>
+          <textarea type="text" slot="input" id="description"/></textarea>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.identification.field.collection')}</label>
-          <select slot="input" name="collection">
+          <select slot="input" id="collection">
             ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object.collection}">${collection.name}</option>`)}
           </select>
         </nde-form-element>

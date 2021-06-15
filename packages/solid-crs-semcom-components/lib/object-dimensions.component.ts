@@ -53,19 +53,19 @@ export class ObjectDimensionsComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depth">
           <label slot="label" for="depth">${this.translator?.translate('nde.features.object.card.dimensions.field.depth')}</label>
-          <input type="text" slot="input" name="depth"/>
+          <input type="text" slot="input" id="depth"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="width">
           <label slot="label" for="width">${this.translator?.translate('nde.features.object.card.dimensions.field.width')}</label>
-          <input type="text" slot="input" name="width"/>
+          <input type="text" slot="input" id="width"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="height">
           <label slot="label" for="height">${this.translator?.translate('nde.features.object.card.dimensions.field.height')}</label>
-          <input type="text" slot="input" name="height"/>
+          <input type="text" slot="input" id="height"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weight">
           <label slot="label" for="weight">${this.translator?.translate('nde.features.object.card.dimensions.field.weight')}</label>
-          <input type="text" slot="input" name="weight"/>
+          <input type="text" slot="input" id="weight"/>
         </nde-form-element>
       </div>
     </nde-large-card>
