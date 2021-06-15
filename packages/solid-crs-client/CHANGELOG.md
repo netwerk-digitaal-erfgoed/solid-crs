@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.6...v0.5.7) (2021-06-15)
+
+
+### **Bug Fixes**
+
+* create type index file when missing ([#288](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/288)) ([4e8824e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/4e8824e3aa9469ff689179b530a6643c17206f59))
+
+
+
 ### [0.5.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.5...v0.5.6) (2021-06-08)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-client
