@@ -75,7 +75,7 @@ export class AppRootComponent extends RxLitElement {
       }
     )).withContext({
       alerts: [],
-    }), { devTools: true },
+    }), { devTools: process.env.MODE === 'DEV' },
   );
 
   /**
