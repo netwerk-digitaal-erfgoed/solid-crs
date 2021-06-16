@@ -2,9 +2,9 @@ import { formMachine,
   FormActors,
   FormValidatorResult,
   FormContext,
-  FormEvents, State, FormUpdatedEvent, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+  FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ObjectEvent, ObjectEvents } from './object.events';
@@ -62,7 +62,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     if (field === 'description' && value && (value as typeof context.data[typeof field]).length > 10000) {
 
       res.push({
-        field: 'description',
+        field,
         message: 'nde.features.object.card.identification.field.description.validation.max-characters',
       });
 
@@ -72,7 +72,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     if (field === 'name' && !value) {
 
       res.push({
-        field: 'name',
+        field,
         message: 'nde.features.object.card.common.empty',
       });
 
@@ -82,7 +82,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
 
       res.push({
-        field: 'name',
+        field,
         message: 'nde.features.object.card.identification.field.title.validation.max-characters',
       });
 
@@ -92,9 +92,54 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     if (field === 'identifier' && !value) {
 
       res.push({
-        field: 'identifier',
+        field,
         message: 'nde.features.object.card.common.empty',
       });
+
+    }
+
+    if (field === 'type') {
+
+      // the type of an object can not be empty
+      if (!value) {
+
+        res.push({
+          field,
+          message: 'nde.features.object.card.common.empty',
+        });
+
+      } else {
+
+        // the type must be a valid URL
+        try {
+
+          new URL(value as typeof context.data[typeof field]);
+
+        } catch {
+
+          res.push({
+            field,
+            message: 'nde.features.object.card.common.invalid-url',
+          });
+
+        }
+
+      }
+
+    }
+
+    // the additionalType of an object can not be empty
+    if (field === 'additionalType') {
+
+      // the additionalType of an object can not be empty
+      if (!value || (value as typeof context.data[typeof field])?.length < 1) {
+
+        res.push({
+          field,
+          message: 'nde.features.object.card.common.empty',
+        });
+
+      }
 
     }
 
@@ -102,7 +147,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     if (field === 'image' && !value) {
 
       res.push({
-        field: 'image',
+        field,
         message: 'nde.features.object.card.common.empty',
       });
 
@@ -131,8 +176,8 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
       } catch (error) {
 
         res.push({
-          field: 'image',
-          message: 'nde.features.object.card.image.field.file.validation.invalid',
+          field,
+          message: 'nde.features.object.card.common.invalid-url',
         });
 
       }
@@ -149,8 +194,22 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
       } catch (error) {
 
         res.push({
-          field: 'dateCreated',
+          field,
           message: 'nde.features.object.card.creation.field.date.validation.invalid',
+        });
+
+      }
+
+    }
+
+    // validate numbers
+    if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
+
+      if (value.toString() === 'NaN') {
+
+        res.push({
+          field,
+          message: 'nde.features.object.card.common.invalid-number',
         });
 
       }

@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 
@@ -19,7 +19,7 @@ describe('SolidService', () => {
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
 
-    fetchMock.mockClear();
+    fetchMock.resetMocks();
 
   });
 
@@ -60,6 +60,17 @@ describe('SolidService', () => {
       service.getIssuer = jest.fn(() => undefined);
 
       await expect(service.login('test')).rejects.toThrow('Argument issuer should be set.');
+
+    });
+
+    it('should call login when issuer was set', async () => {
+
+      client.login = jest.fn(() => 'success');
+      service.getIssuer = jest.fn(async () => 'http://google.com/');
+
+      await service.login('test');
+
+      expect(client.login).toHaveBeenCalled();
 
     });
 
@@ -130,15 +141,39 @@ describe('SolidService', () => {
 
     });
 
-    it('should error when oidcIssuer openid config is not found', async () => {
+    it('should error when oidcIssuer openid config is invalid', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(async () => validProfileThing);
-      client.getUrl = jest.fn(async () => 'https://google.com/');
+      client.getUrl = jest.fn(() => 'https://google.com/');
 
-      fetchMock.mockResponseOnce('<!DOCTYPE html>', { status: 404 });
+      fetchMock.mockRejectOnce();
 
       await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
+    });
+
+    it('should error when oidcIssuer response does not contain "X-Powered-By: solid" header', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(async () => validProfileThing);
+      client.getUrl = jest.fn(() => 'https://google.com/');
+
+      fetchMock.mockResponseOnce('{}', { status: 200, headers: { 'X-Powered-By': '' } });
+
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
+    });
+
+    it('should return issuer when openid response contains "X-Powered-By: solid" header', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(async () => validProfileThing);
+      client.getUrl = jest.fn(() => 'https://google.com/');
+
+      fetchMock.mockResponseOnce('{}', { status: 200, headers: { 'X-Powered-By': 'solid-server/5.6.6' } });
+
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).resolves.toEqual('https://google.com/');
 
     });
 
