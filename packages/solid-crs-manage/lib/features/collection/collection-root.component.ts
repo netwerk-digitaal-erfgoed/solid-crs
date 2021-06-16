@@ -185,10 +185,10 @@ export class CollectionRootComponent extends RxLitElement {
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.state.matches(CollectionStates.EDITING)
     ? html`
-          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
             <input autofocus type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
-          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
             <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
           </nde-form-element>
         `
