@@ -88,13 +88,13 @@ export class ObjectRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if if the form validation passed.
    */
   @internalProperty()
   isValid? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if one the form fields has changed.
    */
   @internalProperty()
   isDirty? = false;

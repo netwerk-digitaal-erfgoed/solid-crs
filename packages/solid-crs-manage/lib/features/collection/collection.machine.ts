@@ -4,7 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -43,6 +43,40 @@ export enum CollectionStates {
   DETERMINING_COLLECTION  = '[CollectionsState: Determining collection]',
   CREATING_OBJECT  = '[CollectionsState: Creating object]',
 }
+
+/**
+ * Validate the name and description of a collection
+ *
+ * @param context the context of the object to be validated
+ * @returns a list of validator results
+ */
+export const validateCollectionForm = async (context: FormContext<Collection>): Promise<FormValidatorResult[]> => {
+
+  const res: FormValidatorResult[]  = [];
+
+  // only validate dirty fields
+  const dirtyFields = Object.keys(context.data).filter((field) =>
+    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
+
+  for (const field of dirtyFields) {
+
+    const value = context.data[field as keyof Collection];
+
+    // the name/title of an object can not be empty
+    if (field === 'name' && !value) {
+
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+  }
+
+  return res;
+
+};
 
 /**
  * The collection machine.
@@ -152,7 +186,7 @@ export const collectionMachine =
             {
               id: FormActors.FORM_MACHINE,
               src: formMachine<{ name: string; description: string }>(
-                async (): Promise<FormValidatorResult[]> => [],
+                validateCollectionForm,
                 async (c: FormContext<{ name: string; description: string }>) => c.data
               ),
               data: (context) => ({

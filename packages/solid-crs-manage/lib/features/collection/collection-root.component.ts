@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -78,6 +78,18 @@ export class CollectionRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
+   * Indicates if if the form validation passed.
+   */
+  @internalProperty()
+  isValid? = false;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  isDirty? = false;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -97,14 +109,6 @@ export class CollectionRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
-      if(changed.has('formActor') && this.formActor){
-
-        this.subscribe('isSubmitting', from(this.formActor).pipe(
-          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-        ));
-
-      }
-
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collection', from(this.actor)
@@ -112,6 +116,30 @@ export class CollectionRootComponent extends RxLitElement {
 
       this.subscribe('objects', from(this.actor)
         .pipe(map((state) => state.context?.objects)));
+
+    }
+
+    if(changed?.has('formActor') && this.formActor){
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('isValid', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+      ));
+
+      this.subscribe('isDirty', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          },
+        })),
+      ));
 
     }
 
@@ -173,12 +201,12 @@ export class CollectionRootComponent extends RxLitElement {
           </div>
         `
 }
-
-      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ this.isDirty ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
+
     <div class="content">
       ${ alerts }
       
