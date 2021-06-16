@@ -4,7 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -75,7 +75,9 @@ export const collectionMachine =
              * When done, assign objects to the context and transition to idle.
              */
               actions: assign({
-                objects: (context, event) => event.data,
+                objects: (context, event) => event.data.sort(
+                  (a: CollectionObject, b: CollectionObject) => a.name?.localeCompare(b.name)
+                ),
               }),
               target: CollectionStates.IDLE,
             },
@@ -202,7 +204,7 @@ export const collectionMachine =
            */
             src: (context) => objectStore.save({ ...objectTemplate, collection: context.collection.uri }),
             onDone: {
-              target: CollectionStates.LOADING,
+              actions: sendParent((context, event) => ({ type: ObjectEvents.SELECTED_OBJECT, object: event.data })),
             },
             onError: {
               actions: sendParent(AppEvents.ERROR),
