@@ -158,20 +158,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       try {
 
-        const contentTypes = [
-          'image/png',
-          'image/jpeg',
-        ];
-
-        const url = new URL((value as typeof context.data[typeof field]));
-
-        const response = await fetch(url.toString(), { method: 'HEAD' });
-
-        if (!response.ok || !contentTypes.includes(response.headers.get('Content-Type').toLowerCase())) {
-
-          throw Error();
-
-        }
+        new URL((value as typeof context.data[typeof field]));
 
       } catch (error) {
 

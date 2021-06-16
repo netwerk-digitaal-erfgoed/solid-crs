@@ -1,4 +1,4 @@
-import { FormContext, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
@@ -291,14 +291,6 @@ describe('ObjectMachine', () => {
     it('should return an error when image is not a real url', async () => {
 
       context.data = { ...context.data, image: 'StringThatDoesNotMakeSense' };
-      const res = validateObjectForm(context);
-      await expect(res).resolves.toHaveLength(1);
-
-    });
-
-    it('should return an error when image is not an url to an image', async () => {
-
-      context.data = { ...context.data, image: 'http://www.google.com' };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 
