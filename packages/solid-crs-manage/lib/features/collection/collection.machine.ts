@@ -130,7 +130,7 @@ export const collectionMachine =
           always: [
             {
               target: CollectionStates.LOADING,
-              cond: (context, event) => context?.collection ? true : false,
+              cond: (context, event) => context?.collection && !context?.objects ? true : false,
             },
             {
               target: CollectionStates.IDLE,
