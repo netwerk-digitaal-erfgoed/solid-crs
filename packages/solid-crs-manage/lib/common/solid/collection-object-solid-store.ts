@@ -207,10 +207,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.event ? addStringNoLocale(objectThing, 'http://schema.org/Event', object.event) : objectThing;
 
     // dimensions
-    objectThing = object.height !== undefined || object.height !== null ? addInteger(objectThing, 'http://schema.org/height', object.height) : objectThing;
-    objectThing = object.width !== undefined || object.width !== null ? addInteger(objectThing, 'http://schema.org/width', object.width) : objectThing;
-    objectThing = object.depth  !== undefined || object.depth !== null? addInteger(objectThing, 'http://schema.org/depth', object.depth) : objectThing;
-    objectThing = object.weight !== undefined || object.weight !== null ? addInteger(objectThing, 'http://schema.org/weight', object.weight) : objectThing;
+    objectThing = object.height !== undefined && object.height !== null ? addInteger(objectThing, 'http://schema.org/height', object.height) : objectThing;
+    objectThing = object.width !== undefined && object.width !== null ? addInteger(objectThing, 'http://schema.org/width', object.width) : objectThing;
+    objectThing = object.depth  !== undefined && object.depth !== null? addInteger(objectThing, 'http://schema.org/depth', object.depth) : objectThing;
+    objectThing = object.weight !== undefined && object.weight !== null ? addInteger(objectThing, 'http://schema.org/weight', object.weight) : objectThing;
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
