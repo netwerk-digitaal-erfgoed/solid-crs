@@ -186,7 +186,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
     objectThing = object.type ? addUrl(objectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type) : objectThing;
-    objectThing = object.additionalType ? addUrl(objectThing, 'http://schema.org/additionalType', object.additionalType) : objectThing;
+    objectThing = object.additionalType ? addStringWithLocale(objectThing, 'http://schema.org/additionalType', object.additionalType, 'nl') : objectThing;
     objectThing = object.identifier ? addStringNoLocale(objectThing, 'http://schema.org/identifier', object.identifier) : objectThing;
     objectThing = object.name ? addStringWithLocale(objectThing, 'http://schema.org/name', object.name, 'nl') : objectThing;
     objectThing = object.description ? addStringWithLocale(objectThing, 'http://schema.org/description', object.description, 'nl') : objectThing;
@@ -252,7 +252,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       uri: asUrl(object),
       updated: getStringNoLocale(object, 'http://schema.org/dateModified') || undefined,
       type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') || undefined,
-      additionalType: getUrl(object, 'http://schema.org/additionalType') || undefined,
+      additionalType: getStringWithLocale(object, 'http://schema.org/additionalType', 'nl') || undefined,
       identifier: getStringNoLocale(object, 'http://schema.org/identifier') || undefined,
       name: getStringWithLocale(object, 'http://schema.org/name', 'nl') || undefined,
       description: getStringWithLocale(object, 'http://schema.org/description', 'nl') || undefined,
