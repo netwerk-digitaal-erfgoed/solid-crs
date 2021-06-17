@@ -183,20 +183,20 @@ export class CollectionRootComponent extends RxLitElement {
     return loading && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
-      ${this.state.matches(CollectionStates.EDITING)
+      ${this.actor.state.matches(CollectionStates.EDITING)
     ? html`
-          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-            <input autofocus type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
+          <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+            <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
-          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+          <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
             <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
           </nde-form-element>
         `
     : html`
-          <div slot="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+          <div slot="title" class="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
             ${this.collection.name}
           </div>
-          <div slot="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+          <div slot="subtitle" class="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
             ${this.collection.description}
           </div>
         `

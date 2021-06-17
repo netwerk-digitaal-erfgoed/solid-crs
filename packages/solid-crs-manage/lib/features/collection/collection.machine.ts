@@ -56,7 +56,7 @@ export const validateCollectionForm = async (context: FormContext<Collection>): 
 
   // only validate dirty fields
   const dirtyFields = Object.keys(context.data).filter((field) =>
-    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
+    context.data[field as keyof Collection] !== context.original[field as keyof Collection]);
 
   for (const field of dirtyFields) {
 

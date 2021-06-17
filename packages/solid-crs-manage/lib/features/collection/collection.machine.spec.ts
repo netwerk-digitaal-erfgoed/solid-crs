@@ -1,10 +1,11 @@
+import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
-import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
+import { CollectionContext, collectionMachine, CollectionStates, validateCollectionForm } from './collection.machine';
 
 describe('CollectionMachine', () => {
 
@@ -195,6 +196,48 @@ describe('CollectionMachine', () => {
     it('should return action', () => {
 
       expect(addAlert({ type: 'success', message: 'foo' }).event()).toEqual({ alert: { type: 'success', message: 'foo' }, type: AppEvents.ADD_ALERT });
+
+    });
+
+  });
+
+  describe('validateCollectionForm()', () => {
+
+    let context: FormContext<Collection>;
+
+    beforeEach(() => {
+
+      context = {
+        data: {
+          description: 'description',
+          name: 'name',
+          uri: '',
+          objectsUri: '',
+          distribution: '',
+        },
+        original: {
+          description: 'description',
+          name: 'name',
+          uri: '',
+          objectsUri: '',
+          distribution: '',
+        },
+      };
+
+    });
+
+    it('should return an empty list if no problems were found', async () => {
+
+      const res = validateCollectionForm(context);
+      await expect(res).resolves.toHaveLength(0);
+
+    });
+
+    it('should return an error when name is an empty string', async () => {
+
+      context.data = { ...context.data, name: '' };
+      const res = validateCollectionForm(context);
+      await expect(res).resolves.toHaveLength(1);
 
     });
 
