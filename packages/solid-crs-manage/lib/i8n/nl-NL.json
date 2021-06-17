@@ -224,6 +224,82 @@
         "locale": "nl-NL",
         "value": "Licentie"
     },
+
+    {
+        "key": "http://rightsstatements.org/vocab/InC/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD"
+    },
+    {
+        "key": "http://rightsstatements.org/vocab/InC-OW-EU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - EU VERWEESD WERK"
+    },
+    {
+        "key": "http://rightsstatements.org/vocab/InC-EDU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - EDUCATIEF GEBRUIK TOEGESTAAN"
+    },
+    {
+        "key": "http://rightsstatements.org/vocab/InC-NC/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+    },
+    {
+        "key": "http://rightsstatements.org/vocab/InC-RUU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - RECHTHEBBENDE(N) NIET-LOKALISEERBAAR OF NIET-IDENTIFICEERBAAR"
+    },
+    {
+        "key": "http://rightsstatements.org/vocab/NoC-US/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/NoC-CR/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/NoC-NC/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/UND/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/CNE/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD"
+    },
+    {
+        "uri": "http://rightsstatements.org/vocab/NKC/1.0/",
+        "locale": "nl-NL",
+        "value": "GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND"
+    },
+    {
+        "uri": "https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
+        "locale": "nl-NL",
+        "value": "CC0 1.0 UNIVERSEEL"
+    },
+    {
+        "value": "NAAMSVERMELDING 4.0 INTERNATIONAAL",
+        "locale": "nl-NL",
+        "key": "https://creativecommons.org/licenses/by/4.0/deed.nl"
+    },
+    {
+        "key": "https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl",
+        "locale": "nl-NL",
+        "value": "NAAMSVERMELDING-GELIJKDELEN 2.0"
+    },
     {
         "key": "nde.features.object.card.identification.title",
         "locale": "nl-NL",
