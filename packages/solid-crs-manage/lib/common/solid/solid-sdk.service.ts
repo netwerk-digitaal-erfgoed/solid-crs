@@ -40,9 +40,16 @@ export class SolidSDKService extends SolidService {
     }
 
     // Parse the user's WebID as a url.
+    let webIdUrl: string;
+
     try {
 
-      const webIdUrl = new URL(webId);
+      const hasProtocol = webId.startsWith('http://') || webId.startsWith('https://');
+
+      webIdUrl = new URL(hasProtocol ? webId : `https://${webId}`).toString();
+
+      await fetch(webIdUrl, { method: 'head' })
+        .catch(async () => await fetch(webIdUrl.toString().replace('https://', 'http://'), { method: 'head' }));
 
     } catch {
 
@@ -55,26 +62,26 @@ export class SolidSDKService extends SolidService {
     // Dereference the user's WebID to get the user's profile document.
     try {
 
-      profileDataset = await getSolidDataset(webId);
+      profileDataset = await getSolidDataset(webIdUrl);
 
     } catch(e) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
     if(!profileDataset) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
     // Parses the profile document.
-    const profile = getThing(profileDataset, webId);
+    const profile = getThing(profileDataset, webIdUrl);
 
     if(!profile) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
