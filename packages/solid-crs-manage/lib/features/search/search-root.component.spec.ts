@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SearchRootComponent } from './search-root.component';
@@ -35,7 +35,7 @@ describe('SearchRootComponent', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -52,7 +52,11 @@ describe('SearchRootComponent', () => {
       collectionStore,
       objectStore,
       collection1,
-    ));
+      object1,
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
     component.actor = machine;
@@ -220,7 +224,8 @@ describe('SearchRootComponent', () => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
-          expect(event.alert).toEqual(alert);
+          const casted = event as DismissAlertEvent;
+          expect(casted.alert).toEqual(alert);
           done();
 
         }

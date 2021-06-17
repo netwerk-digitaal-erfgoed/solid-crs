@@ -1,7 +1,7 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormEvents } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent, LoggedInEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SolidService } from '../../common/solid/solid.service';
@@ -15,32 +15,46 @@ describe('AuthenticateRootComponent', () => {
   let machine: Interpreter<AuthenticateContext>;
   let solid: SolidService;
 
+  let collection1: Collection;
+  let collection2: Collection;
+  let object1: CollectionObject;
+
   beforeEach(() => {
 
-    const collectionStore = new MemoryStore<Collection>([
-      {
-        uri: 'collection-uri-1',
-        name: 'Collection 1',
-        description: 'This is collection 1',
-      },
-      {
-        uri: 'collection-uri-2',
-        name: 'Collection 2',
-        description: 'This is collection 2',
-      },
+    collection1 = {
+      uri: 'collection-uri-1',
+      name: 'Collection 1',
+      description: 'This is collection 1',
+      objectsUri: '',
+      distribution: '',
+    };
+
+    collection2 = {
+      uri: 'collection-uri-2',
+      name: 'Collection 2',
+      description: 'This is collection 2',
+      objectsUri: '',
+      distribution: '',
+    };
+
+    object1 = {
+      uri: 'object-uri-1',
+      name: 'Object 1',
+      description: 'This is object 1',
+      image: null,
+      subject: null,
+      type: null,
+      updated: undefined,
+      collection: 'collection-uri-1',
+    };
+
+    const collectionStore = new CollectionMemoryStore([
+      collection1,
+      collection2,
     ]);
 
     const objectStore = new CollectionObjectMemoryStore([
-      {
-        uri: 'object-uri-1',
-        name: 'Object 1',
-        description: 'This is object 1',
-        image: null,
-        subject: null,
-        type: null,
-        updated: undefined,
-        collection: 'collection-uri-1',
-      },
+      object1,
     ]);
 
     solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
@@ -49,8 +63,13 @@ describe('AuthenticateRootComponent', () => {
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
-      objectStore
-    ));
+      objectStore,
+      collection1,
+      object1
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
 
@@ -114,7 +133,7 @@ describe('AuthenticateRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector('button[slot="action"]');
+    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
 
     expect(button.disabled).toBe(!canSubmit);
 
@@ -130,7 +149,7 @@ describe('AuthenticateRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector('button[slot="action"]');
+    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
 
     expect(button.disabled).toBe(isSubmitting);
 
@@ -211,7 +230,8 @@ describe('AuthenticateRootComponent', () => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
-          expect(event.alert).toEqual(alert);
+          const casted = event as DismissAlertEvent;
+          expect(casted.alert).toEqual(alert);
           done();
 
         }
@@ -220,6 +240,8 @@ describe('AuthenticateRootComponent', () => {
 
       machine.start();
       machine.parent.start();
+
+      machine.parent.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
 
       window.document.body.appendChild(component);
       await component.updateComplete;

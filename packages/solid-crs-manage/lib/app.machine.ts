@@ -168,7 +168,7 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore, objectTemplate),
-                data: (context, event) => ({
+                data: (context) => ({
                   collection: context.selected,
                 }),
                 onError: {

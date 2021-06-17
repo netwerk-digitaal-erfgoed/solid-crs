@@ -1,11 +1,10 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from './app.events';
+import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 import { SolidMockService } from './common/solid/solid-mock.service';
-import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
@@ -14,7 +13,7 @@ describe('AppRootComponent', () => {
   let component: AppRootComponent;
   let machine: Interpreter<AppContext>;
 
-  const template: Collection = {
+  const collection: Collection = {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
@@ -22,17 +21,20 @@ describe('AppRootComponent', () => {
     distribution: 'test-uri',
   };
 
+  const object: CollectionObject = {
+    uri: 'object-uri-3',
+    name: 'object 3',
+    description: 'This is object 3',
+    type: 'http://type.url/',
+    collection: 'collection-uri-3',
+    image: 'http://image.url/',
+  };
+
   beforeEach(() => {
 
     machine = interpret(appMachine(solid,
-      new MemoryStore<Collection>([
-        {
-          uri: 'collection-uri-1',
-          name: 'Collection 1',
-          description: 'This is collection 1',
-          objectsUri: 'test-uri',
-          distribution: 'test-uri',
-        },
+      new CollectionMemoryStore([
+        collection,
         {
           uri: 'collection-uri-2',
           name: 'Collection 2',
@@ -42,18 +44,10 @@ describe('AppRootComponent', () => {
         },
       ]),
       new CollectionObjectMemoryStore([
-        {
-          uri: 'object-uri-1',
-          name: 'Object 1',
-          description: 'This is object 1',
-          image: null,
-          subject: null,
-          type: null,
-          updated: 0,
-          collection: 'collection-uri-1',
-        },
+        object,
       ]),
-      template)
+      collection,
+      object)
       .withContext({
         alerts: [],
         session: { webId: 'lorem' },
@@ -100,7 +94,7 @@ describe('AppRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } });
+    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
 
   });
 
@@ -136,7 +130,9 @@ describe('AppRootComponent', () => {
 
       if(event.type === AppEvents.DISMISS_ALERT && event){
 
-        expect(event.alert).toEqual(alert);
+        const casted = event as DismissAlertEvent;
+
+        expect(casted.alert).toEqual(alert);
         done();
 
       }
@@ -209,7 +205,7 @@ describe('AppRootComponent', () => {
           [AppRootStates.DATA]: AppDataStates.IDLE,
         })) {
 
-        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } });
+        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } } as LoggedInEvent);
         await component.updateComplete;
 
       }
@@ -228,16 +224,17 @@ describe('AppRootComponent', () => {
 
     // start without collection
     machine = interpret(appMachine(solid,
-      new MemoryStore<Collection>([]),
+      new CollectionMemoryStore([]),
       new CollectionObjectMemoryStore([]),
-      template));
+      collection,
+      object).withContext({
+      alerts: [],
+      selected: collection,
+    }));
 
     machine.start();
-    component.actor = machine;
 
     machine.onTransition(async (state) => {
-
-      await component.updateComplete;
 
       if(state.context?.collections?.length === 1){
 
@@ -247,26 +244,12 @@ describe('AppRootComponent', () => {
 
     });
 
-    machine.onTransition(async (state) => {
-
-      if(
-        state.matches({
-          [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.UNAUTHENTICATED,
-          [AppRootStates.DATA]: AppDataStates.IDLE,
-        })) {
-
-        done();
-        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } });
-        await component.updateComplete;
-
-      }
-
-    });
-
     machine.start();
 
     window.document.body.appendChild(component);
     await component.updateComplete;
+
+    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
 
   });
 

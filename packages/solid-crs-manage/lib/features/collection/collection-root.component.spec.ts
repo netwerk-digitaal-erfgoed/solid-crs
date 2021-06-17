@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
@@ -29,24 +29,24 @@ describe('CollectionRootComponent', () => {
     distribution: null,
   };
 
+  const object1: CollectionObject = {
+    uri: 'object-uri-1',
+    name: 'Object 1',
+    description: 'This is object 1',
+    image: null,
+    subject: null,
+    type: null,
+    updated: '0',
+    collection: 'collection-uri-1',
+  };
+
   beforeEach(() => {
 
     const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    const objectStore = new CollectionObjectMemoryStore([
-      {
-        uri: 'object-uri-1',
-        name: 'Object 1',
-        description: 'This is object 1',
-        image: null,
-        subject: null,
-        type: null,
-        updated: 0,
-        collection: 'collection-uri-1',
-      },
-    ]);
+    const objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
-    machine = interpret(collectionMachine(collectionStore, objectStore)
+    machine = interpret(collectionMachine(collectionStore, objectStore, object1)
       .withContext({
         collection: collection1,
       }));
@@ -55,8 +55,12 @@ describe('CollectionRootComponent', () => {
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {},
-    ));
+      collection1,
+      object1,
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
@@ -330,7 +334,8 @@ describe('CollectionRootComponent', () => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
-          expect(event.alert).toEqual(alert);
+          const casted = event as DismissAlertEvent;
+          expect(casted.alert).toEqual(alert);
           done();
 
         }
