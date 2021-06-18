@@ -1,15 +1,17 @@
+import { isContext } from 'vm';
 import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
+import { ObjectEvents } from '../object/object.events';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates, validateCollectionForm } from './collection.machine';
 
 describe('CollectionMachine', () => {
 
-  const collection1 = {
+  const collection1: Collection = {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
@@ -17,7 +19,7 @@ describe('CollectionMachine', () => {
     distribution: 'http://test.uri/',
   };
 
-  const collection2 = {
+  const collection2: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
@@ -25,28 +27,28 @@ describe('CollectionMachine', () => {
     distribution: 'http://test.uri/',
   };
 
+  const object1: CollectionObject = {
+    uri: 'object-uri-1',
+    name: 'Object 1',
+    description: 'This is object 1',
+    image: null,
+    subject: null,
+    type: null,
+    updated: '0',
+    collection: 'collection-uri-1',
+  };
+
   let machine: Interpreter<CollectionContext>;
-  let collectionStore: Store<Collection>;
+  let collectionStore: CollectionStore;
   let objectStore: CollectionObjectStore;
 
   beforeEach(() => {
 
-    collectionStore = new MemoryStore<Collection>([ collection1, collection2 ]);
+    collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    objectStore = new CollectionObjectMemoryStore([
-      {
-        uri: 'object-uri-1',
-        name: 'Object 1',
-        description: 'This is object 1',
-        image: null,
-        subject: null,
-        type: null,
-        updated: 0,
-        collection: 'collection-uri-1',
-      },
-    ]);
+    objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
-    machine = interpret<CollectionContext>(collectionMachine(collectionStore, objectStore)
+    machine = interpret(collectionMachine(collectionStore, objectStore, object1)
       .withContext({
         collection: collection1,
       }));
@@ -55,7 +57,8 @@ describe('CollectionMachine', () => {
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {}
+      collection1,
+      object1
     ));
 
   });
@@ -63,50 +66,6 @@ describe('CollectionMachine', () => {
   it('should be correctly instantiated', () => {
 
     expect(machine).toBeTruthy();
-
-  });
-
-  it('should transition to editing when clicked edit was emitted', async (done) => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.EDITING)) {
-
-        done();
-
-      }
-
-      if(state.matches(CollectionStates.IDLE)) {
-
-        machine.send(CollectionEvents.CLICKED_EDIT);
-
-      }
-
-    });
-
-    machine.start();
-
-  });
-
-  it('should transition to deleting when clicked delete was emitted', async (done) => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.DELETING)) {
-
-        done();
-
-      }
-
-      if(state.matches(CollectionStates.IDLE)) {
-
-        machine.send(CollectionEvents.CLICKED_DELETE);
-
-      }
-
-    });
-
-    machine.start();
 
   });
 
@@ -120,7 +79,17 @@ describe('CollectionMachine', () => {
         image: null,
         subject: null,
         type: null,
-        updated: 0,
+        updated: '0',
+        collection: 'collection-uri-1',
+      },
+      {
+        uri: 'object-uri-2',
+        name: 'Object 2',
+        description: 'This is object 2',
+        image: null,
+        subject: null,
+        type: null,
+        updated: '0',
         collection: 'collection-uri-1',
       },
     ]);
@@ -188,6 +157,26 @@ describe('CollectionMachine', () => {
     machine.start();
 
     machine.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: collection2 } as SelectedCollectionEvent);
+
+  });
+
+  it('should send error event to parent when loading failed', async(done) => {
+
+    objectStore.getObjectsForCollection = jest.fn().mockRejectedValue(undefined);
+
+    machine.parent.onEvent((event) => {
+
+      if(event && event.type === AppEvents.ERROR) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    machine.parent.start();
 
   });
 

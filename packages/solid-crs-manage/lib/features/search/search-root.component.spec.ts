@@ -1,10 +1,11 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SearchRootComponent } from './search-root.component';
+import { SearchEvents, SearchUpdatedEvent } from './search.events';
 import { SearchContext, searchMachine } from './search.machine';
 
 describe('SearchRootComponent', () => {
@@ -12,7 +13,7 @@ describe('SearchRootComponent', () => {
   let component: SearchRootComponent;
   let machine: Interpreter<SearchContext>;
 
-  const collection1 = {
+  const collection1: Collection = {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
@@ -20,7 +21,7 @@ describe('SearchRootComponent', () => {
     distribution: '',
   };
 
-  const collection2 = {
+  const collection2: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
@@ -28,14 +29,14 @@ describe('SearchRootComponent', () => {
     distribution: '',
   };
 
-  const object1 = {
+  const object1: CollectionObject = {
     uri: 'object-uri-1',
     name: 'Object 1',
     description: 'This is object 1',
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -52,6 +53,7 @@ describe('SearchRootComponent', () => {
       collectionStore,
       objectStore,
       collection1,
+      object1
     ));
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
@@ -220,7 +222,9 @@ describe('SearchRootComponent', () => {
 
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
-          expect(event.alert).toEqual(alert);
+          const casted = event as DismissAlertEvent;
+
+          expect(casted.alert).toEqual(alert);
           done();
 
         }
@@ -236,6 +240,34 @@ describe('SearchRootComponent', () => {
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
 
     });
+
+  });
+
+  it('should send empty search updated event when header dismiss icon is clicked', async (done) => {
+
+    machine.onEvent((event) => {
+
+      if(event && event.type === SearchEvents.SEARCH_UPDATED) {
+
+        const casted = event as SearchUpdatedEvent;
+
+        expect(casted.searchTerm).toEqual('');
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.parent.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const button = window.document.body.getElementsByTagName('nde-search-root')[0].shadowRoot.querySelector<HTMLDivElement>('div[slot="actions"]');
+
+    expect(button).toBeTruthy();
+    button.click();
 
   });
 

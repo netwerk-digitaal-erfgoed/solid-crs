@@ -86,7 +86,7 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
          * Search for objects and collections based on the given search term.
          */
         invoke: {
-          src: async (context, event) => {
+          src: async (context) => {
 
             const collections = await collectionStore.all();
             const objectsPromises = collections.map((col) => objectStore.getObjectsForCollection(col));
