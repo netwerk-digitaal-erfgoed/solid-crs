@@ -40,9 +40,16 @@ export class SolidSDKService extends SolidService {
     }
 
     // Parse the user's WebID as a url.
+    let webIdUrl: string;
+
     try {
 
-      const webIdUrl = new URL(webId);
+      const hasProtocol = webId.startsWith('http://') || webId.startsWith('https://');
+
+      webIdUrl = new URL(hasProtocol ? webId : `https://${webId}`).toString();
+
+      await fetch(webIdUrl, { method: 'head' })
+        .catch(async () => await fetch(webIdUrl.toString().replace('https://', 'http://'), { method: 'head' }));
 
     } catch {
 
@@ -55,26 +62,26 @@ export class SolidSDKService extends SolidService {
     // Dereference the user's WebID to get the user's profile document.
     try {
 
-      profileDataset = await getSolidDataset(webId);
+      profileDataset = await getSolidDataset(webIdUrl);
 
     } catch(e) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
     if(!profileDataset) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
     // Parses the profile document.
-    const profile = getThing(profileDataset, webId);
+    const profile = getThing(profileDataset, webIdUrl);
 
     if(!profile) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
@@ -89,12 +96,13 @@ export class SolidSDKService extends SolidService {
     }
 
     // Check if the issuer is a valid OIDC provider.
+    let openidConfigResponse;
     let openidConfig;
     let poweredByHeader;
 
     try{
 
-      const openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+      openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
       openidConfig = await openidConfigResponse.json();
       poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
 
@@ -107,7 +115,7 @@ export class SolidSDKService extends SolidService {
     // Throw an error if the issuer is an invalid OIDC provider.
     if (
       // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
-      !openidConfig && (poweredByHeader.includes('solid') || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
+      (openidConfig && openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc') && !poweredByHeader?.includes('solid')
     ) {
 
       throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
