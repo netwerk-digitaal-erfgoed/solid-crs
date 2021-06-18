@@ -150,9 +150,12 @@ export class CollectionRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = this.actor||false;
+    const loaded = this.actor||false;
 
-    return loading && this.collection ? html`
+    const showLoading = !(this.state?.matches(CollectionStates.IDLE)
+      || this.state?.matches(CollectionStates.EDITING));
+
+    return loaded && this.collection ? html`
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.state.matches(CollectionStates.EDITING)
@@ -180,6 +183,7 @@ export class CollectionRootComponent extends RxLitElement {
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
     <div class="content">
+      ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
       ${ alerts }
       
       ${this.state?.matches(CollectionStates.LOADING)
@@ -237,6 +241,13 @@ export class CollectionRootComponent extends RxLitElement {
           padding: var(--gap-large);
           height: 100%;
           overflow-y: auto;
+          position: relative;
+        }
+        nde-progress-bar {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
         }
         nde-object-card, nde-collection-card {
           height: 227px;

@@ -10,6 +10,7 @@ import { ObjectCardComponent } from '../lib/collections/object-card.component';
 import { SidebarComponent } from '../lib/sidebar/sidebar.component';
 import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
 import { LargeCardComponent } from '../lib/collections/large-card.component';
+import { ProgressBarComponent } from '../lib/loading/progress-bar-component';
 
 /**
  * Register tags for components.
@@ -26,3 +27,4 @@ customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-collection-card', CollectionCardComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('nde-large-card', LargeCardComponent);
+customElements.define('nde-progress-bar', ProgressBarComponent);
