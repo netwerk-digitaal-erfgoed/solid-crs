@@ -256,37 +256,37 @@
         "value": "NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
+        "key": "http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
         "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN"
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JKEYDISCHE BEPERKINGEN"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/NoC-CR/1.0/",
+        "key": "http://rightsstatements.org/vocab/NoC-CR/1.0/",
         "locale": "nl-NL",
         "value": "NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/NoC-NC/1.0/",
+        "key": "http://rightsstatements.org/vocab/NoC-NC/1.0/",
         "locale": "nl-NL",
         "value": "NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/UND/1.0/",
+        "key": "http://rightsstatements.org/vocab/UND/1.0/",
         "locale": "nl-NL",
         "value": "AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/CNE/1.0/",
+        "key": "http://rightsstatements.org/vocab/CNE/1.0/",
         "locale": "nl-NL",
         "value": "AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD"
     },
     {
-        "uri": "http://rightsstatements.org/vocab/NKC/1.0/",
+        "key": "http://rightsstatements.org/vocab/NKC/1.0/",
         "locale": "nl-NL",
         "value": "GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND"
     },
     {
-        "uri": "https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
+        "key": "https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
         "locale": "nl-NL",
         "value": "CC0 1.0 UNIVERSEEL"
     },
