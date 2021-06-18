@@ -186,7 +186,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
     objectThing = object.type ? addUrl(objectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type) : objectThing;
-    objectThing = object.additionalType ? addUrl(objectThing, 'http://schema.org/additionalType', object.additionalType) : objectThing;
+    objectThing = object.additionalType ? addStringWithLocale(objectThing, 'http://schema.org/additionalType', object.additionalType, 'nl') : objectThing;
     objectThing = object.identifier ? addStringNoLocale(objectThing, 'http://schema.org/identifier', object.identifier) : objectThing;
     objectThing = object.name ? addStringWithLocale(objectThing, 'http://schema.org/name', object.name, 'nl') : objectThing;
     objectThing = object.description ? addStringWithLocale(objectThing, 'http://schema.org/description', object.description, 'nl') : objectThing;
@@ -207,10 +207,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.event ? addStringNoLocale(objectThing, 'http://schema.org/Event', object.event) : objectThing;
 
     // dimensions
-    objectThing = object.height ? addInteger(objectThing, 'http://schema.org/height', object.height) : objectThing;
-    objectThing = object.width ? addInteger(objectThing, 'http://schema.org/width', object.width) : objectThing;
-    objectThing = object.depth ? addInteger(objectThing, 'http://schema.org/depth', object.depth) : objectThing;
-    objectThing = object.weight ? addInteger(objectThing, 'http://schema.org/weight', object.weight) : objectThing;
+    objectThing = object.height !== undefined && object.height !== null ? addInteger(objectThing, 'http://schema.org/height', object.height) : objectThing;
+    objectThing = object.width !== undefined && object.width !== null ? addInteger(objectThing, 'http://schema.org/width', object.width) : objectThing;
+    objectThing = object.depth  !== undefined && object.depth !== null? addInteger(objectThing, 'http://schema.org/depth', object.depth) : objectThing;
+    objectThing = object.weight !== undefined && object.weight !== null ? addInteger(objectThing, 'http://schema.org/weight', object.weight) : objectThing;
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
@@ -252,7 +252,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       uri: asUrl(object),
       updated: getStringNoLocale(object, 'http://schema.org/dateModified') || undefined,
       type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') || undefined,
-      additionalType: getUrl(object, 'http://schema.org/additionalType') || undefined,
+      additionalType: getStringWithLocale(object, 'http://schema.org/additionalType', 'nl') || undefined,
       identifier: getStringNoLocale(object, 'http://schema.org/identifier') || undefined,
       name: getStringWithLocale(object, 'http://schema.org/name', 'nl') || undefined,
       description: getStringWithLocale(object, 'http://schema.org/description', 'nl') || undefined,
@@ -273,10 +273,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       event: getStringNoLocale(object, 'http://schema.org/Event') || undefined,
 
       // dimensions
-      height: getInteger(object, 'http://schema.org/height') || undefined,
-      width: getInteger(object, 'http://schema.org/width') || undefined,
-      depth: getInteger(object, 'http://schema.org/depth') || undefined,
-      weight: getInteger(object, 'http://schema.org/weight') || undefined,
+      height: getInteger(object, 'http://schema.org/height') !== null ? getInteger(object, 'http://schema.org/height') : undefined,
+      width: getInteger(object, 'http://schema.org/width') !== null ? getInteger(object, 'http://schema.org/width') : undefined,
+      depth: getInteger(object, 'http://schema.org/depth') !== null ? getInteger(object, 'http://schema.org/depth') : undefined,
+      weight: getInteger(object, 'http://schema.org/weight') !== null ? getInteger(object, 'http://schema.org/weight') : undefined,
 
       // other
       mainEntityOfPage: asUrl(digitalObject) || undefined,

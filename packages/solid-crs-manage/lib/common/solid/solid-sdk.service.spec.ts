@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { SolidSDKService } from './solid-sdk.service';
 
@@ -19,7 +19,7 @@ describe('SolidService', () => {
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
 
-    fetchMock.mockClear();
+    fetchMock.resetMocks();
 
   });
 
@@ -63,6 +63,17 @@ describe('SolidService', () => {
 
     });
 
+    it('should call login when issuer was set', async () => {
+
+      client.login = jest.fn(() => 'success');
+      service.getIssuer = jest.fn(async () => 'http://google.com/');
+
+      await service.login('test');
+
+      expect(client.login).toHaveBeenCalled();
+
+    });
+
   });
 
   describe('logout()', () => {
@@ -86,14 +97,28 @@ describe('SolidService', () => {
       [ null, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
       [ undefined, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
       [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.invalid-url' ],
-      [ 'https://nde.nl/', null, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-profile' ],
     ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
 
       client.getSolidDataset = jest.fn(async () => profile);
 
-      fetchMock.mockResponses(openId);
+      fetchMock
+        .mockRejectOnce() // fail https:// URL check
+        .mockRejectOnce() // fail http:// URL check
+        .once(openId);
 
       await expect(service.getIssuer(webId)).rejects.toThrowError(message);
+
+    });
+
+    it('should error when webId is valid URL, but no profile', async () => {
+
+      client.getSolidDataset = jest.fn(async () => null);
+
+      fetchMock
+        .once('') // pass https:// URL check
+        .once(validOpenIdConfig);
+
+      await expect(service.getIssuer('https://nde.nl/')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.no-profile');
 
     });
 
@@ -130,15 +155,43 @@ describe('SolidService', () => {
 
     });
 
-    it('should error when oidcIssuer openid config is not found', async () => {
+    it('should error when oidcIssuer openid config is invalid', async () => {
 
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(async () => validProfileThing);
-      client.getUrl = jest.fn(async () => 'https://google.com/');
+      client.getUrl = jest.fn(() => 'https://google.com/');
 
-      fetchMock.mockResponseOnce('<!DOCTYPE html>', { status: 404 });
+      fetchMock.mockRejectOnce();
 
       await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
+    });
+
+    it('should error when oidcIssuer response does not contain "X-Powered-By: solid" header', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(async () => validProfileThing);
+      client.getUrl = jest.fn(() => 'https://google.com/');
+
+      fetchMock
+        .once('') // pass https:// URL check
+        .mockResponseOnce('{}', { status: 200, headers: { 'X-Powered-By': '' } });
+
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+
+    });
+
+    it('should return issuer when openid response contains "X-Powered-By: solid" header', async () => {
+
+      client.getSolidDataset = jest.fn(async () => validProfileDataset);
+      client.getThing = jest.fn(async () => validProfileThing);
+      client.getUrl = jest.fn(() => 'https://google.com/');
+
+      fetchMock
+        .once('') // pass https:// URL check
+        .mockResponseOnce('{}', { status: 200, headers: { 'X-Powered-By': 'solid-server/5.6.6' } });
+
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).resolves.toEqual('https://google.com/');
 
     });
 

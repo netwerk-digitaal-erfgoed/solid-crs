@@ -218,6 +218,25 @@ describe('CollectionSolidStore', () => {
 
     });
 
+    it('should create new objects file if it doesnt exist', async () => {
+
+      service.getInstanceForClass = jest.fn(() => 'https://test-uri/');
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => 'test-thing');
+      client.setThing = jest.fn(() => 'test-dataset');
+      client.addUrl = jest.fn(() => 'test-thing');
+      client.createThing = jest.fn(() => 'test-thing');
+      client.addStringWithLocale = jest.fn(() => 'test-thing');
+      client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.overwriteFile = jest.fn(async () => 'test-file');
+      client.fetch = jest.fn(async () => ({ ok: false }));
+
+      const result = await service.save(mockCollection);
+      await expect(result).toEqual(mockCollection);
+      expect(client.overwriteFile).toHaveBeenCalledTimes(1);
+
+    });
+
   });
 
   describe('get()', () => {

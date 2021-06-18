@@ -6,7 +6,7 @@
     # IDENTIFICATION
 
     rdf:type schema:Photograph ;
-    schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
+    schema:additionalType "bidprentjes"@nl ;
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
@@ -55,7 +55,7 @@
     # IDENTIFICATION
 
     rdf:type schema:Photograph ;
-    schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
+    schema:additionalType "bidprentjes"@nl ;
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;

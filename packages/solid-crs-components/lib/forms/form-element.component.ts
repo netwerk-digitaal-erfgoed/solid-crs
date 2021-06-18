@@ -199,7 +199,26 @@ export class FormElementComponent<T> extends RxLitElement {
         element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
 
         // Send event when input field's value changes.
-        element.addEventListener('input', debounce(() => actor.send({ type: FormEvents.FORM_UPDATED, value: element.value, field } as FormUpdatedEvent), this.debounceTimeout));
+        element.addEventListener(
+          'input',
+          debounce(() => {
+
+            let elementValue;
+
+            if (typeof fieldData === 'number') {
+
+              elementValue = isNaN(+element.value) ? NaN : +element.value;
+
+            } else {
+
+              elementValue = element.value.trim();
+
+            }
+
+            actor.send({ type: FormEvents.FORM_UPDATED, value: elementValue, field } as FormUpdatedEvent);
+
+          }, this.debounceTimeout),
+        );
 
       }
 
