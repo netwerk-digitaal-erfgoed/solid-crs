@@ -437,22 +437,22 @@
     {
         "key": "nde.features.object.card.dimensions.field.depth",
         "locale": "nl-NL",
-        "value": "Diepte"
+        "value": "Diepte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.width",
         "locale": "nl-NL",
-        "value": "Breedte"
+        "value": "Breedte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.height",
         "locale": "nl-NL",
-        "value": "Hoogte"
+        "value": "Hoogte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.weight",
         "locale": "nl-NL",
-        "value": "Gewicht"
+        "value": "Gewicht (kg)"
     },
     {
         "key": "nde.common.date.just-now",
