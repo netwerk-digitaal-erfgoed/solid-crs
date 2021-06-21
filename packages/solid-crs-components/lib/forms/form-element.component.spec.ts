@@ -22,17 +22,17 @@ describe('FormElementComponent', () => {
         ]),
       )
         .withContext({
-          data: { uri: '', name: 'Test', description: 'description', weight: 321 },
-          original: { uri: '', name: 'Test', description: 'description', weight: 321 },
+          data: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
+          original: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
           validation: [ { field: 'name', message: 'lorem' } ],
         }),
     );
 
-    component = window.document.createElement('nde-form-element') as FormElementComponent<Collection>;
+    component = window.document.createElement('nde-form-element') as FormElementComponent<CollectionObject>;
 
     component.actor = machine;
     component.field = 'name';
-    component.data = { uri: '', name: 'Test', description: 'description' };
+    component.data = { uri: '', name: 'Test', description: 'description', type: '', collection: '', image: '' };
 
     const label = window.document.createElement('label');
     label.innerHTML = 'Foo';
@@ -211,6 +211,19 @@ describe('FormElementComponent', () => {
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.results .result').length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.help[hidden]').length).toBe(1);
+
+  });
+
+  it('should show yellow border when showValidation is false', async () => {
+
+    component.validationResults = [ { field: 'name', message: 'lorem' } ];
+    component.showValidation = false;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.results').hidden).toBeTruthy();
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.content').classList).toContain('no-validation');
 
   });
 

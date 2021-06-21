@@ -88,12 +88,13 @@ export const collectionMachine =
       context: { },
       initial: CollectionStates.DETERMINING_COLLECTION,
       on: {
-        [CollectionEvents.SELECTED_COLLECTION]: {
+        [CollectionEvents.SELECTED_COLLECTION]: [ {
           actions: assign({
             collection: (context, event) => event.collection,
           }),
           target: CollectionStates.DETERMINING_COLLECTION,
-        },
+          cond: (context, event) => event.collection?.uri !== context.collection?.uri,
+        } ],
       },
       states: {
       /**
@@ -129,8 +130,16 @@ export const collectionMachine =
         [CollectionStates.DETERMINING_COLLECTION]: {
           always: [
             {
+              // only load object when the current collection's disctribution does
+              // not match the context's objects (== new collection selected)
               target: CollectionStates.LOADING,
-              cond: (context, event) => context?.collection && !context?.objects ? true : false,
+              cond: (context, event) =>
+                context.collection
+                  && (
+                    !!context.objects
+                    || !context.objects?.length
+                    || context.objects[0].collection !== context.collection.uri
+                  ),
             },
             {
               target: CollectionStates.IDLE,
@@ -145,9 +154,9 @@ export const collectionMachine =
             [ObjectEvents.SELECTED_OBJECT]: {
               actions: sendParent((context, event) => event),
             },
-            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
             [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
             [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
             [ObjectEvents.CLICKED_DELETE]: {
               actions: sendParent((context, event) => event),
             },
@@ -178,6 +187,11 @@ export const collectionMachine =
             [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
             [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
             [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
+            [ObjectEvents.SELECTED_OBJECT]: {
+              actions: sendParent((context, event) => event),
+            },
+            [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
+            [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
           },
           invoke: [
           /**

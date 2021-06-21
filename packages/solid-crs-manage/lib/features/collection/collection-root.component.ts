@@ -178,21 +178,22 @@ export class CollectionRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loaded = this.actor||false;
-
     const showLoading = !(this.state?.matches(CollectionStates.IDLE)
       || this.state?.matches(CollectionStates.EDITING));
 
-    return loaded && this.collection ? html`
+    return !!this.actor && !!this.collection ? html`
+    
+    ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.actor.state.matches(CollectionStates.EDITING)
     ? html`
-          <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+          <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
             <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
-          <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
+          <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.features.collections.description-placeholder')}"/>
           </nde-form-element>
         `
     : html`
@@ -200,18 +201,17 @@ export class CollectionRootComponent extends RxLitElement {
             ${this.collection.name}
           </div>
           <div slot="subtitle" class="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
-            ${this.collection.description}
+            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.features.collections.description-placeholder') }
           </div>
         `
 }
       ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ this.isDirty ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ this.state?.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
 
     <div class="content">
-      ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
       ${ alerts }
       
       ${this.state?.matches(CollectionStates.LOADING)
@@ -269,7 +269,6 @@ export class CollectionRootComponent extends RxLitElement {
           padding: var(--gap-large);
           height: 100%;
           overflow-y: auto;
-          position: relative;
         }
         nde-progress-bar {
           position: absolute;

@@ -1,11 +1,9 @@
-import { isContext } from 'vm';
 import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, MemoryStore, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ObjectEvents } from '../object/object.events';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates, validateCollectionForm } from './collection.machine';
 

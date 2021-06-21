@@ -1,6 +1,6 @@
 import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { doneInvoke, interpret, Interpreter } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
@@ -12,6 +12,8 @@ describe('CollectionRootComponent', () => {
 
   let component: CollectionRootComponent;
   let machine: Interpreter<CollectionContext>;
+  let collectionStore: CollectionMemoryStore;
+  let objectStore: CollectionObjectMemoryStore;
 
   const collection1: Collection = {
     uri: 'collection-uri-1',
@@ -42,9 +44,9 @@ describe('CollectionRootComponent', () => {
 
   beforeEach(() => {
 
-    const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
+    collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    const objectStore = new CollectionObjectMemoryStore([ object1 ]);
+    objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
     machine = interpret(collectionMachine(collectionStore, objectStore, object1)
       .withContext({
