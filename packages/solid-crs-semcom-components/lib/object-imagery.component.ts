@@ -39,19 +39,22 @@ export class ObjectImageryComponent extends RxLitElement {
    * A list of licenses
    */
   @property()
-  licenses?: { name: string; uri: string }[] = [
-    {
-      name: 'CC0 1.0',
-      uri: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
-    },
-    {
-      name: 'CC BY 4.0',
-      uri: 'https://creativecommons.org/licenses/by/4.0/deed.nl',
-    },
-    {
-      name: 'CC BY-SA 2.0',
-      uri: 'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
-    },
+  licenses: string[] = [
+    'http://rightsstatements.org/vocab/InC/1.0/',
+    'http://rightsstatements.org/vocab/InC-OW-EU/1.0/',
+    'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+    'http://rightsstatements.org/vocab/InC-NC/1.0/',
+    'http://rightsstatements.org/vocab/InC-RUU/1.0/',
+    'http://rightsstatements.org/vocab/NoC-US/1.0/',
+    'http://rightsstatements.org/vocab/NoC-OKLR/1.0/',
+    'http://rightsstatements.org/vocab/NoC-CR/1.0/',
+    'http://rightsstatements.org/vocab/NoC-NC/1.0/',
+    'http://rightsstatements.org/vocab/UND/1.0/',
+    'http://rightsstatements.org/vocab/CNE/1.0/',
+    'http://rightsstatements.org/vocab/NKC/1.0/',
+    'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
+    'https://creativecommons.org/licenses/by/4.0/deed.nl',
+    'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
   ];
 
   /**
@@ -78,7 +81,7 @@ export class ObjectImageryComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
           <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
           <select slot="input" name="license" id="license">
-            ${this.licenses.map((license) => html`<option id="${license.uri}" ?selected="${license.uri === this.object.license}">${license.name}</option>`)}
+            ${this.licenses.map((license: string) => html`<option id="${license}" ?selected="${license === this.object.license}">${this.translator?.translate(`nde.features.object.card.image.field.license.${license}`)}</option>`)}
           </select>
         </nde-form-element>
       </div>
