@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.8](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.5.7...v0.5.8) (2021-06-21)
+
+
+### **Bug Fixes**
+
+* updated form validation ([#317](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/317)) ([604f382](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/604f382a6c98a2a695d64622af47f5bf8eb3d7f3))
+
+
+
 ### [0.5.7](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.5.6...v0.5.7) (2021-06-15)
 
 
