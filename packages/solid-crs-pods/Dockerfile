@@ -23,4 +23,4 @@ COPY data/leapeeters/ /tmp/css/leapeeters/
 
 # Expose ports.
 EXPOSE 80
-CMD ./node_modules/.bin/community-solid-server -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css
+CMD node ./node_modules/community-server/bin/server.js -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css
