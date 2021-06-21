@@ -39,67 +39,22 @@ export class ObjectImageryComponent extends RxLitElement {
    * A list of licenses
    */
   @property()
-  licenses?: { name: string; uri: string }[] = [
-    {
-      name: 'AUTEURSRECHTELIJK BESCHERMD',
-      uri: 'http://rightsstatements.org/vocab/InC/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJK BESCHERMD - EU VERWEESD WERK',
-      uri: 'http://rightsstatements.org/vocab/InC-OW-EU/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJK BESCHERMD - EDUCATIEF GEBRUIK TOEGESTAAN',
-      uri: 'http://rightsstatements.org/vocab/InC-EDU/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJK BESCHERMD - NIET-COMMERCIEEL GEBRUIK TOEGESTAAN',
-      uri: 'http://rightsstatements.org/vocab/InC-NC/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJK BESCHERMD - RECHTHEBBENDE(N) NIET-LOKALISEERBAAR OF NIET-IDENTIFICEERBAAR',
-      uri: 'http://rightsstatements.org/vocab/InC-RUU/1.0/',
-    },
-    {
-      name: 'NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN',
-      uri: 'http://rightsstatements.org/vocab/NoC-US/1.0/',
-    },
-    {
-      name: 'NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN',
-      uri: 'http://rightsstatements.org/vocab/NoC-OKLR/1.0/',
-    },
-    {
-      name: 'NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN',
-      uri: 'http://rightsstatements.org/vocab/NoC-CR/1.0/',
-    },
-    {
-      name: 'NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN',
-      uri: 'http://rightsstatements.org/vocab/NoC-NC/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD',
-      uri: 'http://rightsstatements.org/vocab/UND/1.0/',
-    },
-    {
-      name: 'AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD',
-      uri: 'http://rightsstatements.org/vocab/CNE/1.0/',
-    },
-    {
-      name: 'GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND',
-      uri: 'http://rightsstatements.org/vocab/NKC/1.0/',
-    },
-    {
-      name: 'CC0 1.0 UNIVERSEEL',
-      uri: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
-    },
-    {
-      name: 'NAAMSVERMELDING 4.0 INTERNATIONAAL',
-      uri: 'https://creativecommons.org/licenses/by/4.0/deed.nl',
-    },
-    {
-      name: 'NAAMSVERMELDING-GELIJKDELEN 2.0',
-      uri: 'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
-    },
+  licenses: string[] = [
+    'http://rightsstatements.org/vocab/InC/1.0/',
+    'http://rightsstatements.org/vocab/InC-OW-EU/1.0/',
+    'http://rightsstatements.org/vocab/InC-EDU/1.0/',
+    'http://rightsstatements.org/vocab/InC-NC/1.0/',
+    'http://rightsstatements.org/vocab/InC-RUU/1.0/',
+    'http://rightsstatements.org/vocab/NoC-US/1.0/',
+    'http://rightsstatements.org/vocab/NoC-OKLR/1.0/',
+    'http://rightsstatements.org/vocab/NoC-CR/1.0/',
+    'http://rightsstatements.org/vocab/NoC-NC/1.0/',
+    'http://rightsstatements.org/vocab/UND/1.0/',
+    'http://rightsstatements.org/vocab/CNE/1.0/',
+    'http://rightsstatements.org/vocab/NKC/1.0/',
+    'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
+    'https://creativecommons.org/licenses/by/4.0/deed.nl',
+    'https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl',
   ];
 
   /**
@@ -126,7 +81,7 @@ export class ObjectImageryComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
           <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
           <select slot="input" name="license" id="license">
-            ${this.licenses.map((license) => html`<option id="${license.uri}" ?selected="${license.uri === this.object.license}">${this.translator?.translate(`nde.features.object.card.image.field.license.${license.uri}`)}</option>`)}
+            ${this.licenses.map((license: string) => html`<option id="${license}" ?selected="${license === this.object.license}">${this.translator?.translate(`nde.features.object.card.image.field.license.${license}`)}</option>`)}
           </select>
         </nde-form-element>
       </div>
