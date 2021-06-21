@@ -1,4 +1,5 @@
-import { css, html, internalProperty, property, PropertyValues, query, unsafeCSS } from 'lit-element';
+import { triggerAsyncId } from 'async_hooks';
+import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator, debounce } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { SpawnedActorRef, State } from 'xstate';
@@ -30,19 +31,19 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * Decides whether a border should be shown around the content
    */
-  @property()
+  @property({ type: Boolean })
   public inverse = false;
 
   /**
    * Decides whether the label should be shown
    */
-  @property()
+  @property({ type: Boolean })
   public showLabel = true;
 
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
+  @property({ type: Object })
   public translator: Translator;
 
   /**
@@ -78,7 +79,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * Timeout to use when debouncing input.
    */
-  @property()
+  @property({ type: Number })
   public debounceTimeout = 500;
 
   /**
@@ -94,9 +95,16 @@ export class FormElementComponent<T> extends RxLitElement {
   public actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>;
 
   /**
+   * Decides whether validation results should be shown below the form element
+   * When false, only shows a yellow border to the left of the component
+   */
+  @property({ type: Boolean })
+  public showValidation = true;
+
+  /**
    * Hook called on every update after connection to the DOM.
    */
-  updated(changed: PropertyValues) {
+  updated(changed: PropertyValues): void {
 
     super.updated(changed);
 
@@ -149,7 +157,7 @@ export class FormElementComponent<T> extends RxLitElement {
     actor: SpawnedActorRef<FormEvent, State<FormContext<T>>>,
     field: keyof T,
     data: T
-  ) {
+  ): void {
 
     if (!slot) {
 
@@ -246,7 +254,7 @@ export class FormElementComponent<T> extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="form-element">
@@ -256,8 +264,8 @@ export class FormElementComponent<T> extends RxLitElement {
             <slot name="label"></slot>
           </div>
         ` : ''
-}
-      <div class="content">
+}     
+      <div class="content ${!this.showValidation && this.validationResults?.length > 0  ? 'no-validation' : ''}">
         <div class="field ${this.inverse ? 'no-border' : ''}">
           <slot name="input"></slot>
           <div class="icon">
@@ -271,7 +279,7 @@ export class FormElementComponent<T> extends RxLitElement {
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
         <slot name="help"></slot>
       </div>
-      <div class="results" ?hidden="${!this.validationResults || this.validationResults.length === 0}">
+      <div class="results" ?hidden="${!this.showValidation || !this.validationResults || this.validationResults.length === 0}">
         ${this.validationResults?.map((result) => html`<div class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
       </div>
     </div>
@@ -282,7 +290,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -294,9 +302,11 @@ export class FormElementComponent<T> extends RxLitElement {
         .loading svg .loadCircle {
           stroke: var(--colors-primary-normal);
         }
-
         .no-border, .no-border ::slotted(*) {
           border: none !important;
+        }
+        .no-validation {
+          border-bottom: solid 2px var(--colors-status-warning);
         }
         .form-element {
           display: flex;

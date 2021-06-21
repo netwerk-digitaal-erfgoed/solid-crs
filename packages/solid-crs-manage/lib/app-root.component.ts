@@ -7,7 +7,7 @@ import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-cr
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
+import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
@@ -231,8 +231,16 @@ export class AppRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.CREATING })
+      || this.state?.matches({ [AppRootStates.DATA]: AppDataStates.REFRESHING });
+
     return html`
+
+
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
+
+    ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
     <nde-sidebar inverse>
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
@@ -294,7 +302,12 @@ export class AppRootComponent extends RxLitElement {
         :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
-
+        nde-progress-bar {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+        }
         nde-sidebar {
           width: var(--size-sidebar);
         }

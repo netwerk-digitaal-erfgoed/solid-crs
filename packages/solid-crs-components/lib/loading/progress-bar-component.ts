@@ -53,14 +53,14 @@ export class ProgressBarComponent extends LitElement {
           -webkit-appearance: none;
           -moz-appearance: none;
           appearance: none;
-          background-color: var(--colors-background-normal);
+          background-color: rgba(0,0,0,0);;
           color: var(--colors-primary-light);
         }
         progress::-moz-progress-bar {
           background-color: var(--colors-primary-light);
         }        
         progress::-webkit-progress-bar {
-          background-color: var(--colors-background-normal);
+          background-color: rgba(0,0,0,0);;
         }
         progress::-webkit-progress-value {
           background-color: var(--colors-primary-light);
@@ -70,7 +70,7 @@ export class ProgressBarComponent extends LitElement {
           height: var(--gap-tiny);
           display: block;
           width: 100%;
-          background-color: var(--colors-background-normal);
+          background-color: rgba(0,0,0,0);;
           border-radius: 2px;
           margin: 0;
           overflow: hidden;

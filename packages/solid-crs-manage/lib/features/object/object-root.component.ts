@@ -88,13 +88,13 @@ export class ObjectRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if if the form validation passed.
    */
   @internalProperty()
   isValid? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if one the form fields has changed.
    */
   @internalProperty()
   isDirty? = false;
@@ -317,6 +317,9 @@ export class ObjectRootComponent extends RxLitElement {
       || this.state?.matches(ObjectStates.EDITING));
 
     return this.object ? html`
+
+    ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
       <div slot="title"> ${this.object.name} </div>
@@ -348,7 +351,6 @@ export class ObjectRootComponent extends RxLitElement {
 
 
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
-        ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
         ${ alerts }
 
@@ -392,7 +394,6 @@ export class ObjectRootComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           gap: var(--gap-large);
-          position: relative;
         }
         nde-progress-bar {
           position: absolute;

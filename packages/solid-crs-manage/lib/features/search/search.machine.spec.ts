@@ -2,7 +2,7 @@ import { CollectionMemoryStore, CollectionObjectMemoryStore, CollectionObjectSto
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { SearchEvents } from './search.events';
+import { SearchEvents, SearchUpdatedEvent } from './search.events';
 import { SearchContext, searchMachine, SearchStates } from './search.machine';
 
 describe('SearchMachine', () => {
@@ -43,9 +43,13 @@ describe('SearchMachine', () => {
 
     collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
+    collectionStore.all = jest.fn(async() => [ collection1, collection2 ]);
+
     objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
-    machine = interpret<SearchContext>(searchMachine(collectionStore, objectStore).withContext({ searchTerm }));
+    objectStore.search = jest.fn(async() => [ object1 ]);
+
+    machine = interpret(searchMachine(collectionStore, objectStore).withContext({ searchTerm }));
 
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
@@ -96,7 +100,29 @@ describe('SearchMachine', () => {
 
       if(state.matches(SearchStates.IDLE)) {
 
-        machine.send(SearchEvents.SEARCH_UPDATED);
+        machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: 'object' } as SearchUpdatedEvent);
+
+      }
+
+    });
+
+    machine.start();
+
+  });
+
+  it('should transition to dismissed when searchTerm was empty', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(SearchStates.DISMISSED)) {
+
+        done();
+
+      }
+
+      if(state.matches(SearchStates.IDLE)) {
+
+        machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: '' } as SearchUpdatedEvent);
 
       }
 

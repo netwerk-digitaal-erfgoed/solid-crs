@@ -3,9 +3,16 @@ import { QueryComponentRemoteService, RegisterComponentService } from '@digita-a
 
 export class SemComService {
 
-  private registry: AbstractRegisterComponentService = new RegisterComponentService();
+  private registry: AbstractRegisterComponentService;
 
-  private repo: QueryComponentService = new QueryComponentRemoteService(process.env.VITE_SEMCOM_NODE_URI);
+  private repo: QueryComponentService;
+
+  constructor() {
+
+    this.registry =  new RegisterComponentService();
+    this.repo = new QueryComponentRemoteService(process.env.VITE_SEMCOM_NODE_URI);
+
+  }
 
   queryComponents(filter: Partial<ComponentMetadata>): Promise<ComponentMetadata[]> {
 
