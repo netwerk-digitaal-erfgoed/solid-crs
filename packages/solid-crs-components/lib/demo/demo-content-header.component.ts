@@ -29,6 +29,8 @@ export class DemoContentHeaderComponent extends LitElement {
       <div slot="actions">${ unsafeSVG(Cross) }</div>
       <div slot="actions">${ unsafeSVG(Logout) }</div>
     </nde-content-header>
+    <nde-progress-bar type="indeterminate"></nde-progress-bar>
+    <nde-progress-bar type="determinate" value="75"></nde-progress-bar>
   `;
 
   }

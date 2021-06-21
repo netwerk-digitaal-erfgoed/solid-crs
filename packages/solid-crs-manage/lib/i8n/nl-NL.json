@@ -200,6 +200,16 @@
         "value": "Dit veld is verplicht."
     },
     {
+        "key": "nde.features.object.card.common.invalid-url",
+        "locale": "nl-NL",
+        "value": "De ingegeven URL is niet geldig."
+    },
+    {
+        "key": "nde.features.object.card.common.invalid-number",
+        "locale": "nl-NL",
+        "value": "Het ingegeven getal is niet geldig."
+    },
+    {
         "key": "nde.features.object.card.image.title",
         "locale": "nl-NL",
         "value": "Beeldmateriaal"
@@ -213,11 +223,6 @@
         "key": "nde.features.object.card.image.field.file",
         "locale": "nl-NL",
         "value": "Bestand"
-    },
-    {
-        "key": "nde.features.object.card.image.field.file.validation.invalid",
-        "locale": "nl-NL",
-        "value": "De ingegeven URL is niet geldig."
     },
     {
         "key": "nde.features.object.card.image.field.license",
