@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.8...v0.5.9) (2021-06-21)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-components
+
+
+
+
+
 ### [0.5.8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.7...v0.5.8) (2021-06-21)
 
 
