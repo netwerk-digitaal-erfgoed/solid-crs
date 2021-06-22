@@ -1,13 +1,13 @@
-import { html, internalProperty, property, PropertyValues, unsafeCSS } from 'lit-element';
+import { CSSResult, html, internalProperty, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
 import { ArgumentError, Collection, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { from, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Login, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
-import { FormEvents, FormEvent } from '../forms/form.events';
+import { FormEvents } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
 import { FormSubmitter } from '../forms/form-submitter';
 
@@ -18,7 +18,7 @@ import { FormSubmitter } from '../forms/form-submitter';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = async (context, event) => ([
+export const validator: FormValidator<Collection> = async (context) => ([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
 ]);
@@ -30,7 +30,7 @@ export const validator: FormValidator<Collection> = async (context, event) => ([
  * @param event The event which triggered the validation.
  * @returns Returns a promise.
  */
-export const submitter: FormSubmitter<Collection> = (context, event) => new Promise((resolve) => {
+export const submitter: FormSubmitter<Collection> = () => new Promise((resolve) => {
 
   setTimeout(resolve, 2000);
 
@@ -44,7 +44,7 @@ export class DemoFormComponent extends RxLitElement {
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
+  @property({ type: Object })
   public translator: Translator = new MemoryTranslator([
     {
       key: 'demo-form.name.required',
@@ -79,9 +79,9 @@ export class DemoFormComponent extends RxLitElement {
     super();
 
     this.actor = interpret(
-      formMachine<Partial<Collection>>(validator, submitter).withContext({
-        data: { uri: '', name: 'Test', description: 'Test desc' },
-        original: { uri: '', name: 'Test', description: 'Test desc' },
+      formMachine<Partial<unknown>>(validator, submitter).withContext({
+        data: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'vehicle3' ] },
+        original: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'vehicle3' ] },
       }),
     );
 
@@ -93,7 +93,7 @@ export class DemoFormComponent extends RxLitElement {
    * Hook called on first update after connection to the DOM.
    * It subscribes to the actor and pipes state to the properties.
    */
-  firstUpdated(changed: PropertyValues) {
+  firstUpdated(changed: PropertyValues): void {
 
     super.firstUpdated(changed);
 
@@ -117,7 +117,7 @@ export class DemoFormComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -130,7 +130,7 @@ export class DemoFormComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <form>
@@ -145,7 +145,26 @@ export class DemoFormComponent extends RxLitElement {
         <label slot="label" for="example">Name</label>
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <input type="text" slot="input" name="example" placeholder="Foo" />
-        <div slot="help">This isn't helpful</div>
+        <div slot="help">This isn't helpful either</div>
+      </nde-form-element>
+      <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="vehicle">
+        <label slot="label">Vehicle</label>
+        <!-- <input id="cars" slot="input" name="term">Termtermterm, Termtermterm, Termtermterm</input> -->
+        <div slot="input">
+          <label for="vehicle1">Plane</label>
+          <input type="checkbox" id="vehicle1" name="vehicle1" value="Car">
+          <label for="vehicle2">Car</label>
+          <input type="checkbox" id="vehicle2" name="vehicle2" value="Plane">
+          <label for="vehicle3">Boat</label>
+          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+        </div>
+        <!-- <select id="cars" slot="input" name="term" placeholder="Foo" multiple>
+          <option value="term-1">Bidprentjes</option>
+          <option value="term-2">Schilderijen</option>
+          <option value="term-3">Veldslagen</option>
+          <option value="term-4">Lepel</option>
+        </select> -->
+        <div slot="help">This still isn't helpful</div>
       </nde-form-element>
 
       <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>

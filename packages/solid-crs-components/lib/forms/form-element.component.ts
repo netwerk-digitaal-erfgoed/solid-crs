@@ -1,7 +1,7 @@
 import { triggerAsyncId } from 'async_hooks';
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator, debounce } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Translator, debounce, ConsoleLogger } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
@@ -20,7 +20,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * All input elements slotted in the form element.
    */
   @internalProperty()
-  inputs: HTMLInputElement[];
+  inputs: HTMLElement[];
 
   /**
    * The slot element which contains the input field.
@@ -143,7 +143,8 @@ export class FormElementComponent<T> extends RxLitElement {
      */
     if(changed.has('lockInput')) {
 
-      this.inputs?.forEach((element) => element.disabled = this.lockInput);
+      this.inputs?.forEach((element: (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)) =>
+        element.disabled = this.lockInput);
 
     }
 
@@ -186,8 +187,9 @@ export class FormElementComponent<T> extends RxLitElement {
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
       (element) => element instanceof HTMLInputElement ||
                     element instanceof HTMLSelectElement ||
-                    element instanceof HTMLTextAreaElement
-    ).map((element) => element as HTMLInputElement);
+                    element instanceof HTMLTextAreaElement ||
+                    Array.from(element.childNodes).find((node) => node instanceof HTMLInputElement)
+    ).map((element) => element as HTMLElement);
 
     this.inputs?.forEach((element) => {
 
@@ -201,7 +203,7 @@ export class FormElementComponent<T> extends RxLitElement {
         // Send event when input field's value changes.
         element.addEventListener('input', () => actor.send({ type: FormEvents.FORM_UPDATED, value: element.options[element.selectedIndex].id, field } as FormUpdatedEvent));
 
-      } else {
+      } else if ((element instanceof HTMLTextAreaElement) || (element instanceof HTMLInputElement)) {
 
         // Set the input field's default value.
         element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
@@ -227,6 +229,27 @@ export class FormElementComponent<T> extends RxLitElement {
 
           }, this.debounceTimeout),
         );
+
+      } else if (Array.from(element.childNodes).find((node) => node instanceof HTMLInputElement && node.type === 'checkbox')) {
+
+        // div containing inputs with type=checkboxes
+        if (fieldData instanceof Array) {
+
+          Array.from(element.childNodes).forEach((node: HTMLInputElement) =>
+            node.checked = fieldData.includes(node.id));
+
+        }
+
+        element.addEventListener('input', () => {
+
+          const selectedValues = Array.from(element.childNodes)
+            .filter((node) => node instanceof HTMLInputElement)
+            .filter((node: HTMLInputElement) => node.checked)
+            .map((node: HTMLInputElement) => node.value);
+
+          actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
+
+        });
 
       }
 
