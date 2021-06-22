@@ -1,24 +1,28 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, ConsoleLogger, LoggerLevel, MemoryStore, CollectionObjectMemoryStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, LoggedInEvent } from './app.events';
-import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
+import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { SolidMockService } from './common/solid/solid-mock.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 describe('AppMachine', () => {
 
-  const collection1 = {
+  const collection1: Collection = {
     uri: 'collection-uri-1',
     name: 'Collection 1',
     description: 'This is collection 1',
+    objectsUri: '',
+    distribution: '',
   };
 
-  const collection2 = {
+  const collection2: Collection = {
     uri: 'collection-uri-2',
     name: 'Collection 2',
     description: 'This is collection 2',
+    objectsUri: '',
+    distribution: '',
   };
 
   const object1: CollectionObject = {
@@ -36,10 +40,10 @@ describe('AppMachine', () => {
 
   beforeEach(() => {
 
-    machine = interpret<AppContext>(
+    machine = interpret(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1
@@ -76,7 +80,7 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1
@@ -120,7 +124,7 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1
@@ -208,7 +212,7 @@ describe('AppMachine', () => {
     machine = interpret<AppContext>(
       appMachine(
         new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1
@@ -243,7 +247,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(solid,
-        new MemoryStore<Collection>([ collection1, collection2 ]),
+        new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1).withContext({

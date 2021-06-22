@@ -1,4 +1,4 @@
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
 import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
 import { AppRootComponent } from '../lib/app-root.component';
@@ -26,3 +26,4 @@ customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-form-element', FormElementComponent);
+customElements.define('nde-progress-bar', ProgressBarComponent);

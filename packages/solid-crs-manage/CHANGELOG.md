@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.5.10](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.9...v0.5.10) (2021-06-22)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+### [0.5.9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.8...v0.5.9) (2021-06-21)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+### [0.5.8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.7...v0.5.8) (2021-06-21)
+
+
+### **Bug Fixes**
+
+* added progress bars when app is loading ([#296](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/296)) ([5db2a75](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5db2a75964e4af277e5b27200e7614bc8c7d7c3d))
+* collection page improvements ([#320](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/320)) ([30fd05a](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/30fd05a875294fea3c9e4cc21f218dc8c197b93d))
+* update image licenses ([#325](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/325)) ([580ef76](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/580ef76de2198ea536275bce418b0413159d6f62))
+* updated form validation ([#317](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/317)) ([604f382](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/604f382a6c98a2a695d64622af47f5bf8eb3d7f3))
+
+
+
 ### [0.5.7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.6...v0.5.7) (2021-06-15)
 
 
