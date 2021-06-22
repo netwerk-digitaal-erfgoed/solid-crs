@@ -34,6 +34,19 @@ nde-form-element textarea {
   min-height: 132px;
 }
 
+nde-form-element ul {
+  list-style-type: none;
+}
+
+nde-form-element ul li {
+  display: flex;
+  flex-direction: row;
+}
+
+nde-form-element ul li input {
+  margin-right: var(--gap-normal) !important;
+}
+
 nde-form-element input:disabled {
   color: var(--colors-foreground-light);
 }
@@ -56,4 +69,38 @@ nde-form-element div[slot="icon"] svg {
 nde-form-element div[slot="help"] {
   font-size: var(--font-size-small);
   color: var(--colors-foreground-light);
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  appearance: none;
+  border: 2px solid var(--colors-foreground-normal);
+  width: 25px;
+  height: 25px;
+  content: none;
+  outline: none;
+  margin: 0;
+}
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+  appearance: none;
+  outline: none;
+  padding: 0;
+  content: none;
+  border: none;
+  background: url(../icons/CheckboxChecked.svg);
+}
+
+input[type="radio"] ~ label,
+input[type="checkbox"] ~ label {
+  display: inline-block;
+  line-height: 25px;
+  vertical-align: middle;
+}
+
+div[slot="input"] {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-normal);
 }

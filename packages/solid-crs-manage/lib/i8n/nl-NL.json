@@ -455,6 +455,11 @@
         "value": "Gewicht (kg)"
     },
     {
+        "key": "nde.common.form.click-to-select",
+        "locale": "nl-NL",
+        "value": "Klik om te selecteren"
+    },
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"

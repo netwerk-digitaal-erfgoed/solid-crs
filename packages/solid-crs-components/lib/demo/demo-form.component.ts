@@ -4,7 +4,7 @@ import { interpret, Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Login, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Dropdown, Login, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { FormEvents } from '../forms/form.events';
@@ -56,6 +56,11 @@ export class DemoFormComponent extends RxLitElement {
       locale: 'nl-NL',
       value: 'URI is required.',
     },
+    {
+      key: 'nde.common.form.click-to-select',
+      locale: 'nl-NL',
+      value: 'Klik om te selecteren',
+    },
   ], 'nl-NL');
 
   /**
@@ -80,8 +85,8 @@ export class DemoFormComponent extends RxLitElement {
 
     this.actor = interpret(
       formMachine<Partial<unknown>>(validator, submitter).withContext({
-        data: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'vehicle3' ] },
-        original: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'vehicle3' ] },
+        data: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
+        original: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
       }),
     );
 
@@ -149,21 +154,24 @@ export class DemoFormComponent extends RxLitElement {
       </nde-form-element>
       <nde-form-element .actor="${this.actor}" .translator="${this.translator}" field="vehicle">
         <label slot="label">Vehicle</label>
-        <!-- <input id="cars" slot="input" name="term">Termtermterm, Termtermterm, Termtermterm</input> -->
-        <div slot="input">
-          <label for="vehicle1">Plane</label>
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Car">
-          <label for="vehicle2">Car</label>
-          <input type="checkbox" id="vehicle2" name="vehicle2" value="Plane">
-          <label for="vehicle3">Boat</label>
-          <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-        </div>
-        <!-- <select id="cars" slot="input" name="term" placeholder="Foo" multiple>
-          <option value="term-1">Bidprentjes</option>
-          <option value="term-2">Schilderijen</option>
-          <option value="term-3">Veldslagen</option>
-          <option value="term-4">Lepel</option>
-        </select> -->
+        <div slot="icon">${ unsafeSVG(Dropdown) }</div>
+        <ul slot="input" >
+          <li>
+            <label for="title"></label>
+          </li>
+          <li>
+            <input type="checkbox" id="Plane" name="Plane" value="Car">
+            <label for="Plane">Plane</label>
+          </li>
+          <li>
+            <input type="checkbox" id="Car" name="Car" value="Plane">
+            <label for="Car">Car</label>
+          </li>
+          <li>
+            <input type="checkbox" id="Boat" name="Boat" value="Boat">
+            <label for="vehicle3">Boat</label>
+          </li>
+        </ul>
         <div slot="help">This still isn't helpful</div>
       </nde-form-element>
 
