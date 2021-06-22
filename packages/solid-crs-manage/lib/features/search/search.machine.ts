@@ -22,6 +22,11 @@ export interface SearchContext {
    * The list of objects in the current search.
    */
   collections?: Collection[];
+
+  /**
+   * The current (partial) path
+   */
+  path?: string[];
 }
 
 /**

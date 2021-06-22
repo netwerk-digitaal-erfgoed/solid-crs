@@ -21,6 +21,11 @@ export interface ObjectContext {
    * A list of all collections.
    */
   collections?: Collection[];
+
+  /**
+   * The current (partial) path
+   */
+  path?: string[];
 }
 
 /**

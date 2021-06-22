@@ -8,6 +8,7 @@ import { ClickedDeleteObjectEvent, SelectedObjectEvent } from '../object/object.
  * Event references for the collection machine, with readable log format.
  */
 export enum CollectionEvents {
+  ROUTED_TO_COLLECTION        = '[CollectionsEvent: Routed to collection]',
   CLICKED_DELETE              = '[CollectionsEvent: Clicked Delete]',
   CLICKED_EDIT                = '[CollectionsEvent: Clicked Edit]',
   CLICKED_SAVE                = '[CollectionsEvent: Clicked Save]',
@@ -20,6 +21,14 @@ export enum CollectionEvents {
 /**
  * Event interfaces for the collection component, with their payloads.
  */
+
+/**
+ * Fired when the user clicks the delete collection button.
+ */
+export interface RoutedToCollectionEvent extends Event<CollectionEvents> {
+  type: CollectionEvents.ROUTED_TO_COLLECTION;
+  collection: Collection;
+}
 
 /**
  * Fired when the user clicks the delete collection button.
@@ -76,7 +85,8 @@ export interface SavedCollectionEvent extends Event<CollectionEvents> {
  * Events for the collection machine.
  */
 export type CollectionEvent =
-  SelectedCollectionEvent
+  | RoutedToCollectionEvent
+  | SelectedCollectionEvent
   | ClickedDeleteCollectionEvent
   | ClickedEditEvent
   | ClickedSaveEvent
