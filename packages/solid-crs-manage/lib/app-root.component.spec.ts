@@ -13,7 +13,7 @@ describe('AppRootComponent', () => {
   let component: AppRootComponent;
   let machine: Interpreter<AppContext>;
 
-  const collection: Collection = {
+  const collection1: Collection = {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
@@ -21,33 +21,45 @@ describe('AppRootComponent', () => {
     distribution: 'test-uri',
   };
 
-  const object: CollectionObject = {
-    uri: 'object-uri-3',
-    name: 'object 3',
-    description: 'This is object 3',
-    type: 'http://type.url/',
-    collection: 'collection-uri-3',
-    image: 'http://image.url/',
+  const collection2: Collection = {
+    uri: 'collection-uri-1',
+    name: 'Collection 1',
+    description: 'This is collection 1',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
+  };
+
+  const collection3: Collection = {
+    uri: 'collection-uri-2',
+    name: 'Collection 2',
+    description: 'This is collection 2',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
+  };
+
+  const object1: CollectionObject = {
+    uri: 'object-uri-1',
+    name: 'Object 1',
+    description: 'This is object 1',
+    image: null,
+    subject: null,
+    type: null,
+    updated: '0',
+    collection: 'collection-uri-1',
   };
 
   beforeEach(() => {
 
     machine = interpret(appMachine(solid,
       new CollectionMemoryStore([
-        collection,
-        {
-          uri: 'collection-uri-2',
-          name: 'Collection 2',
-          description: 'This is collection 2',
-          objectsUri: 'test-uri',
-          distribution: 'test-uri',
-        },
+        collection2,
+        collection3,
       ]),
       new CollectionObjectMemoryStore([
-        object,
+        object1,
       ]),
-      collection,
-      object)
+      collection1,
+      object1)
       .withContext({
         alerts: [],
         session: { webId: 'lorem' },
@@ -226,10 +238,10 @@ describe('AppRootComponent', () => {
     machine = interpret(appMachine(solid,
       new CollectionMemoryStore([]),
       new CollectionObjectMemoryStore([]),
-      collection,
-      object).withContext({
+      collection1,
+      object1).withContext({
       alerts: [],
-      selected: collection,
+      selected: collection1,
     }));
 
     machine.start();
@@ -239,6 +251,22 @@ describe('AppRootComponent', () => {
       if(state.context?.collections?.length === 1){
 
         done();
+
+      }
+
+    });
+
+    machine.onTransition(async (state) => {
+
+      if(
+        state.matches({
+          [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.UNAUTHENTICATED,
+          [AppRootStates.DATA]: AppDataStates.IDLE,
+        })) {
+
+        done();
+        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } } as LoggedInEvent);
+        await component.updateComplete;
 
       }
 

@@ -1,38 +1,38 @@
-import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents } from './form.events';
+import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 describe('FormElementComponent', () => {
 
-  let component: FormElementComponent<Collection>;
-  let machine: Interpreter<FormContext<Collection>>;
+  let component: FormElementComponent<CollectionObject>;
+  let machine: Interpreter<FormContext<CollectionObject>>;
   let input;
 
   beforeEach(() => {
 
     machine = interpret(
-      formMachine<Collection>(
-        async (context: FormContext<Collection>, event: FormEvent): Promise<FormValidatorResult[]> => ([
+      formMachine<CollectionObject>(
+        async (context: FormContext<CollectionObject>, event: FormEvent): Promise<FormValidatorResult[]> => ([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),
       )
         .withContext({
-          data: { uri: '', name: 'Test', description: 'description' },
-          original: { uri: '', name: 'Test', description: 'description' },
+          data: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
+          original: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
           validation: [ { field: 'name', message: 'lorem' } ],
         }),
     );
 
-    component = window.document.createElement('nde-form-element') as FormElementComponent<Collection>;
+    component = window.document.createElement('nde-form-element') as FormElementComponent<CollectionObject>;
 
     component.actor = machine;
     component.field = 'name';
-    component.data = { uri: '', name: 'Test', description: 'description' };
+    component.data = { uri: '', name: 'Test', description: 'description', type: '', collection: '', image: '' };
 
     const label = window.document.createElement('label');
     label.innerHTML = 'Foo';
@@ -75,7 +75,7 @@ describe('FormElementComponent', () => {
 
   });
 
-  it('should set default value on slotted input field', async () => {
+  it('should set default value on slotted text input field', async () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -141,17 +141,25 @@ describe('FormElementComponent', () => {
 
   });
 
-  xit('should send event when updating slotted input field', async (done) => {
+  it('should send event when updating slotted text input field', async (done) => {
 
     machine.onEvent(((event) => {
 
       if(event.type === FormEvents.FORM_UPDATED) {
 
-        done();
+        const casted = event as FormUpdatedEvent;
+
+        if (casted.value === 'Lorem') {
+
+          done();
+
+        }
 
       }
 
     }));
+
+    machine.start();
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -159,6 +167,37 @@ describe('FormElementComponent', () => {
     // const input = window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement;
 
     input.value = 'Lorem';
+    input.dispatchEvent(new Event('input'));
+
+  });
+
+  it('should send event when updating slotted number input field', async (done) => {
+
+    machine.onEvent(((event) => {
+
+      if(event.type === FormEvents.FORM_UPDATED) {
+
+        const casted = event as FormUpdatedEvent;
+
+        if (+casted.value === 123) {
+
+          done();
+
+        }
+
+      }
+
+    }));
+
+    machine.start();
+
+    component.field = 'weight';
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    input.type = 'number';
+    input.value = 123;
     input.dispatchEvent(new Event('input'));
 
   });
@@ -172,6 +211,19 @@ describe('FormElementComponent', () => {
 
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.results .result').length).toBe(1);
     expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelectorAll<HTMLSlotElement>('.help[hidden]').length).toBe(1);
+
+  });
+
+  it('should show yellow border when showValidation is false', async () => {
+
+    component.validationResults = [ { field: 'name', message: 'lorem' } ];
+    component.showValidation = false;
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.results').hidden).toBeTruthy();
+    expect(window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLDivElement>('.content').classList).toContain('no-validation');
 
   });
 

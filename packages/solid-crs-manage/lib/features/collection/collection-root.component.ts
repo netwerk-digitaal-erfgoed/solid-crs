@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -78,6 +78,18 @@ export class CollectionRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
+   * Indicates if if the form validation passed.
+   */
+  @internalProperty()
+  isValid? = false;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  isDirty? = false;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -97,14 +109,6 @@ export class CollectionRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
-      if(changed.has('formActor') && this.formActor){
-
-        this.subscribe('isSubmitting', from(this.formActor).pipe(
-          map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-        ));
-
-      }
-
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collection', from(this.actor)
@@ -112,6 +116,30 @@ export class CollectionRootComponent extends RxLitElement {
 
       this.subscribe('objects', from(this.actor)
         .pipe(map((state) => state.context?.objects)));
+
+    }
+
+    if(changed?.has('formActor') && this.formActor){
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('isValid', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          },
+        })),
+      ));
+
+      this.subscribe('isDirty', from(this.formActor).pipe(
+        map((state) => state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          },
+        })),
+      ));
 
     }
 
@@ -150,35 +178,39 @@ export class CollectionRootComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    const loading = this.actor||false;
+    const showLoading = !(this.state?.matches(CollectionStates.IDLE)
+      || this.state?.matches(CollectionStates.EDITING));
 
-    return loading && this.collection ? html`
+    return !!this.actor && !!this.collection ? html`
+    
+    ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
-      ${this.state.matches(CollectionStates.EDITING)
+      ${this.actor.state.matches(CollectionStates.EDITING)
     ? html`
-          <nde-form-element slot="title" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-            <input autofocus type="text" slot="input" class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
+          <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+            <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
-          <nde-form-element slot="subtitle" .inverse="${true}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" />
+          <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.features.collections.description-placeholder')}"/>
           </nde-form-element>
         `
     : html`
-          <div slot="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+          <div slot="title" class="title" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
             ${this.collection.name}
           </div>
-          <div slot="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
-            ${this.collection.description}
+          <div slot="subtitle" class="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
+            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.features.collections.description-placeholder') }
           </div>
         `
 }
-
-      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ this.state.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ this.state?.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
+
     <div class="content">
       ${ alerts }
       
@@ -237,6 +269,12 @@ export class CollectionRootComponent extends RxLitElement {
           padding: var(--gap-large);
           height: 100%;
           overflow-y: auto;
+        }
+        nde-progress-bar {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
         }
         nde-object-card, nde-collection-card {
           height: 227px;

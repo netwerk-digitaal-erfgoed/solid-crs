@@ -1,4 +1,4 @@
-import { FormContext, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
@@ -232,6 +232,30 @@ describe('ObjectMachine', () => {
 
     });
 
+    it('should return an error when type is an empty string', async () => {
+
+      context.data = { ...context.data, type: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when type is not a real url', async () => {
+
+      context.data = { ...context.data, type: 'inva/lid.com-url' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
+    it('should return an error when additionalType is an empty string', async () => {
+
+      context.data = { ...context.data, additionalType: '' };
+      const res = validateObjectForm(context);
+      await expect(res).resolves.toHaveLength(1);
+
+    });
+
     it('should return an error when description is longer than 10000 characters', async () => {
 
       context.data = { ...context.data, description: 'a'.repeat(10001) };
@@ -272,9 +296,9 @@ describe('ObjectMachine', () => {
 
     });
 
-    it('should return an error when image is not an url to an image', async () => {
+    it.each([ 'depth', 'width', 'height', 'weight' ])('should error when %s is not a number', async (value) => {
 
-      context.data = { ...context.data, image: 'http://www.google.com' };
+      context.data = { ...context.data, [value]: NaN };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

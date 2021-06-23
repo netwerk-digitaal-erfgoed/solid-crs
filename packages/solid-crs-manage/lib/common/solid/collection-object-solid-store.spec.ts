@@ -234,7 +234,7 @@ describe('CollectionObjectSolidStore', () => {
 
       expect(getStringNoLocale(result, 'http://schema.org/dateModified')).toBeFalsy();
       expect(getUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')).toBeFalsy();
-      expect(getUrl(result, 'http://schema.org/additionalType')).toBeFalsy();
+      expect(getStringWithLocale(result, 'http://schema.org/additionalType', 'nl')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/identifier')).toBeFalsy();
       expect(getStringWithLocale(result, 'http://schema.org/name', 'nl')).toBeFalsy();
       expect(getStringWithLocale(result, 'http://schema.org/description', 'nl')).toBeFalsy();
@@ -265,7 +265,7 @@ describe('CollectionObjectSolidStore', () => {
         ...mockObject,
         updated: 'test',
         type: 'http://test.url/',
-        additionalType: 'http://test.url/',
+        additionalType: 'test',
         identifier: 'test',
         name: 'test',
         description: 'test',

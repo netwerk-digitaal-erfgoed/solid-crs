@@ -45,6 +45,40 @@ export enum CollectionStates {
 }
 
 /**
+ * Validate the name and description of a collection
+ *
+ * @param context the context of the object to be validated
+ * @returns a list of validator results
+ */
+export const validateCollectionForm = async (context: FormContext<Collection>): Promise<FormValidatorResult[]> => {
+
+  const res: FormValidatorResult[]  = [];
+
+  // only validate dirty fields
+  const dirtyFields = Object.keys(context.data).filter((field) =>
+    context.data[field as keyof Collection] !== context.original[field as keyof Collection]);
+
+  for (const field of dirtyFields) {
+
+    const value = context.data[field as keyof Collection];
+
+    // the name/title of an object can not be empty
+    if (field === 'name' && !value) {
+
+      res.push({
+        field: 'name',
+        message: 'nde.features.object.card.common.empty',
+      });
+
+    }
+
+  }
+
+  return res;
+
+};
+
+/**
  * The collection machine.
  */
 export const collectionMachine =
@@ -54,12 +88,13 @@ export const collectionMachine =
       context: { },
       initial: CollectionStates.DETERMINING_COLLECTION,
       on: {
-        [CollectionEvents.SELECTED_COLLECTION]: {
+        [CollectionEvents.SELECTED_COLLECTION]: [ {
           actions: assign({
             collection: (context, event) => event.collection,
           }),
           target: CollectionStates.DETERMINING_COLLECTION,
-        },
+          cond: (context, event) => event.collection?.uri !== context.collection?.uri,
+        } ],
       },
       states: {
       /**
@@ -75,7 +110,9 @@ export const collectionMachine =
              * When done, assign objects to the context and transition to idle.
              */
               actions: assign({
-                objects: (context, event) => event.data,
+                objects: (context, event) => event.data.sort(
+                  (a: CollectionObject, b: CollectionObject) => a.name?.localeCompare(b.name)
+                ),
               }),
               target: CollectionStates.IDLE,
             },
@@ -93,8 +130,16 @@ export const collectionMachine =
         [CollectionStates.DETERMINING_COLLECTION]: {
           always: [
             {
+              // only load object when the current collection's disctribution does
+              // not match the context's objects (== new collection selected)
               target: CollectionStates.LOADING,
-              cond: (context, event) => context?.collection ? true : false,
+              cond: (context, event) =>
+                context.collection
+                  && (
+                    !!context.objects
+                    || !context.objects?.length
+                    || context.objects[0].collection !== context.collection.uri
+                  ),
             },
             {
               target: CollectionStates.IDLE,
@@ -109,9 +154,9 @@ export const collectionMachine =
             [ObjectEvents.SELECTED_OBJECT]: {
               actions: sendParent((context, event) => event),
             },
-            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
             [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
             [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
+            [CollectionEvents.CLICKED_EDIT]: CollectionStates.EDITING,
             [ObjectEvents.CLICKED_DELETE]: {
               actions: sendParent((context, event) => event),
             },
@@ -142,6 +187,11 @@ export const collectionMachine =
             [CollectionEvents.CLICKED_SAVE]: CollectionStates.SAVING,
             [CollectionEvents.CANCELLED_EDIT]: CollectionStates.IDLE,
             [FormEvents.FORM_SUBMITTED]: CollectionStates.SAVING,
+            [ObjectEvents.SELECTED_OBJECT]: {
+              actions: sendParent((context, event) => event),
+            },
+            [CollectionEvents.CLICKED_CREATE_OBJECT]: CollectionStates.CREATING_OBJECT,
+            [CollectionEvents.CLICKED_DELETE]: CollectionStates.DELETING,
           },
           invoke: [
           /**
@@ -150,7 +200,7 @@ export const collectionMachine =
             {
               id: FormActors.FORM_MACHINE,
               src: formMachine<{ name: string; description: string }>(
-                async (): Promise<FormValidatorResult[]> => [],
+                validateCollectionForm,
                 async (c: FormContext<{ name: string; description: string }>) => c.data
               ),
               data: (context) => ({
@@ -202,7 +252,7 @@ export const collectionMachine =
            */
             src: (context) => objectStore.save({ ...objectTemplate, collection: context.collection.uri }),
             onDone: {
-              target: CollectionStates.LOADING,
+              actions: sendParent((context, event) => ({ type: ObjectEvents.SELECTED_OBJECT, object: event.data })),
             },
             onError: {
               actions: sendParent(AppEvents.ERROR),

@@ -1,4 +1,4 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
@@ -12,6 +12,8 @@ describe('CollectionRootComponent', () => {
 
   let component: CollectionRootComponent;
   let machine: Interpreter<CollectionContext>;
+  let collectionStore: CollectionMemoryStore;
+  let objectStore: CollectionObjectMemoryStore;
 
   const collection1: Collection = {
     uri: 'collection-uri-1',
@@ -42,21 +44,22 @@ describe('CollectionRootComponent', () => {
 
   beforeEach(() => {
 
-    const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
+    collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    const objectStore = new CollectionObjectMemoryStore([ object1 ]);
+    objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
     machine = interpret(collectionMachine(collectionStore, objectStore, object1)
       .withContext({
         collection: collection1,
+        objects: [ object1 ],
       }));
 
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      collection1,
-      object1,
+      { ...collection1 },
+      { ...object1 },
     ).withContext({
       alerts: [],
       selected: collection1,
@@ -65,6 +68,8 @@ describe('CollectionRootComponent', () => {
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
+
+    component.formActor = machine.children.get(FormActors.FORM_MACHINE);
 
     component.translator = new MemoryTranslator([], 'nl-NL');
 
@@ -95,6 +100,8 @@ describe('CollectionRootComponent', () => {
       message: 'Foo',
     } ];
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -109,6 +116,8 @@ describe('CollectionRootComponent', () => {
 
     component.alerts = null;
 
+    machine.start();
+
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -121,11 +130,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when delete is clicked', async () => {
 
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
+    machine.onTransition(async(state) => {
 
       if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        await component.updateComplete;
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
         button.click();
@@ -146,11 +155,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when collection title is clicked', async () => {
 
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
+    machine.onTransition(async(state) => {
 
       if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        await component.updateComplete;
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="title"]') as HTMLElement;
         button.click();
@@ -171,11 +180,11 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when collection subtitle is clicked', async () => {
 
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
+    machine.onTransition(async(state) => {
 
       if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        await component.updateComplete;
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('nde-form-element[slot="subtitle"]') as HTMLElement;
         button.click();
@@ -196,38 +205,13 @@ describe('CollectionRootComponent', () => {
 
   it('should send event when create is clicked', async () => {
 
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
+    machine.onTransition(async(state) => {
 
       if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
+
+        await component.updateComplete;
 
         const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.create') as HTMLElement;
-        button.click();
-
-        expect(machine.send).toHaveBeenCalledTimes(1);
-
-      }
-
-    });
-
-    machine.start();
-    machine.send(CollectionEvents.SELECTED_COLLECTION, { collection: collection1 });
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-  });
-
-  it('should send event when edit is clicked', async () => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.IDLE) && state.context?.collection) {
-
-        machine.send = jest.fn();
-
-        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.edit') as HTMLElement;
         button.click();
 
         expect(machine.send).toHaveBeenCalledTimes(1);
@@ -310,6 +294,8 @@ describe('CollectionRootComponent', () => {
 
     it('should throw error when event is null', async () => {
 
+      machine.start();
+
       window.document.body.appendChild(component);
       await component.updateComplete;
 
@@ -320,6 +306,8 @@ describe('CollectionRootComponent', () => {
     it('should throw error when actor is null', async () => {
 
       component.actor = null;
+
+      machine.start();
 
       window.document.body.appendChild(component);
       await component.updateComplete;

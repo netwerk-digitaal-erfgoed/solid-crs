@@ -88,13 +88,13 @@ export class ObjectRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if if the form validation passed.
    */
   @internalProperty()
   isValid? = false;
 
   /**
-   * Indicates if the form can be submitted.
+   * Indicates if one the form fields has changed.
    */
   @internalProperty()
   isDirty? = false;
@@ -293,7 +293,7 @@ export class ObjectRootComponent extends RxLitElement {
 
       const box = formCard.getBoundingClientRect();
 
-      return box.top > -(box.height / 3);
+      return box.top > -(box.height / (3 + 20));
 
     })?.id;
 
@@ -306,39 +306,49 @@ export class ObjectRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const editing = this.state?.matches(ObjectStates.IDLE);
+    const idle = this.state?.matches(ObjectStates.IDLE);
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
     const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
+    const showLoading = !(this.state?.matches(ObjectStates.IDLE)
+      || this.state?.matches(ObjectStates.EDITING));
+
     return this.object ? html`
+
+    ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
       <div slot="title"> ${this.object.name} </div>
       <div slot="subtitle"> ${this.object.description} </div>
 
-      ${ editing && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ editing && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
+      ${ idle && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
+
     <div class="content-and-sidebar">
 
-      <nde-sidebar>
-        <nde-sidebar-item .padding="${false}" .showBorder="${false}">
-          <nde-sidebar-list slot="content">
-            ${sidebarItems?.map((item) => this.formCards ? html`
-            <nde-sidebar-list-item slot="item"
-              ?selected="${ item === this.visibleCard }"
-              @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
-            >
-              <div slot="title">${this.translator?.translate(item)}</div>
-            </nde-sidebar-list-item>
-            ` : html``)}
-          </nde-sidebar-list>
-        </nde-sidebar-item>
-      </nde-sidebar>
+      ${ this.formCards
+    ? html`<nde-sidebar>
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+        <nde-sidebar-list slot="content">
+          ${sidebarItems?.map((item) => html`
+          <nde-sidebar-list-item slot="item"
+            ?selected="${ item === this.visibleCard }"
+            @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
+          >
+            <div slot="title">${this.translator?.translate(item)}</div>
+          </nde-sidebar-list-item>
+          `)}
+        </nde-sidebar-list>
+      </nde-sidebar-item>
+    </nde-sidebar>`
+    : html``}
+
 
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
@@ -384,6 +394,12 @@ export class ObjectRootComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           gap: var(--gap-large);
+        }
+        nde-progress-bar {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
         }
         nde-content-header nde-form-element input {
           height: var(--gap-normal);

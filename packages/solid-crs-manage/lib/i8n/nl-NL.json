@@ -120,6 +120,11 @@
         "value": "Beschrijving van deze collectie"
     },
     {
+        "key": "nde.features.collections.description-placeholder",
+        "locale": "nl-NL",
+        "value": "Klik om een beschrijving toe te voegen."
+    },
+    {
         "key": "nde.features.search.header.search-results-for",
         "locale": "nl-NL",
         "value": "Zoekresultaten voor"
@@ -200,6 +205,16 @@
         "value": "Dit veld is verplicht."
     },
     {
+        "key": "nde.features.object.card.common.invalid-url",
+        "locale": "nl-NL",
+        "value": "De ingegeven URL is niet geldig."
+    },
+    {
+        "key": "nde.features.object.card.common.invalid-number",
+        "locale": "nl-NL",
+        "value": "Het ingegeven getal is niet geldig."
+    },
+    {
         "key": "nde.features.object.card.image.title",
         "locale": "nl-NL",
         "value": "Beeldmateriaal"
@@ -215,14 +230,84 @@
         "value": "Bestand"
     },
     {
-        "key": "nde.features.object.card.image.field.file.validation.invalid",
-        "locale": "nl-NL",
-        "value": "De ingegeven URL is niet geldig."
-    },
-    {
         "key": "nde.features.object.card.image.field.license",
         "locale": "nl-NL",
         "value": "Licentie"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-OW-EU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - EU VERWEESD WERK"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-EDU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - EDUCATIEF GEBRUIK TOEGESTAAN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-NC/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-RUU/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJK BESCHERMD - RECHTHEBBENDE(N) NIET-LOKALISEERBAAR OF NIET-IDENTIFICEERBAAR"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-US/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-CR/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-NC/1.0/",
+        "locale": "nl-NL",
+        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/UND/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/CNE/1.0/",
+        "locale": "nl-NL",
+        "value": "AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NKC/1.0/",
+        "locale": "nl-NL",
+        "value": "GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
+        "locale": "nl-NL",
+        "value": "CC0 1.0 UNIVERSEEL"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by/4.0/deed.nl",
+        "locale": "nl-NL",
+        "value": "NAAMSVERMELDING 4.0 INTERNATIONAAL"
+    },
+    {
+        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl",
+        "locale": "nl-NL",
+        "value": "NAAMSVERMELDING-GELIJKDELEN 2.0"
     },
     {
         "key": "nde.features.object.card.identification.title",
@@ -352,22 +437,22 @@
     {
         "key": "nde.features.object.card.dimensions.field.depth",
         "locale": "nl-NL",
-        "value": "Diepte"
+        "value": "Diepte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.width",
         "locale": "nl-NL",
-        "value": "Breedte"
+        "value": "Breedte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.height",
         "locale": "nl-NL",
-        "value": "Hoogte"
+        "value": "Hoogte (cm)"
     },
     {
         "key": "nde.features.object.card.dimensions.field.weight",
         "locale": "nl-NL",
-        "value": "Gewicht"
+        "value": "Gewicht (kg)"
     },
     {
         "key": "nde.common.date.just-now",
