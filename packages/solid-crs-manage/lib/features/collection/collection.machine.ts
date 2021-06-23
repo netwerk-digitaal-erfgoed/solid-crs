@@ -5,6 +5,7 @@ import { formMachine,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { from, of, throwError } from 'rxjs';
 import { AppEvents } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
@@ -22,6 +23,11 @@ export interface CollectionContext {
    * The list of objects in the current collection.
    */
   objects?: CollectionObject[];
+
+  /**
+   * The current (partial) path
+   */
+  path?: string[];
 }
 
 /**
@@ -128,23 +134,32 @@ export const collectionMachine =
          * Determining collection
          */
         [CollectionStates.DETERMINING_COLLECTION]: {
-          always: [
-            {
-              // only load object when the current collection's disctribution does
-              // not match the context's objects (== new collection selected)
+          invoke: {
+            src: (context, event) => (context.collection
+              && (
+                !!context.objects
+                || !context.objects?.length
+                || context.objects[0].collection !== context.collection.uri
+              )
+              ? of(context.collection)
+              : (context.path.length
+                ? from(collectionStore.get(decodeURIComponent(context.path[0].slice(1).match(/^[^/]+/)[0])))
+                : throwError('No collection in context or uri')
+              )
+            ),
+            onDone: {
+              actions: [
+                assign({ collection: (context, event) => event.data }),
+              ],
               target: CollectionStates.LOADING,
-              cond: (context, event) =>
-                context.collection
-                  && (
-                    !!context.objects
-                    || !context.objects?.length
-                    || context.objects[0].collection !== context.collection.uri
-                  ),
             },
-            {
+            onError: {
+              // actions: [
+              //   assign({ collection: (context, event) => undefined }),
+              // ],
               target: CollectionStates.IDLE,
             },
-          ],
+          },
         },
         /**
          * Objects for the current collection are loaded.
@@ -163,7 +178,7 @@ export const collectionMachine =
           },
         },
         /**
-         * Saving changesto the collection's metadata.
+         * Saving changes to the collection's metadata.
          */
         [CollectionStates.SAVING]: {
           invoke: {
