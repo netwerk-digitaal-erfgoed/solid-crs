@@ -38,6 +38,7 @@
     "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.5.10",
     "@xstate/inspect": "^0.4.1",
     "edtf": "^3.1.0",
+    "history": "^5.0.0",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
@@ -82,7 +83,7 @@
       "<rootDir>/tests/setup.ts"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(lit-element|lit-html|rx-lit)/)"
+      "node_modules/(?!(lit-element|lit-html|rx-lit|history)/)"
     ],
     "coverageThreshold": {
       "global": {

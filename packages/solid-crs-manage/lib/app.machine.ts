@@ -2,6 +2,7 @@ import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@net
 import { Collection, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
+import history from 'history/browser';
 import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
@@ -42,6 +43,11 @@ export interface AppContext {
    * The selected collection from the user's pod
    */
   selected?: Collection;
+
+  /**
+   * The current path
+   */
+  path?: string[];
 }
 
 /**
@@ -69,6 +75,7 @@ export enum AppRootStates {
  * State references for the application's features, with readable log format.
  */
 export enum AppFeatureStates {
+  ROUTING = '[AppFeatureState: Routing]',
   AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
   SEARCH  = '[AppFeatureState: Search]',
@@ -121,7 +128,7 @@ export const appMachine = (
      * Determines which feature is currently active.
      */
       [AppRootStates.FEATURE]: {
-        initial: AppFeatureStates.COLLECTION,
+        initial: AppFeatureStates.ROUTING,
         on: {
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
@@ -140,10 +147,35 @@ export const appMachine = (
           },
         },
         states: {
-        /**
-         * The collection feature is shown.
-         */
-          // [AppFeatureStates.AUTHENTICATE]: {},
+          /**
+           * Routing to the correct feature based on the url.
+           */
+          [AppFeatureStates.ROUTING]: {
+            always: [
+              {
+                cond: () => history.location.pathname.startsWith('/collections'),
+                actions: assign({ path: (context, event) => [ '/collections', history.location.pathname.replace(/^\/collections/, '') ] }),
+                target: AppFeatureStates.COLLECTION,
+              },
+              {
+                cond: () => history.location.pathname.startsWith('/objects'),
+                actions: assign({ path: (context, event) => [ '/objects', history.location.pathname.replace(/^\/objects/, '') ] }),
+                target: AppFeatureStates.OBJECT,
+              },
+              {
+                cond: () => history.location.pathname.startsWith('/search'),
+                actions: assign({ path: (context, event) => [ '/search', history.location.pathname.replace(/^\/search/, '') ] }),
+                target: AppFeatureStates.SEARCH,
+              },
+              {
+                actions: assign({ path: (context, event) => [] }),
+                target: AppFeatureStates.COLLECTION,
+              },
+            ],
+          },
+          /**
+           * The collection feature is shown.
+           */
           [AppFeatureStates.COLLECTION]: {
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
@@ -170,6 +202,7 @@ export const appMachine = (
                 src: collectionMachine(collectionStore, objectStore, objectTemplate),
                 data: (context) => ({
                   collection: context.selected,
+                  path: context.path.slice(1),
                 }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
@@ -211,6 +244,7 @@ export const appMachine = (
                 src: searchMachine(collectionStore, objectStore),
                 data: (context, event: SearchUpdatedEvent) => ({
                   searchTerm: event.searchTerm,
+                  path: context.path.slice(1),
                 }),
                 onDone: {
                   actions: send((context, event) => ({
@@ -247,6 +281,7 @@ export const appMachine = (
                 src: objectMachine(objectStore),
                 data: (context) => ({
                   collections: context.collections,
+                  path: context.path.slice(1),
                 }),
                 onError: {
                   actions: send({ type: AppEvents.ERROR }),
