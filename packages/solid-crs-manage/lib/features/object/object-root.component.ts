@@ -250,6 +250,17 @@ export class ObjectRootComponent extends RxLitElement {
         element.formActor = this.formActor as any;
         element.translator = this.translator;
 
+        if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
+
+          element.addEventListener('contextmenu', (event: MouseEvent) => {
+
+            event.stopPropagation();
+            event.preventDefault();
+
+          });
+
+        }
+
         this.contentElement.appendChild(element);
 
         this.formCards = this.formCards?.includes(element)
