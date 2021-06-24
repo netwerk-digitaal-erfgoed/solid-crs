@@ -96,6 +96,31 @@ describe('CollectionObjectSolidStore', () => {
 
     });
 
+    it('should set default uris for related object when not found', async () => {
+
+      let objectThing = client.createThing({ url: mockObject.uri });
+      objectThing = client.addUrl(objectThing, 'http://schema.org/isPartOf', mockCollection.uri);
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => client.createThing({ url: mockObject.uri }));
+      client.getThingAll = jest.fn(() => [ objectThing ]);
+      client.getUrl = jest.fn((thing, uri) => uri === 'http://schema.org/isPartOf' ? 'http://test.uri/' : null);
+
+      const url = mockObject.uri;
+      const result = await service.getObjectsForCollection(mockCollection);
+
+      expect(result).toBeTruthy();
+
+      expect(client.getThing.mock.calls).toEqual([
+        [ 'test-dataset', CollectionObjectSolidStore.getDigitalObjectUri(url) ],
+        [ 'test-dataset', `${url}-height` ],
+        [ 'test-dataset', `${url}-width` ],
+        [ 'test-dataset', `${url}-depth` ],
+        [ 'test-dataset', `${url}-weight` ],
+      ]);
+
+    });
+
   });
 
   describe('get()', () => {
@@ -124,6 +149,28 @@ describe('CollectionObjectSolidStore', () => {
           description: 'test-string',
         }),
       );
+
+    });
+
+    it('should set default uris for related object when not found', async () => {
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => client.createThing());
+      client.getUrl = jest.fn(() => null);
+
+      const url = 'test-url';
+      const result = await service.get('test-url');
+
+      expect(result).toBeTruthy();
+
+      expect(client.getThing.mock.calls).toEqual([
+        [ 'test-dataset', url ],
+        [ 'test-dataset', CollectionObjectSolidStore.getDigitalObjectUri(url) ],
+        [ 'test-dataset', `${url}-height` ],
+        [ 'test-dataset', `${url}-width` ],
+        [ 'test-dataset', `${url}-depth` ],
+        [ 'test-dataset', `${url}-weight` ],
+      ]);
 
     });
 
@@ -433,17 +480,23 @@ describe('CollectionObjectSolidStore', () => {
 
     });
 
+    it('should error when object is empty', () => {
+
+      expect(() => CollectionObjectSolidStore.getDigitalObjectUri('    ')).toThrow();
+
+    });
+
     it('should error when object uri is not set', () => {
 
       delete mockObject.uri;
 
-      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(mockObject)).toThrow();
+      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(mockObject.uri)).toThrow();
 
     });
 
     it('should return correct uri', () => {
 
-      expect(CollectionObjectSolidStore.getDigitalObjectUri(mockObject)).toEqual(`${mockObject.uri}-digital`);
+      expect(CollectionObjectSolidStore.getDigitalObjectUri(mockObject.uri)).toEqual(`${mockObject.uri}-digital`);
 
     });
 

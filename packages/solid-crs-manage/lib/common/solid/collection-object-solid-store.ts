@@ -25,7 +25,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objectThings = getThingAll(dataset).filter((thing: Thing) =>
+    const objectThings = getThingAll(dataset).filter((thing: ThingPersisted) =>
       getUrl(thing, 'http://schema.org/isPartOf') === collection.uri); // a list of CollectionObject Things
 
     if (!objectThings || objectThings.length === 0) {
@@ -37,11 +37,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     return objectThings.map((objectThing: ThingPersisted) =>
       CollectionObjectSolidStore.fromThing(
         objectThing,
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage')),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/height')),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/width')),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/depth')),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/weight')),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(asUrl(objectThing))),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${asUrl(objectThing)}-height`),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`),
       ));
 
   }
@@ -65,11 +65,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     return CollectionObjectSolidStore.fromThing(
       objectThing,
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage')),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/height')),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/width')),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/depth')),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/weight')),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(uri)),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${uri}-height`),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${uri}-width`),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${uri}-depth`),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${uri}-weight`),
     );
 
   }
@@ -101,7 +101,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const objectDataset = await getSolidDataset(object.uri, { fetch });
     // remove things from objects dataset
     let updatedDataset = removeThing(objectDataset, object.uri);
-    updatedDataset = removeThing(updatedDataset, CollectionObjectSolidStore.getDigitalObjectUri(object));
+    updatedDataset = removeThing(updatedDataset, CollectionObjectSolidStore.getDigitalObjectUri(object.uri));
     updatedDataset = removeThing(updatedDataset, `${object.uri}-height`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-width`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-depth`);
@@ -157,7 +157,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       // -> delete object from old contentUrl
       const oldDataset = await getSolidDataset(object.uri, { fetch });
       const oldObjectThing = getThing(oldDataset, object.uri);
-      const oldDigitalObjectThing = getThing(oldDataset, CollectionObjectSolidStore.getDigitalObjectUri(object));
+      const oldDigitalObjectThing = getThing(oldDataset, CollectionObjectSolidStore.getDigitalObjectUri(object.uri));
       const oldHeightThing = getThing(oldDataset, `${object.uri}-height`);
       const oldWidthThing = getThing(oldDataset, `${object.uri}-width`);
       const oldDepthThing = getThing(oldDataset, `${object.uri}-depth`);
@@ -219,7 +219,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     }
 
     let objectThing = createThing({ url: object.uri });
-    const digitalObjectUri = CollectionObjectSolidStore.getDigitalObjectUri(object);
+    const digitalObjectUri = CollectionObjectSolidStore.getDigitalObjectUri(object.uri);
 
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
@@ -415,22 +415,24 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
   /**
    * Retrieves the URI of the digital object for a given CollectionObject
+   *
+   * @param objectUri The uri of the object to get the digital object uri from
    */
-  static getDigitalObjectUri(object: CollectionObject): string {
+  static getDigitalObjectUri(objectUri: string): string {
 
-    if (!object) {
+    if (!objectUri) {
 
-      throw new ArgumentError('Argument object should be set.', object);
-
-    }
-
-    if (!object.uri) {
-
-      throw new ArgumentError('Argument object uri should be set.', object);
+      throw new ArgumentError('Argument objectUri should be set.', objectUri);
 
     }
 
-    return `${object.uri}-digital`;
+    if (objectUri.trim().length < 1) {
+
+      throw new ArgumentError('Argument objectUri can not be empty.', objectUri);
+
+    }
+
+    return `${objectUri}-digital`;
 
   }
 
