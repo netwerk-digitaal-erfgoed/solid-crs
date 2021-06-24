@@ -193,7 +193,7 @@ export class CollectionRootComponent extends RxLitElement {
             <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
           <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.features.collections.description-placeholder')}"/>
+            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
           </nde-form-element>
         `
     : html`
@@ -201,7 +201,7 @@ export class CollectionRootComponent extends RxLitElement {
             ${this.collection.name}
           </div>
           <div slot="subtitle" class="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
-            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.features.collections.description-placeholder') }
+            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.common.form.description-placeholder') }
           </div>
         `
 }

@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
@@ -19,13 +19,13 @@ export class AuthenticateRootComponent extends RxLitElement {
   /**
    * The component's logger.
    */
-  @property({ type: Logger })
+  @property({ type: Object })
   public logger: Logger;
 
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
+  @property({ type: Object })
   public translator: Translator;
 
   /**
@@ -65,7 +65,7 @@ export class AuthenticateRootComponent extends RxLitElement {
   isSubmitting? = false;
 
   /**
-   * Indicates if the form is being initialized.
+   * Indicates if the state is INITIAL.
    */
   @internalProperty()
   isInitializing? = false;
@@ -79,7 +79,7 @@ export class AuthenticateRootComponent extends RxLitElement {
   /**
    * Hook called on at every update after connection to the DOM.
    */
-  updated(changed: PropertyValues) {
+  updated(changed: PropertyValues): void {
 
     super.updated(changed);
 
@@ -130,7 +130,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    *
    * @param event Dismiss event dispatched by an alert componet.
    */
-  handleDismiss(event: CustomEvent<Alert>) {
+  handleDismiss(event: CustomEvent<Alert>): void {
 
     if (!event || !event.detail) {
 
@@ -153,7 +153,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
@@ -170,7 +170,7 @@ export class AuthenticateRootComponent extends RxLitElement {
           <form>
             <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
               <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-              <input type="text" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" />
+              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
               <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
             </nde-form-element>
           </form>
@@ -187,7 +187,7 @@ export class AuthenticateRootComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

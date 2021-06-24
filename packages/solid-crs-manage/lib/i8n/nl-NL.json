@@ -120,7 +120,7 @@
         "value": "Beschrijving van deze collectie"
     },
     {
-        "key": "nde.features.collections.description-placeholder",
+        "key": "nde.common.form.description-placeholder",
         "locale": "nl-NL",
         "value": "Klik om een beschrijving toe te voegen."
     },
