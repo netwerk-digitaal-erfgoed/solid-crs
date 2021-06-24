@@ -5,11 +5,11 @@
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "rimraf ./tmp && cpy '**/*' '../tmp' --parents --dot --cwd=data && node ./node_modules/community-server/bin/server.js -c config/config-file.json --rootFilePath ./tmp -p 3000",
+    "start": "rimraf ./tmp && cpy '**/*' '../tmp' --parents --dot --cwd=data && node ./node_modules/@solid/community-server/bin/server.js -c config/config-file.json --rootFilePath ./tmp -p 3000",
     "start:watch": "npm run start"
   },
   "dependencies": {
-    "community-server": "solid/community-server#main"
+    "@solid/community-server": "solid/community-server#main"
   },
   "devDependencies": {
     "cpy-cli": "3.1.1"
