@@ -57,7 +57,9 @@ describe('CollectionMachine', () => {
       objectStore,
       collection1,
       object1
-    ));
+    ).withContext({
+      alerts: [],
+    }));
 
   });
 

@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionMemoryStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, LoggedInEvent } from './app.events';
+import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 import { SolidMockService } from './common/solid/solid-mock.service';
@@ -142,7 +142,9 @@ describe('AppRootComponent', () => {
 
       if(event.type === AppEvents.DISMISS_ALERT && event){
 
-        expect(event.alert).toEqual(alert);
+        const casted = event as DismissAlertEvent;
+
+        expect(casted.alert).toEqual(alert);
         done();
 
       }
@@ -237,14 +239,14 @@ describe('AppRootComponent', () => {
       new CollectionMemoryStore([]),
       new CollectionObjectMemoryStore([]),
       collection1,
-      object1));
+      object1).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     machine.start();
-    component.actor = machine;
 
     machine.onTransition(async (state) => {
-
-      await component.updateComplete;
 
       if(state.context?.collections?.length === 1){
 
@@ -274,6 +276,8 @@ describe('AppRootComponent', () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
+
+    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
 
   });
 

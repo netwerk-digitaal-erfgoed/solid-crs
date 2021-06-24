@@ -1,4 +1,4 @@
-import { ArgumentError } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
