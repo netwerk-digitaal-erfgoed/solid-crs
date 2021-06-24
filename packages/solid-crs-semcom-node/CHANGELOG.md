@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
+
+
+### **Features**
+
+* support dimension units ([#340](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/340)) ([e1524a9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/e1524a906ddee20aff2fcc8245fbc7154703e012))
+
+
+
 ### [0.5.10](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.9...v0.5.10) (2021-06-22)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-node
