@@ -167,7 +167,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         <div class="form-container">
           ${ alerts }
           
-          <form>
+          <form onsubmit="return false">
             <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
               <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
               <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>

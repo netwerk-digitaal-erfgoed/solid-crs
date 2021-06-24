@@ -325,6 +325,7 @@ describe('FormElementComponent', () => {
     await component.updateComplete;
 
     component.validationResults = [];
+    component.isValid = true;
     input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
 
   });
