@@ -143,6 +143,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
         }
         .dimension-field nde-form-element:last-of-type {
           width: 7rem;
+          min-width: 7rem;
           margin-left: var(--gap-normal);
         }
         /* not visible, but takes up space */
