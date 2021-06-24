@@ -6,7 +6,7 @@ import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormCleanlinessStates, FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -82,6 +82,12 @@ export class FormElementComponent<T> extends RxLitElement {
   public lockInput = false;
 
   /**
+   * Indicates whether the form is ready to be submitted
+   */
+  @internalProperty()
+  public isValid = false;
+
+  /**
    * Timeout to use when debouncing input.
    */
   @property({ type: Number })
@@ -130,6 +136,15 @@ export class FormElementComponent<T> extends RxLitElement {
         map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALIDATING,
+          },
+        })),
+      ));
+
+      // Subscribes to data in the actor's context.
+      this.subscribe('isValid', from(this.actor).pipe(
+        map((state) => state.matches(FormSubmissionStates.SUBMITTING) || state.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
           },
         })),
       ));
@@ -305,7 +320,9 @@ export class FormElementComponent<T> extends RxLitElement {
 
         element.addEventListener('keypress', (event) => {
 
-          if (event.key === 'Enter' && this.validationResults?.length < 1) {
+          if (event.key === 'Enter' && this.validationResults?.length < 1 && this.isValid) {
+
+            event.preventDefault();
 
             actor.send({ type: FormEvents.FORM_SUBMITTED });
 
