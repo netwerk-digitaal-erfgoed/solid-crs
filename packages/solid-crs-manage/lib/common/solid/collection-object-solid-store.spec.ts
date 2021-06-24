@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { getInteger, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { addDecimal, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
@@ -32,6 +32,14 @@ describe('CollectionObjectSolidStore', () => {
       type: 'http://test.type',
       image: 'http://test.image',
       mainEntityOfPage: 'http://test.uri/',
+      weight: 2,
+      height: 2,
+      depth: 2,
+      width: 2,
+      weightUnit: 'KGM',
+      heightUnit: 'CMT',
+      depthUnit: 'CMT',
+      widthUnit: 'CMT',
     };
 
   });
@@ -101,11 +109,12 @@ describe('CollectionObjectSolidStore', () => {
     it('should return collection object', async () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() =>  'test-thing');
+      client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => 'test-url');
       client.getStringWithLocale = jest.fn(() => 'test-string');
       client.getStringNoLocale = jest.fn(() => 'test-string');
       client.getInteger = jest.fn(() => 1);
+      client.getDecimal = jest.fn(() => 1);
       client.asUrl = jest.fn(() => 'test-url');
 
       await expect(service.get('test-url')).resolves.toEqual(
@@ -141,7 +150,7 @@ describe('CollectionObjectSolidStore', () => {
     it('should return collection when deleted', () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() => 'test-thing');
+      client.getThing = jest.fn(() => client.createThing());
       client.removeUrl = jest.fn(() => 'test-thing');
       client.setThing = jest.fn(() => 'test-dataset');
       client.removeThing = jest.fn(() => 'test-thing');
@@ -174,7 +183,7 @@ describe('CollectionObjectSolidStore', () => {
     it('should return object when saved', async () => {
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() =>  'test-thing');
+      client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => 'http://test-uri/');
       client.setThing = jest.fn(() => 'test-thing');
       client.removeThing = jest.fn(() => 'test-thing');
@@ -183,6 +192,7 @@ describe('CollectionObjectSolidStore', () => {
       client.addStringNoLocale = jest.fn(() => 'test-url');
       client.addStringWithLocale = jest.fn(() => 'test-url');
       client.addInteger = jest.fn(() => 'test-url');
+      client.addDecimal = jest.fn(() => 'test-url');
 
       const result = await service.save(mockObject)
 ;
@@ -203,7 +213,7 @@ describe('CollectionObjectSolidStore', () => {
       delete mockObject.uri;
 
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
-      client.getThing = jest.fn(() =>  'test-thing');
+      client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => 'http://test-url/');
       client.setThing = jest.fn(() => 'test-thing');
       client.removeThing = jest.fn(() => 'test-thing');
@@ -230,7 +240,10 @@ describe('CollectionObjectSolidStore', () => {
 
       const mockObject2 = { uri: mockObject.uri } as CollectionObject;
 
-      const { object: result, digitalObject } = CollectionObjectSolidStore.toThing(mockObject2);
+      const { object: result } = CollectionObjectSolidStore.toThing(mockObject2);
+
+      client.addDecimal = jest.fn((thing) => thing);
+      client.addStringNoLocale = jest.fn((thing) => thing);
 
       expect(getStringNoLocale(result, 'http://schema.org/dateModified')).toBeFalsy();
       expect(getUrl(result, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')).toBeFalsy();
@@ -249,10 +262,10 @@ describe('CollectionObjectSolidStore', () => {
       expect(getStringNoLocale(result, 'http://schema.org/Person')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/Organization')).toBeFalsy();
       expect(getStringNoLocale(result, 'http://schema.org/Event')).toBeFalsy();
-      expect(getInteger(result, 'http://schema.org/height')).toBeFalsy();
-      expect(getInteger(result, 'http://schema.org/width')).toBeFalsy();
-      expect(getInteger(result, 'http://schema.org/depth')).toBeFalsy();
-      expect(getInteger(result, 'http://schema.org/weight')).toBeFalsy();
+      expect(getUrl(result, 'http://schema.org/height')).toBeFalsy();
+      expect(getUrl(result, 'http://schema.org/width')).toBeFalsy();
+      expect(getUrl(result, 'http://schema.org/depth')).toBeFalsy();
+      expect(getUrl(result, 'http://schema.org/weight')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/image')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/mainEntityOfPage')).toBeFalsy();
       expect(getUrl(result, 'http://schema.org/license')).toBeFalsy();
@@ -284,6 +297,10 @@ describe('CollectionObjectSolidStore', () => {
         width: 2,
         depth: 2,
         weight: 2,
+        heightUnit: 'CMT',
+        widthUnit: 'CMT',
+        depthUnit: 'CMT',
+        weightUnit: 'KGM',
         image: 'http://test.url/',
         mainEntityOfPage: 'http://test.url',
         license: 'http://test.url',
@@ -299,15 +316,36 @@ describe('CollectionObjectSolidStore', () => {
 
   describe('fromThing()', () => {
 
-    it('should error when object is null', () => {
+    it.each([
+      'object',
+      'digitalObject',
+      'height',
+      'width',
+      'depth',
+      'weight',
+    ])('should error when object is %s', (value) => {
 
-      expect(() => CollectionObjectSolidStore.fromThing(null, client.createThing({ url: mockObject.uri }))).toThrow();
+      const thing = client.createThing({ url: mockObject.uri });
 
-    });
+      const params = {
+        object: thing,
+        digitalObject: thing,
+        height: thing,
+        width: thing,
+        depth: thing,
+        weight: thing,
+      };
 
-    it('should error when digitalObject is null', () => {
+      params[value] = null;
 
-      expect(() => CollectionObjectSolidStore.fromThing(client.createThing({ url: mockObject.uri }), null)).toThrow();
+      expect(() => CollectionObjectSolidStore.fromThing(
+        params.object,
+        params.digitalObject,
+        params.height,
+        params.width,
+        params.depth,
+        params.weight,
+      )).toThrow();
 
     });
 
@@ -318,9 +356,20 @@ describe('CollectionObjectSolidStore', () => {
       client.getStringWithLocale = jest.fn(() => undefined);
       client.asUrl = jest.fn(() => undefined);
 
+      jest.clearAllMocks();
+      jest.resetAllMocks();
+      jest.restoreAllMocks();
+
       const objectThing = client.createThing({ url: mockObject.uri });
 
-      const result = CollectionObjectSolidStore.fromThing(objectThing, objectThing);
+      const result = CollectionObjectSolidStore.fromThing(
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+      );
 
       expect(result.updated).toEqual(undefined);
       expect(result.type).toEqual(undefined);
@@ -337,6 +386,14 @@ describe('CollectionObjectSolidStore', () => {
       expect(result.image).toEqual(undefined);
       expect(result.mainEntityOfPage).toEqual(undefined);
       expect(result.subject).toEqual(undefined);
+      expect(result.height).toEqual(undefined);
+      expect(result.width).toEqual(undefined);
+      expect(result.depth).toEqual(undefined);
+      expect(result.weight).toEqual(undefined);
+      expect(result.heightUnit).toEqual(undefined);
+      expect(result.widthUnit).toEqual(undefined);
+      expect(result.depthUnit).toEqual(undefined);
+      expect(result.weightUnit).toEqual(undefined);
 
     });
 

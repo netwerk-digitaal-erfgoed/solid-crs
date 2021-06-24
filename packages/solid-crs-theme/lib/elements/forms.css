@@ -27,6 +27,7 @@ nde-form-element textarea {
 
 nde-form-element select {
   margin-right: var(--gap-normal);
+  padding-right: 0;
 }
 
 nde-form-element textarea {

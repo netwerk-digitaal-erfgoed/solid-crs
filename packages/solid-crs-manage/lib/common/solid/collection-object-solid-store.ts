@@ -1,6 +1,5 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getInteger, addInteger, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-
 import { v4 } from 'uuid';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -38,7 +37,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     return objectThings.map((objectThing: ThingPersisted) =>
       CollectionObjectSolidStore.fromThing(
         objectThing,
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage'))
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage')),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/height')),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/width')),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/depth')),
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/weight')),
       ));
 
   }
@@ -59,10 +62,15 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const dataset = await getSolidDataset(uri, { fetch });
 
     const objectThing = getThing(dataset, uri);
-    const digitalObjectUri = getUrl(objectThing, 'http://schema.org/mainEntityOfPage');
-    const digitalObjectThing = getThing(dataset, digitalObjectUri);
 
-    return CollectionObjectSolidStore.fromThing(objectThing, digitalObjectThing);
+    return CollectionObjectSolidStore.fromThing(
+      objectThing,
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage')),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/height')),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/width')),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/depth')),
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/weight')),
+    );
 
   }
 
@@ -93,7 +101,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const objectDataset = await getSolidDataset(object.uri, { fetch });
     // remove things from objects dataset
     let updatedDataset = removeThing(objectDataset, object.uri);
-    updatedDataset = removeThing(updatedDataset, `${object.uri}-digital`);
+    updatedDataset = removeThing(updatedDataset, CollectionObjectSolidStore.getDigitalObjectUri(object));
+    updatedDataset = removeThing(updatedDataset, `${object.uri}-height`);
+    updatedDataset = removeThing(updatedDataset, `${object.uri}-width`);
+    updatedDataset = removeThing(updatedDataset, `${object.uri}-depth`);
+    updatedDataset = removeThing(updatedDataset, `${object.uri}-weight`);
     // save the dataset
     await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
 
@@ -146,8 +158,16 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       const oldDataset = await getSolidDataset(object.uri, { fetch });
       const oldObjectThing = getThing(oldDataset, object.uri);
       const oldDigitalObjectThing = getThing(oldDataset, CollectionObjectSolidStore.getDigitalObjectUri(object));
+      const oldHeightThing = getThing(oldDataset, `${object.uri}-height`);
+      const oldWidthThing = getThing(oldDataset, `${object.uri}-width`);
+      const oldDepthThing = getThing(oldDataset, `${object.uri}-depth`);
+      const oldWeightThing = getThing(oldDataset, `${object.uri}-weight`);
       let updatedOldObjectsDataset = removeThing(oldDataset, oldObjectThing);
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDigitalObjectThing);
+      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldHeightThing);
+      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWidthThing);
+      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDepthThing);
+      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWeightThing);
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
     }
@@ -155,11 +175,22 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // transform and save the object to the dataset of objects
     const objectsDataset = await getSolidDataset(objectUri, { fetch });
 
-    const { object: objectThing, digitalObject: digitalObjectThing }
+    const {
+      object: objectThing,
+      digitalObject: digitalObjectThing,
+      height: heightThing,
+      width: widthThing,
+      depth: depthThing,
+      weight: weightThing,
+    }
       = CollectionObjectSolidStore.toThing({ ...object, uri: objectUri });
 
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, digitalObjectThing);
+    updatedObjectsDataset = setThing(updatedObjectsDataset, heightThing);
+    updatedObjectsDataset = setThing(updatedObjectsDataset, widthThing);
+    updatedObjectsDataset = setThing(updatedObjectsDataset, depthThing);
+    updatedObjectsDataset = setThing(updatedObjectsDataset, weightThing);
     await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
 
     return { ...object, uri: objectUri };
@@ -170,9 +201,16 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    * Converts a CollectionObject to Things
    *
    * @param object The CollectionObject to convert
-   * @returns The main object and digital object as Things
+   * @returns The main object, the digital object and dimensions as Things
    */
-  static toThing(object: CollectionObject): { object: ThingPersisted; digitalObject: ThingPersisted } {
+  static toThing(object: CollectionObject): {
+    object: ThingPersisted;
+    digitalObject: ThingPersisted;
+    height: ThingPersisted;
+    width: ThingPersisted;
+    depth: ThingPersisted;
+    weight: ThingPersisted;
+  } {
 
     if (!object) {
 
@@ -205,12 +243,31 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.person ? addStringNoLocale(objectThing, 'http://schema.org/Person', object.person) : objectThing;
     objectThing = object.organization ? addStringNoLocale(objectThing, 'http://schema.org/Organization', object.organization) : objectThing;
     objectThing = object.event ? addStringNoLocale(objectThing, 'http://schema.org/Event', object.event) : objectThing;
-
     // dimensions
-    objectThing = object.height !== undefined && object.height !== null ? addInteger(objectThing, 'http://schema.org/height', object.height) : objectThing;
-    objectThing = object.width !== undefined && object.width !== null ? addInteger(objectThing, 'http://schema.org/width', object.width) : objectThing;
-    objectThing = object.depth  !== undefined && object.depth !== null? addInteger(objectThing, 'http://schema.org/depth', object.depth) : objectThing;
-    objectThing = object.weight !== undefined && object.weight !== null ? addInteger(objectThing, 'http://schema.org/weight', object.weight) : objectThing;
+    let heightThing = createThing({ url: `${object.uri}-height` });
+    heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+    heightThing = object.height !== undefined && object.height !== null ? addDecimal(heightThing, 'http://schema.org/value', object.height) : heightThing;
+    heightThing = object.heightUnit !== undefined && object.heightUnit !== null ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
+
+    let widthThing = createThing({ url: `${object.uri}-width` });
+    widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+    widthThing = object.width !== undefined && object.width !== null ? addDecimal(widthThing, 'http://schema.org/value', object.width) : widthThing;
+    widthThing = object.widthUnit !== undefined && object.widthUnit !== null ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
+
+    let depthThing = createThing({ url: `${object.uri}-depth` });
+    depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+    depthThing = object.depth !== undefined && object.depth !== null ? addDecimal(depthThing, 'http://schema.org/value', object.depth) : depthThing;
+    depthThing = object.depthUnit !== undefined && object.depthUnit !== null ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
+
+    let weightThing = createThing({ url: `${object.uri}-weight` });
+    weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+    weightThing = object.weight !== undefined && object.weight !== null ? addDecimal(weightThing, 'http://schema.org/value', object.weight) : weightThing;
+    weightThing = object.weightUnit !== undefined && object.weightUnit !== null ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
+
+    objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
+    objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
+    objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
+    objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
@@ -223,7 +280,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     digitalObjectThing = object.license ? addUrl(digitalObjectThing, 'http://schema.org/license', object.license) : digitalObjectThing;
     digitalObjectThing = addUrl(digitalObjectThing, 'http://schema.org/mainEntity', object.uri);
 
-    return { object: objectThing, digitalObject: digitalObjectThing };
+    return {
+      object: objectThing,
+      digitalObject: digitalObjectThing,
+      height: heightThing,
+      width: widthThing,
+      depth: depthThing,
+      weight: weightThing,
+    };
 
   }
 
@@ -233,7 +297,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    * @param object The ThingPersisted to convert
    * @returns a CollectionObject
    */
-  static fromThing(object: ThingPersisted, digitalObject: ThingPersisted): CollectionObject {
+  static fromThing(
+    object: ThingPersisted,
+    digitalObject: ThingPersisted,
+    height: ThingPersisted,
+    width: ThingPersisted,
+    depth: ThingPersisted,
+    weight: ThingPersisted,
+  ): CollectionObject {
 
     if (!object) {
 
@@ -244,6 +315,30 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     if (!digitalObject) {
 
       throw new ArgumentError('Argument digitalObject should be set', digitalObject);
+
+    }
+
+    if (!height) {
+
+      throw new ArgumentError('Argument height should be set', height);
+
+    }
+
+    if (!width) {
+
+      throw new ArgumentError('Argument width should be set', width);
+
+    }
+
+    if (!depth) {
+
+      throw new ArgumentError('Argument depth should be set', depth);
+
+    }
+
+    if (!weight) {
+
+      throw new ArgumentError('Argument weight should be set', weight);
 
     }
 
@@ -273,10 +368,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       event: getStringNoLocale(object, 'http://schema.org/Event') || undefined,
 
       // dimensions
-      height: getInteger(object, 'http://schema.org/height') !== null ? getInteger(object, 'http://schema.org/height') : undefined,
-      width: getInteger(object, 'http://schema.org/width') !== null ? getInteger(object, 'http://schema.org/width') : undefined,
-      depth: getInteger(object, 'http://schema.org/depth') !== null ? getInteger(object, 'http://schema.org/depth') : undefined,
-      weight: getInteger(object, 'http://schema.org/weight') !== null ? getInteger(object, 'http://schema.org/weight') : undefined,
+      height: getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,
+      width: getDecimal(width, 'http://schema.org/value') !== null ? getDecimal(width, 'http://schema.org/value') : undefined,
+      depth: getDecimal(depth, 'http://schema.org/value') !== null ? getDecimal(depth, 'http://schema.org/value') : undefined,
+      weight: getDecimal(weight, 'http://schema.org/value') !== null ? getDecimal(weight, 'http://schema.org/value') : undefined,
+      heightUnit: getStringNoLocale(height, 'http://schema.org/unitCode') !== null ? getStringNoLocale(height, 'http://schema.org/unitCode') : undefined,
+      widthUnit: getStringNoLocale(width, 'http://schema.org/unitCode') !== null ? getStringNoLocale(width, 'http://schema.org/unitCode') : undefined,
+      depthUnit: getStringNoLocale(depth, 'http://schema.org/unitCode') !== null ? getStringNoLocale(depth, 'http://schema.org/unitCode') : undefined,
+      weightUnit: getStringNoLocale(weight, 'http://schema.org/unitCode') !== null ? getStringNoLocale(weight, 'http://schema.org/unitCode') : undefined,
 
       // other
       mainEntityOfPage: asUrl(digitalObject) || undefined,
