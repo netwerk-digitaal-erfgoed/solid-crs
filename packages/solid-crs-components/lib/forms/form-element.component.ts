@@ -1,4 +1,3 @@
-import { triggerAsyncId } from 'async_hooks';
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ArgumentError, Translator, debounce } from '@netwerk-digitaal-erfgoed/solid-crs-core';
@@ -20,13 +19,19 @@ export class FormElementComponent<T> extends RxLitElement {
    * All input elements slotted in the form element.
    */
   @internalProperty()
-  inputs: HTMLInputElement[];
+  inputs: HTMLElement[];
 
   /**
    * The slot element which contains the input field.
    */
   @query('slot[name="input"]')
   inputSlot: HTMLSlotElement;
+
+  /**
+   * The slot element which contains the input field.
+   */
+  @query('.field')
+  fieldDiv: HTMLDivElement;
 
   /**
    * Decides whether a border should be shown around the content
@@ -143,7 +148,8 @@ export class FormElementComponent<T> extends RxLitElement {
      */
     if(changed.has('lockInput')) {
 
-      this.inputs?.forEach((element) => element.disabled = this.lockInput);
+      this.inputs?.forEach((element: (HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement)) =>
+        element.disabled = this.lockInput);
 
     }
 
@@ -186,8 +192,11 @@ export class FormElementComponent<T> extends RxLitElement {
     this.inputs = slot.assignedNodes({ flatten: true })?.filter(
       (element) => element instanceof HTMLInputElement ||
                     element instanceof HTMLSelectElement ||
-                    element instanceof HTMLTextAreaElement
-    ).map((element) => element as HTMLInputElement);
+                    element instanceof HTMLTextAreaElement ||
+                    Array.from(element.childNodes).find((li) =>
+                      Array.from(li.childNodes).find((input) =>
+                        input instanceof HTMLInputElement))
+    ).map((element) => element as HTMLElement);
 
     this.inputs?.forEach((element) => {
 
@@ -201,7 +210,7 @@ export class FormElementComponent<T> extends RxLitElement {
         // Send event when input field's value changes.
         element.addEventListener('input', () => actor.send({ type: FormEvents.FORM_UPDATED, value: element.options[element.selectedIndex].id, field } as FormUpdatedEvent));
 
-      } else {
+      } else if ((element instanceof HTMLTextAreaElement) || (element instanceof HTMLInputElement)) {
 
         // Set the input field's default value.
         element.value = fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '';
@@ -227,6 +236,67 @@ export class FormElementComponent<T> extends RxLitElement {
 
           }, this.debounceTimeout),
         );
+
+      } else if (Array.from(element.children).find((li) =>
+        Array.from(li.children).find((input) =>
+          input instanceof HTMLInputElement && input.type === 'checkbox'))
+      ) {
+
+        // the element is a <ul> containing <li>'s containing <input>s with type=checkboxes
+
+        const titleListItem = element.children[0] as HTMLElement;
+
+        const checkboxListItems = Array.from(element.children).slice(1) as HTMLElement[];
+        checkboxListItems.forEach((li) => li.hidden = true);
+
+        const checkboxInputs = [].concat(...checkboxListItems
+          .map((li: HTMLLIElement) => Array.from(li.children)))
+          .filter((node) => node instanceof HTMLInputElement);
+
+        if (Array.isArray(fieldData)) {
+
+          // set default values
+          checkboxListItems.forEach((node: HTMLInputElement) =>
+            node.checked = fieldData.includes(node.id));
+
+          titleListItem.innerHTML = fieldData.join(', ');
+
+          titleListItem.addEventListener('click', () => {
+
+            checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
+            titleListItem.hidden = true;
+            checkboxInputs[0].focus();
+
+          });
+
+          element.parentElement.addEventListener('focusout', (event) => {
+
+            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
+
+              checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
+              titleListItem.hidden = false;
+
+            }
+
+          });
+
+          element.addEventListener('input', () => {
+
+            const selectedValues = [].concat(...checkboxInputs
+              .filter((node) => node.checked))
+              .map((node: HTMLInputElement) => node.value);
+
+            titleListItem.textContent = selectedValues.length > 0 ? selectedValues.join(', ') : this.translator.translate('nde.common.form.click-to-select');
+
+            actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
+
+          });
+
+        } else {
+
+          throw Error();
+
+        }
 
       }
 
@@ -338,20 +408,30 @@ export class FormElementComponent<T> extends RxLitElement {
           padding: 0 var(--gap-normal);
           flex: 1 0;
           height: 44px;
+          max-height: auto;
+          font-size: var(--font-size-small);
+          font-family: var(--font-family);
         }
         .form-element .content .field ::slotted(input),
         .form-element .content .field ::slotted(select), 
         .form-element .content .field ::slotted(textarea) {
           box-sizing: border-box;
+        } 
+        .form-element .content .field ::slotted(ul) {
+          height: auto;
+          display: flex;
+          flex-direction: column;
+          gap: var(--gap-small);
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);
           height: 132px;
         }
         .form-element .content .field .icon {
+          margin: var(--gap-small) 0;
           height: 100%;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
         }
         .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           padding-right: var(--gap-normal);
