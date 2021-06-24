@@ -76,6 +76,10 @@ export class AppRootComponent extends RxLitElement {
         width: 0,
         depth: 0,
         weight: 0,
+        heightUnit: 'CMT',
+        widthUnit: 'CMT',
+        depthUnit: 'CMT',
+        weightUnit: 'KGM',
       }
     )).withContext({
       alerts: [],
