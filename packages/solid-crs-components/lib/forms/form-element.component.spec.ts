@@ -3,36 +3,36 @@ import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
+import { FormEvents, FormUpdatedEvent } from './form.events';
 import { FormContext, formMachine } from './form.machine';
 
 describe('FormElementComponent', () => {
 
-  let component: FormElementComponent<CollectionObject>;
-  let machine: Interpreter<FormContext<CollectionObject>>;
+  let component: FormElementComponent<any>;
+  let machine: Interpreter<FormContext<any>>;
   let input;
 
   beforeEach(() => {
 
     machine = interpret(
-      formMachine<CollectionObject>(
-        async (context: FormContext<CollectionObject>, event: FormEvent): Promise<FormValidatorResult[]> => ([
+      formMachine<any>(
+        async (context: FormContext<any>): Promise<FormValidatorResult[]> => ([
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ]),
       )
         .withContext({
-          data: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
-          original: { uri: '', name: 'Test', description: 'description', weight: 321, type: '', collection: '', image: '' },
+          data: { uri: '', name: 'Test', description: 'description', weight: 321, selected: [ '1' ] },
+          original: { uri: '', name: 'Test', description: 'description', weight: 321, selected: [ '1' ] },
           validation: [ { field: 'name', message: 'lorem' } ],
         }),
     );
 
-    component = window.document.createElement('nde-form-element') as FormElementComponent<CollectionObject>;
+    component = window.document.createElement('nde-form-element') as FormElementComponent<any>;
 
     component.actor = machine;
     component.field = 'name';
-    component.data = { uri: '', name: 'Test', description: 'description', type: '', collection: '', image: '' };
+    component.data = { uri: '', name: 'Test', description: 'description', selected: [ '1' ] };
 
     const label = window.document.createElement('label');
     label.innerHTML = 'Foo';
@@ -59,6 +59,10 @@ describe('FormElementComponent', () => {
     input.slot = 'input';
     component.appendChild(input);
 
+    component.translator = {
+      translate: jest.fn(() => 'translation'),
+    };
+
     jest.clearAllMocks();
 
   });
@@ -75,46 +79,230 @@ describe('FormElementComponent', () => {
 
   });
 
-  it('should set default value on slotted text input field', async () => {
+  describe('with regular input field', () => {
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    it('should set default value on slotted text input field', async () => {
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLInputElement).value).toBe('Test');
+
+    });
+
+    it('should allow slotted textarea field', async () => {
+
+      component.field = 'description';
+      const select = window.document.createElement('textarea');
+      select.slot = 'input';
+      select.innerText = 'test description';
+      component.appendChild(select);
+      component.removeChild(input);
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).innerText).toEqual(select.innerText);
+
+    });
+
+    it('should send event when updating slotted text input field', async (done) => {
+
+      machine.onEvent(((event) => {
+
+        if(event.type === FormEvents.FORM_UPDATED) {
+
+          const casted = event as FormUpdatedEvent;
+
+          if (casted.value === 'Lorem') {
+
+            done();
+
+          }
+
+        }
+
+      }));
+
+      machine.start();
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      // const input = window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement;
+
+      input.value = 'Lorem';
+      input.dispatchEvent(new Event('input'));
+
+    });
+
+    it('should send event when updating slotted number input field', async (done) => {
+
+      machine.onEvent(((event) => {
+
+        if(event.type === FormEvents.FORM_UPDATED) {
+
+          const casted = event as FormUpdatedEvent;
+
+          if (+casted.value === 123) {
+
+            done();
+
+          }
+
+        }
+
+      }));
+
+      machine.start();
+
+      component.field = 'weight';
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      input.type = 'number';
+      input.value = 123;
+      input.dispatchEvent(new Event('input'));
+
+    });
 
   });
 
-  it('should allow slotted select field', async () => {
+  describe('with <select> input field', () => {
 
-    component.field = 'description';
-    const select = window.document.createElement('select');
-    select.slot = 'input';
-    const option = window.document.createElement('option');
-    option.id = 'description';
-    select.appendChild(option);
-    component.appendChild(select);
-    component.removeChild(input);
+    it('should allow slotted select field', async () => {
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+      component.field = 'description';
+      const select = window.document.createElement('select');
+      select.slot = 'input';
+      const option = window.document.createElement('option');
+      option.id = 'description';
+      select.appendChild(option);
+      component.appendChild(select);
+      component.removeChild(input);
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).children.length).toBe(1);
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).children.length).toBe(1);
+
+    });
 
   });
 
-  it('should allow slotted textarea field', async () => {
+  describe('with checkbox dropdown input field', () => {
 
-    component.field = 'description';
-    const select = window.document.createElement('textarea');
-    select.slot = 'input';
-    select.innerText = 'test description';
-    component.appendChild(select);
-    component.removeChild(input);
+    let ul: HTMLUListElement;
+    let titleListItem: HTMLLIElement;
+    let inputListItem: HTMLLIElement;
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    beforeEach(async() => {
 
-    expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement).innerText).toEqual(select.innerText);
+      component.field = 'selected';
+      ul = window.document.createElement('ul');
+      ul.slot = 'input';
+      titleListItem = window.document.createElement('li');
+      titleListItem.setAttribute('for', 'title');
+      inputListItem = window.document.createElement('li');
+      input.type = 'checkbox';
+      input.id = '1';
+      input.value = '1';
+      inputListItem.appendChild(input);
+      ul.appendChild(titleListItem);
+      ul.appendChild(inputListItem);
+      component.appendChild(ul);
+      machine.start();
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+    });
+
+    it('should allow slotted <ul> <li> with checkbox input fields', () => {
+
+      expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement)).toEqual(ul);
+
+    });
+
+    it('should hide checkboxes by default', () => {
+
+      expect(inputListItem.hidden).toBeTruthy();
+      expect(titleListItem.hidden).toBeFalsy();
+
+    });
+
+    it('should show checkboxes when title is clicked', () => {
+
+      titleListItem.click();
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(titleListItem.hidden).toBeTruthy();
+
+    });
+
+    it('should send FORM_UPDATED event when a checkbox is clicked', (done) => {
+
+      machine.onEvent((event) => {
+
+        if (event.type === FormEvents.FORM_UPDATED) {
+
+          done();
+
+        }
+
+      });
+
+      input.click();
+
+    });
+
+    it('should show title when focus was lost on the checkbox list', () => {
+
+      // show the checkboxes
+      titleListItem.click();
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(titleListItem.hidden).toBeTruthy();
+
+      // click somewhere else
+      component.dispatchEvent(new FocusEvent('focusout'));
+      expect(inputListItem.hidden).toBeTruthy();
+      expect(titleListItem.hidden).toBeFalsy();
+
+    });
+
+    it('should not lose focus when other checkboxes are clicked', () => {
+
+      // show the checkboxes
+      titleListItem.click();
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(titleListItem.hidden).toBeTruthy();
+
+      // click on a checkbox
+      component.dispatchEvent(new FocusEvent('focusout', { relatedTarget: input }));
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(titleListItem.hidden).toBeTruthy();
+
+    });
+
+    it('should error when fieldData is not an array', async () => {
+
+      component.data = { uri: '', name: 'Test', description: 'description', selected: 'no-array' };
+
+      expect(() => component.bindActorToInput(component.inputSlot, component.actor, component.field, component.data))
+        .toThrow();
+
+    });
+
+    it('should show default message when no checkboxes are selected', () => {
+
+      component.data = { uri: '', name: 'Test', description: 'description', selected: [] };
+
+      input.click();
+      input.click();
+
+      expect(titleListItem.textContent).toEqual('translation');
+
+    });
 
   });
 
@@ -137,68 +325,8 @@ describe('FormElementComponent', () => {
     await component.updateComplete;
 
     component.validationResults = [];
+    component.isValid = true;
     input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
-
-  });
-
-  it('should send event when updating slotted text input field', async (done) => {
-
-    machine.onEvent(((event) => {
-
-      if(event.type === FormEvents.FORM_UPDATED) {
-
-        const casted = event as FormUpdatedEvent;
-
-        if (casted.value === 'Lorem') {
-
-          done();
-
-        }
-
-      }
-
-    }));
-
-    machine.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    // const input = window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.input slot').assignedElements()[0] as HTMLInputElement;
-
-    input.value = 'Lorem';
-    input.dispatchEvent(new Event('input'));
-
-  });
-
-  it('should send event when updating slotted number input field', async (done) => {
-
-    machine.onEvent(((event) => {
-
-      if(event.type === FormEvents.FORM_UPDATED) {
-
-        const casted = event as FormUpdatedEvent;
-
-        if (+casted.value === 123) {
-
-          done();
-
-        }
-
-      }
-
-    }));
-
-    machine.start();
-
-    component.field = 'weight';
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    input.type = 'number';
-    input.value = 123;
-    input.dispatchEvent(new Event('input'));
 
   });
 

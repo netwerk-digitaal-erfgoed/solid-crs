@@ -323,7 +323,6 @@ export const appMachine = (
               },
             ],
             on: {
-              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
               [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
             },
           },
@@ -341,6 +340,9 @@ export const appMachine = (
               onDone: {
                 actions: send({ type: AppEvents.LOGGED_OUT }),
               },
+            },
+            on: {
+              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
             },
           },
 

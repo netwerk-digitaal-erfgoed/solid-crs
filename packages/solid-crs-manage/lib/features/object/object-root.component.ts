@@ -250,6 +250,17 @@ export class ObjectRootComponent extends RxLitElement {
         element.formActor = this.formActor as any;
         element.translator = this.translator;
 
+        if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
+
+          element.addEventListener('contextmenu', (event: MouseEvent) => {
+
+            event.stopPropagation();
+            event.preventDefault();
+
+          });
+
+        }
+
         this.contentElement.appendChild(element);
 
         this.formCards = this.formCards?.includes(element)
@@ -322,8 +333,13 @@ export class ObjectRootComponent extends RxLitElement {
 
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-      <div slot="title"> ${this.object.name} </div>
-      <div slot="subtitle"> ${this.object.description} </div>
+
+      <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+        <input autofocus type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
+      </nde-form-element>
+      <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
+      </nde-form-element>
 
       ${ idle && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }

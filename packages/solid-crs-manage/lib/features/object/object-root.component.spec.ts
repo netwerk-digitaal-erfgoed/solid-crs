@@ -158,66 +158,6 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should send event when object title is clicked', async () => {
-
-    machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
-
-      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
-
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('nde-form-element[slot="title"]') as HTMLElement;
-
-        if(button){
-
-          button.click();
-
-          expect(machine.send).toHaveBeenCalledTimes(1);
-
-        }
-
-      }
-
-    });
-
-  });
-
-  it('should send event when object subtitle is clicked', async () => {
-
-    machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
-
-      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
-
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('nde-form-element[slot="subtitle"]') as HTMLElement;
-
-        if(button) {
-
-          button.click();
-
-          expect(machine.send).toHaveBeenCalledTimes(1);
-
-        }
-
-      }
-
-    });
-
-  });
-
   it('should send event when create is clicked', async () => {
 
     machine.start();
