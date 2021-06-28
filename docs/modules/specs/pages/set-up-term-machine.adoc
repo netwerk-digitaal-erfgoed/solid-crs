@@ -1,0 +1,104 @@
+= Technical Documentation: Set up term machine
+
+== Author(s)
+
+* Stijn Taelemans
+
+
+== References
+
+// * https://www.wrike.com/open.htm?id=692044114[Wrike task]
+* Branch: `feat/set-up-term-machine`
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
+
+== Introduction
+
+=== Overview
+
+This document is about the set up of the term machine, which can be invoked when editing an object. It acts as the brain of the `TermSearchComponent`, which allows a user to query the term network provided by NDE.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+
+==== Term Model
+
+Create 'term.ts' under 'lib/terms/' in the 'nde-erfgoed-core' package.
+
+The  model should look like this. It extends `Resource`.
+
+[source, ts]
+----
+{
+  name: string,
+}
+----
+
+
+==== Term Subfeature
+
+Under 'lib/features/object', under new 'terms' directory, create following files.
+
+* term.machine.ts
+* term.events.ts
+
+==== Term Machine & States
+
+The term machine is the brains of the `TermSearchComponent`.
+
+Use the file structure and naming convention of the object feature.
+
+The `TermMachine` has four possible states: 
+
+* `TermStates.IDLE` (initial)
+* `TermStates.QUERYING`
+
+The `TermStates.IDLE` state is the initial state of the machine. Take a look at the events described below for a better picture of how the machine can transition.
+
+When `TermEvents.QUERY_UPDATED` is fired, the machine should transition to `QUERYING`. The context should have been edited to include the form input. (query string and selected sources)
+
+From `TermStates.QUERYING`, the machine transitions back to `IDLE` when `TermService.query()` resolves. When rejected, handle errors like we do in other features.
+
+A user can select results, which fires the `CLICKED_TERM` event. This should add the clicked `Term` to `selectedTerms` in the machine's context.
+
+When the `TermEvents.SUBMITTED` is fired, the `TermMachine` terminates and returns the clicked term.
+
+
+==== Term Context
+
+The context of the `TermMachine` consists of the following items.
+[source, js]
+----
+{
+  query: string,          // the user input (value of text input field)
+  sources: string,        // the sources selected by the user
+  searchResults: Term[],  // a list containing all search results
+  selectedTerms: Term[],  // the selected search results
+}
+----
+
+==== Term Events
+
+Create following events in 'lib/features/object/term/term.events.ts'
+
+[options="header"]
+|======================================
+| Event 	| Payload
+
+| `TermEvents.SUBMITTED`
+| `{ selectedTerms: Term[] }`
+
+| `TermEvents.CLICKED_TERM`
+| `{ term: Term }`
+
+| `TermEvents.QUERY_UPDATED`
+| `{ query: string }`
+
+|======================================
+
+
+==== Collection Object Machine, Events
+
+When a field, containing a Term, is clicked, the `TermMachine` should be invoked in a new state. Transition to this state with a new `ObjectEvents.CLICKED_TERM` event.

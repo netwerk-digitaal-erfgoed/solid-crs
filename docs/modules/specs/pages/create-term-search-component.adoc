@@ -1,4 +1,4 @@
-= Technical Documentation: Update sidebar
+= Technical Documentation: Create term search component
 :sectanchors:
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
@@ -63,6 +63,8 @@ All components are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-compon
 
 === Suggested or proposed solution
 
+The `TermMachine` is created.
+
 
 ==== TermSearchComponent 
 
@@ -75,6 +77,8 @@ Generate in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/feat
 
 Make use of existing `<form-element>` components. Take a look at the demo form component for example usage of a multiple select dropdown.
 
-Making use of properties, pass the search results into the `TermSearchComponent` and display them using `CardComponent` s. Their titles should be the name of the found term, the description is their URI. When clicked, send a `TermEvents.SEARCH_RESULT_CLICKED` to the `TermMachine`. Include the URI (and name?) in the payload. This should transition the `TermMachine` to its final state and bring the user back to the object page.
+Making use of properties, pass the search results into the `TermSearchComponent` and display them using `CardComponent` s. Their titles should be the name of the found term, the description is their URI. Set the id of the `CardComponent` to the `uri` of the `Term`. When clicked, send a `TermEvents.CLICKED_TERM` to the `TermMachine`. Include the URI (and name?) in the payload. This should add the selected term to the `TermMachine` context. (`selected`)
 
-Pressing the submit button should fire `FORM_SUBMITTED` to the `TermMachine` 's `FormMachine`.
+Selected results should show a `CheckboxChecked` svg on the left, otherwise `CheckboxUnchecked`.
+
+Pressing the submit button should fire `SUBMITTED` to the `TermMachine`.
