@@ -77,7 +77,7 @@ Generate in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/feat
 
 Make use of existing `<form-element>` components. Take a look at the demo form component for example usage of a multiple select dropdown.
 
-Making use of properties, pass the search results into the `TermSearchComponent` and display them using `CardComponent` s. Their titles should be the name of the found term, the description is their URI. Set the id of the `CardComponent` to the `uri` of the `Term`. When clicked, send a `TermEvents.CLICKED_TERM` to the `TermMachine`. Include the URI (and name?) in the payload. This should add the selected term to the `TermMachine` context. (`selected`)
+Making use of properties, pass the search results into the `TermSearchComponent` and display them using `CardComponent` s. Their titles should be the name of the found term, the description is their URI. Set the id of the `CardComponent` to the `uri` of the `Term`. When clicked, send a `TermEvents.CLICKED_TERM` to the `TermMachine`. This should add the selected terms to the `TermMachine` context. (`selected`)
 
 Selected results should show a `CheckboxChecked` svg on the left, otherwise `CheckboxUnchecked`.
 
