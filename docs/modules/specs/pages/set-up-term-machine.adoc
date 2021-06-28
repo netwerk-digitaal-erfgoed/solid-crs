@@ -27,7 +27,7 @@ This document is about the set up of the term machine, which can be invoked when
 
 Create 'term.ts' under 'lib/terms/' in the 'nde-erfgoed-core' package.
 
-The  model should look like this. It extends `Resource`.
+The model should look like this. It extends `Resource`.
 
 [source, ts]
 ----
@@ -35,6 +35,12 @@ The  model should look like this. It extends `Resource`.
   name: string,
 }
 ----
+
+==== Collection Object Model
+
+This model should be edited to allow for multiple values for certain properties. (Those who should have term URIs as values)
+
+Also update the related services. (e.g. collection-object-solid-store.ts)
 
 
 ==== Term service
@@ -126,6 +132,7 @@ The context of the `TermMachine` consists of the following items.
 [source, js]
 ----
 {
+  field: string,          // the form field this term belongs to (e.g. creator)
   query: string,          // the user input (value of text input field)
   sources: string,        // the sources selected by the user
   searchResults: Term[],  // a list containing all search results
@@ -155,4 +162,6 @@ Create following events in 'lib/features/object/term/term.events.ts'
 
 ==== Collection Object Machine, Events
 
-When a field, containing a Term, is clicked, the `TermMachine` should be invoked in a new state. Transition to this state with a new `ObjectEvents.CLICKED_TERM` event.
+When a form field, containing a Term, is clicked, the `TermMachine` should be invoked in a new state: `ObjectStates.EDITING_FIELD`. Pass the clicked `FormElement.field` to the context of the `TermMachine`. Transition to this state with a new `ObjectEvents.CLICKED_FIELD` event.
+
+When the `TermMachine` terminates, its `selectedTerms` should assigned to the corresponding object property.
