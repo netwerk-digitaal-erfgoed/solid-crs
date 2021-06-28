@@ -55,15 +55,13 @@ This document is about the creation of a reusable sidebar list component.
 
 === Assumptions
 
-All components are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-components' package.
+The `TermMachine` is created.
 
 
 == Solution
 
 
 === Suggested or proposed solution
-
-The `TermMachine` is created.
 
 
 ==== TermSearchComponent 
