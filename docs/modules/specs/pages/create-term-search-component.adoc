@@ -7,6 +7,7 @@
 
 * Stijn Taelemans
 
+
 == References
 
 
@@ -17,45 +18,10 @@
 
 == Introduction
 
+
 === Overview
 
 This document is about the creation of the component used for querying terms.
-
-
-== Solution
-
-
-=== Suggested or proposed solution
-
-
-==== = Technical Documentation: Update sidebar
-:sectanchors:
-:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
-:imagesdir: ../images
-
-
-== Author(s)
-
-* Stijn Taelemans
-
-
-== References
-
-* https://www.wrike.com/open.htm?id=682525025[Wrike task]
-* Branch: `feat/create-content-header-component`
-* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
-
-
-== Introduction
-
-=== Overview
-
-This document is about the creation of a reusable sidebar list component.
-
-
-=== Assumptions
-
-All components are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-components' package.
 
 
 == Solution
