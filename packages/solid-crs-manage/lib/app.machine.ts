@@ -121,9 +121,8 @@ export const appMachine = (
      * Determines which feature is currently active.
      */
       [AppRootStates.FEATURE]: {
-        initial: AppFeatureStates.AUTHENTICATE,
+        initial: AppFeatureStates.COLLECTION,
         on: {
-          [AppEvents.LOGGED_OUT]: `${AppRootStates.FEATURE}.${AppFeatureStates.AUTHENTICATE}`,
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
           },
@@ -144,6 +143,7 @@ export const appMachine = (
         /**
          * The collection feature is shown.
          */
+          // [AppFeatureStates.AUTHENTICATE]: {},
           [AppFeatureStates.COLLECTION]: {
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
@@ -168,7 +168,7 @@ export const appMachine = (
               {
                 id: AppActors.COLLECTION_MACHINE,
                 src: collectionMachine(collectionStore, objectStore, objectTemplate),
-                data: (context, event) => ({
+                data: (context) => ({
                   collection: context.selected,
                 }),
                 onError: {
@@ -176,27 +176,6 @@ export const appMachine = (
                 },
               },
             ],
-          },
-          /**
-           * The authenticate feature is active.
-           */
-          [AppFeatureStates.AUTHENTICATE]: {
-            on: {
-              [AppEvents.LOGGED_IN]: AppFeatureStates.COLLECTION,
-            },
-            invoke: {
-              id: AppActors.AUTHENTICATE_MACHINE,
-              src: authenticateMachine(solid).withContext({ }),
-              /**
-               * Send logged in event when authenticate machine is done, and the user has authenticated.
-               */
-              onDone: {
-                actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
-              },
-              onError: {
-                actions: send({ type: AppEvents.ERROR }),
-              },
-            },
           },
           /**
            * Shows the search feature.
@@ -306,11 +285,9 @@ export const appMachine = (
                   data: { searchTerm: '' },
                   original: { searchTerm: '' },
                 },
-
               },
             ],
             on: {
-              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
               [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
             },
           },
@@ -329,12 +306,28 @@ export const appMachine = (
                 actions: send({ type: AppEvents.LOGGED_OUT }),
               },
             },
+            on: {
+              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
+            },
           },
 
           /**
            * The user has not been authenticated.
            */
           [AppAuthenticateStates.UNAUTHENTICATED]: {
+            invoke: {
+              id: AppActors.AUTHENTICATE_MACHINE,
+              src: authenticateMachine(solid).withContext({ }),
+              /**
+               * Send logged in event when authenticate machine is done, and the user has authenticated.
+               */
+              onDone: {
+                actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
+              },
+              onError: {
+                actions: send({ type: AppEvents.ERROR }),
+              },
+            },
             on: {
               [AppEvents.LOGGED_IN]: {
                 target: AppAuthenticateStates.AUTHENTICATED,

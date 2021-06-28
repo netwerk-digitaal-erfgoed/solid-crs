@@ -120,7 +120,7 @@
         "value": "Beschrijving van deze collectie"
     },
     {
-        "key": "nde.features.collections.description-placeholder",
+        "key": "nde.common.form.description-placeholder",
         "locale": "nl-NL",
         "value": "Klik om een beschrijving toe te voegen."
     },
@@ -437,22 +437,32 @@
     {
         "key": "nde.features.object.card.dimensions.field.depth",
         "locale": "nl-NL",
-        "value": "Diepte (cm)"
+        "value": "Diepte"
     },
     {
         "key": "nde.features.object.card.dimensions.field.width",
         "locale": "nl-NL",
-        "value": "Breedte (cm)"
+        "value": "Breedte"
     },
     {
         "key": "nde.features.object.card.dimensions.field.height",
         "locale": "nl-NL",
-        "value": "Hoogte (cm)"
+        "value": "Hoogte"
     },
     {
         "key": "nde.features.object.card.dimensions.field.weight",
         "locale": "nl-NL",
-        "value": "Gewicht (kg)"
+        "value": "Gewicht"
+    },
+    {
+        "key": "nde.features.object.card.dimensions.field.unit",
+        "locale": "nl-NL",
+        "value": "Eenheid"
+    },
+    {
+        "key": "nde.common.form.click-to-select",
+        "locale": "nl-NL",
+        "value": "Klik om te selecteren"
     },
     {
         "key": "nde.common.date.just-now",

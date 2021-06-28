@@ -53,8 +53,11 @@ describe('SearchRootComponent', () => {
       collectionStore,
       objectStore,
       collection1,
-      object1
-    ));
+      object1,
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
     component.actor = machine;
@@ -223,7 +226,6 @@ describe('SearchRootComponent', () => {
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
           const casted = event as DismissAlertEvent;
-
           expect(casted.alert).toEqual(alert);
           done();
 

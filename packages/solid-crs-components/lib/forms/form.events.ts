@@ -21,7 +21,7 @@ export enum FormEvents {
  */
 export interface FormUpdatedEvent extends Event<FormEvents> {
   type: FormEvents.FORM_UPDATED;
-  field: string; value: string;
+  field: string; value: string|string[];
 }
 
 /**

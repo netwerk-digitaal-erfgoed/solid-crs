@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
+
+
+### **Features**
+
+* add checkbox dropdown element ([#332](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/332)) ([861033e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/861033e6dbff57a23715e19cb425e96e3448134e))
+* support dimension units ([#340](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/340)) ([e1524a9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/e1524a906ddee20aff2fcc8245fbc7154703e012))
+
+
+### **Bug Fixes**
+
+* broken authenticate submit on enter ([#344](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/344)) ([5977bb1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5977bb1d4e5d374ccc93ff440e39782bbee3060d))
+* broken login after logout ([99a756e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/99a756e7d4c5cc17b0fadb77d0cb9acdbaff4d78))
+* enabled autocomplete on webid input ([#342](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/342)) ([65e8798](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/65e8798ad57a5a34fe17c2dae80a69b6df07e7af))
+* enabled editing of title, description in object page header ([#343](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/343)) ([cc0b0f7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/cc0b0f76d283be78c40c9914f0dfb1682cd6fcf2))
+* right click inputs crashes ([#341](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/341)) ([a3acad7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a3acad7e6b21e291af2a00ba488ecdfa95d8e22d))
+
+
+
 ### [0.5.10](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.9...v0.5.10) (2021-06-22)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage

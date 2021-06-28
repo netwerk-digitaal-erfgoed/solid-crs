@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
+
+
+### **Features**
+
+* add checkbox dropdown element ([#332](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/332)) ([861033e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/861033e6dbff57a23715e19cb425e96e3448134e))
+
+
+### **Bug Fixes**
+
+* broken authenticate submit on enter ([#344](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/344)) ([5977bb1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5977bb1d4e5d374ccc93ff440e39782bbee3060d))
+
+
+
 ### [0.5.10](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.9...v0.5.10) (2021-06-22)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-components

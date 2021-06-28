@@ -120,6 +120,7 @@ export const collectionMachine =
             /**
              * Notify the parent machine when something goes wrong.
              */
+              target: CollectionStates.IDLE,
               actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
             },
           },

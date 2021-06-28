@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { AppEvents, DismissAlertEvent, LoggedInEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SolidService } from '../../common/solid/solid.service';
@@ -15,34 +15,38 @@ describe('AuthenticateRootComponent', () => {
   let machine: Interpreter<AuthenticateContext>;
   let solid: SolidService;
 
-  const collection1: Collection = {
-    uri: 'collection-uri-3',
-    name: 'Collection 3',
-    description: 'This is collection 3',
-    objectsUri: 'test-uri',
-    distribution: 'test-uri',
-  };
-
-  const collection2: Collection = {
-    uri: 'collection-uri-1',
-    name: 'Collection 1',
-    description: 'This is collection 1',
-    objectsUri: 'test-uri',
-    distribution: 'test-uri',
-  };
-
-  const object1: CollectionObject = {
-    uri: 'object-uri-1',
-    name: 'Object 1',
-    description: 'This is object 1',
-    image: null,
-    subject: null,
-    type: null,
-    updated: '0',
-    collection: 'collection-uri-1',
-  };
+  let collection1: Collection;
+  let collection2: Collection;
+  let object1: CollectionObject;
 
   beforeEach(() => {
+
+    collection1 = {
+      uri: 'collection-uri-1',
+      name: 'Collection 1',
+      description: 'This is collection 1',
+      objectsUri: '',
+      distribution: '',
+    };
+
+    collection2 = {
+      uri: 'collection-uri-2',
+      name: 'Collection 2',
+      description: 'This is collection 2',
+      objectsUri: '',
+      distribution: '',
+    };
+
+    object1 = {
+      uri: 'object-uri-1',
+      name: 'Object 1',
+      description: 'This is object 1',
+      image: null,
+      subject: null,
+      type: null,
+      updated: undefined,
+      collection: 'collection-uri-1',
+    };
 
     const collectionStore = new CollectionMemoryStore([
       collection1,
@@ -62,7 +66,10 @@ describe('AuthenticateRootComponent', () => {
       objectStore,
       collection1,
       object1
-    ));
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
 
@@ -224,7 +231,6 @@ describe('AuthenticateRootComponent', () => {
         if(event && event.type === AppEvents.DISMISS_ALERT) {
 
           const casted = event as DismissAlertEvent;
-
           expect(casted.alert).toEqual(alert);
           done();
 
@@ -234,6 +240,8 @@ describe('AuthenticateRootComponent', () => {
 
       machine.start();
       machine.parent.start();
+
+      machine.parent.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
 
       window.document.body.appendChild(component);
       await component.updateComplete;

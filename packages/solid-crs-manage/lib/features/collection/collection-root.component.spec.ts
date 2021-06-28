@@ -1,5 +1,5 @@
 import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -31,7 +31,7 @@ describe('CollectionRootComponent', () => {
     distribution: null,
   };
 
-  const object1 = {
+  const object1: CollectionObject = {
     uri: 'object-uri-1',
     name: 'Object 1',
     description: 'This is object 1',
@@ -60,7 +60,10 @@ describe('CollectionRootComponent', () => {
       objectStore,
       { ...collection1 },
       { ...object1 },
-    ));
+    ).withContext({
+      alerts: [],
+      selected: collection1,
+    }));
 
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
