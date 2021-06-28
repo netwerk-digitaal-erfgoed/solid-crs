@@ -21,15 +21,18 @@
 
 === Overview
 
-This document is about the creation of the component used for querying terms.
+This document is about the creation of a reusable sidebar list component.
+
+
+=== Assumptions
+
+The `TermMachine` is created.
 
 
 == Solution
 
 
 === Suggested or proposed solution
-
-The `TermMachine` is created.
 
 
 ==== TermSearchComponent 
