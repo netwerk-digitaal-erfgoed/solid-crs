@@ -26,7 +26,7 @@ export class TermService {
    * @param sources The sources on which the term might be present
    * @returns A list of matching Terms
    */
-  async query(query: string, sources: string[]): Promise<Term[]> {
+  async query(query: string, sources: TermSource[]): Promise<Term[]> {
 
     if (!query) {
 
@@ -68,7 +68,7 @@ export class TermService {
     const body = {
       query: graphQlQuery,
       variables: {
-        sources,
+        sources: sources.map((source) => source.uri),
         query,
       },
     };

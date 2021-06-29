@@ -324,8 +324,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
-    const showLoading = !(this.state?.matches(ObjectStates.IDLE)
-      || this.state?.matches(ObjectStates.EDITING));
+    const showLoading = !(this.state?.matches(ObjectStates.IDLE));
 
     return this.object ? html`
 

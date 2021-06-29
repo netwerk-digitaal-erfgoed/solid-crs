@@ -31,7 +31,7 @@ describe('ObjectMachine', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -42,7 +42,7 @@ describe('ObjectMachine', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -56,7 +56,7 @@ describe('ObjectMachine', () => {
 
     objectStore = new CollectionObjectMemoryStore([ object1, object2 ]);
 
-    machine = interpret<ObjectContext>(objectMachine(objectStore)
+    machine = interpret(objectMachine(objectStore)
       .withContext({
         object: object1,
       }));
@@ -65,7 +65,8 @@ describe('ObjectMachine', () => {
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {}
+      collection1,
+      object1,
     ));
 
   });
@@ -107,6 +108,23 @@ describe('ObjectMachine', () => {
 
     machine.start();
     machine.send(ObjectEvents.CLICKED_SAVE);
+
+  });
+
+  it('should transition to EDITING_FIELD when CLICKED_TERM_FIELD was fired', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(ObjectEvents.CLICKED_TERM_FIELD);
 
   });
 

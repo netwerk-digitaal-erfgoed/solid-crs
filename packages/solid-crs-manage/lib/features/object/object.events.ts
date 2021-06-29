@@ -9,6 +9,7 @@ export enum ObjectEvents {
   CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
   CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
   SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
+  CLICKED_TERM_FIELD               = '[ObjectsEvent: Clicked Term Field]',
 }
 
 /**
@@ -42,6 +43,14 @@ export interface ClickedSaveEvent extends Event<ObjectEvents> {
 }
 
 /**
+ * Fired when the user clicks a Term's form input.
+ */
+export interface ClickedTermFieldEvent extends Event<ObjectEvents> {
+  type: ObjectEvents.CLICKED_TERM_FIELD;
+  field: string;
+}
+
+/**
  * Events for the object machine.
  */
 export type ObjectEvent = ClickedDeleteObjectEvent
@@ -49,4 +58,5 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | SelectedObjectEvent
 | FormSubmittedEvent
 | ClickedDeleteObjectEvent
-| ClickedResetEvent;
+| ClickedResetEvent
+| ClickedTermFieldEvent;

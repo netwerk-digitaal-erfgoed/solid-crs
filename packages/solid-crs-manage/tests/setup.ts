@@ -11,6 +11,8 @@ import { ObjectRootComponent } from '../lib/features/object/object-root.componen
  */
 fetchMock.enableMocks();
 
+process.env.VITE_TERM_ENDPOINT = 'https://endpoint.url/';
+
 /**
  * Register tags for components.
  */

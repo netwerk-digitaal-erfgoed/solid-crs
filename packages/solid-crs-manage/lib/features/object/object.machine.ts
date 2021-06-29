@@ -7,7 +7,8 @@ import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
-import { ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { TermActors, termMachine } from './terms/term.machine';
 
 /**
  * The context of the object feature.
@@ -36,7 +37,7 @@ export enum ObjectActors {
 export enum ObjectStates {
   IDLE      = '[ObjectsState: Idle]',
   SAVING    = '[ObjectsState: Saving]',
-  EDITING   = '[ObjectsState: Editing]',
+  EDITING_FIELD   = '[ObjectsState: Editing Field]',
   DELETING  = '[ObjectsState: Deleting]',
 }
 
@@ -241,6 +242,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_RESET]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
         invoke: [
           {
@@ -258,6 +260,32 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               actions: [
                 assign((context, event) => ({
                   object: { ...event.data.data },
+                })),
+              ],
+            },
+          },
+        ],
+      },
+      [ObjectStates.EDITING_FIELD]: {
+        on: {
+          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
+          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
+        },
+        invoke: [
+          {
+            id: TermActors.TERM_MACHINE,
+            src: termMachine,
+            data: (context, event: ClickedTermFieldEvent) => ({
+              field: event.field,
+            }),
+            onDone: {
+              target: ObjectStates.SAVING,
+              actions: [
+                assign((context, event) => ({
+                  object: {
+                    ...context.object,
+                    [event.data.field]: event.data.selectedTerms[0], // todo switch to full list
+                  },
                 })),
               ],
             },
