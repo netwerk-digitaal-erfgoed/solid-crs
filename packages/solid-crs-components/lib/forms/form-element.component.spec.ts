@@ -433,6 +433,17 @@ describe('FormElementComponent', () => {
 
   });
 
+  it('should set this.inverse when form element has inverse class', async () => {
+
+    component.className += ' inverse';
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(component.inverse).toBeTruthy();
+
+  });
+
   describe('bindActorToInput', () => {
 
     const slot: HTMLSlotElement = {

@@ -333,10 +333,10 @@ export class ObjectRootComponent extends RxLitElement {
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
 
-      <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
         <input autofocus type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
-      <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
         <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
       </nde-form-element>
 

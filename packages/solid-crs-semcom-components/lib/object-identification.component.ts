@@ -3,7 +3,7 @@ import { Collection, CollectionObject, Logger, Translator } from '@netwerk-digit
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 /**
@@ -68,6 +68,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
           <input type="text" slot="input" name="additionalType" id="additionalType"/>
+          <button type="button" slot="action">${ unsafeSVG(Connect) }</button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
           <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>

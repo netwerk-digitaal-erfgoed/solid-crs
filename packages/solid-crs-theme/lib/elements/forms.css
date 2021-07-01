@@ -4,6 +4,13 @@ form {
   align-items: stretch;
 }
 
+textarea,
+input,
+select {
+  border: none;
+  height: 42px;
+}
+
 form nde-form-element {
   margin-bottom: var(--gap-large);
   display: block;
@@ -17,12 +24,14 @@ nde-form-element input,
 nde-form-element select,
 nde-form-element textarea {
   color: var(--colors-foreground-normal);
-  border: none;
   font-size: var(--font-size-small);
   font-family: var(--font-family);
-  outline: none;
   display: block;
   width: 100%;
+}
+
+nde-content-header nde-form-element input {
+  height: var(--gap-normal);
 }
 
 nde-form-element select {
@@ -48,6 +57,12 @@ nde-form-element ul li input {
   margin-right: var(--gap-normal) !important;
 }
 
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+}
+
 nde-form-element input:disabled {
   color: var(--colors-foreground-light);
 }
@@ -70,6 +85,13 @@ nde-form-element div[slot="icon"] svg {
 nde-form-element div[slot="help"] {
   font-size: var(--font-size-small);
   color: var(--colors-foreground-light);
+}
+
+nde-form-element button[slot="action"] {
+  height: 100%;
+  width: 100%;
+  line-height: 10px;
+  padding: 0 20px;
 }
 
 input[type="radio"],

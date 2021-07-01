@@ -36,7 +36,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * Decides whether a border should be shown around the content
    */
-  @property({ type: Boolean })
+  @internalProperty()
   public inverse = false;
 
   /**
@@ -118,6 +118,8 @@ export class FormElementComponent<T> extends RxLitElement {
   updated(changed: PropertyValues): void {
 
     super.updated(changed);
+
+    this.inverse = this.className?.includes('inverse');
 
     if(changed.has('actor') && this.actor) {
 
@@ -352,7 +354,7 @@ export class FormElementComponent<T> extends RxLitElement {
           </div>
         ` : ''
 }     
-      <div class="content ${!this.showValidation && this.validationResults?.length > 0  ? 'no-validation' : ''}">
+      <div class="content${!this.showValidation && this.validationResults?.length > 0  ? ' no-validation' : ''}${this.inverse ? ' no-border' : ''}">
         <div class="field ${this.inverse ? 'no-border' : ''}">
           <slot name="input"></slot>
           <div class="icon">
@@ -385,12 +387,8 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
-
         .loading svg .loadCircle {
           stroke: var(--colors-primary-normal);
-        }
-        .no-border, .no-border ::slotted(*) {
-          border: none !important;
         }
         .no-validation {
           border-bottom: solid 2px var(--colors-status-warning);
@@ -408,9 +406,7 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          background-color: var(--colors-background-light)
-        }
-        .form-element .content .action ::slotted(button){
+          background-color: var(--colors-background-light);
           height: 100%;
         }
         .form-element .content .field {
@@ -421,10 +417,13 @@ export class FormElementComponent<T> extends RxLitElement {
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
         }
+        .form-element .content .field.no-border {
+          border: none;
+        }
         .form-element .content .field ::slotted(*) {
           padding: 0 var(--gap-normal);
           flex: 1 0;
-          height: 44px;
+          height: 100%;
           max-height: auto;
           font-size: var(--font-size-small);
           font-family: var(--font-family);
@@ -442,7 +441,7 @@ export class FormElementComponent<T> extends RxLitElement {
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);
-          height: 132px;
+          height: 128px;
         }
         .form-element .content .field .icon {
           margin: var(--gap-small) 0;
