@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -68,7 +68,9 @@ export class ObjectIdentificationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.identification.field.object-name')}</label>
           <input type="text" slot="input" name="additionalType" id="additionalType"/>
-          <button type="button" slot="action">${ unsafeSVG(Connect) }</button>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'additionalType' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
           <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.identification.field.title')}</label>

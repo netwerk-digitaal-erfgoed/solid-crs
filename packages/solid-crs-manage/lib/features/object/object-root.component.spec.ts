@@ -7,7 +7,7 @@ import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectRootComponent } from './object-root.component';
-import { ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
 
 describe('ObjectRootComponent', () => {
@@ -407,6 +407,33 @@ describe('ObjectRootComponent', () => {
     map.set('formActor', 'bla');
 
     await component.updated(map);
+
+  });
+
+  it('should send ClickedTermFieldEvent when CLICKED_TERM_FIELD event is caught', async (done) => {
+
+    machine.start();
+    machine.parent.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    machine.onEvent((event) => {
+
+      if(event instanceof ClickedTermFieldEvent
+        && event.type === ObjectEvents.CLICKED_TERM_FIELD
+        && event.field === 'additionalType') {
+
+        done();
+
+      }
+
+    });
+
+    component.dispatchEvent(new CustomEvent<string>(
+      'CLICKED_TERM_FIELD',
+      { bubbles: true, composed: true, detail: 'additionalType' }
+    ));
 
   });
 

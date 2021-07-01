@@ -3,7 +3,7 @@ import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, Logg
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ObjectEvents, SelectedObjectEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 
 describe('ObjectMachine', () => {
@@ -90,7 +90,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_RESET);
+    machine.send(new ClickedResetEvent());
 
   });
 
@@ -107,7 +107,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_SAVE);
+    machine.send(new ClickedSaveEvent());
 
   });
 
@@ -124,7 +124,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_TERM_FIELD);
+    machine.send(new ClickedTermFieldEvent('name'));
 
   });
 
@@ -141,7 +141,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_DELETE);
+    machine.send(new ClickedDeleteObjectEvent(object1));
 
   });
 
@@ -150,7 +150,7 @@ describe('ObjectMachine', () => {
     objectStore.save = jest.fn().mockResolvedValueOnce(object1);
 
     machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: object1 });
+    machine.send(new SelectedObjectEvent(object1));
 
     let alreadySaved = false;
 
@@ -174,7 +174,7 @@ describe('ObjectMachine', () => {
 
     });
 
-    machine.send(ObjectEvents.CLICKED_SAVE);
+    machine.send(new ClickedSaveEvent());
 
   });
 
@@ -192,7 +192,7 @@ describe('ObjectMachine', () => {
 
     machine.start();
 
-    machine.send({ type: ObjectEvents.SELECTED_OBJECT, object: object2 } as SelectedObjectEvent);
+    machine.send(new SelectedObjectEvent(object2));
 
   });
 

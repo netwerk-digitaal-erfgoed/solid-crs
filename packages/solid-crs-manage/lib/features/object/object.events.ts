@@ -1,5 +1,6 @@
-import { Event, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { EventObject } from 'xstate';
 
 /**
  * Event references for the object machine, with readable log format.
@@ -15,39 +16,49 @@ export enum ObjectEvents {
 /**
  * Fired when the user clicks the delete object button.
  */
-export interface ClickedDeleteObjectEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CLICKED_DELETE;
-  object: CollectionObject;
+export class ClickedDeleteObjectEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_DELETE = ObjectEvents.CLICKED_DELETE;
+  constructor(public object: CollectionObject) { }
+
 }
 
 /**
  * Fired when the users selects an object.
  */
-export interface SelectedObjectEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.SELECTED_OBJECT;
-  object: CollectionObject;
+export class SelectedObjectEvent implements EventObject {
+
+  public type: ObjectEvents.SELECTED_OBJECT = ObjectEvents.SELECTED_OBJECT;
+  constructor(public object: CollectionObject) { }
+
 }
 
 /**
  * Fired when the user clicks the reset button.
  */
-export interface ClickedResetEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CLICKED_RESET;
+export class ClickedResetEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_RESET = ObjectEvents.CLICKED_RESET;
+
 }
 
 /**
  * Fired when the user clicks the save button.
  */
-export interface ClickedSaveEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CLICKED_SAVE;
+export class ClickedSaveEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_SAVE = ObjectEvents.CLICKED_SAVE;
+
 }
 
 /**
  * Fired when the user clicks a Term's form input.
  */
-export interface ClickedTermFieldEvent extends Event<ObjectEvents> {
-  type: ObjectEvents.CLICKED_TERM_FIELD;
-  field: string;
+export class ClickedTermFieldEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_TERM_FIELD = ObjectEvents.CLICKED_TERM_FIELD;
+  constructor(public field: string) { }
+
 }
 
 /**

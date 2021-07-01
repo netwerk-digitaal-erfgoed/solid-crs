@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -12,7 +12,8 @@ import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { AppEvents } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
-import { ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
+import { ClickedTermEvent } from './terms/term.events';
 
 /**
  * The root page of the object feature.
@@ -125,6 +126,13 @@ export class ObjectRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
+
+    this.addEventListener('CLICKED_TERM_FIELD', (event: CustomEvent<string>) => {
+
+      this.actor?.send(new ClickedTermFieldEvent(event.detail));
+      event.stopPropagation();
+
+    });
 
   }
 
@@ -324,7 +332,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
-    const showLoading = !(this.state?.matches(ObjectStates.IDLE));
+    const showLoading = !(this.state?.matches(ObjectStates.IDLE) || this.state?.matches(ObjectStates.EDITING_FIELD));
 
     return this.object ? html`
 
