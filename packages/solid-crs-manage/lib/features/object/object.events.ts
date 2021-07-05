@@ -80,4 +80,5 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | FormSubmittedEvent
 | ClickedDeleteObjectEvent
 | ClickedResetEvent
-| ClickedTermFieldEvent;
+| ClickedTermFieldEvent
+| ClickedObjectSidebarItem;
