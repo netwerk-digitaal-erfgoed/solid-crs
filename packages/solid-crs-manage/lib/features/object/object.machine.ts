@@ -6,6 +6,7 @@ import { formMachine,
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
+import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
@@ -283,10 +284,11 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
+                log((context, event) => event),
                 assign((context, event) => ({
                   object: {
                     ...context.object,
-                    [event.data.field]: event.data.selectedTerms[0], // todo switch to full list
+                    [event.data.field]: event.data.selectedTerms[0].uri, // todo switch to full list
                   },
                 })),
               ],

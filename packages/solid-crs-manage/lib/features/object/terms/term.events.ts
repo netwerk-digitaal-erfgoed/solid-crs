@@ -5,9 +5,9 @@ import { EventObject } from 'xstate';
  * Event references for the term machine, with readable log format.
  */
 export enum TermEvents {
-  CLICKED_SUBMIT  = '[ObjectsEvent: Clicked Submit]',
-  CLICKED_TERM    = '[ObjectsEvent: Clicked Term]',
-  QUERY_UPDATED   = '[ObjectsEvent: Query Updated]',
+  CLICKED_SUBMIT  = '[TermEvent: Clicked Submit]',
+  CLICKED_TERM    = '[TermEvent: Clicked Term]',
+  QUERY_UPDATED   = '[TermEvent: Query Updated]',
 }
 
 /**

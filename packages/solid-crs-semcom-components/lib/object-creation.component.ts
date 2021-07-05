@@ -3,7 +3,7 @@ import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Object as ObjectIcon } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Object as ObjectIcon, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 /**
@@ -52,19 +52,28 @@ export class ObjectCreationComponent extends RxLitElement {
       </div>
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="creator">
-          <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.creation.field.creator')}</label>
+          <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
           <input type="text" slot="input" name="creator" id="creator"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'creator' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="locationCreated">
-          <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.creation.field.location')}</label>
+          <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
           <input type="text" slot="input" name="locationCreated" id="locationCreated"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'locationCreated' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="material">
-          <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.creation.field.material')}</label>
+          <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
           <input type="text" slot="input" name="material" id="material"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'material' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="dateCreated">
-          <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.creation.field.date')}</label>
+          <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.field.dateCreated')}</label>
           <input type="text" slot="input" name="dateCreated" id="dateCreated" placeholder="YYYY-MM-DD"/>
         </nde-form-element>
       </div>

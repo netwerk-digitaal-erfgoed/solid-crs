@@ -84,18 +84,18 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
           src: formMachine<{ query: string; sources: TermSource[] }>(
           ),
           data: (context) => ({
-            data: { query: context.query, sources: [] },
-            original: { query: context.query, sources: [] },
+            data: { query: context.query, sources: context.selectedSources },
+            original: { query: context.query, sources: context.selectedSources },
           }),
-          onDone: {
-            target: TermStates.QUERYING,
-            actions: [
-              assign((context, event) => ({
-                query: event.data.data.query,
-                selectedSources: event.data.data.sources,
-              })),
-            ],
-          },
+          // onDone: {
+          //   target: TermStates.QUERYING,
+          //   actions: [
+          //     assign((context, event) => ({
+          //       query: event.data.data.query,
+          //       selectedSources: event.data.data.sources,
+          //     })),
+          //   ],
+          // },
         },
         on: {
           [TermEvents.QUERY_UPDATED]: {
@@ -106,11 +106,11 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
           },
           [TermEvents.CLICKED_TERM]: {
             actions: assign(
-              (context, event) => ({ selectedTerms: !context.selectedTerms.find((term) => term.uri === event.term.uri)
+              (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
                 // add the term if it is not yet selected
-                ? [ ...context.selectedTerms, event.term ]
+                ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
                 // otherwise, remove it from selected terms
-                : context.selectedTerms.filter((term) => term.uri !== event.term.uri) }),
+                : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
             ),
           },
           [TermEvents.CLICKED_SUBMIT]: TermStates.SUBMITTED,
@@ -120,21 +120,28 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
        * The machine is querying the endpoint using the TermService
        */
       [TermStates.QUERYING]: {
-        invoke: {
-          src: (context) => context.termService.query(context.query, context.sources),
-          onDone: {
-            target: TermStates.IDLE,
-            actions: assign(
-              (context, event) => ({ searchResults: event.data }),
-            ),
+        invoke: [
+          {
+            src: (context) => context.termService.query(context.query, context.selectedSources),
+            onDone: {
+              target: TermStates.IDLE,
+              actions: assign(
+                (context, event) => ({ searchResults: event.data }),
+              ),
+            },
+            onError: TermStates.IDLE,
           },
-        },
+        ],
       },
       /**
        * The user has clicked submit and the machine terminates
        */
       [TermStates.SUBMITTED]: {
         type: 'final',
+        data: (context) => ({
+          field: context.field,
+          selectedTerms: context.selectedTerms,
+        }),
       },
     },
   });

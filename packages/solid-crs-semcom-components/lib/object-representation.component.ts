@@ -3,7 +3,7 @@ import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Object as ObjectIcon } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Object as ObjectIcon, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 /**
@@ -52,24 +52,39 @@ export class ObjectRepresentationComponent extends RxLitElement {
       </div>
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="subject">
-          <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.representation.field.subject')}</label>
+          <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.field.subject')}</label>
           <input type="text" slot="input" name="subject" id="subject"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'subject' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="location">
-          <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.representation.field.location')}</label>
+          <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.field.location')}</label>
           <input type="text" slot="input" name="location" id="location"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'location' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="person">
-          <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.representation.field.person')}</label>
+          <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.field.person')}</label>
           <input type="text" slot="input" name="person" id="person"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'person' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="organization">
-          <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.representation.field.organization')}</label>
+          <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.field.organization')}</label>
           <input type="text" slot="input" name="organization" id="organization"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'organization' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="event">
-          <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.representation.field.event')}</label>
+          <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.field.event')}</label>
           <input type="text" slot="input" name="event" id="event"/>
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'event' }))}">
+            ${ unsafeSVG(Connect) }
+          </button>
         </nde-form-element>
       </div>
     </nde-large-card>
