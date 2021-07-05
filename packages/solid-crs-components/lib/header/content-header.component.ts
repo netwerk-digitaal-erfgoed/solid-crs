@@ -13,6 +13,12 @@ export class ContentHeaderComponent extends LitElement {
   public inverse = false;
 
   /**
+   * Whether or not a border should be shown at the bottom
+   */
+  @property({ type: Boolean })
+  public noBorder = false;
+
+  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
@@ -20,7 +26,7 @@ export class ContentHeaderComponent extends LitElement {
   render() {
 
     return html`
-    <div class="header ${this.inverse ? '' : 'inverse'}">
+    <div class="header${this.inverse ? '' : ' inverse'}${this.noBorder ? ' no-border' : ''}">
 
       <div class="icon">
         <slot name="icon"></slot>
@@ -53,11 +59,6 @@ export class ContentHeaderComponent extends LitElement {
           height: 99px;
           min-height: 99px;
         }
-        .header.inverse {
-          background-color: var(--colors-primary-dark);
-          color: var(--colors-foreground-inverse);
-          fill: var(--colors-foreground-inverse);
-        }
         .header {
           height: 100%;
           padding: 0px var(--gap-large);
@@ -68,6 +69,14 @@ export class ContentHeaderComponent extends LitElement {
           display: flex;
           flex-direction: row;
           align-items: center;
+        }
+        .header.inverse {
+          background-color: var(--colors-primary-dark);
+          color: var(--colors-foreground-inverse);
+          fill: var(--colors-foreground-inverse);
+        }
+        .header.no-border {
+          border: none;
         }
         .header .icon {
           font-size: 25px;

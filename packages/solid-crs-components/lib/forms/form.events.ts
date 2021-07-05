@@ -1,4 +1,4 @@
-import { Action, assign } from 'xstate';
+import { assign } from 'xstate';
 import { Event } from '../state/event';
 import { FormValidatorResult } from './form-validator-result';
 import { FormContext } from './form.machine';

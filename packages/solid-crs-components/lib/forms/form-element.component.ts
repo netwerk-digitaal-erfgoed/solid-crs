@@ -6,7 +6,7 @@ import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { FormCleanlinessStates, FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
 import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
 
@@ -282,18 +282,17 @@ export class FormElementComponent<T> extends RxLitElement {
           checkboxListItems.forEach((node: HTMLInputElement) =>
             node.checked = fieldData.includes(node.id));
 
-          titleListItem.textContent = fieldData.join(', ');
+          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'nde.common.form.n-sources-selected' : 'nde.common.form.one-source-selected').toLowerCase()}` : this.translator.translate('nde.common.form.click-to-select');
 
           titleListItem.parentElement.addEventListener('click', () => {
 
-            this.className += ' overlay';
             checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
             titleListItem.hidden = true;
             checkboxInputs[0].focus();
 
           });
 
-          // When the user clicks outside of the list of elements, hide the list
+          // When the user clicks outside of the list of elements, hide the list and update form machine
           element.parentElement.addEventListener('focusout', (event) => {
 
             if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)
@@ -302,20 +301,17 @@ export class FormElementComponent<T> extends RxLitElement {
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
 
+              const selectedValues = [].concat(...checkboxLabels
+                .filter((label) => checkboxInputs.find((input) => input.checked).name === label.htmlFor))
+                .map((label: HTMLLabelElement) => label.textContent);
+
+              titleListItem.textContent = selectedValues?.length > 0
+                ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.common.form.n-sources-selected' : 'nde.common.form.one-source-selected').toLowerCase()}`
+                : this.translator.translate('nde.common.form.click-to-select');
+
+              actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
+
             }
-
-          });
-
-          // When an item is clicked, update the form machine
-          element.addEventListener('input', () => {
-
-            const selectedValues = [].concat(...checkboxLabels
-              .filter((label) => checkboxInputs.find((input) => input.checked).name === label.htmlFor))
-              .map((label: HTMLLabelElement) => label.textContent);
-
-            titleListItem.textContent = selectedValues.length > 0 ? selectedValues.join(', ') : this.translator.translate('nde.common.form.click-to-select');
-
-            actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
 
           });
 
@@ -399,7 +395,14 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
-        .loading svg .loadCircle {
+        .loading, .loading svg {
+          margin-right: var(--gap-normal);
+          max-height: var(--gap-normal);
+          max-width: var(--gap-normal);
+          height: var(--gap-normal);
+          width: var(--gap-normal);
+        }
+        .loading svg .loading-circle {
           stroke: var(--colors-primary-normal);
         }
         .no-validation {
@@ -459,7 +462,9 @@ export class FormElementComponent<T> extends RxLitElement {
           width: calc(100% - 2 * var(--gap-normal));
           background-color: var(--colors-background-light);
           z-index: 20;
-          padding-bottom: var(--gap-small);
+          margin: 0;
+          padding: var(--gap-small) var(--gap-normal);
+          line-height: 1.5;
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);

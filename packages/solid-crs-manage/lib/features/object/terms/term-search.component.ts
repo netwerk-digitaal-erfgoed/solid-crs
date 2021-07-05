@@ -1,10 +1,10 @@
-import { CheckboxChecked, CheckboxUnchecked, Cross, Dropdown, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { CheckboxChecked, CheckboxUnchecked, Dropdown, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { html, unsafeCSS, css, TemplateResult, CSSResult, property, query, internalProperty, PropertyValues, queryAll } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { ActorRef, Interpreter } from 'xstate';
+import { Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { FormActors, FormContext, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { debounce, Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { FormActors, FormContext, FormEvents } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
@@ -111,6 +111,22 @@ export class TermSearchComponent extends RxLitElement {
           query: string; sources: TermSource[]; }>>)),
       ));
 
+      // this.formActor.onEvent((event) => {
+
+      //   console.log('eeeeee', event.type);
+
+      //   if (event.type === FormEvents.FORM_VALIDATED) {
+
+      //     const selectedSources = Array.from(this.sourceCheckboxes)
+      //       .filter((checkbox: HTMLInputElement) => checkbox.checked)
+      //       .map((checkbox: HTMLInputElement) => checkbox.id);
+
+      //     this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources));
+
+      //   }
+
+      // });
+
     }
 
   }
@@ -122,24 +138,39 @@ export class TermSearchComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const selectedSources = Array.from(this.sourceCheckboxes)?.filter((checkbox: HTMLInputElement) => checkbox.checked)
-      .map((checkbox: HTMLInputElement) => ({ uri: checkbox.id, name: '', creators: [] }));
+    if (this.formActor) {
+
+      this.formActor.onEvent((event) => {
+
+        if (event.type === FormEvents.FORM_VALIDATED) {
+
+          const selectedSources = Array.from(this.sourceCheckboxes)
+            .filter((checkbox: HTMLInputElement) => checkbox.checked)
+            .map((checkbox: HTMLInputElement) => checkbox.id);
+
+          this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources));
+
+        }
+
+      });
+
+    }
 
     const loading = !this.actor.state.matches(TermStates.IDLE);
 
     return this.sources ? html`
 
-      ${ loading ? html`<nde-progress-bar></nde-progress-bar>` : html`` }
+      ${ loading || this.sources?.length < 1 ? html`<nde-progress-bar></nde-progress-bar>` : html`` }
 
       <form class="search-form" onsubmit="return false">
-          <nde-form-element class="term" .actor="${this.formActor}" field="query" .submitOnEnter="${false}">
+          <nde-form-element
+            class="term" .actor="${this.formActor}" field="query" .submitOnEnter="${false}">
             <label slot="label" for="example">${ this.translator.translate(`nde.features.object.card.field.${this.field}`) }</label>
             <input 
               type="text"
               slot="input"
               name="${this.field}"
               class="query"
-              @input="${ debounce(() => this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources)), 500) }"
             />
             <div slot="icon">${ unsafeSVG(Search) }</div>
           </nde-form-element>
@@ -148,15 +179,14 @@ export class TermSearchComponent extends RxLitElement {
             <div slot="icon">${ unsafeSVG(Dropdown) }</div>
             <ul slot="input" >
               <li>
-                <label for="title"></label>
+                <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
               </li>
               ${ this.sources.map((source) => html`
                 <li>
                   <input
                     type="checkbox"
                     id="${source.uri}"
-                    name="${source.uri}" 
-                    @click="${ debounce(() => this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources)), 500, !this.sourcesLabel?.hidden)}"
+                    name="${source.uri}"
                   />
                   <label for="${source.uri}">${source.name}</label>
                 </li>
@@ -167,59 +197,60 @@ export class TermSearchComponent extends RxLitElement {
           <button type="button" @click="${() => this.actor.send(new ClickedSubmitEvent())}">Bevestig</button>
         </form> 
 
-        ${ this.searchResults && this.searchResults.length === 0 ? html`geen resultaten` : this.searchResults?.length > 0
-    ? html`
-            ${ this.selectedTerms?.length > 0 ? html`
-              <div class="term-list">
-                <p>Geselecteerde termen</p>
-                ${ this.selectedTerms?.map((term) => html`
-                  <nde-large-card
-                  class="term-card"
-                  .showImage="${false}"
-                  @click=${() => this.actor.send(new ClickedTermEvent(term))}>
-                    <div slot="title">${ term.name }</div>
-                    <div slot="subtitle">${ term.uri }</div>
-                    <div slot="icon">
-                      ${unsafeSVG(CheckboxChecked)}
-                    </div>
-                    <div slot="content">
-                      <p>${ term.description }</p>
-                      <p>${ term.alternateName }</p>
-                      <p>${ term.hiddenName }</p>
-                      <p>${ term.broader }</p>
-                      <p>${ term.narrower }</p>
-                    </div>
-                  </nde-large-card>
-                `)}
-              </div>` : html`` }
-    
-            <div class="term-list">
-              <p>Zoekresultaten</p>
-              ${ this.searchResults?.filter((result) => !this.selectedTerms?.find((term) => result.uri === term.uri)).map((term) => html`
-                <nde-large-card
-                class="term-card"
-                .showImage="${false}"
-                @click=${() => this.actor.send(new ClickedTermEvent(term))}>
-                  <div slot="title">${ term.name }</div>
-                  <div slot="subtitle">${ term.uri }</div>
-                  <div slot="icon">
-                    ${unsafeSVG(CheckboxUnchecked)}
-                  </div>
-                  <div slot="content">
-                    <p>${ term.description }</p>
-                    <p>${ term.alternateName }</p>
-                    <p>${ term.hiddenName }</p>
-                    <p>${ term.broader }</p>
-                    <p>${ term.narrower }</p>
-                  </div>
-                </nde-large-card>
-              `)}
-            </div>`
-    : html``
+        <!-- show selected terms -->
+        ${this.selectedTerms?.length > 0 ? html`
+        <div class="term-list">
+          <p>Geselecteerde termen</p>
+          ${ this.selectedTerms?.map((term) => html`
+            <nde-large-card
+            class="term-card"
+            .showImage="${false}"
+            .showContent="${false}"
+            @click=${() => this.actor.send(new ClickedTermEvent(term))}>
+              <div slot="title">${ term.name }</div>
+              <div slot="subtitle">${ term.uri }</div>
+              <div slot="icon">
+                ${unsafeSVG(CheckboxChecked)}
+              </div>
+              <!-- <div slot="content">
+                <p>${ term.description }</p>
+                <p>${ term.alternateName }</p>
+                <p>${ term.hiddenName }</p>
+                <p>${ term.broader }</p>
+                <p>${ term.narrower }</p>
+              </div> -->
+            </nde-large-card>`)}
+        </div>` : html``}
 
-}
+        <!-- show search results -->
+        ${this.searchResults?.length > 0 ? html`
+        <div class="term-list">
+          <p>
+          ${this.searchResults.length} ${ this.translator.translate(this.searchResults.length === 1 ? 'nde.common.form.search-result' : 'nde.common.form.search-results').toLowerCase()}</p>
+          ${ this.searchResults?.map((term) => html`
+            <nde-large-card
+            class="term-card"
+            .showImage="${false}"
+            @click=${() => this.actor.send(new ClickedTermEvent(term))}>
+              <div slot="title">${ term.name }</div>
+              <div slot="subtitle">${ term.uri }</div>
+              <div slot="icon">
+                ${unsafeSVG(CheckboxUnchecked)}
+              </div>
+              <div slot="content">
+                <p>${ term.description }</p>
+                <p>${ term.alternateName }</p>
+                <!-- <p>${ term.hiddenName }</p> -->
+                <p>${ term.broader.join(', ') }</p>
+                <p>${ term.narrower.join(', ') }</p>
+              </div>
+            </nde-large-card>`)}
+        </div>` : html``}
 
-    ` : html`<nde-progress-bar></nde-progress-bar>`;
+        ${this.searchResults?.length < 1 && this.selectedTerms?.length < 1 ? html`geen zoekresultaten` : html``}
+
+
+      ` : html``;
 
   }
 
@@ -257,8 +288,7 @@ export class TermSearchComponent extends RxLitElement {
           gap: var(--gap-large);
           margin-bottom: var(--gap-large);
         }
-        .search-form nde-form-element:first-of-type,
-        .search-form nde-form-element:last-of-type {
+        .search-form nde-form-element {
           flex-grow: 2;
           min-width: 250px;
         }
@@ -275,6 +305,9 @@ export class TermSearchComponent extends RxLitElement {
         }
         .term-card {
           cursor: pointer;
+        }
+        .term-card p {
+          word-break: break-word;
         }
         nde-form-element {
           margin: 0;

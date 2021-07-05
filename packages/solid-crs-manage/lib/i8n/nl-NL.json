@@ -465,6 +465,26 @@
         "value": "Klik om te selecteren"
     },
     {
+        "key": "nde.common.form.n-sources-selected",
+        "locale": "nl-NL",
+        "value": "Bronnen geselecteerd"
+    },
+    {
+        "key": "nde.common.form.one-source-selected",
+        "locale": "nl-NL",
+        "value": "Bron geselecteerd"
+    },
+    {
+        "key": "nde.common.form.search-results",
+        "locale": "nl-NL",
+        "value": "Zoekresultaten"
+    },  
+    {
+        "key": "nde.common.form.search-results",
+        "locale": "nl-NL",
+        "value": "Zoekresultaat"
+    },    
+    {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",
         "value": "enkele ogenblikken geleden"

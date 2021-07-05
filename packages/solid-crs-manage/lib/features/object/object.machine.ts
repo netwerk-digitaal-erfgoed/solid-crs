@@ -260,7 +260,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               target: ObjectStates.SAVING,
               actions: [
                 assign((context, event) => ({
-                  object: { ...event.data.data },
+                  object: event.data.data,
                 })),
               ],
             },
@@ -288,7 +288,9 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                 assign((context, event) => ({
                   object: {
                     ...context.object,
-                    [event.data.field]: event.data.selectedTerms[0].uri, // todo switch to full list
+                    [event.data.field]: event.data.selectedTerms?.length > 0
+                      ? event.data.selectedTerms[0].name[0]
+                      : context.object[event.data.field as keyof CollectionObject], // todo switch to full list
                   },
                 })),
               ],

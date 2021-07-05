@@ -1,4 +1,4 @@
-import { Term, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
 
 /**
@@ -35,7 +35,7 @@ export class ClickedTermEvent implements EventObject {
 export class QueryUpdatedEvent implements EventObject {
 
   public type: TermEvents.QUERY_UPDATED = TermEvents.QUERY_UPDATED;
-  constructor(public query: string, public sources: TermSource[]) { }
+  constructor(public query: string, public sources: string[]) { }
 
 }
 

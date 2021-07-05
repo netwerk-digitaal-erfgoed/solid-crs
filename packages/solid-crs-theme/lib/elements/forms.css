@@ -50,6 +50,9 @@ nde-form-element ul {
 nde-form-element ul li {
   display: flex;
   flex-direction: row;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 nde-form-element ul li input {

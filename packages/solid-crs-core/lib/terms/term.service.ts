@@ -23,10 +23,10 @@ export class TermService {
    * Queries the GraphQL endpoint for Terms matching given query and sources
    *
    * @param query The query string
-   * @param sources The sources on which the term might be present
+   * @param sourceUris The sources on which the term might be present
    * @returns A list of matching Terms
    */
-  async query(query: string, sources: TermSource[]): Promise<Term[]> {
+  async query(query: string, sourceUris: string[]): Promise<Term[]> {
 
     if (!query) {
 
@@ -34,9 +34,9 @@ export class TermService {
 
     }
 
-    if (!sources || sources.length < 1) {
+    if (!sourceUris || sourceUris.length < 1) {
 
-      throw new ArgumentError('Argument sources should be set.', sources);
+      throw new ArgumentError('Argument sources should be set.', sourceUris);
 
     }
 
@@ -68,7 +68,7 @@ export class TermService {
     const body = {
       query: graphQlQuery,
       variables: {
-        sources: sources.map((source) => source.uri),
+        sources: sourceUris,
         query,
       },
     };

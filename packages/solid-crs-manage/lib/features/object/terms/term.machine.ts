@@ -1,4 +1,4 @@
-import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvents, FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { assign, createMachine, StateMachine } from 'xstate';
@@ -24,7 +24,7 @@ export interface TermContext {
   /**
    * The sources selected by the user.
    */
-  selectedSources?: TermSource[];
+  selectedSources?: string[];
   /**
    * All search results
    */
@@ -81,11 +81,11 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
       [TermStates.IDLE]: {
         invoke: {
           id: FormActors.FORM_MACHINE,
-          src: formMachine<{ query: string; sources: TermSource[] }>(
+          src: formMachine<{ query: string; sources: string[] }>(
           ),
           data: (context) => ({
-            data: { query: context.query, sources: context.selectedSources },
-            original: { query: context.query, sources: context.selectedSources },
+            data: { query: context.query||'', sources: context.selectedSources||[] },
+            original: { query: context.query||'', sources: context.selectedSources||[] },
           }),
           // onDone: {
           //   target: TermStates.QUERYING,
