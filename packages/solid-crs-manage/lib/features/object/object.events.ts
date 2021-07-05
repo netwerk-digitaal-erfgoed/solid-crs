@@ -10,7 +10,8 @@ export enum ObjectEvents {
   CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
   CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
   SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
-  CLICKED_TERM_FIELD               = '[ObjectsEvent: Clicked Term Field]',
+  CLICKED_TERM_FIELD          = '[ObjectsEvent: Clicked Term Field]',
+  CLICKED_SIDEBAR_ITEM        = '[ObjectsEvent: Clicked Sidebar Item]',
 }
 
 /**
@@ -58,6 +59,15 @@ export class ClickedTermFieldEvent implements EventObject {
 
   public type: ObjectEvents.CLICKED_TERM_FIELD = ObjectEvents.CLICKED_TERM_FIELD;
   constructor(public field: string) { }
+
+}
+
+/**
+ * Fired when the user clicks a sidebar item.
+ */
+export class ClickedObjectSidebarItem implements EventObject {
+
+  public type: ObjectEvents.CLICKED_SIDEBAR_ITEM = ObjectEvents.CLICKED_SIDEBAR_ITEM;
 
 }
 

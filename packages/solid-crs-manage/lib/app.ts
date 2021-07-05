@@ -5,6 +5,7 @@ import { AppRootComponent } from './app-root.component';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { CollectionRootComponent } from './features/collection/collection-root.component';
 import { ObjectRootComponent } from './features/object/object-root.component';
+import { TermSearchComponent } from './features/object/terms/term-search.component';
 import './index';
 
 /**
@@ -40,3 +41,4 @@ customElements.define('nde-sidebar-list-item', SidebarListItemComponent);
 customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar-item', SidebarItemComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
+customElements.define('nde-term-search', TermSearchComponent);

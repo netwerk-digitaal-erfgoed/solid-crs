@@ -266,29 +266,38 @@ export class FormElementComponent<T> extends RxLitElement {
         const checkboxListItems = Array.from(element.children).slice(1) as HTMLElement[];
         checkboxListItems.forEach((li) => li.hidden = true);
 
-        const checkboxInputs = [].concat(...checkboxListItems
+        // A list of all the checkboxes
+        const checkboxInputs: HTMLInputElement[] = [].concat(...checkboxListItems
           .map((li: HTMLLIElement) => Array.from(li.children)))
           .filter((node) => node instanceof HTMLInputElement);
 
+        // A list of all the checkbox labels
+        const checkboxLabels: HTMLLabelElement[] = [].concat(...checkboxListItems
+          .map((li: HTMLLIElement) => Array.from(li.children)))
+          .filter((node) => node instanceof HTMLLabelElement);
+
         if (Array.isArray(fieldData)) {
 
-          // set default values
+          // Set default (checked) values
           checkboxListItems.forEach((node: HTMLInputElement) =>
             node.checked = fieldData.includes(node.id));
 
-          titleListItem.innerHTML = fieldData.join(', ');
+          titleListItem.textContent = fieldData.join(', ');
 
-          titleListItem.addEventListener('click', () => {
+          titleListItem.parentElement.addEventListener('click', () => {
 
+            this.className += ' overlay';
             checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
             titleListItem.hidden = true;
             checkboxInputs[0].focus();
 
           });
 
+          // When the user clicks outside of the list of elements, hide the list
           element.parentElement.addEventListener('focusout', (event) => {
 
-            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
+            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)
+            && !checkboxLabels.map((el) => el.htmlFor).includes((event.relatedTarget as HTMLElement)?.id)) {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
@@ -297,11 +306,12 @@ export class FormElementComponent<T> extends RxLitElement {
 
           });
 
+          // When an item is clicked, update the form machine
           element.addEventListener('input', () => {
 
-            const selectedValues = [].concat(...checkboxInputs
-              .filter((node) => node.checked))
-              .map((node: HTMLInputElement) => node.value);
+            const selectedValues = [].concat(...checkboxLabels
+              .filter((label) => checkboxInputs.find((input) => input.checked).name === label.htmlFor))
+              .map((label: HTMLLabelElement) => label.textContent);
 
             titleListItem.textContent = selectedValues.length > 0 ? selectedValues.join(', ') : this.translator.translate('nde.common.form.click-to-select');
 
@@ -311,7 +321,9 @@ export class FormElementComponent<T> extends RxLitElement {
 
         } else {
 
-          throw Error();
+          // A multi select's fieldData should always be a list, since multiple values can be selected
+          // This error will only be thrown when a programming mistake was made when setting up the form machine
+          throw Error('Invalid field data (not a list)');
 
         }
 

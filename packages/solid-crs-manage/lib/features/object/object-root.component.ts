@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -12,8 +12,9 @@ import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { AppEvents } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
-import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
-import { ClickedTermEvent } from './terms/term.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
+import { TermActors } from './terms/term.machine';
+import { TermEvent } from './terms/term.events';
 
 /**
  * The root page of the object feature.
@@ -73,7 +74,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @property()
+  @property({ type: Object })
   object?: CollectionObject;
 
   /**
@@ -81,6 +82,12 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   formActor: ActorRef<FormEvent>;
+
+  /**
+   * The actor responsible for editing term fields.
+   */
+  @internalProperty()
+  termActor: ActorRef<TermEvent>;
 
   /**
    * Indicates if the form is being submitted.
@@ -99,6 +106,12 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   isDirty? = false;
+
+  /**
+   * Indicates whether the user is editing a field containing a Term.
+   */
+  @internalProperty()
+  isEditingTermField? = false;
 
   /**
    * The semcom service to use in this component
@@ -156,6 +169,10 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
+      this.subscribe('termActor', from(this.actor).pipe(
+        map((state) => state.children[TermActors.TERM_MACHINE]),
+      ));
+
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collections', from(this.actor).pipe(
@@ -164,6 +181,9 @@ export class ObjectRootComponent extends RxLitElement {
 
       this.subscribe('object', from(this.actor)
         .pipe(map((state) => state.context?.object)));
+
+      this.subscribe('isEditingTermField', from(this.actor)
+        .pipe(map((state) => state.matches(ObjectStates.EDITING_FIELD))));
 
     }
 
@@ -191,6 +211,12 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
+    if (!this.formCards && this.components) {
+
+      await this.registerComponents(this.components);
+
+    }
+
     if (this.formCards && this.object && this.translator && this.formActor) {
 
       this.formCards.forEach((formCard) => {
@@ -203,78 +229,9 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if (this.formCards?.length > 0 && !this.visibleCard) {
+    if (this.formCards && !this.isEditingTermField) {
 
-      this.visibleCard = this.formCards[0].id;
-
-    }
-
-    if (!this.formCards && this.components) {
-
-      // register and add all components
-      for (const component of this.components) {
-
-        if (!customElements.get(component.tag)) {
-
-          // eslint-disable-next-line no-eval
-          const elementComponent = await eval(`import("${component.uri}")`);
-
-          const ctor = customElements.get(component.tag)
-            || customElements.define(component.tag, elementComponent.default);
-
-        }
-
-        let element;
-
-        if (component.tag.includes('imagery')) {
-
-          element = document.createElement(component.tag) as ObjectImageryComponent;
-          element.id = 'nde.features.object.sidebar.image';
-
-        } else if (component.tag.includes('creation')) {
-
-          element = document.createElement(component.tag) as ObjectCreationComponent;
-          element.id = 'nde.features.object.sidebar.creation';
-
-        } else if (component.tag.includes('identification')) {
-
-          element = document.createElement(component.tag) as ObjectIdentificationComponent;
-          element.collections = this.collections;
-          element.id = 'nde.features.object.sidebar.identification';
-
-        } else if (component.tag.includes('representation')) {
-
-          element = document.createElement(component.tag) as ObjectRepresentationComponent;
-          element.id = 'nde.features.object.sidebar.representation';
-
-        } else if (component.tag.includes('dimensions')) {
-
-          element = document.createElement(component.tag) as ObjectDimensionsComponent;
-          element.id = 'nde.features.object.sidebar.dimensions';
-
-        }
-
-        element.object = this.object;
-        element.formActor = this.formActor as any;
-        element.translator = this.translator;
-
-        if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
-
-          element.addEventListener('contextmenu', (event: MouseEvent) => {
-
-            event.stopPropagation();
-            event.preventDefault();
-
-          });
-
-        }
-
-        this.contentElement.appendChild(element);
-
-        this.formCards = this.formCards?.includes(element)
-          ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
-
-      }
+      this.appendComponents(this.formCards);
 
     }
 
@@ -300,6 +257,92 @@ export class ObjectRootComponent extends RxLitElement {
     }
 
     this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+
+  }
+  /**
+   * Registers and adds all components to DOM
+   *
+   * @param components The component metadata to register and add
+   */
+  async registerComponents(components: ComponentMetadata[]): Promise<void> {
+
+    for (const component of components) {
+
+      if (!customElements.get(component.tag)) {
+
+        // eslint-disable-next-line no-eval
+        const elementComponent = await eval(`import("${component.uri}")`);
+
+        const ctor = customElements.get(component.tag)
+          || customElements.define(component.tag, elementComponent.default);
+
+      }
+
+      let element;
+
+      if (component.tag.includes('imagery')) {
+
+        element = document.createElement(component.tag) as ObjectImageryComponent;
+        element.id = 'nde.features.object.sidebar.image';
+
+      } else if (component.tag.includes('creation')) {
+
+        element = document.createElement(component.tag) as ObjectCreationComponent;
+        element.id = 'nde.features.object.sidebar.creation';
+
+      } else if (component.tag.includes('identification')) {
+
+        element = document.createElement(component.tag) as ObjectIdentificationComponent;
+        element.collections = this.collections;
+        element.id = 'nde.features.object.sidebar.identification';
+
+      } else if (component.tag.includes('representation')) {
+
+        element = document.createElement(component.tag) as ObjectRepresentationComponent;
+        element.id = 'nde.features.object.sidebar.representation';
+
+      } else if (component.tag.includes('dimensions')) {
+
+        element = document.createElement(component.tag) as ObjectDimensionsComponent;
+        element.id = 'nde.features.object.sidebar.dimensions';
+
+      }
+
+      element.object = this.object;
+      element.formActor = this.formActor as any;
+      element.translator = this.translator;
+
+      if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
+
+        element.addEventListener('contextmenu', (event: MouseEvent) => {
+
+          event.stopPropagation();
+          event.preventDefault();
+
+        });
+
+      }
+
+      this.formCards = this.formCards?.includes(element)
+        ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
+
+    }
+
+    this.appendComponents(this.formCards);
+
+  }
+
+  /**
+   * Appends the formCards to the page content
+   */
+  appendComponents(components: (ObjectImageryComponent
+  | ObjectCreationComponent
+  | ObjectIdentificationComponent
+  | ObjectRepresentationComponent
+  | ObjectDimensionsComponent)[]): void {
+
+    components.forEach((component) => this.contentElement.appendChild(component));
+    this.updateSelected();
 
   }
 
@@ -349,8 +392,8 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-form-element>
 
       ${ idle && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(ObjectEvents.CLICKED_RESET); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(ObjectEvents.CLICKED_DELETE, { object: this.object })}">${unsafeSVG(Trash)}</button></div>
+      ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
+      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(new ClickedDeleteObjectEvent(this.object))}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 
     <div class="content-and-sidebar">
@@ -362,25 +405,33 @@ export class ObjectRootComponent extends RxLitElement {
           ${sidebarItems?.map((item) => html`
           <nde-sidebar-list-item slot="item"
             ?selected="${ item === this.visibleCard }"
-            @click="${() => { Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' }); }}"
+            @click="${() => {
+
+    this.actor.send(new ClickedObjectSidebarItem());
+    Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  }}"
           >
             <div slot="title">${this.translator?.translate(item)}</div>
           </nde-sidebar-list-item>
           `)}
         </nde-sidebar-list>
       </nde-sidebar-item>
-    </nde-sidebar>`
-    : html``}
+    </nde-sidebar>
 
-
+    ${ this.isEditingTermField
+    ? html`<nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>`
+    : html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
         ${ alerts }
-
+        
       </div>
-    
-    </div>
-  ` : html` this.object is undefined, dit zou niet mogen voorvallen`;
+    `}
+    `
+    : html``}
+    </div>`
+      : html``;
 
   }
 

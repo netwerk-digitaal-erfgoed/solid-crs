@@ -1,4 +1,5 @@
-import { State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { assign, createMachine, StateMachine } from 'xstate';
 import { log } from 'xstate/lib/actions';
@@ -11,7 +12,7 @@ export interface TermContext {
   /**
    * The field for which terms are being edited.
    */
-  term?: string;
+  field?: string;
   /**
    * User search input
    */
@@ -52,6 +53,7 @@ export enum TermStates {
   IDLE      = '[TermState: Idle]',
   QUERYING  = '[TermState: Querying]',
   SUBMITTED = '[TermState: Submitted]',
+  LOADING_SOURCES = '[TermState: Loading Sources]',
 }
 
 /**
@@ -60,16 +62,41 @@ export enum TermStates {
 export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<TermStates, TermContext>> =>
   createMachine<TermContext, TermEvent, State<TermStates, TermContext>>({
     id: TermActors.TERM_MACHINE,
-    context: {
-      termService: new TermService(process.env.VITE_TERM_ENDPOINT),
-      selectedTerms: [],
-    },
-    initial: TermStates.IDLE,
+    initial: TermStates.LOADING_SOURCES,
     states: {
+      [TermStates.LOADING_SOURCES]: {
+        invoke: {
+          src: (context) => context.termService.getSources(),
+          onDone: {
+            target: TermStates.IDLE,
+            actions: [
+              assign((context, event) => ({ sources: event.data })),
+            ],
+          },
+        },
+      },
       /**
        * The idle state of the Term machine
        */
       [TermStates.IDLE]: {
+        invoke: {
+          id: FormActors.FORM_MACHINE,
+          src: formMachine<{ query: string; sources: TermSource[] }>(
+          ),
+          data: (context) => ({
+            data: { query: context.query, sources: [] },
+            original: { query: context.query, sources: [] },
+          }),
+          onDone: {
+            target: TermStates.QUERYING,
+            actions: [
+              assign((context, event) => ({
+                query: event.data.data.query,
+                selectedSources: event.data.data.sources,
+              })),
+            ],
+          },
+        },
         on: {
           [TermEvents.QUERY_UPDATED]: {
             target: TermStates.QUERYING,

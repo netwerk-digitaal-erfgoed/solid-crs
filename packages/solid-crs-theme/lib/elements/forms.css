@@ -12,7 +12,6 @@ select {
 }
 
 form nde-form-element {
-  margin-bottom: var(--gap-large);
   display: block;
 }
 
@@ -46,6 +45,7 @@ nde-form-element textarea {
 
 nde-form-element ul {
   list-style-type: none;
+  max-height: 12px;
 }
 
 nde-form-element ul li {
@@ -98,8 +98,10 @@ input[type="radio"],
 input[type="checkbox"] {
   appearance: none;
   border: 2px solid var(--colors-foreground-normal);
-  width: 25px;
-  height: 25px;
+  max-width: 25px;
+  max-height: 25px;
+  min-width: 25px;
+  min-height: 25px;
   content: none;
   outline: none;
   margin: 0;

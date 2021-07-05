@@ -4,7 +4,7 @@ import { formMachine,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
@@ -270,6 +270,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         on: {
           [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
+          [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
         },
         invoke: [
           {
@@ -277,6 +278,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             src: termMachine,
             data: (context, event: ClickedTermFieldEvent) => ({
               field: event.field,
+              termService: new TermService(process.env.VITE_TERM_ENDPOINT),
             }),
             onDone: {
               target: ObjectStates.SAVING,

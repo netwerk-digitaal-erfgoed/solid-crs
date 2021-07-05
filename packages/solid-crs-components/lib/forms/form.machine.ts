@@ -71,7 +71,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  * @returns A form machine.
  */
 export const formMachine = <T>(
-  validator: FormValidator<T>,
+  validator: FormValidator<T> = async (): Promise<FormValidatorResult[]> => [],
   submitter: FormSubmitter<T> = async (context) => context.data
 ) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
   {
