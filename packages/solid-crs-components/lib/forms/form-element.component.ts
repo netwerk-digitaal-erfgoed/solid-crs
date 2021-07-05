@@ -425,9 +425,10 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          justify-content: space-between;
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
+          justify-content: flex-end;
+          position: relative;
         }
         .form-element .content .field.no-border {
           border: none;
@@ -450,6 +451,15 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           flex-direction: column;
           gap: var(--gap-small);
+          position: absolute;
+          left: -2px;
+          top: 0;
+          border: 2px solid var(--colors-foreground-normal);
+          border-top: none;
+          width: calc(100% - 2 * var(--gap-normal));
+          background-color: var(--colors-background-light);
+          z-index: 20;
+          padding-bottom: var(--gap-small);
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);
@@ -460,6 +470,7 @@ export class FormElementComponent<T> extends RxLitElement {
           height: 100%;
           display: flex;
           align-items: flex-start;
+          z-index: 30;
         }
         .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           padding-right: var(--gap-normal);

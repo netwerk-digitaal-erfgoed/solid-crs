@@ -45,7 +45,6 @@ nde-form-element textarea {
 
 nde-form-element ul {
   list-style-type: none;
-  max-height: 12px;
 }
 
 nde-form-element ul li {
