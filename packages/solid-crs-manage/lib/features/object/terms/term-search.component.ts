@@ -98,8 +98,7 @@ export class TermSearchComponent extends RxLitElement {
       ));
 
       this.subscribe('searchResults', from(this.actor).pipe(
-        map((state) => state.context?.searchResults?.filter((searchResult) =>
-          !state.context.selectedTerms?.find((selectedTerm) => selectedTerm.uri === searchResult.uri))),
+        map((state) => state.context?.searchResults),
       ));
 
       this.subscribe('selectedTerms', from(this.actor).pipe(
@@ -239,7 +238,7 @@ export class TermSearchComponent extends RxLitElement {
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
               <div slot="icon">
-                ${unsafeSVG(CheckboxUnchecked)}
+                ${ this.selectedTerms?.includes(term) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
               <div slot="content">
                 ${ term.description.length > 0 ? html`<p>Beschrijving: ${ term.description }</p>` : html``}
