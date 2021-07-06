@@ -289,8 +289,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                   object: {
                     ...context.object,
                     [event.data.field]: event.data.selectedTerms?.length > 0
-                      ? event.data.selectedTerms[0].name[0]
-                      : context.object[event.data.field as keyof CollectionObject], // todo switch to full list
+                      ? event.data.selectedTerms[0].name[0] // todo switch to full list instead of one value
+                      : context.object[event.data.field as keyof CollectionObject],
                   },
                 })),
               ],

@@ -465,24 +465,34 @@
         "value": "Klik om te selecteren"
     },
     {
-        "key": "nde.common.form.n-sources-selected",
+        "key": "nde.features.term.n-sources-selected",
         "locale": "nl-NL",
         "value": "Bronnen geselecteerd"
     },
     {
-        "key": "nde.common.form.one-source-selected",
+        "key": "nde.features.term.one-source-selected",
         "locale": "nl-NL",
         "value": "Bron geselecteerd"
     },
     {
-        "key": "nde.common.form.search-results",
+        "key": "nde.features.term.search-results",
         "locale": "nl-NL",
         "value": "Zoekresultaten"
     },  
     {
-        "key": "nde.common.form.search-results",
+        "key": "nde.features.term.search-result",
         "locale": "nl-NL",
         "value": "Zoekresultaat"
+    },  
+    {
+        "key": "nde.features.term.term-selected",
+        "locale": "nl-NL",
+        "value": "Term geselecteerd"
+    },    
+    {
+        "key": "nde.features.term.terms-selected",
+        "locale": "nl-NL",
+        "value": "Termen geselecteerd"
     },    
     {
         "key": "nde.common.date.just-now",

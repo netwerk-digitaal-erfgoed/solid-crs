@@ -282,7 +282,7 @@ export class FormElementComponent<T> extends RxLitElement {
           checkboxListItems.forEach((node: HTMLInputElement) =>
             node.checked = fieldData.includes(node.id));
 
-          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'nde.common.form.n-sources-selected' : 'nde.common.form.one-source-selected').toLowerCase()}` : this.translator.translate('nde.common.form.click-to-select');
+          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}` : this.translator.translate('nde.common.form.click-to-select');
 
           titleListItem.parentElement.addEventListener('click', () => {
 
@@ -306,7 +306,7 @@ export class FormElementComponent<T> extends RxLitElement {
                 .map((label: HTMLLabelElement) => label.textContent);
 
               titleListItem.textContent = selectedValues?.length > 0
-                ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.common.form.n-sources-selected' : 'nde.common.form.one-source-selected').toLowerCase()}`
+                ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}`
                 : this.translator.translate('nde.common.form.click-to-select');
 
               actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);

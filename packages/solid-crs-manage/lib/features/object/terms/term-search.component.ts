@@ -179,7 +179,7 @@ export class TermSearchComponent extends RxLitElement {
             <div slot="icon">${ unsafeSVG(Dropdown) }</div>
             <ul slot="input" >
               <li>
-                <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
+                <label for="title">${this.translator.translate('nde.features.term.click-to-select')}</label>
               </li>
               ${ this.sources.map((source) => html`
                 <li>
@@ -200,7 +200,9 @@ export class TermSearchComponent extends RxLitElement {
         <!-- show selected terms -->
         ${this.selectedTerms?.length > 0 ? html`
         <div class="term-list">
-          <p>Geselecteerde termen</p>
+          <p class="title">
+            ${this.selectedTerms.length} ${ this.translator.translate(this.selectedTerms.length === 1 ? 'nde.features.term.term-selected' : 'nde.features.term.terms-selected').toLowerCase()}
+          </p>
           ${ this.selectedTerms?.map((term) => html`
             <nde-large-card
             class="term-card"
@@ -225,12 +227,14 @@ export class TermSearchComponent extends RxLitElement {
         <!-- show search results -->
         ${this.searchResults?.length > 0 ? html`
         <div class="term-list">
-          <p>
-          ${this.searchResults.length} ${ this.translator.translate(this.searchResults.length === 1 ? 'nde.common.form.search-result' : 'nde.common.form.search-results').toLowerCase()}</p>
+          <p class="title">
+            ${this.searchResults.length} ${ this.translator.translate(this.searchResults.length === 1 ? 'nde.features.term.search-result' : 'nde.features.term.search-results').toLowerCase()}
+          </p>
           ${ this.searchResults?.map((term) => html`
             <nde-large-card
             class="term-card"
             .showImage="${false}"
+            .showContent="${term.description.length || term.alternateName.length || term.broader.length || term.narrower.length}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
@@ -238,11 +242,11 @@ export class TermSearchComponent extends RxLitElement {
                 ${unsafeSVG(CheckboxUnchecked)}
               </div>
               <div slot="content">
-                <p>${ term.description }</p>
-                <p>${ term.alternateName }</p>
+                ${ term.description.length > 0 ? html`<p>Beschrijving: ${ term.description }</p>` : html``}
+                ${ term.alternateName.length > 0 ? html`<p>Alternatief: ${ term.alternateName }</p>` : html``}
                 <!-- <p>${ term.hiddenName }</p> -->
-                <p>${ term.broader.join(', ') }</p>
-                <p>${ term.narrower.join(', ') }</p>
+                ${ term.broader.length > 0 ? html`<p>Broader: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
+                ${ term.narrower.length > 0 ? html`<p>Narrower: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
               </div>
             </nde-large-card>`)}
         </div>` : html``}
@@ -274,6 +278,9 @@ export class TermSearchComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
         }
+        :host > * {
+          margin-bottom: var(--gap-large);
+        }
         nde-progress-bar {
           position: absolute;
           width: 100%;
@@ -286,7 +293,6 @@ export class TermSearchComponent extends RxLitElement {
           align-items: flex-end;
           justify-content: space-between;
           gap: var(--gap-large);
-          margin-bottom: var(--gap-large);
         }
         .search-form nde-form-element {
           flex-grow: 2;
@@ -298,6 +304,11 @@ export class TermSearchComponent extends RxLitElement {
           height: 46px;
           background-color: var(--colors-primary-light);
         }
+        .title {
+          margin: 0;
+          font-weight: bold;
+          text-align: center;
+        }
         .term-list {
           display: flex;
           flex-direction: column;
@@ -307,6 +318,7 @@ export class TermSearchComponent extends RxLitElement {
           cursor: pointer;
         }
         .term-card p {
+          font-size: var(--font-size-small);
           word-break: break-word;
         }
         nde-form-element {
