@@ -30,4 +30,8 @@ export interface Term extends Resource {
    * Opposite of broader
    */
   narrower?: Term[];
+  /**
+   * The source the term is related to
+   */
+  source?: string;
 }
