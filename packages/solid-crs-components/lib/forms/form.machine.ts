@@ -1,5 +1,4 @@
-import { createMachine, send, sendParent } from 'xstate';
-import { map } from 'rxjs/operators';
+import { createMachine, send } from 'xstate';
 import { State } from '../state/state';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
@@ -161,8 +160,7 @@ export const formMachine = <T>(
                 invoke: {
                   src: (context, event) => validator(context, event),
                   onDone: {
-                    actions: send((context, event) =>
-                      ({ type: FormEvents.FORM_VALIDATED, results: event.data })),
+                    actions: send((context, event) => new FormValidatedEvent(event.data)),
                   },
                 },
                 on: {

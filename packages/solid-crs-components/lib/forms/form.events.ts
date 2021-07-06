@@ -1,5 +1,4 @@
-import { assign } from 'xstate';
-import { Event } from '../state/event';
+import { assign, EventObject } from 'xstate';
 import { FormValidatorResult } from './form-validator-result';
 import { FormContext } from './form.machine';
 
@@ -19,24 +18,30 @@ export enum FormEvents {
 /**
  * Event dispatched when a form element was updated.
  */
-export interface FormUpdatedEvent extends Event<FormEvents> {
-  type: FormEvents.FORM_UPDATED;
-  field: string; value: string|string[];
+export class FormUpdatedEvent implements EventObject {
+
+  public type: FormEvents.FORM_UPDATED = FormEvents.FORM_UPDATED;
+  constructor(public field: string, public value: string|string[]) { }
+
 }
 
 /**
  * Event dispatched when a form was submitted.
  */
-export interface FormSubmittedEvent extends Event<FormEvents> {
-  type: FormEvents.FORM_SUBMITTED;
+export class FormSubmittedEvent implements EventObject {
+
+  public type: FormEvents.FORM_SUBMITTED = FormEvents.FORM_SUBMITTED;
+
 }
 
 /**
  * Event dispatched when a form was validated.
  */
-export interface FormValidatedEvent extends Event<FormEvents> {
-  type: FormEvents.FORM_VALIDATED;
-  results: FormValidatorResult[];
+export class FormValidatedEvent implements EventObject {
+
+  public type: FormEvents.FORM_VALIDATED = FormEvents.FORM_VALIDATED;
+  constructor(public results: FormValidatorResult[]) { }
+
 }
 
 /**
@@ -52,8 +57,8 @@ export type FormEvent = FormUpdatedEvent | FormSubmittedEvent | FormValidatedEve
  * Updates the data in context.
  */
 export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
-  data: (context: FormContext<unknown>, event: FormUpdatedEvent) =>
-    (typeof context.data === 'object' ? { ...context.data ? context.data : {}, [event.field]: event.value } : event.value),
+  data: (context: FormContext<any>, event: FormUpdatedEvent) =>
+    ({ ...context.data||{}, [event.field]: event.value }),
 });
 
 /**

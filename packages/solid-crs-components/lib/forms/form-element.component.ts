@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormEvents, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
@@ -225,7 +225,7 @@ export class FormElementComponent<T> extends RxLitElement {
         element.namedItem(fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '').selected = true;
 
         // Send event when input field's value changes.
-        element.addEventListener('input', () => actor.send({ type: FormEvents.FORM_UPDATED, value: element.options[element.selectedIndex].id, field } as FormUpdatedEvent));
+        element.addEventListener('input', () => actor.send(new FormUpdatedEvent(field.toString(), element.options[element.selectedIndex].id)));
 
       } else if ((element instanceof HTMLTextAreaElement) || (element instanceof HTMLInputElement)) {
 
@@ -249,7 +249,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
             }
 
-            actor.send({ type: FormEvents.FORM_UPDATED, value: elementValue, field } as FormUpdatedEvent);
+            actor.send(new FormUpdatedEvent(field.toString(), elementValue.toString()));
 
           }, this.debounceTimeout),
         );
@@ -295,21 +295,20 @@ export class FormElementComponent<T> extends RxLitElement {
           // When the user clicks outside of the list of elements, hide the list and update form machine
           element.parentElement.addEventListener('focusout', (event) => {
 
-            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)
-            && !checkboxLabels.map((el) => el.htmlFor).includes((event.relatedTarget as HTMLElement)?.id)) {
+            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
 
               const selectedValues = [].concat(...checkboxLabels
-                .filter((label) => checkboxInputs.find((input) => input.checked).name === label.htmlFor))
+                .filter((label) => checkboxInputs.find((input) => input.checked)?.name === label.htmlFor))
                 .map((label: HTMLLabelElement) => label.textContent);
 
               titleListItem.textContent = selectedValues?.length > 0
                 ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}`
                 : this.translator.translate('nde.common.form.click-to-select');
 
-              actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
+              actor.send(new FormUpdatedEvent(field.toString(), selectedValues));
 
             }
 
@@ -334,7 +333,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
             event.preventDefault();
 
-            actor.send({ type: FormEvents.FORM_SUBMITTED });
+            actor.send(new FormSubmittedEvent());
 
           }
 
@@ -377,7 +376,7 @@ export class FormElementComponent<T> extends RxLitElement {
         <slot name="help"></slot>
       </div>
       <div class="results" ?hidden="${!this.showValidation || !this.validationResults || this.validationResults.length === 0}">
-        ${this.validationResults?.map((result) => html`<div class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
+        ${this.validationResults?.map((result) => html`<div class="result">${this.translator.translate(result.message)}</div>`)}
       </div>
     </div>
   `;

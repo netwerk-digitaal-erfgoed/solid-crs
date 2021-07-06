@@ -161,4 +161,103 @@ describe('FormMachine', () => {
 
   });
 
+  it('should use default validator function when set', async (done) => {
+
+    machine = interpret<FormContext<Collection>>(
+      formMachine()
+        .withContext({
+          data: { uri: '', name: 'Test' },
+          original: { uri: '', name: 'Test' },
+          validation: [],
+        }),
+    );
+
+    machine.start();
+
+    machine.onTransition((state) => {
+
+      if(state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
+      })){
+
+        expect(state.context.validation).toEqual([]);
+        done();
+
+      }
+
+    });
+
+    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'bla' });
+
+  });
+
+  it('should accept string as TData', async (done) => {
+
+    machine = interpret<FormContext<string>>(
+      formMachine()
+        .withContext({
+          data: 'test',
+          original: 'test',
+          validation: [],
+        }),
+    );
+
+    machine.onTransition((state) => {
+
+      if(state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
+      })){
+
+        expect(state.context.validation).toEqual([]);
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    machine.send(FormEvents.FORM_UPDATED, { field: undefined, value: 'bla' });
+
+  });
+
+  it('should accept empty object as TData', async (done) => {
+
+    machine = interpret<FormContext<unknown>>(
+      formMachine()
+        .withContext({
+          data: undefined,
+          original: undefined,
+          validation: [],
+        }),
+    );
+
+    machine.onTransition((state) => {
+
+      if(state.matches({
+        [FormSubmissionStates.NOT_SUBMITTED]:{
+          [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+        },
+      })){
+
+        expect(state.context.validation).toEqual([]);
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'bla' });
+
+  });
+
 });
