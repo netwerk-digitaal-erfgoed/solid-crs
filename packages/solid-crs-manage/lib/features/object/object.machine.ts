@@ -23,6 +23,10 @@ export interface ObjectContext {
    * A list of all collections.
    */
   collections?: Collection[];
+  /**
+   * A list of all collections.
+   */
+  termService?: TermService;
 }
 
 /**
@@ -279,7 +283,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             src: termMachine,
             data: (context, event: ClickedTermFieldEvent) => ({
               field: event.field,
-              termService: new TermService(process.env.VITE_TERM_ENDPOINT),
+              termService: context.termService || new TermService(process.env.VITE_TERM_ENDPOINT),
             }),
             onDone: {
               target: ObjectStates.SAVING,

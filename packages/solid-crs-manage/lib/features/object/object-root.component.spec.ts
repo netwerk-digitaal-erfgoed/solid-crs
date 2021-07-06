@@ -1,4 +1,3 @@
-import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -50,10 +49,17 @@ describe('ObjectRootComponent', () => {
       object1,
     ]);
 
+    const termService = {
+      endpoint: 'https://endpoint.url/',
+      query: jest.fn(async() => ({})),
+      getSources: jest.fn(async() => []),
+    };
+
     machine = interpret(objectMachine(objectStore)
       .withContext({
         object: object1,
         collections: [ collection1, collection2 ],
+        termService: termService as any,
       }));
 
     machine.parent = interpret(appMachine(
@@ -76,6 +82,8 @@ describe('ObjectRootComponent', () => {
     component.object = object1;
 
     component.collections = [ collection1, collection2 ];
+
+    component.formCards = [];
 
   });
 
@@ -225,16 +233,12 @@ describe('ObjectRootComponent', () => {
 
     it('should set this.visibleCard to the currently visible card', async () => {
 
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
       const div = document.createElement('div');
       div.id = 'nde.features.object.sidebar.image';
 
       component.formCards = [ div ];
 
       component.updateSelected();
-      await component.updateComplete;
 
       expect(component.visibleCard).toBeTruthy();
       expect(component.visibleCard).toEqual(component.formCards[0].id);
@@ -312,7 +316,7 @@ describe('ObjectRootComponent', () => {
 
     await component.updated(map);
 
-    expect(component.subscribe).toHaveBeenCalledTimes(11);
+    expect(component.subscribe).toHaveBeenCalledTimes(13);
 
   });
 
@@ -330,10 +334,12 @@ describe('ObjectRootComponent', () => {
     component.formCards = [ div ];
 
     const map = new Map<string, string>();
-    map.set('actor', 'bla');
-    map.set('formActor', 'bla');
+    map.set('actor', 'test');
+    map.set('formActor', 'test');
 
     await component.updated(map);
+
+    component.updateSelected();
 
     expect(div.object).toBeTruthy();
 

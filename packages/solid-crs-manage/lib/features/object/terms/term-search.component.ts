@@ -98,8 +98,7 @@ export class TermSearchComponent extends RxLitElement {
       ));
 
       this.subscribe('searchResults', from(this.actor).pipe(
-        map((state) => state.context?.searchResults?.filter((searchResult) =>
-          !state.context.selectedTerms?.find((selectedTerm) => selectedTerm.uri === searchResult.uri))),
+        map((state) => state.context?.searchResults),
       ));
 
       this.subscribe('selectedTerms', from(this.actor).pipe(
@@ -110,22 +109,6 @@ export class TermSearchComponent extends RxLitElement {
         map((state) => (state.children[FormActors.FORM_MACHINE] as Interpreter<FormContext<{
           query: string; sources: TermSource[]; }>>)),
       ));
-
-      // this.formActor.onEvent((event) => {
-
-      //   console.log('eeeeee', event.type);
-
-      //   if (event.type === FormEvents.FORM_VALIDATED) {
-
-      //     const selectedSources = Array.from(this.sourceCheckboxes)
-      //       .filter((checkbox: HTMLInputElement) => checkbox.checked)
-      //       .map((checkbox: HTMLInputElement) => checkbox.id);
-
-      //     this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources));
-
-      //   }
-
-      // });
 
     }
 
@@ -239,7 +222,7 @@ export class TermSearchComponent extends RxLitElement {
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
               <div slot="icon">
-                ${unsafeSVG(CheckboxUnchecked)}
+                ${ this.selectedTerms?.includes(term) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
               <div slot="content">
                 ${ term.description.length > 0 ? html`<p>Beschrijving: ${ term.description }</p>` : html``}

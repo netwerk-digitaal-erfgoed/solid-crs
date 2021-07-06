@@ -1,8 +1,7 @@
-import { FormEvents, FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-
+import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { assign, createMachine, StateMachine } from 'xstate';
-import { log } from 'xstate/lib/actions';
+import { assign, createMachine, sendParent, StateMachine } from 'xstate';
+import { AppEvents } from '../../../app.events';
 import { TermEvent, TermEvents } from './term.events';
 
 /**

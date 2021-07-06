@@ -355,7 +355,7 @@ export class ObjectRootComponent extends RxLitElement {
 
       const box = formCard.getBoundingClientRect();
 
-      return box.top > -(box.height / (3 + 20));
+      return box.top >= -(box.height / (3 + 20));
 
     })?.id;
 

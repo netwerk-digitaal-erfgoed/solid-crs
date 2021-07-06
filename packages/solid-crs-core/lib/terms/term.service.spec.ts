@@ -31,13 +31,7 @@ describe('TermService', () => {
 
     const queryString = 'test query';
 
-    const sources: TermSource[] = [
-      {
-        uri: 'https://source.url/',
-        name: 'test source',
-        creators: [],
-      },
-    ];
+    const sources: string[] = [ 'https://source.url/' ];
 
     const queryResult = {
       'data':{
