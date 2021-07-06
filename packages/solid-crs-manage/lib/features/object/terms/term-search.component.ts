@@ -207,20 +207,20 @@ export class TermSearchComponent extends RxLitElement {
             <nde-large-card
             class="term-card"
             .showImage="${false}"
-            .showContent="${false}"
+            ?showContent="${term.description.length || term.alternateName.length || term.broader.length || term.narrower.length}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
               <div slot="icon">
                 ${unsafeSVG(CheckboxChecked)}
               </div>
-              <!-- <div slot="content">
-                <p>${ term.description }</p>
-                <p>${ term.alternateName }</p>
-                <p>${ term.hiddenName }</p>
-                <p>${ term.broader }</p>
-                <p>${ term.narrower }</p>
-              </div> -->
+              <div slot="content">
+                ${ term.description.length > 0 ? html`<p>Beschrijving: ${ term.description }</p>` : html``}
+                ${ term.alternateName.length > 0 ? html`<p>Alternatief: ${ term.alternateName.join(', ') }</p>` : html``}
+                ${ term.broader.length > 0 ? html`<p>Broader: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
+                ${ term.narrower.length > 0 ? html`<p>Narrower: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
+                ${ term.hiddenName.length > 0 ? html`<p>Verborgen naam: ${ term.hiddenName  }</p>` : html``}
+              </div>
             </nde-large-card>`)}
         </div>` : html``}
 
@@ -234,7 +234,7 @@ export class TermSearchComponent extends RxLitElement {
             <nde-large-card
             class="term-card"
             .showImage="${false}"
-            .showContent="${term.description.length || term.alternateName.length || term.broader.length || term.narrower.length}"
+            ?showContent="${term.description.length || term.alternateName.length || term.broader.length || term.narrower.length}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
@@ -243,10 +243,10 @@ export class TermSearchComponent extends RxLitElement {
               </div>
               <div slot="content">
                 ${ term.description.length > 0 ? html`<p>Beschrijving: ${ term.description }</p>` : html``}
-                ${ term.alternateName.length > 0 ? html`<p>Alternatief: ${ term.alternateName }</p>` : html``}
-                <!-- <p>${ term.hiddenName }</p> -->
+                ${ term.alternateName.length > 0 ? html`<p>Alternatief: ${ term.alternateName.join(', ') }</p>` : html``}
                 ${ term.broader.length > 0 ? html`<p>Broader: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
                 ${ term.narrower.length > 0 ? html`<p>Narrower: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
+                ${ term.hiddenName.length > 0 ? html`<p>Verborgen naam: ${ term.hiddenName  }</p>` : html``}
               </div>
             </nde-large-card>`)}
         </div>` : html``}
