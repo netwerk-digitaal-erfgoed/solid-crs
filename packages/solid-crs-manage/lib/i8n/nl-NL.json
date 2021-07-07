@@ -475,14 +475,14 @@
         "value": "Bron geselecteerd"
     },
     {
-        "key": "nde.features.term.search-results",
+        "key": "nde.features.term.term",
         "locale": "nl-NL",
-        "value": "Zoekresultaten"
+        "value": "Term"
     },  
     {
-        "key": "nde.features.term.search-result",
+        "key": "nde.features.term.terms",
         "locale": "nl-NL",
-        "value": "Zoekresultaat"
+        "value": "Termen"
     },  
     {
         "key": "nde.features.term.term-selected",
@@ -493,12 +493,43 @@
         "key": "nde.features.term.terms-selected",
         "locale": "nl-NL",
         "value": "Termen geselecteerd"
+    },     
+    {
+        "key": "nde.features.term.enter-query",
+        "locale": "nl-NL",
+        "value": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten"
     },   
+    
     {
         "key": "nde.features.term.no-search-results",
         "locale": "nl-NL",
         "value": "Geen zoekresultaten voor deze zoekterm!"
     }, 
+    { 
+        "key": "nde.features.term.field.description",
+        "locale": "nl-NL",
+        "value": "Beschrijving"
+    },
+    { 
+        "key": "nde.features.term.field.alternateName",
+        "locale": "nl-NL",
+        "value": "Alternatieve naam"
+    },
+    { 
+        "key": "nde.features.term.field.broader",
+        "locale": "nl-NL",
+        "value": "Ruimer"
+    },
+    { 
+        "key": "nde.features.term.field.narrower",
+        "locale": "nl-NL",
+        "value": "Specifieker"
+    },
+    { 
+        "key": "nde.features.term.field.hiddenName",
+        "locale": "nl-NL",
+        "value": "Verborgen naam"
+    },
     {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",

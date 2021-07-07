@@ -1,4 +1,4 @@
-import { CheckboxChecked, CheckboxUnchecked, Dropdown, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { CheckboxChecked, CheckboxUnchecked, Dropdown, Empty, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { html, unsafeCSS, css, TemplateResult, CSSResult, property, query, internalProperty, PropertyValues, queryAll } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Interpreter } from 'xstate';
@@ -116,12 +116,12 @@ export class TermSearchComponent extends RxLitElement {
 
   groupSearchResults(searchResults: Term[]): { [key: string]: Term[] } {
 
-    return searchResults?.reduce<{ [key: string]: Term[] }>((rv, x) => {
+    return searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
 
       const key = 'source';
-      (rv[x[key]] = rv[x[key]] || []).push(x);
+      (searchResultsMap[term[key]] = searchResultsMap[term[key]] || []).push(term);
 
-      return rv;
+      return searchResultsMap;
 
     }, {});
 
@@ -154,9 +154,9 @@ export class TermSearchComponent extends RxLitElement {
 
     const loading = !this.actor?.state.matches(TermStates.IDLE);
 
-    return this.sources ? html`
+    return html`
 
-      ${ loading || this.sources?.length < 1 ? html`<nde-progress-bar></nde-progress-bar>` : html`` }
+      ${ loading || !this.sources ? html`<nde-progress-bar></nde-progress-bar>` : html`` }
 
       <form class="search-form" onsubmit="return false">
         <nde-form-element
@@ -175,9 +175,9 @@ export class TermSearchComponent extends RxLitElement {
           <div slot="icon">${ unsafeSVG(Dropdown) }</div>
           <ul slot="input" >
             <li>
-              <label for="title">${this.translator.translate('nde.features.term.click-to-select')}</label>
+              <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
             </li>
-            ${ this.sources.map((source) => html`
+            ${ this.sources?.map((source) => html`
               <li>
                 <input
                   type="checkbox"
@@ -225,7 +225,7 @@ export class TermSearchComponent extends RxLitElement {
         <div class="term-list">
           ${Object.keys(this.searchResultsMap).map((key) => html`
             <p class="title">
-              ${this.sources?.find((source) => source.uri === key)?.name ?? key} (${this.searchResultsMap[key]?.length}${this.searchResultsMap[key]?.length === 1 ? ' term' : ' termen'})
+              ${this.sources?.find((source) => source.uri === key)?.name ?? key} (${this.searchResultsMap[key]?.length} ${this.translator.translate(this.searchResultsMap[key]?.length === 1 ? 'nde.features.term.term' : 'nde.features.term.terms').toLowerCase()})
             </p>
             ${this.searchResultsMap[key]?.map((term) => html`
               <nde-large-card
@@ -251,10 +251,15 @@ export class TermSearchComponent extends RxLitElement {
         </div>
         ` : html``}
 
-        ${(!this.searchResultsMap || Object.keys(this.searchResultsMap).length < 1) && this.selectedTerms?.length < 1 ? html`${this.translator.translate('nde.features.term.no-search-results')}` : html``}
+        ${(this.searchResultsMap && Object.keys(this.searchResultsMap).length < 1)
+    ? html`
+        <div class='empty'>
+          ${unsafeSVG(Empty)}
+          <p>${this.translator?.translate('nde.features.term.no-search-results')}</p>
+        </div>
+    ` : html``}
 
-
-      ` : html``;
+      `;
 
   }
 
@@ -314,6 +319,9 @@ export class TermSearchComponent extends RxLitElement {
           flex-direction: column;
           gap: var(--gap-large);
         }
+        .term-list:first-of-type {
+          margin-bottom: var(--gap-large);
+        }
         .term-card {
           cursor: pointer;
         }
@@ -323,6 +331,23 @@ export class TermSearchComponent extends RxLitElement {
         }
         nde-form-element {
           margin: 0;
+        }
+        .empty {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: center;
+          gap: var(--gap-large);
+        }
+        .empty > p {
+          color: var(--colors-foreground-dark);
+        }
+        .empty > svg {
+          width: 40%;
+          height: auto;
         }
       `,
     ];
