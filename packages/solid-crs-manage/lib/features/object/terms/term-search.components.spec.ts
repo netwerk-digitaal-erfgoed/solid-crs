@@ -20,6 +20,7 @@ describe('TermSearchComponent', () => {
     broader: [ { name: 'test', uri: '' } ],
     narrower: [ { name: 'test', uri: '' } ],
     hiddenName: [ 'test' ],
+    source: 'source1',
   };
 
   const termSource = { uri: 'uri', name: 'name', creators: [] };
@@ -195,11 +196,11 @@ describe('TermSearchComponent', () => {
     if (machine.state.matches(TermStates.IDLE)) {
 
       component.sources = [ termSource ];
-      component.searchResults = [ term, term, term ];
+      component.searchResultsMap = { [term.source]: [ term, term, term ] };
       await component.updateComplete;
       const searchResultCards = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:nth-of-type(1) nde-large-card');
       expect(searchResultCards).toBeTruthy();
-      expect(searchResultCards.length).toEqual(component.searchResults.length);
+      expect(searchResultCards.length).toEqual(component.searchResultsMap[term.source].length);
 
     }
 
@@ -224,7 +225,7 @@ describe('TermSearchComponent', () => {
     if (machine.state.matches(TermStates.IDLE)) {
 
       component.sources = [ termSource ];
-      component.searchResults = [ term, term, term ];
+      component.searchResultsMap = { [term.source]: [ term, term, term ] };
       await component.updateComplete;
       const searchResultCards: NodeListOf<HTMLElement> = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:nth-of-type(1) nde-large-card');
       expect(searchResultCards).toBeTruthy();
@@ -242,11 +243,11 @@ describe('TermSearchComponent', () => {
 
     if (machine.state.matches(TermStates.IDLE)) {
 
-      const editedTerm = { uri: term.uri, name: term.name };
+      const editedTerm = { uri: term.uri, name: term.name, source: 'sourceUri' };
 
       component.sources = [ termSource ];
       component.selectedTerms = [ editedTerm ];
-      component.searchResults = [ editedTerm ];
+      component.searchResultsMap = { [editedTerm.source]: [ editedTerm ] };
       await component.updateComplete;
       const selectedTermCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:first-of-type nde-large-card') as LargeCardComponent;
       const searchResultCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:nth-of-type(1) nde-large-card') as LargeCardComponent;
@@ -273,7 +274,7 @@ describe('TermSearchComponent', () => {
 
       component.sources = [ termSource ];
       component.selectedTerms = [ editedTerm ];
-      component.searchResults = [ editedTerm ];
+      component.searchResultsMap = { [editedTerm.source]: [ editedTerm ] };
       await component.updateComplete;
       const selectedTermCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:first-of-type nde-large-card');
       const searchResultCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:nth-of-type(1) nde-large-card');
@@ -296,12 +297,34 @@ describe('TermSearchComponent', () => {
 
       component.sources = [ termSource ];
       component.selectedTerms = [];
-      component.searchResults = [];
+      component.searchResultsMap = {};
       await component.updateComplete;
       const componentContent = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.innerHTML;
       expect(componentContent).toContain('nde.features.term.no-search-results');
 
     }
+
+  });
+
+  describe('groupSearchResults()', () => {
+
+    it('should group search results', () => {
+
+      const source1Terms = [ term, term, term ];
+
+      const altTerm: Term =  { ...term, source: 'source2' };
+
+      const source2Terms = [
+        altTerm,
+        altTerm,
+      ];
+
+      const result = component.groupSearchResults([ ...source1Terms, ...source2Terms ]);
+
+      expect(result[term.source].length).toEqual(source1Terms.length);
+      expect(result[altTerm.source].length).toEqual(source2Terms.length);
+
+    });
 
   });
 
