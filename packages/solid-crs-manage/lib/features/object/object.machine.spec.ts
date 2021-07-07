@@ -1,10 +1,12 @@
-import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormActors, FormContext, FormSubmittedEvent, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ClickedDeleteObjectEvent, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
+import { ClickedSubmitEvent } from './terms/term.events';
+import { TermActors, TermContext, TermStates } from './terms/term.machine';
 
 describe('ObjectMachine', () => {
 
@@ -46,6 +48,10 @@ describe('ObjectMachine', () => {
     collection: 'collection-uri-1',
   };
 
+  const termService = {
+    getSources: jest.fn(async() => []),
+  };
+
   let machine: Interpreter<ObjectContext>;
   let collectionStore: CollectionStore;
   let objectStore: CollectionObjectStore;
@@ -59,6 +65,7 @@ describe('ObjectMachine', () => {
     machine = interpret(objectMachine(objectStore)
       .withContext({
         object: object1,
+        termService,
       }));
 
     machine.parent = interpret(appMachine(
@@ -108,6 +115,83 @@ describe('ObjectMachine', () => {
 
     machine.start();
     machine.send(new ClickedSaveEvent());
+
+  });
+
+  it('should transition to SAVING when form machine exits', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    const formMachine = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<unknown>>;
+    expect(formMachine).toBeTruthy();
+    formMachine.send(new FormUpdatedEvent('field', 'value'));
+    formMachine.send(new FormSubmittedEvent());
+
+  });
+
+  it('should transition to SAVING when term machine exits', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        done();
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        const termMachine = machine.children.get(TermActors.TERM_MACHINE) as Interpreter<TermContext>;
+        expect(termMachine).toBeTruthy();
+
+        termMachine.onTransition((termState) => {
+
+          if (termState.matches(TermStates.IDLE)) {
+
+            termMachine.send(new ClickedSubmitEvent());
+
+          }
+
+        });
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field'));
+
+  });
+
+  it('should transition to IDLE when CLICKED_SIDEBAR_ITEM', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.IDLE) && state.event instanceof ClickedObjectSidebarItem) {
+
+        done();
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        machine.send(new ClickedObjectSidebarItem());
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field'));
 
   });
 

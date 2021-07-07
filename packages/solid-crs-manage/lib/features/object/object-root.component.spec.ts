@@ -1,3 +1,4 @@
+import { cpuUsage } from 'process';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -296,123 +297,87 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should update subscription when formActor is updated', async () => {
+  describe('updated()', () => {
 
-    machine.start();
+    it('should update subscription when formActor is updated', async () => {
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+      machine.start();
 
-    component.subscribe = jest.fn();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
 
-    const div = document.createElement('div');
-    div.id = 'nde.features.object.sidebar.image';
+      component.subscribe = jest.fn();
 
-    component.formCards = [ div ];
+      const div = document.createElement('div');
+      div.id = 'nde.features.object.sidebar.image';
 
-    const map = new Map<string, string>();
-    map.set('actor', 'bla');
-    map.set('formActor', 'bla');
+      component.formCards = [ div ];
 
-    await component.updated(map);
+      const map = new Map<string, string>();
+      map.set('actor', 'test');
+      map.set('formActor', 'test');
 
-    expect(component.subscribe).toHaveBeenCalledTimes(13);
+      await component.updated(map);
 
-  });
+      expect(component.subscribe).toHaveBeenCalledTimes(13);
 
-  it('should set formCard attributes when updated is called', async () => {
+    });
 
-    machine.start();
+    it('should set formCard attributes when updated is called', async () => {
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+      machine.start();
 
-    customElements.define('nde-object-imagery', ObjectImageryComponent);
-    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
+      window.document.body.appendChild(component);
+      await component.updateComplete;
 
-    component.formCards = [ div ];
+      customElements.define('nde-object-imagery', ObjectImageryComponent);
+      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+      div.id = 'nde.features.object.sidebar.image';
 
-    const map = new Map<string, string>();
-    map.set('actor', 'test');
-    map.set('formActor', 'test');
+      component.formCards = [ div ];
 
-    await component.updated(map);
+      const map = new Map<string, string>();
+      map.set('actor', 'test');
+      map.set('formActor', 'test');
 
-    component.updateSelected();
+      await component.updated(map);
 
-    expect(div.object).toBeTruthy();
+      component.updateSelected();
 
-  });
+      expect(div.object).toBeTruthy();
 
-  it('should create customElements for this.components', async () => {
+    });
 
-    window.eval = jest.fn(() => ObjectImageryComponent);
-    customElements.define = jest.fn((tag, module) => ObjectImageryComponent);
+    it('should should call registerComponents() when formCards is undefined', async () => {
 
-    machine.start();
+      machine.start();
 
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+      window.document.body.appendChild(component);
+      await component.updateComplete;
 
-    component.components = [
-      {
-        description: 'Digita SemCom component voor beeldmateriaal informatie.',
-        label: 'Erfgoedobject Beeldmateriaal',
-        uri: 'http://localhost:3004/object-imagery.component.js',
-        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-imagery',
-        version: '0.1.0',
-        latest: true,
-      },
-      {
-        description: 'Digita SemCom component voor identificatie informatie.',
-        label: 'Erfgoedobject Identificatie',
-        uri: 'http://localhost:3004/object-identification.component.js',
-        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-identification',
-        version: '0.1.0',
-        latest: true,
-      },
-      {
-        description: 'Digita SemCom component voor vervaardiging informatie.',
-        label: 'Erfgoedobject Vervaardiging',
-        uri: 'http://localhost:3004/object-creation.component.js',
-        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-creation',
-        version: '0.1.0',
-        latest: true,
-      },
-      {
-        description: 'Digita SemCom component voor voorstellingsinformatie.',
-        label: 'Erfgoedobject Voorstelling',
-        uri: 'http://localhost:3004/object-representation.component.js',
-        shapes: [ 'http://digita.ai/voc/input#input' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-representation',
-        version: '0.1.0',
-        latest: true,
-      },
-      {
-        description: 'Digita SemCom component voor afmeting informatie.',
-        label: 'Erfgoedobject Afmetingen',
-        uri: 'http://localhost:3004/object-dimensions.component.js',
-        shapes: [ 'http://digita.ai/voc/payslip#payslip' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-dimensions',
-        version: '0.1.0',
-        latest: true,
-      },
-    ];
+      component.registerComponents = jest.fn(async() => undefined);
 
-    const map = new Map<string, string>();
-    map.set('actor', 'bla');
-    map.set('formActor', 'bla');
+      component.formCards = undefined;
 
-    await component.updated(map);
+      component.components = [
+        {
+          description: 'Digita SemCom component voor beeldmateriaal informatie.',
+          label: 'Erfgoedobject Beeldmateriaal',
+          uri: 'http://localhost:3004/object-imagery.component.js',
+          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-imagery',
+          version: '0.1.0',
+          latest: true,
+        },
+      ];
+
+      await component.updateComplete;
+      await component.updated(undefined);
+
+      expect(component.registerComponents).toHaveBeenCalled();
+
+    });
 
   });
 
@@ -440,6 +405,138 @@ describe('ObjectRootComponent', () => {
       'CLICKED_TERM_FIELD',
       { bubbles: true, composed: true, detail: 'additionalType' }
     ));
+
+  });
+
+  describe('registerComponents()', () => {
+
+    it('should create customElements for this.components', async () => {
+
+      window.eval = jest.fn(() => ObjectImageryComponent);
+      customElements.define = jest.fn((tag, module) => ObjectImageryComponent);
+
+      machine.start();
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      component.components = [
+        {
+          description: 'Digita SemCom component voor beeldmateriaal informatie.',
+          label: 'Erfgoedobject Beeldmateriaal',
+          uri: 'http://localhost:3004/object-imagery.component.js',
+          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-imagery',
+          version: '0.1.0',
+          latest: true,
+        },
+        {
+          description: 'Digita SemCom component voor identificatie informatie.',
+          label: 'Erfgoedobject Identificatie',
+          uri: 'http://localhost:3004/object-identification.component.js',
+          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-identification',
+          version: '0.1.0',
+          latest: true,
+        },
+        {
+          description: 'Digita SemCom component voor vervaardiging informatie.',
+          label: 'Erfgoedobject Vervaardiging',
+          uri: 'http://localhost:3004/object-creation.component.js',
+          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-creation',
+          version: '0.1.0',
+          latest: true,
+        },
+        {
+          description: 'Digita SemCom component voor voorstellingsinformatie.',
+          label: 'Erfgoedobject Voorstelling',
+          uri: 'http://localhost:3004/object-representation.component.js',
+          shapes: [ 'http://digita.ai/voc/input#input' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-representation',
+          version: '0.1.0',
+          latest: true,
+        },
+        {
+          description: 'Digita SemCom component voor afmeting informatie.',
+          label: 'Erfgoedobject Afmetingen',
+          uri: 'http://localhost:3004/object-dimensions.component.js',
+          shapes: [ 'http://digita.ai/voc/payslip#payslip' ],
+          author: 'https://digita.ai',
+          tag: 'nde-object-dimensions',
+          version: '0.1.0',
+          latest: true,
+        },
+      ];
+
+      await component.registerComponents(component.components);
+
+    });
+
+  });
+
+  it('should show content when formCards is set', async () => {
+
+    window.document.body.appendChild(component);
+
+    customElements.define('nde-object-imagery', ObjectImageryComponent);
+    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+    div.id = 'nde.features.object.sidebar.image';
+
+    component.formCards = [ div ];
+    await component.updateComplete;
+
+    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
+    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
+    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
+    expect(sidebar).toBeTruthy();
+    expect(formContent).toBeTruthy();
+    expect(termSearch).toBeFalsy();
+
+  });
+
+  it('should show term search when editing term field', async () => {
+
+    window.document.body.appendChild(component);
+
+    customElements.define('nde-object-imagery', ObjectImageryComponent);
+    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+    div.id = 'nde.features.object.sidebar.image';
+
+    component.formCards = [ div ];
+    component.isEditingTermField = true;
+    await component.updateComplete;
+
+    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
+    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
+    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
+    expect(sidebar).toBeTruthy();
+    expect(formContent).toBeFalsy();
+    expect(termSearch).toBeTruthy();
+
+  });
+
+  it('should hide content when formCards is undefined', async () => {
+
+    window.document.body.appendChild(component);
+
+    customElements.define('nde-object-imagery', ObjectImageryComponent);
+    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+    div.id = 'nde.features.object.sidebar.image';
+
+    component.formCards = undefined;
+    await component.updateComplete;
+
+    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
+    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
+    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
+    expect(sidebar).toBeFalsy();
+    expect(formContent).toBeFalsy();
+    expect(termSearch).toBeFalsy();
 
   });
 

@@ -493,7 +493,12 @@
         "key": "nde.features.term.terms-selected",
         "locale": "nl-NL",
         "value": "Termen geselecteerd"
-    },    
+    },   
+    {
+        "key": "nde.features.term.no-search-results",
+        "locale": "nl-NL",
+        "value": "Geen zoekresultaten voor deze zoekterm!"
+    }, 
     {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",

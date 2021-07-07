@@ -72,6 +72,9 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
               assign((context, event) => ({ sources: event.data })),
             ],
           },
+          onError: {
+            actions: sendParent(AppEvents.ERROR),
+          },
         },
       },
       /**

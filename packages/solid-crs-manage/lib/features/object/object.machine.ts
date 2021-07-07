@@ -288,7 +288,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
-                log((context, event) => event),
                 assign((context, event) => ({
                   object: {
                     ...context.object,
@@ -298,6 +297,9 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                   },
                 })),
               ],
+            },
+            onError: {
+              actions: sendParent(AppEvents.ERROR),
             },
           },
         ],
