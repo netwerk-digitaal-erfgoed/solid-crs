@@ -160,16 +160,16 @@ export class DemoFormComponent extends RxLitElement {
             <label for="title"></label>
           </li>
           <li>
-            <input type="checkbox" id="Plane" name="Plane" value="Car">
+            <input type="checkbox" id="Plane" name="Plane">
             <label for="Plane">Plane</label>
           </li>
           <li>
-            <input type="checkbox" id="Car" name="Car" value="Plane">
+            <input type="checkbox" id="Car" name="Car">
             <label for="Car">Car</label>
           </li>
           <li>
-            <input type="checkbox" id="Boat" name="Boat" value="Boat">
-            <label for="vehicle3">Boat</label>
+            <input type="checkbox" id="Boat" name="Boat">
+            <label for="Boat">Boat</label>
           </li>
         </ul>
         <div slot="help">This still isn't helpful</div>

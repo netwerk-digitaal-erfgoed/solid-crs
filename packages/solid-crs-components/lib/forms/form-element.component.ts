@@ -276,6 +276,9 @@ export class FormElementComponent<T> extends RxLitElement {
           .map((li: HTMLLIElement) => Array.from(li.children)))
           .filter((node) => node instanceof HTMLLabelElement);
 
+        // Make the <ul> focusable, to be able to catch focusout events
+        element.tabIndex = 0;
+
         if (Array.isArray(fieldData)) {
 
           // Set default (checked) values
@@ -295,14 +298,13 @@ export class FormElementComponent<T> extends RxLitElement {
           // When the user clicks outside of the list of elements, hide the list and update form machine
           element.parentElement.addEventListener('focusout', (event) => {
 
-            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
+            if (event.relatedTarget !== element
+              && !checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
 
-              const selectedValues = [].concat(...checkboxLabels
-                .filter((label) => checkboxInputs.find((input) => input.checked)?.name === label.htmlFor))
-                .map((label: HTMLLabelElement) => label.textContent);
+              const selectedValues = checkboxInputs.filter((input) => input.checked).map((input) => input.id);
 
               titleListItem.textContent = selectedValues?.length > 0
                 ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}`

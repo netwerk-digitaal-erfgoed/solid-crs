@@ -59,6 +59,10 @@ nde-form-element ul li input {
   margin-right: var(--gap-normal) !important;
 }
 
+nde-form-element ul li label {
+  flex: 1;
+}
+
 textarea:focus,
 input:focus,
 select:focus {
