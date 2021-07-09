@@ -15,9 +15,14 @@ import { TermActors, termMachine } from './terms/term.machine';
  */
 export interface ObjectContext {
   /**
-   * The currently selected object.
+   * The currently selected object with potential edits.
    */
   object?: CollectionObject;
+  /**
+   * The original CollectionObject, equals the object in the pod.
+   * Used for form validation
+   */
+  original?: CollectionObject;
   /**
    * A list of all collections.
    */
@@ -216,6 +221,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: assign({
           object: (context, event) => event.object,
+          original: (context, event) => event.object,
         }),
         target: ObjectStates.IDLE,
       },
@@ -223,11 +229,15 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
     states: {
       [ObjectStates.SAVING]: {
         invoke: {
-          src: (context, event) => objectStore.save(context.object),
-          onDone: ObjectStates.IDLE,
-          onError: {
-            actions: sendParent(AppEvents.ERROR),
+          src: (context) => objectStore.save(context.object),
+          onDone: {
+            target: ObjectStates.IDLE,
+            // Overwrite original with newly saved object
+            actions: assign((context) => ({ original: context.object })),
           },
+          // onError: {
+          //   actions: sendParent(AppEvents.ERROR),
+          // },
         },
       },
       [ObjectStates.IDLE]: {
@@ -242,37 +252,53 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           {
             id: FormActors.FORM_MACHINE,
             src: formMachine<CollectionObject>(
-              (context) => validateObjectForm(context),
+              (formContext) => validateObjectForm(formContext),
             ),
             data: (context) => {
 
-              // replace terms with lists of uri
-              const formObject = {
-                ...context.object,
-                additionalType: context.object?.additionalType
-                  ? context.object.additionalType.map((term) => term.uri) : [],
-                creator: context.object?.creator ? context.object.creator.map((term) => term.uri) : [],
-                locationCreated: context.object?.locationCreated
-                  ? context.object.locationCreated.map((term) => term.uri) : [],
-                material: context.object?.material ? context.object.material.map((term) => term.uri) : [],
-                subject: context.object?.subject ? context.object.subject.map((term) => term.uri) : [],
-                location: context.object?.location ? context.object.location.map((term) => term.uri) : [],
-                person: context.object?.person ? context.object.person.map((term) => term.uri) : [],
-                organization: context.object?.organization ? context.object.organization.map((term) => term.uri) : [],
-                event: context.object?.event ? context.object.event.map((term) => term.uri) : [],
-              };
+              // replace Terms with lists of uri
+              // form machine can only handle (lists of) strings
+              const parseObject = (object: CollectionObject) => ({
+                ...object,
+                additionalType: object?.additionalType
+                  ? object.additionalType.map((term) => term.uri) : undefined,
+                creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
+                locationCreated: object?.locationCreated
+                  ? object.locationCreated.map((term) => term.uri) : undefined,
+                material: object?.material ? object.material.map((term) => term.uri) : undefined,
+                subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
+                location: object?.location ? object.location.map((term) => term.uri) : undefined,
+                person: object?.person ? object.person.map((term) => term.uri) : undefined,
+                organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
+                event: object?.event ? object.event.map((term) => term.uri) : undefined,
+              });
 
               return {
-                data: { ...formObject },
-                original: { ...formObject },
+                data: { ... parseObject(context.object) },
+                original: { ... parseObject(context.original) },
               };
 
             },
+            onExit: [ assign((context, event) => ({ object: undefined })) ],
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
                 assign((context, event) => ({
-                  object: event.data.data,
+                  object: {
+                    ...event.data.data,
+                    // don't use form values for Terms
+                    // as form machine will only return for these fields URIs, not Terms
+                    // See also: ObjectStates.IDLE's invoked machine's initial data
+                    additionalType: context.object.additionalType,
+                    creator: context.object.creator,
+                    locationCreated: context.object.locationCreated,
+                    material: context.object.material,
+                    subject: context.object.subject,
+                    location: context.object.location,
+                    person: context.object.person,
+                    organization: context.object.organization,
+                    event: context.object.event,
+                  },
                 })),
               ],
             },
@@ -291,6 +317,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             src: termMachine,
             data: (context, event: ClickedTermFieldEvent) => ({
               field: event.field,
+              selectedTerms: event.terms,
               termService: context.termService || new TermService(process.env.VITE_TERM_ENDPOINT),
             }),
             onDone: {
@@ -299,9 +326,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                 assign((context, event) => ({
                   object: {
                     ...context.object,
-                    [event.data.field]: event.data.selectedTerms?.length > 0
-                      ? event.data.selectedTerms
-                      : context.object[event.data.field as keyof CollectionObject],
+                    [event.data.field]: event.data.selectedTerms,
                   },
                 })),
               ],

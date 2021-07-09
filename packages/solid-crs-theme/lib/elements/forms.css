@@ -72,6 +72,9 @@ nde-form-element ul.dismiss {
   display: flex;
   align-items: center;
   gap: var(--gap-small);
+  flex-wrap: wrap;
+  margin: var(--gap-small) 0;
+  height: auto;
 }
 
 nde-form-element ul li {
@@ -89,12 +92,11 @@ nde-form-element ul.dismiss li {
   line-height: 15px;
   padding: 5px;
   width: fit-content;
-  cursor: pointer;
   height: 15px;
-}
-
-nde-form-element ul.dismiss li:hover {
-  background-color: red;
+  cursor: default;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 }
 
 nde-form-element ul li input {

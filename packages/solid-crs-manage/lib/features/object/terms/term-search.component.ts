@@ -203,7 +203,7 @@ export class TermSearchComponent extends RxLitElement {
             <nde-large-card
             class="term-card"
             .showImage="${false}"
-            ?showContent="${term.description?.length || term.alternateName?.length || term.broader?.length || term.narrower?.length}"
+            .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
               <div slot="subtitle">${ term.uri }</div>
@@ -231,7 +231,7 @@ export class TermSearchComponent extends RxLitElement {
               <nde-large-card
               class="term-card"
               .showImage="${false}"
-              ?showContent="${term.description?.length || term.alternateName?.length || term.broader?.length || term.narrower?.length}"
+              .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
               @click=${() => this.actor.send(new ClickedTermEvent(term))}>
                 <div slot="title">${ term.name }</div>
                 <div slot="subtitle">${ term.uri }</div>

@@ -1,5 +1,5 @@
 import { FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
 
 /**
@@ -58,7 +58,7 @@ export class ClickedSaveEvent implements EventObject {
 export class ClickedTermFieldEvent implements EventObject {
 
   public type: ObjectEvents.CLICKED_TERM_FIELD = ObjectEvents.CLICKED_TERM_FIELD;
-  constructor(public field: string) { }
+  constructor(public field: string, public terms: Term[]) { }
 
 }
 

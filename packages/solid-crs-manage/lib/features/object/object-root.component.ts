@@ -140,9 +140,9 @@ export class ObjectRootComponent extends RxLitElement {
 
     this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
 
-    this.addEventListener('CLICKED_TERM_FIELD', (event: CustomEvent<string>) => {
+    this.addEventListener('CLICKED_TERM_FIELD', (event: CustomEvent<ClickedTermFieldEvent>) => {
 
-      this.actor?.send(new ClickedTermFieldEvent(event.detail));
+      this.actor?.send(new ClickedTermFieldEvent(event.detail.field, event.detail.terms));
       event.stopPropagation();
 
     });
@@ -194,9 +194,9 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('isValid', from(this.formActor).pipe(
-        map((state) => state.matches({
+        map((state) => !state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+            [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
           },
         })),
       ));
@@ -343,6 +343,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     components.forEach((component) => this.contentElement.appendChild(component));
     this.updateSelected();
+    this.focus();
 
   }
 
@@ -385,13 +386,13 @@ export class ObjectRootComponent extends RxLitElement {
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
 
       <nde-form-element slot="title" class="title inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-        <input autofocus type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
+        <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
       <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
         <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
       </nde-form-element>
 
-      ${ idle && this.isValid && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isValid && this.isDirty) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+      ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(new ClickedDeleteObjectEvent(this.object))}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>

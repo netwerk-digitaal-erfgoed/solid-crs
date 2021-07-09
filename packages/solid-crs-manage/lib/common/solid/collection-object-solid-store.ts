@@ -209,7 +209,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
       if (propertyValue.length > 0) {
 
-        updatedObjectsDataset = propertyValue.reduce((dataset, value) => setThing(dataset, addUrl(createThing({ url: value.uri }), 'https://schema.org/name', value.name)), updatedObjectsDataset);
+        updatedObjectsDataset = propertyValue.reduce((dataset, value) => setThing(dataset, addStringNoLocale(createThing({ url: value.uri }), 'http://schema.org/name', value.name)), updatedObjectsDataset);
 
       }
 
@@ -373,7 +373,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       uri: asUrl(object),
       updated: getStringNoLocale(object, 'http://schema.org/dateModified') || undefined,
       type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') || undefined,
-      additionalType: getUrlAll(object, 'http://schema.org/additionalType').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
+      additionalType: getUrlAll(object, 'http://schema.org/additionalType').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
       identifier: getStringNoLocale(object, 'http://schema.org/identifier') || undefined,
       name: getStringWithLocale(object, 'http://schema.org/name', 'nl') || undefined,
       description: getStringWithLocale(object, 'http://schema.org/description', 'nl') || undefined,
@@ -381,17 +381,17 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       maintainer: getUrl(object, 'http://schema.org/maintainer') || undefined,
 
       // creation
-      creator: getUrlAll(object, 'http://schema.org/creator').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      locationCreated: getUrlAll(object, 'http://schema.org/locationCreated').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      material: getUrlAll(object, 'http://schema.org/material').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
+      creator: getUrlAll(object, 'http://schema.org/creator').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      locationCreated: getUrlAll(object, 'http://schema.org/locationCreated').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      material: getUrlAll(object, 'http://schema.org/material').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
       dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated') || undefined,
 
       // representation
-      subject: getUrlAll(object, 'http://schema.org/DefinedTerm').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      location: getUrlAll(object, 'http://schema.org/Place').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      person: getUrlAll(object, 'http://schema.org/Person').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      organization: getUrlAll(object, 'http://schema.org/Organization').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
-      event: getUrlAll(object, 'http://schema.org/Event').map((uri) => ({ uri, name: CollectionObjectSolidStore.getTerm(uri, dataset).name })),
+      subject: getUrlAll(object, 'http://schema.org/DefinedTerm').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      location: getUrlAll(object, 'http://schema.org/Place').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      person: getUrlAll(object, 'http://schema.org/Person').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      organization: getUrlAll(object, 'http://schema.org/Organization').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      event: getUrlAll(object, 'http://schema.org/Event').map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
 
       // dimensions
       height: getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,

@@ -89,7 +89,7 @@ export class TermService {
 
     // parse and return query result
     return [].concat(...result.data.terms.map(
-      (termList) => termList.terms.map((term) => ({ ...term, source: termList.source.uri }))
+      (termList) => termList.terms.map((term) => ({ ...term, source: termList.source.uri, name: term.name[0] }))
     ));
 
   }

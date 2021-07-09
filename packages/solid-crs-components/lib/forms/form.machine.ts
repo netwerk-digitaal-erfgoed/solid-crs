@@ -92,7 +92,7 @@ export const formMachine = <T>(
            * State which determines if form has changed.
            */
           [FormRootStates.CLEANLINESS]: {
-            initial: FormCleanlinessStates.PRISTINE,
+            initial: FormCleanlinessStates.CHECKING_CLEANLINESS,
             states: {
               /**
                * The form has not changed.

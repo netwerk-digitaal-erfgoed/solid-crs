@@ -322,42 +322,6 @@ export class FormElementComponent<T> extends RxLitElement {
 
         }
 
-      } else if ((element as HTMLUListElement).type === 'dismiss') {
-
-        if (Array.isArray(fieldData)) {
-
-          const listItems = Array.from(element.children);
-
-          // Set default (checked) values
-
-          // remove <li> from values when it is clicked
-          listItems.forEach((li) => {
-
-            li.addEventListener('click', (event) => {
-
-              const clickedId = (event.target as HTMLElement).id;
-              const clickedItem = listItems.find((item) => item.id === clickedId);
-
-              if (clickedItem) {
-
-                element.removeChild(clickedItem);
-
-                actor.send(new FormUpdatedEvent(field.toString(), fieldData.filter((entry) => entry !== clickedId)));
-
-              }
-
-            });
-
-          });
-
-        } else {
-
-          // This type of input should always be a list, since multiple values can be selected
-          // This error will only be thrown when a programming mistake was made when setting up the form machine
-          throw Error('Invalid field data (not a list)');
-
-        }
-
       }
 
       // Listen for Enter presses to submit
