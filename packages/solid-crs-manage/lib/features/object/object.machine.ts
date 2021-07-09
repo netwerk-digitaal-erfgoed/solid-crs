@@ -6,7 +6,6 @@ import { formMachine,
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { log } from 'xstate/lib/actions';
 import { AppEvents } from '../../app.events';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
@@ -72,39 +71,34 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
         message: 'nde.features.object.card.identification.field.description.validation.max-characters',
       });
 
-    }
+    } else if (field === 'name' && !value) {
 
-    // the name/title of an object can not be empty
-    if (field === 'name' && !value) {
+      // the name/title of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
+    } else if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
 
-    // the name/title of an object can not be longer than 100 characters
-    if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
+      // the name/title of an object can not be longer than 100 characters
 
       res.push({
         field,
         message: 'nde.features.object.card.identification.field.title.validation.max-characters',
       });
 
-    }
+    } else if (field === 'identifier' && !value) {
 
-    // the identifier of an object can not be empty
-    if (field === 'identifier' && !value) {
+      // the identifier of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
-
-    if (field === 'type') {
+    } else if (field === 'type') {
 
       // the type of an object can not be empty
       if (!value) {
@@ -132,10 +126,9 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if (field === 'additionalType') {
 
-    // the additionalType of an object can not be empty
-    if (field === 'additionalType') {
+      // the additionalType of an object can not be empty
 
       // the additionalType of an object can not be empty
       if (!value || (value as typeof context.data[typeof field])?.length < 1) {
@@ -147,20 +140,18 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if (field === 'image' && !value) {
 
-    // the identifier of an object can not be empty
-    if (field === 'image' && !value) {
+      // the identifier of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
+    } else if (field === 'image' && value) {
 
-    // the image url should be valid and return png/jpeg mime type
-    if (field === 'image' && value) {
+      // the image url should be valid and return png/jpeg mime type
 
       try {
 
@@ -175,10 +166,9 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
 
-    // the date should be valid EDTF
-    if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
+      // the date should be valid EDTF
 
       try {
 
@@ -193,10 +183,9 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
 
-    // validate numbers
-    if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
+      // validate numbers
 
       if (value.toString() === 'NaN') {
 
@@ -254,12 +243,31 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             id: FormActors.FORM_MACHINE,
             src: formMachine<CollectionObject>(
               (context) => validateObjectForm(context),
-              async (c: FormContext<CollectionObject>) => c.data
             ),
-            data: (context) => ({
-              data: { ...context.object },
-              original: { ...context.object },
-            }),
+            data: (context) => {
+
+              // replace terms with lists of uri
+              const formObject = {
+                ...context.object,
+                additionalType: context.object?.additionalType
+                  ? context.object.additionalType.map((term) => term.uri) : [],
+                creator: context.object?.creator ? context.object.creator.map((term) => term.uri) : [],
+                locationCreated: context.object?.locationCreated
+                  ? context.object.locationCreated.map((term) => term.uri) : [],
+                material: context.object?.material ? context.object.material.map((term) => term.uri) : [],
+                subject: context.object?.subject ? context.object.subject.map((term) => term.uri) : [],
+                location: context.object?.location ? context.object.location.map((term) => term.uri) : [],
+                person: context.object?.person ? context.object.person.map((term) => term.uri) : [],
+                organization: context.object?.organization ? context.object.organization.map((term) => term.uri) : [],
+                event: context.object?.event ? context.object.event.map((term) => term.uri) : [],
+              };
+
+              return {
+                data: { ...formObject },
+                original: { ...formObject },
+              };
+
+            },
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
@@ -286,13 +294,13 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               termService: context.termService || new TermService(process.env.VITE_TERM_ENDPOINT),
             }),
             onDone: {
-              target: ObjectStates.SAVING,
+              target: ObjectStates.IDLE,
               actions: [
                 assign((context, event) => ({
                   object: {
                     ...context.object,
                     [event.data.field]: event.data.selectedTerms?.length > 0
-                      ? event.data.selectedTerms[0].name[0] // todo switch to full list instead of one value
+                      ? event.data.selectedTerms
                       : context.object[event.data.field as keyof CollectionObject],
                   },
                 })),

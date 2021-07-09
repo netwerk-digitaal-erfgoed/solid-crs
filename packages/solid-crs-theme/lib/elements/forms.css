@@ -45,6 +45,33 @@ nde-form-element textarea {
 
 nde-form-element ul {
   list-style-type: none;
+  height: 42px;
+  margin: 0;
+}
+
+nde-form-element ul.multiselect {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-small);
+  position: absolute;
+  left: -2px;
+  top: 0;
+  border: 2px solid var(--colors-foreground-normal);
+  border-top: none;
+  width: calc(100% - 2 * var(--gap-normal));
+  background-color: var(--colors-background-light);
+  z-index: 20;
+  padding: var(--gap-small) var(--gap-normal);
+  line-height: 1.5;
+}
+
+nde-form-element ul.dismiss {
+  border: none;
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-small);
 }
 
 nde-form-element ul li {
@@ -53,6 +80,21 @@ nde-form-element ul li {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+nde-form-element ul.dismiss li {
+  background-color: var(--colors-foreground-normal);
+  color: var(--colors-foreground-inverse);
+  position: relative;
+  line-height: 15px;
+  padding: 5px;
+  width: fit-content;
+  cursor: pointer;
+  height: 15px;
+}
+
+nde-form-element ul.dismiss li:hover {
+  background-color: red;
 }
 
 nde-form-element ul li input {

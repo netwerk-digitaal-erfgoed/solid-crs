@@ -309,6 +309,104 @@ describe('FormElementComponent', () => {
 
   });
 
+  describe('with dismiss list input field', () => {
+
+    // TODO finish this
+
+    let ul: HTMLUListElement;
+    let listItem: HTMLLIElement;
+
+    beforeEach(async() => {
+
+      component.field = 'selected';
+      ul = window.document.createElement('ul');
+      ul.slot = 'input';
+      ul.type = 'dismiss';
+      listItem = window.document.createElement('li');
+      listItem.textContent = 'test';
+      ul.appendChild(listItem);
+      component.appendChild(ul);
+      machine.start();
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+    });
+
+    it('should allow slotted <ul> <li> with checkbox input fields', () => {
+
+      expect((window.document.body.getElementsByTagName('nde-form-element')[0].shadowRoot.querySelector<HTMLSlotElement>('.field slot').assignedElements()[0] as HTMLSelectElement)).toEqual(ul);
+
+    });
+
+    it('should send FORM_UPDATED event when focus is lost on dropdown', (done) => {
+
+      input.checked = true;
+
+      machine.onEvent((event) => {
+
+        if (event instanceof FormUpdatedEvent && event) {
+
+          done();
+
+        }
+
+      });
+
+      component.dispatchEvent(new FocusEvent('focusout'));
+
+    });
+
+    it('should show title when focus was lost on the checkbox list', () => {
+
+      // show the checkboxes
+      listItem.click();
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(listItem.hidden).toBeTruthy();
+
+      // click somewhere else
+      component.dispatchEvent(new FocusEvent('focusout'));
+      expect(inputListItem.hidden).toBeTruthy();
+      expect(listItem.hidden).toBeFalsy();
+
+    });
+
+    it('should not lose focus when other checkboxes are clicked', () => {
+
+      // show the checkboxes
+      listItem.click();
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(listItem.hidden).toBeTruthy();
+
+      // click on a checkbox
+      component.dispatchEvent(new FocusEvent('focusout', { relatedTarget: input }));
+      expect(inputListItem.hidden).toBeFalsy();
+      expect(listItem.hidden).toBeTruthy();
+
+    });
+
+    it('should error when fieldData is not an array', async () => {
+
+      component.data = { uri: '', name: 'Test', description: 'description', selected: 'no-array' };
+
+      expect(() => component.bindActorToInput(component.inputSlot, component.actor, component.field, component.data))
+        .toThrow();
+
+    });
+
+    it('should show default message when no checkboxes are selected', () => {
+
+      component.data = { uri: '', name: 'Test', description: 'description', selected: [] };
+
+      input.click();
+      input.click();
+
+      expect(listItem.textContent).toContain('translation');
+
+    });
+
+  });
+
   it('should send SUBMITTED event when enter keypress', async (done) => {
 
     machine.onEvent(((event) => {

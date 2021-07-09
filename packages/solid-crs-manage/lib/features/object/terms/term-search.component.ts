@@ -173,7 +173,7 @@ export class TermSearchComponent extends RxLitElement {
 
         <nde-form-element class="sources" .actor="${this.formActor}" .translator="${this.translator}" field="sources">
           <div slot="icon">${ unsafeSVG(Dropdown) }</div>
-          <ul slot="input" >
+          <ul slot="input" type="multiselect" class="multiselect">
             <li>
               <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
             </li>

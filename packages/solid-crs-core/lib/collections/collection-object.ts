@@ -1,4 +1,5 @@
 import { Resource } from '../stores/resource';
+import { Term } from '../terms/term';
 
 /**
  * Represents a digitally archived objects.
@@ -13,9 +14,9 @@ export interface CollectionObject extends Resource {
   type: string;
 
   /**
-   * The name of the object.
+   * The additional, more specific type(s) of the object.
    */
-  additionalType?: string;
+  additionalType?: Term[];
 
   /**
    * The identifier of the object.
@@ -45,9 +46,9 @@ export interface CollectionObject extends Resource {
   // CREATION
 
   /**
-   * The creator of the object.
+   * The creator(s) of the object.
    */
-  creator?: string;
+  creator?: Term[];
 
   /**
    * The creation date of the object.
@@ -57,39 +58,39 @@ export interface CollectionObject extends Resource {
   /**
    * The creation location of the object.
    */
-  locationCreated?: string;
+  locationCreated?: Term[];
 
   /**
-   * The material of the object.
+   * The material(s) of the object.
    */
-  material?: string;
+  material?: Term[];
 
   // REPRESENTATION
 
   /**
-   * The subject of the object.
+   * The subject(s) of the object.
    */
-  subject?: string;
+  subject?: Term[];
 
   /**
-   * The location of the object.
+   * The location(s) of the object.
    */
-  location?: string;
+  location?: Term[];
 
   /**
-   * The person of the object.
+   * The person(s) of the object.
    */
-  person?: string;
+  person?: Term[];
 
   /**
-   * The organization of the object.
+   * The organization(s) of the object.
    */
-  organization?: string;
+  organization?: Term[];
 
   /**
-   * The event of the object.
+   * The event(s) of the object.
    */
-  event?: string;
+  event?: Term[];
 
   // ACQUISITION
 

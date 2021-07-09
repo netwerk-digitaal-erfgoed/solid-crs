@@ -210,9 +210,7 @@ export class FormElementComponent<T> extends RxLitElement {
       (element) => element instanceof HTMLInputElement ||
                     element instanceof HTMLSelectElement ||
                     element instanceof HTMLTextAreaElement ||
-                    Array.from(element.childNodes).find((li) =>
-                      Array.from(li.childNodes).find((input) =>
-                        input instanceof HTMLInputElement))
+                    element instanceof HTMLUListElement
     ).map((element) => element as HTMLElement);
 
     this.inputs?.forEach((element) => {
@@ -254,7 +252,7 @@ export class FormElementComponent<T> extends RxLitElement {
           }, this.debounceTimeout),
         );
 
-      } else if (Array.from(element.children).find((li) =>
+      } else if ((element as HTMLUListElement).type === 'multiselect' && Array.from(element.children).find((li) =>
         Array.from(li.children).find((input) =>
           input instanceof HTMLInputElement && input.type === 'checkbox'))
       ) {
@@ -319,6 +317,42 @@ export class FormElementComponent<T> extends RxLitElement {
         } else {
 
           // A multi select's fieldData should always be a list, since multiple values can be selected
+          // This error will only be thrown when a programming mistake was made when setting up the form machine
+          throw Error('Invalid field data (not a list)');
+
+        }
+
+      } else if ((element as HTMLUListElement).type === 'dismiss') {
+
+        if (Array.isArray(fieldData)) {
+
+          const listItems = Array.from(element.children);
+
+          // Set default (checked) values
+
+          // remove <li> from values when it is clicked
+          listItems.forEach((li) => {
+
+            li.addEventListener('click', (event) => {
+
+              const clickedId = (event.target as HTMLElement).id;
+              const clickedItem = listItems.find((item) => item.id === clickedId);
+
+              if (clickedItem) {
+
+                element.removeChild(clickedItem);
+
+                actor.send(new FormUpdatedEvent(field.toString(), fieldData.filter((entry) => entry !== clickedId)));
+
+              }
+
+            });
+
+          });
+
+        } else {
+
+          // This type of input should always be a list, since multiple values can be selected
           // This error will only be thrown when a programming mistake was made when setting up the form machine
           throw Error('Invalid field data (not a list)');
 
@@ -449,23 +483,6 @@ export class FormElementComponent<T> extends RxLitElement {
         .form-element .content .field ::slotted(select), 
         .form-element .content .field ::slotted(textarea) {
           box-sizing: border-box;
-        } 
-        .form-element .content .field ::slotted(ul) {
-          height: auto;
-          display: flex;
-          flex-direction: column;
-          gap: var(--gap-small);
-          position: absolute;
-          left: -2px;
-          top: 0;
-          border: 2px solid var(--colors-foreground-normal);
-          border-top: none;
-          width: calc(100% - 2 * var(--gap-normal));
-          background-color: var(--colors-background-light);
-          z-index: 20;
-          margin: 0;
-          padding: var(--gap-small) var(--gap-normal);
-          line-height: 1.5;
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);

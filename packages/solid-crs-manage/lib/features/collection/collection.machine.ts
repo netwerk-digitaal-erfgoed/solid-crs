@@ -116,13 +116,13 @@ export const collectionMachine =
               }),
               target: CollectionStates.IDLE,
             },
-            onError: {
-            /**
-             * Notify the parent machine when something goes wrong.
-             */
-              target: CollectionStates.IDLE,
-              actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
-            },
+            // onError: {
+            // /**
+            //  * Notify the parent machine when something goes wrong.
+            //  */
+            //   target: CollectionStates.IDLE,
+            //   actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+            // },
           },
         },
         /**
