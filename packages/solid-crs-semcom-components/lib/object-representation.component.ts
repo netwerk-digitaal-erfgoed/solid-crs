@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, Logger, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -53,35 +53,45 @@ export class ObjectRepresentationComponent extends RxLitElement {
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="subject">
           <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.field.subject')}</label>
-          <input type="text" slot="input" name="subject" id="subject"/>
+          <ul slot="input" name="subject" id="subject" type="dismiss" class="dismiss">
+            ${this.object.subject.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+          </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'subject' }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="location">
           <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.field.location')}</label>
-          <input type="text" slot="input" name="location" id="location"/>
+          <ul slot="input" name="location" id="location" type="dismiss" class="dismiss">
+            ${this.object.location.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+          </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'location' }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="person">
           <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.field.person')}</label>
-          <input type="text" slot="input" name="person" id="person"/>
+          <ul slot="input" name="person" id="person" type="dismiss" class="dismiss">
+            ${this.object.person.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+          </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'person' }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="organization">
           <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.field.organization')}</label>
-          <input type="text" slot="input" name="organization" id="organization"/>
+          <ul slot="input" name="organization" id="organization" type="dismiss" class="dismiss">
+            ${this.object.organization.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+          </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'organization' }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="event">
           <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.field.event')}</label>
-          <input type="text" slot="input" name="event" id="event"/>
+          <ul slot="input" name="event" id="event" type="dismiss" class="dismiss">
+            ${this.object.event.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+          </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'event' }))}">
             ${ unsafeSVG(Connect) }
           </button>

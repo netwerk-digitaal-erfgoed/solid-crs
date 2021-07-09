@@ -75,6 +75,7 @@ nde-form-element ul.dismiss {
   flex-wrap: wrap;
   margin: var(--gap-small) 0;
   height: auto;
+  min-height: 25px;
 }
 
 nde-form-element ul li {
