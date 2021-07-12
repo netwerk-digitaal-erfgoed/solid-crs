@@ -458,7 +458,6 @@ export class ObjectRootComponent extends RxLitElement {
           margin-top: 1px;
           display: flex;
           flex-direction: row;
-          overflow: hidden;
           height: 100%;
           flex: 1 1;
         }
