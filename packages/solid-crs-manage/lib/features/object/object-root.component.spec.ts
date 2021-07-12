@@ -323,31 +323,6 @@ describe('ObjectRootComponent', () => {
 
     });
 
-    it('should set formCard attributes when updated is called', async () => {
-
-      machine.start();
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      customElements.define('nde-object-imagery', ObjectImageryComponent);
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-
-      component.formCards = [ div ];
-
-      const map = new Map<string, string>();
-      map.set('actor', 'test');
-      map.set('formActor', 'test');
-
-      await component.updated(map);
-
-      component.updateSelected();
-
-      expect(div.object).toBeTruthy();
-
-    });
-
     it('should should call registerComponents() when formCards is undefined', async () => {
 
       machine.start();
@@ -574,6 +549,22 @@ describe('ObjectRootComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(event.preventDefault).toHaveBeenCalled();
+
+  });
+
+  describe('appendComponents()', () => {
+
+    it('should set formCard attributes', async () => {
+
+      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+      div.id = 'nde.features.object.sidebar.image';
+      component.appendComponents([ div as any ]);
+
+      customElements.define('nde-object-imagery', ObjectImageryComponent);
+
+      expect(div.object).toBeTruthy();
+
+    });
 
   });
 

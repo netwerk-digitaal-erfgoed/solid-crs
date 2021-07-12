@@ -218,18 +218,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if (this.formCards && this.object && this.translator && this.formActor) {
-
-      this.formCards.forEach((formCard) => {
-
-        formCard.object = this.object;
-        formCard.formActor = this.formActor as any;
-        formCard.translator = this.translator;
-
-      });
-
-    }
-
     if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
 
       this.appendComponents(this.formCards);
@@ -338,14 +326,12 @@ export class ObjectRootComponent extends RxLitElement {
   | ObjectRepresentationComponent
   | ObjectDimensionsComponent)[]): void {
 
-    Array.from(this.contentElement?.children).forEach((child) => this.contentElement?.removeChild(child));
-
     components.forEach(async(component) => {
 
       component.object = this.object;
       component.formActor = this.formActor as any;
       component.translator = this.translator;
-      this.contentElement?.appendChild(component);
+      // this.contentElement?.appendChild(component);
 
     });
 
@@ -428,13 +414,16 @@ export class ObjectRootComponent extends RxLitElement {
 
     ${ this.isEditingTermField
     ? html`<nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>`
-    : html`
+    : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
+        ${ this.updateSelected() }
+
+        ${ this.formCards }
 
         ${ alerts }
         
       </div>
-    `}
+    ` : html`no formcards`}
     `
     : html``}
     </div>`
@@ -464,13 +453,14 @@ export class ObjectRootComponent extends RxLitElement {
           margin-top: 1px;
           display: flex;
           flex-direction: row;
-          height: 100%;
+        height: 1px;
           flex: 1 1;
         }
         .content {
           padding: var(--gap-large);
           width: 100%;
           overflow-y: auto;
+          overflow-x: clip;
           display: flex;
           flex-direction: column;
           gap: var(--gap-large);

@@ -51,34 +51,53 @@ export class ObjectCreationComponent extends RxLitElement {
         ${unsafeSVG(ObjectIcon)}
       </div>
       <div slot="content">
-        <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="creator">
+        <nde-form-element
+          .actor="${this.formActor}"
+          .translator="${this.translator}"
+          field="creator"
+          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}"
+        >
           <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
           <ul slot="input" name="creator" id="creator" type="dismiss" class="dismiss">
             ${this.object.creator?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}">
+          <button type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="locationCreated">
+        <nde-form-element
+          .actor="${this.formActor}"
+          .translator="${this.translator}"
+          field="locationCreated"
+          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}"
+        >
           <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
           <ul slot="input" name="locationCreated" id="locationCreated" type="dismiss" class="dismiss">
             ${this.object.locationCreated?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}">
+          <button type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="material">
+        <nde-form-element
+          .actor="${this.formActor}"
+          .translator="${this.translator}"
+          field="material"
+          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}"
+        >
           <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
           <ul slot="input" name="material" id="material" type="dismiss" class="dismiss">
             ${this.object.material?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}">
+          <button type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="dateCreated">
+        <nde-form-element
+          .actor="${this.formActor}"
+          .translator="${this.translator}"
+          field="dateCreated"
+        >
           <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.field.dateCreated')}</label>
           <input type="text" slot="input" name="dateCreated" id="dateCreated" placeholder="YYYY-MM-DD"/>
         </nde-form-element>
