@@ -1,3 +1,4 @@
+import { throws } from 'assert';
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
@@ -211,7 +212,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if (!this.formCards && this.components) {
+    if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
 
       await this.registerComponents(this.components);
 
@@ -229,7 +230,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if (this.formCards && !this.isEditingTermField) {
+    if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
 
       this.appendComponents(this.formCards);
 
@@ -308,10 +309,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
-      element.object = this.object;
-      element.formActor = this.formActor as any;
-      element.translator = this.translator;
-
       if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
 
         element.addEventListener('contextmenu', (event: MouseEvent) => {
@@ -333,7 +330,7 @@ export class ObjectRootComponent extends RxLitElement {
   }
 
   /**
-   * Appends the formCards to the page content
+   * Appends the formCards to the page content and removes previous children
    */
   appendComponents(components: (ObjectImageryComponent
   | ObjectCreationComponent
@@ -341,9 +338,18 @@ export class ObjectRootComponent extends RxLitElement {
   | ObjectRepresentationComponent
   | ObjectDimensionsComponent)[]): void {
 
-    components.forEach((component) => this.contentElement?.appendChild(component));
+    Array.from(this.contentElement?.children).forEach((child) => this.contentElement?.removeChild(child));
+
+    components.forEach(async(component) => {
+
+      component.object = this.object;
+      component.formActor = this.formActor as any;
+      component.translator = this.translator;
+      this.contentElement?.appendChild(component);
+
+    });
+
     this.updateSelected();
-    this.focus();
 
   }
 
@@ -385,10 +391,10 @@ export class ObjectRootComponent extends RxLitElement {
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
 
-      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
         <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
-      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
         <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
       </nde-form-element>
 

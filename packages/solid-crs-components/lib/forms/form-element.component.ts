@@ -107,10 +107,10 @@ export class FormElementComponent<T> extends RxLitElement {
 
   /**
    * Decides whether validation results should be shown below the form element
-   * When false, only shows a yellow border to the left of the component
+   * When false, only shows a yellow border
    */
   @property({ type: Boolean })
-  public showValidation = true;
+  public hideValidation = false;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -235,19 +235,21 @@ export class FormElementComponent<T> extends RxLitElement {
           'input',
           debounce(() => {
 
-            let elementValue;
+            let formValue;
+            const inputStringValue = element.value.trim();
 
             if (typeof fieldData === 'number') {
 
-              elementValue = isNaN(+element.value) ? NaN : +element.value;
+              const parsedNumberValue = inputStringValue.replace(',', '.');
+              formValue = isNaN(+(parsedNumberValue)) ? NaN : parsedNumberValue;
 
             } else {
 
-              elementValue = element.value.trim();
+              formValue = inputStringValue;
 
             }
 
-            actor.send(new FormUpdatedEvent(field.toString(), elementValue.toString()));
+            actor.send(new FormUpdatedEvent(field.toString(), formValue.toString()));
 
           }, this.debounceTimeout),
         );
@@ -268,11 +270,6 @@ export class FormElementComponent<T> extends RxLitElement {
         const checkboxInputs: HTMLInputElement[] = [].concat(...checkboxListItems
           .map((li: HTMLLIElement) => Array.from(li.children)))
           .filter((node) => node instanceof HTMLInputElement);
-
-        // A list of all the checkbox labels
-        const checkboxLabels: HTMLLabelElement[] = [].concat(...checkboxListItems
-          .map((li: HTMLLIElement) => Array.from(li.children)))
-          .filter((node) => node instanceof HTMLLabelElement);
 
         // Make the <ul> focusable, to be able to catch focusout events
         element.tabIndex = 0;
@@ -361,7 +358,7 @@ export class FormElementComponent<T> extends RxLitElement {
           </div>
         ` : ''
 }     
-      <div class="content${!this.showValidation && this.validationResults?.length > 0  ? ' no-validation' : ''}${this.inverse ? ' no-border' : ''}">
+      <div class="content${this.hideValidation && this.validationResults?.length > 0  ? ' no-validation' : ''}${this.inverse ? ' no-border' : ''}">
         <div class="field ${this.inverse ? 'no-border' : ''}">
           <slot name="input"></slot>
           <div class="icon">
@@ -375,7 +372,7 @@ export class FormElementComponent<T> extends RxLitElement {
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
         <slot name="help"></slot>
       </div>
-      <div class="results" ?hidden="${!this.showValidation || !this.validationResults || this.validationResults.length === 0}">
+      <div class="results" ?hidden="${this.hideValidation || this.validationResults?.length === 0}">
         ${this.validationResults?.map((result) => html`<div class="result">${this.translator.translate(result.message)}</div>`)}
       </div>
     </div>

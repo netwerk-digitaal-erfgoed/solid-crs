@@ -135,7 +135,6 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       // the additionalType of an object can not be empty
 
-      // the additionalType of an object can not be empty
       if (!value || (value as typeof context.data[typeof field])?.length < 1) {
 
         res.push({

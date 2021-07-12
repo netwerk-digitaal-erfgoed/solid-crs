@@ -346,10 +346,10 @@ describe('FormElementComponent', () => {
 
   });
 
-  it('should show yellow border when showValidation is false', async () => {
+  it('should show yellow border when hideValidation is true', async () => {
 
     component.validationResults = [ { field: 'name', message: 'lorem' } ];
-    component.showValidation = false;
+    component.hideValidation = true;
 
     window.document.body.appendChild(component);
     await component.updateComplete;

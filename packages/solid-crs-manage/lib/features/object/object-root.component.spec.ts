@@ -220,6 +220,7 @@ describe('ObjectRootComponent', () => {
     div.id = 'nde.features.object.sidebar.image';
 
     component.formCards = [ div ];
+    component.components = [];
 
     const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
     content.dispatchEvent(new CustomEvent('scroll'));
