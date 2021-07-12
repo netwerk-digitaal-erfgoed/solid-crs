@@ -167,7 +167,13 @@ export class ObjectRootComponent extends RxLitElement {
       }
 
       this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => state.children[FormActors.FORM_MACHINE]),
+        map((state) => {
+
+          this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
+
+          return state.children[FormActors.FORM_MACHINE];
+
+        })
       ));
 
       this.subscribe('termActor', from(this.actor).pipe(
@@ -180,8 +186,15 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.context.collections),
       ));
 
-      this.subscribe('object', from(this.actor)
-        .pipe(map((state) => state.context?.object)));
+      this.subscribe('object', from(this.actor).pipe(
+        map((state) => {
+
+          this.formCards?.forEach((card) => card.object = state.context?.object);
+
+          return state.context?.object;
+
+        })
+      ));
 
       this.subscribe('isEditingTermField', from(this.actor)
         .pipe(map((state) => state.matches(ObjectStates.EDITING_FIELD))));
@@ -331,6 +344,7 @@ export class ObjectRootComponent extends RxLitElement {
       component.object = this.object;
       component.formActor = this.formActor as any;
       component.translator = this.translator;
+      await component.requestUpdate('object');
       // this.contentElement?.appendChild(component);
 
     });
@@ -413,7 +427,10 @@ export class ObjectRootComponent extends RxLitElement {
     </nde-sidebar>
 
     ${ this.isEditingTermField
-    ? html`<nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>`
+    ? html`
+      ${ this.appendComponents(this.formCards)}
+      <nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
+    `
     : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
         ${ this.updateSelected() }
