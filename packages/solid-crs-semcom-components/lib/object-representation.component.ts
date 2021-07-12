@@ -56,7 +56,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           <ul slot="input" name="subject" id="subject" type="dismiss" class="dismiss">
             ${this.object.subject.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'subject' }))}">
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'subject', terms: this.object.subject } }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -65,7 +65,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           <ul slot="input" name="location" id="location" type="dismiss" class="dismiss">
             ${this.object.location.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'location' }))}">
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'location', terms: this.object.location } }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -74,7 +74,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           <ul slot="input" name="person" id="person" type="dismiss" class="dismiss">
             ${this.object.person.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'person' }))}">
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'person', terms: this.object.person } }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -83,7 +83,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           <ul slot="input" name="organization" id="organization" type="dismiss" class="dismiss">
             ${this.object.organization.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'organization' }))}">
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'organization', terms: this.object.organization } }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -92,7 +92,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           <ul slot="input" name="event" id="event" type="dismiss" class="dismiss">
             ${this.object.event.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<string>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: 'event' }))}">
+          <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'event', terms: this.object.event } }))}">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>

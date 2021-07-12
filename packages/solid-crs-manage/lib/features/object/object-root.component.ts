@@ -341,7 +341,7 @@ export class ObjectRootComponent extends RxLitElement {
   | ObjectRepresentationComponent
   | ObjectDimensionsComponent)[]): void {
 
-    components.forEach((component) => this.contentElement.appendChild(component));
+    components.forEach((component) => this.contentElement?.appendChild(component));
     this.updateSelected();
     this.focus();
 

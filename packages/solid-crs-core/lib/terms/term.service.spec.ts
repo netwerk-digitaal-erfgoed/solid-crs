@@ -115,7 +115,7 @@ describe('TermService', () => {
       expect(result.length).toBeGreaterThan(0);
       expect(result[0]).toBeTruthy();
       expect(result[0].uri).toEqual(queryResult.data.terms[0].terms[0].uri);
-      expect(result[0].name).toEqual(queryResult.data.terms[0].terms[0].name);
+      expect(result[0].name).toEqual(queryResult.data.terms[0].terms[0].name[0]);
       expect(result[0].description).toEqual(queryResult.data.terms[0].terms[0].description);
       expect(result[0].alternateName).toEqual(queryResult.data.terms[0].terms[0].alternateName);
       expect(result[0].hiddenName).toEqual(queryResult.data.terms[0].terms[0].hiddenName);
