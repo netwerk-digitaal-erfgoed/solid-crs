@@ -42,10 +42,18 @@ describe('ObjectMachine', () => {
     name: 'Object 2',
     description: 'This is object 2',
     image: null,
-    subject: null,
     type: null,
     updated: '0',
     collection: 'collection-uri-1',
+    additionalType: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    creator: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    locationCreated: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    material: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    subject: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    location: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    person: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    organization: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    event: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
   };
 
   const termService = {
@@ -138,11 +146,11 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to SAVING when term machine exits', async (done) => {
+  it('should transition to IDLE when term machine exits', async (done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(ObjectStates.SAVING)) {
+      if(state.matches(ObjectStates.IDLE)) {
 
         done();
 
@@ -168,7 +176,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedTermFieldEvent('field'));
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
 
   });
 
@@ -191,7 +199,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedTermFieldEvent('field'));
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
 
   });
 
@@ -208,7 +216,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedTermFieldEvent('name'));
+    machine.send(new ClickedTermFieldEvent('name', [ { name: 'test', uri: 'test' } ]));
 
   });
 
@@ -350,9 +358,9 @@ describe('ObjectMachine', () => {
 
     });
 
-    it('should return an error when additionalType is an empty string', async () => {
+    it('should return an error when additionalType is an empty list', async () => {
 
-      context.data = { ...context.data, additionalType: '' };
+      context.data = { ...context.data, additionalType: [] };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

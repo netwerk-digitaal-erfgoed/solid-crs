@@ -5,7 +5,6 @@ import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { mapValues } from 'xstate/lib/utils';
 
 /**
  * The root page of the object feature.
@@ -69,7 +68,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="additionalType">
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.field.additionalType')}</label>
           <ul slot="input" name="additionalType" id="additionalType" type="dismiss" class="dismiss">
-            ${this.object.additionalType.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${this.object.additionalType?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'additionalType', terms: this.object.additionalType } }))}">
             ${ unsafeSVG(Connect) }

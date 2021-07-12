@@ -10,9 +10,11 @@ describe('ObjectCardComponent', () => {
     uri: 'test uri',
     name: 'test name',
     description: 'test description',
-    subject: 'test subject',
+    subject: [ { uri: '', name: 'test subject' } ],
     image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-    updated: +new Date(),
+    updated: new Date().getTime().toString(),
+    type: '',
+    collection: 'uri',
   } as CollectionObject;
 
   beforeEach(() => {
@@ -60,7 +62,7 @@ describe('ObjectCardComponent', () => {
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
 
     expect(html).toContain(testObject.name);
-    expect(html).toContain(testObject.subject);
+    expect(html).toContain(testObject.subject[0].name);
     expect(html).not.toContain('Name unavailable');
     expect(html).not.toContain('Subject unavailable');
     expect(html).toContain('- Just Now');
@@ -77,23 +79,22 @@ describe('ObjectCardComponent', () => {
 
     expect(html).not.toContain(testObject.name);
     expect(html).toContain('Name unavailable');
-    expect(html).toContain(testObject.subject);
+    expect(html).toContain(testObject.subject[0].name);
     expect(html).not.toContain('Subject unavailable');
     expect(html).toContain('- Just Now');
 
   });
 
-  it('should display message when subject of the object is undefined', async () => {
+  it('should display message when subject of the object is empty list', async () => {
 
-    component.object = { ...testObject, subject: undefined };
+    component.object = { ...testObject, subject: [] };
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
-
     expect(html).toContain(testObject.name);
     expect(html).not.toContain('Name unavailable');
-    expect(html).not.toContain(testObject.subject);
+    expect(html).not.toContain(testObject.subject[0].name);
     expect(html).toContain('Subject unavailable');
     expect(html).toContain('- Just Now');
 
@@ -109,7 +110,7 @@ describe('ObjectCardComponent', () => {
 
     expect(html).toContain(testObject.name);
     expect(html).not.toContain('Name unavailable');
-    expect(html).toContain(testObject.subject);
+    expect(html).toContain(testObject.subject[0].name);
     expect(html).not.toContain('Subject unavailable');
     expect(html).not.toContain('- Just Now');
 

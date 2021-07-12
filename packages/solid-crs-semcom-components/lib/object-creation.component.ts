@@ -54,7 +54,7 @@ export class ObjectCreationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="creator">
           <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
           <ul slot="input" name="creator" id="creator" type="dismiss" class="dismiss">
-            ${this.object.creator.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${this.object.creator?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}">
             ${ unsafeSVG(Connect) }
@@ -63,7 +63,7 @@ export class ObjectCreationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="locationCreated">
           <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
           <ul slot="input" name="locationCreated" id="locationCreated" type="dismiss" class="dismiss">
-            ${this.object.locationCreated.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${this.object.locationCreated?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}">
             ${ unsafeSVG(Connect) }
@@ -72,7 +72,7 @@ export class ObjectCreationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="material">
           <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
           <ul slot="input" name="material" id="material" type="dismiss" class="dismiss">
-            ${this.object.material.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${this.object.material?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button type="button" slot="action" @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}">
             ${ unsafeSVG(Connect) }

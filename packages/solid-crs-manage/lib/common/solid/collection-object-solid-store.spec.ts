@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { addDecimal, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
@@ -15,6 +15,9 @@ describe('CollectionObjectSolidStore', () => {
     service = new CollectionObjectSolidStore();
 
     jest.resetAllMocks();
+    jest.clearAllMocks();
+    jest.resetModules();
+    jest.restoreAllMocks();
 
     mockCollection = {
       uri: 'http://test.uri/',
@@ -32,6 +35,7 @@ describe('CollectionObjectSolidStore', () => {
       type: 'http://test.type',
       image: 'http://test.image',
       mainEntityOfPage: 'http://test.uri/',
+      additionalType: [ { name: 'additionalType', uri: 'https://uri/' } ],
       weight: 2,
       height: 2,
       depth: 2,
@@ -325,21 +329,21 @@ describe('CollectionObjectSolidStore', () => {
         ...mockObject,
         updated: 'test',
         type: 'http://test.url/',
-        additionalType: 'test',
+        additionalType: [ { uri: 'http://test/', name: 'additionalType' } ],
         identifier: 'test',
         name: 'test',
         description: 'test',
         collection: 'http://test.url/',
         maintainer: 'http://test.url/',
-        creator: 'http://test.url/',
-        locationCreated: 'http://test.url/',
-        material: 'http://test.url/',
+        creator: [ { uri: 'http://test/', name: 'creator' } ],
+        locationCreated: [ { uri: 'http://test/', name: 'locationCreated' } ],
+        material: [ { uri: 'http://test/', name: 'material' } ],
         dateCreated: 'test',
-        subject: 'subject',
-        location: 'location',
-        person: 'person',
-        organization: 'organization',
-        event: 'event',
+        subject: [ { uri: 'http://test/', name: 'subject' } ],
+        location: [ { uri: 'http://test/', name: 'location' } ],
+        person: [ { uri: 'http://test/', name: 'person' } ],
+        organization: [ { uri: 'http://test/', name: 'organization' } ],
+        event: [ { uri: 'http://test/', name: 'event' } ],
         height: 2,
         width: 2,
         depth: 2,
@@ -370,6 +374,7 @@ describe('CollectionObjectSolidStore', () => {
       'width',
       'depth',
       'weight',
+      'dataset',
     ])('should error when object is %s', (value) => {
 
       const thing = client.createThing({ url: mockObject.uri });
@@ -381,6 +386,7 @@ describe('CollectionObjectSolidStore', () => {
         width: thing,
         depth: thing,
         weight: thing,
+        dataset: thing,
       };
 
       params[value] = null;
@@ -392,6 +398,7 @@ describe('CollectionObjectSolidStore', () => {
         params.width,
         params.depth,
         params.weight,
+        params.dataset
       )).toThrow();
 
     });
@@ -400,14 +407,12 @@ describe('CollectionObjectSolidStore', () => {
 
       client.getUrl = jest.fn(() => undefined);
       client.getStringNoLocale = jest.fn(() => undefined);
+      client.getUrlAll = jest.fn(() => [ ]);
       client.getStringWithLocale = jest.fn(() => undefined);
       client.asUrl = jest.fn(() => undefined);
 
-      jest.clearAllMocks();
-      jest.resetAllMocks();
-      jest.restoreAllMocks();
-
       const objectThing = client.createThing({ url: mockObject.uri });
+      client.getThing = jest.fn(() => objectThing);
 
       const result = CollectionObjectSolidStore.fromThing(
         objectThing,
@@ -416,23 +421,24 @@ describe('CollectionObjectSolidStore', () => {
         objectThing,
         objectThing,
         objectThing,
+        objectThing
       );
 
       expect(result.updated).toEqual(undefined);
       expect(result.type).toEqual(undefined);
-      expect(result.additionalType).toEqual(undefined);
+      expect(result.additionalType).toEqual([]);
       expect(result.identifier).toEqual(undefined);
       expect(result.name).toEqual(undefined);
       expect(result.description).toEqual(undefined);
       expect(result.collection).toEqual(undefined);
       expect(result.maintainer).toEqual(undefined);
-      expect(result.creator).toEqual(undefined);
-      expect(result.locationCreated).toEqual(undefined);
-      expect(result.material).toEqual(undefined);
+      expect(result.creator).toEqual([]);
+      expect(result.locationCreated).toEqual([]);
+      expect(result.material).toEqual([]);
       expect(result.dateCreated).toEqual(undefined);
       expect(result.image).toEqual(undefined);
       expect(result.mainEntityOfPage).toEqual(undefined);
-      expect(result.subject).toEqual(undefined);
+      expect(result.subject).toEqual([]);
       expect(result.height).toEqual(undefined);
       expect(result.width).toEqual(undefined);
       expect(result.depth).toEqual(undefined);
@@ -441,6 +447,35 @@ describe('CollectionObjectSolidStore', () => {
       expect(result.widthUnit).toEqual(undefined);
       expect(result.depthUnit).toEqual(undefined);
       expect(result.weightUnit).toEqual(undefined);
+
+    });
+
+    it('should set Terms correctly', () => {
+
+      client.getUrl = jest.fn(() => 'https://test.url/');
+      client.getStringNoLocale = jest.fn(() => 'test-string');
+      client.getUrlAll = jest.fn(() => [ 'https://test.url/' ]);
+      client.getStringWithLocale = jest.fn(() => 'test-string');
+      client.asUrl = jest.fn(() => 'https://test.url/');
+
+      const objectThing = client.createThing({ url: mockObject.uri });
+      client.getThing = jest.fn(() => objectThing);
+
+      const result = CollectionObjectSolidStore.fromThing(
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing,
+        objectThing
+      );
+
+      expect(result.additionalType).toContainEqual({ name: 'test-string', uri: 'https://test.url/' });
+      expect(result.creator).toContainEqual({ name: 'test-string', uri: 'https://test.url/' });
+      expect(result.locationCreated).toContainEqual({ name: 'test-string', uri: 'https://test.url/' });
+      expect(result.material).toContainEqual({ name: 'test-string', uri: 'https://test.url/' });
+      expect(result.subject).toContainEqual({ name: 'test-string', uri: 'https://test.url/' });
 
     });
 
@@ -497,6 +532,44 @@ describe('CollectionObjectSolidStore', () => {
     it('should return correct uri', () => {
 
       expect(CollectionObjectSolidStore.getDigitalObjectUri(mockObject.uri)).toEqual(`${mockObject.uri}-digital`);
+
+    });
+
+  });
+
+  describe('getTerm()', () => {
+
+    it.each([ null, undefined ])('should error when dataset is %s', (value) => {
+
+      expect(() => CollectionObjectSolidStore.getTerm('uri', value)).toThrow('Argument dataset should be set');
+
+    });
+
+    it.each([ null, undefined ])('should error when uri is %s', (value) => {
+
+      expect(() => CollectionObjectSolidStore.getTerm(value, client.createSolidDataset())).toThrow('Argument uri should be set');
+
+    });
+
+    it('should error when Thing not found in dataset', () => {
+
+      client.getThing = jest.fn(() => undefined);
+
+      expect(() => CollectionObjectSolidStore.getTerm('uri', client.createSolidDataset())).toThrow('No Thing found for uri');
+
+    });
+
+    it('should return correct Thing when present', () => {
+
+      const termUri = 'https://test.url/';
+      const termName = 'name';
+      const termThing = client.createThing({ url: termUri });
+
+      client.getStringNoLocale = jest.fn(() => termName);
+      client.getThing = jest.fn(() => termThing);
+
+      expect(CollectionObjectSolidStore.getTerm(termUri, client.createSolidDataset()))
+        .toEqual({ uri: termUri, name: termName });
 
     });
 

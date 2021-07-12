@@ -235,9 +235,9 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             // Overwrite original with newly saved object
             actions: assign((context) => ({ original: context.object })),
           },
-          // onError: {
-          //   actions: sendParent(AppEvents.ERROR),
-          // },
+          onError: {
+            actions: sendParent(AppEvents.ERROR),
+          },
         },
       },
       [ObjectStates.IDLE]: {
@@ -279,7 +279,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               };
 
             },
-            onExit: [ assign((context, event) => ({ object: undefined })) ],
             onDone: {
               target: ObjectStates.SAVING,
               actions: [

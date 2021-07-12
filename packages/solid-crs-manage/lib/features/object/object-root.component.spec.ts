@@ -1,6 +1,5 @@
-import { cpuUsage } from 'process';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
@@ -52,7 +51,7 @@ describe('ObjectRootComponent', () => {
 
     const termService = {
       endpoint: 'https://endpoint.url/',
-      query: jest.fn(async() => ({})),
+      queryComponents: jest.fn(async() => []),
       getSources: jest.fn(async() => []),
     };
 
@@ -401,9 +400,9 @@ describe('ObjectRootComponent', () => {
 
     });
 
-    component.dispatchEvent(new CustomEvent<string>(
+    component.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>(
       'CLICKED_TERM_FIELD',
-      { bubbles: true, composed: true, detail: 'additionalType' }
+      { bubbles: true, composed: true, detail: { field: 'additionalType', terms: [] } }
     ));
 
   });
@@ -413,7 +412,7 @@ describe('ObjectRootComponent', () => {
     it('should create customElements for this.components', async () => {
 
       window.eval = jest.fn(() => ObjectImageryComponent);
-      customElements.define = jest.fn((tag, module) => ObjectImageryComponent);
+      customElements.define = jest.fn(() => ObjectImageryComponent);
 
       machine.start();
 
@@ -537,6 +536,43 @@ describe('ObjectRootComponent', () => {
     expect(sidebar).toBeFalsy();
     expect(formContent).toBeFalsy();
     expect(termSearch).toBeFalsy();
+
+  });
+
+  it('should prevent contextmenu events from being propagated on macos chrome', async () => {
+
+    Object.defineProperty(window, 'navigator', {
+      value: { userAgent: '... Macintosh ... Chrome/ ...' },
+      writable: true,
+    });
+
+    window.eval = jest.fn(() => ObjectImageryComponent);
+    customElements.define = jest.fn(() => ObjectImageryComponent);
+
+    component.components = [
+      {
+        description: 'Digita SemCom component voor beeldmateriaal informatie.',
+        label: 'Erfgoedobject Beeldmateriaal',
+        uri: 'http://localhost:3004/object-imagery.component.js',
+        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
+        author: 'https://digita.ai',
+        tag: 'nde-object-imagery',
+        version: '0.1.0',
+        latest: true,
+      },
+    ];
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    await component.registerComponents(component.components);
+
+    const event = new MouseEvent('contextmenu');
+    event.stopPropagation = jest.fn();
+    event.preventDefault = jest.fn();
+    component.formCards[0].dispatchEvent(event);
+
+    expect(event.stopPropagation).toHaveBeenCalled();
+    expect(event.preventDefault).toHaveBeenCalled();
 
   });
 

@@ -56,7 +56,7 @@ export class ObjectCardComponent extends LitElement {
         </span>
         <span slot='subtitle'>
           <span class='subject'>
-            ${this.object.subject[0].name ?? this.translator?.translate('nde.features.collections.card.subject-unavailable')}
+            ${this.object.subject && this.object.subject[0]?.name ? this.object.subject[0].name :  this.translator?.translate('nde.features.collections.card.subject-unavailable')}
           </span>
           <span class='time-ago'>
              ${this.object.updated ? ` - ${timeAgo}` : ''}
