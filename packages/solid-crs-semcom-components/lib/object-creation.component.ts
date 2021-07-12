@@ -55,13 +55,14 @@ export class ObjectCreationComponent extends RxLitElement {
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="creator"
-          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}"
-        >
+          >
           <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
           <ul slot="input" name="creator" id="creator" type="dismiss" class="dismiss">
             ${this.object.creator?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action">
+          <button
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}"
+            type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -69,13 +70,14 @@ export class ObjectCreationComponent extends RxLitElement {
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="locationCreated"
-          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}"
-        >
+          >
           <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
           <ul slot="input" name="locationCreated" id="locationCreated" type="dismiss" class="dismiss">
             ${this.object.locationCreated?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action">
+          <button
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}"
+            type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
@@ -83,13 +85,14 @@ export class ObjectCreationComponent extends RxLitElement {
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="material"
-          @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}"
-        >
+          >
           <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
           <ul slot="input" name="material" id="material" type="dismiss" class="dismiss">
             ${this.object.material?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button type="button" slot="action">
+          <button
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}"
+            type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
         </nde-form-element>
