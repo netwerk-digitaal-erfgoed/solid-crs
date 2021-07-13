@@ -109,23 +109,6 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to SAVING when clicked save was emitted', async (done) => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(ObjectStates.SAVING)) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-    machine.send(new ClickedSaveEvent());
-
-  });
-
   it('should transition to SAVING when form machine exits', async (done) => {
 
     machine.onTransition((state) => {
@@ -258,15 +241,18 @@ describe('ObjectMachine', () => {
 
         expect(objectStore.save).toHaveBeenCalledTimes(1);
 
-        expect(objectStore.save).toHaveBeenCalledWith(object1);
+        expect(objectStore.save).toHaveBeenCalledWith(expect.objectContaining({ ...object1, name: 'test' }));
 
         done();
+
+      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
 
       }
 
     });
-
-    machine.send(new ClickedSaveEvent());
 
   });
 

@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, debounce, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, DoneInvokeEvent, Interpreter, State } from 'xstate';
@@ -224,6 +224,11 @@ export class ObjectRootComponent extends RxLitElement {
     }
 
     if(changed?.has('formActor') && this.formActor){
+
+      // this validates the form when form machine is started
+      // needed for validation when coming back from the term machine
+      // otherwise, form machine state is not_validated and the user can't save
+      this.formActor.send(new FormUpdatedEvent('name', this.object?.name));
 
       this.subscribe('isSubmitting', from(this.formActor).pipe(
         map((state) => state.matches(FormSubmissionStates.SUBMITTING)),

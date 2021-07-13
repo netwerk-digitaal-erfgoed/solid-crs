@@ -7,7 +7,6 @@ import { EventObject } from 'xstate';
  */
 export enum ObjectEvents {
   CLICKED_DELETE              = '[ObjectsEvent: Clicked Delete]',
-  CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
   CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
   SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
   CLICKED_TERM_FIELD          = '[ObjectsEvent: Clicked Term Field]',
@@ -44,15 +43,6 @@ export class ClickedResetEvent implements EventObject {
 }
 
 /**
- * Fired when the user clicks the save button.
- */
-export class ClickedSaveEvent implements EventObject {
-
-  public type: ObjectEvents.CLICKED_SAVE = ObjectEvents.CLICKED_SAVE;
-
-}
-
-/**
  * Fired when the user clicks a Term's form input.
  */
 export class ClickedTermFieldEvent implements EventObject {
@@ -76,7 +66,6 @@ export class ClickedObjectSidebarItem implements EventObject {
  * Events for the object machine.
  */
 export type ObjectEvent = ClickedDeleteObjectEvent
-| ClickedSaveEvent
 | SelectedObjectEvent
 | FormSubmittedEvent
 | ClickedDeleteObjectEvent

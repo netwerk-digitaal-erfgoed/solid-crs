@@ -3,11 +3,11 @@ import { formMachine,
   FormValidatorResult,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, send, sendParent } from 'xstate';
+import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
-import { ClickedObjectSidebarItem, ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
 /**
@@ -231,7 +231,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           src: (context) => objectStore.save(context.object),
           onDone: {
             target: ObjectStates.IDLE,
-            // Overwrite original with newly saved object
+            // overwrite original with new, edited object
             actions: assign((context) => ({ original: context.object })),
           },
           onError: {
@@ -241,12 +241,10 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.IDLE]: {
         on: {
-          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
-          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_RESET]: {
             target: ObjectStates.IDLE,
-            actions: assign((context, event) => ({ object: context.original })),
+            actions: assign((context) => ({ object: context.original })),
           },
           [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
@@ -259,7 +257,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             data: (context) => {
 
               // replace Terms with lists of uri
-              // form machine can only handle (lists of) strings
+              // form machine can only handle (lists of) strings, not objects (Terms)
               const parseObject = (object: CollectionObject) => ({
                 ...object,
                 additionalType: object?.additionalType
@@ -288,7 +286,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
                   object: {
                     ...event.data.data,
                     // don't use form values for Terms
-                    // as form machine will only return for these fields URIs, not Terms
+                    // as form machine will only return URIs for these fields, not full Terms
                     // See also: ObjectStates.IDLE's invoked machine's initial data
                     additionalType: context.object.additionalType,
                     creator: context.object.creator,
