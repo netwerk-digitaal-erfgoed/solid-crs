@@ -2,7 +2,7 @@ import { formMachine,
   FormActors,
   FormValidatorResult,
   FormContext,
-  FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+  State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
@@ -306,7 +306,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.EDITING_FIELD]: {
         on: {
-          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
         },
