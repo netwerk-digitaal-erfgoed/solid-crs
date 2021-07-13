@@ -43,6 +43,8 @@ describe('ObjectRootComponent', () => {
 
   beforeEach(() => {
 
+    jest.restoreAllMocks();
+
     const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
     const objectStore = new CollectionObjectMemoryStore([
@@ -498,10 +500,6 @@ describe('ObjectRootComponent', () => {
   it('should hide content when formCards is undefined', async () => {
 
     window.document.body.appendChild(component);
-
-    customElements.define('nde-object-imagery', ObjectImageryComponent);
-    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
 
     component.formCards = undefined;
     await component.updateComplete;

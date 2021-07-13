@@ -68,6 +68,7 @@ export class ClickedTermFieldEvent implements EventObject {
 export class ClickedObjectSidebarItem implements EventObject {
 
   public type: ObjectEvents.CLICKED_SIDEBAR_ITEM = ObjectEvents.CLICKED_SIDEBAR_ITEM;
+  constructor(public itemId: string) { }
 
 }
 

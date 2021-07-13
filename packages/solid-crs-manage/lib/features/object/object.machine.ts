@@ -3,11 +3,11 @@ import { formMachine,
   FormValidatorResult,
   FormContext,
   FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, sendParent } from 'xstate';
+import { assign, createMachine, send, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
 import { AppEvents } from '../../app.events';
-import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedObjectSidebarItem, ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
 /**
@@ -244,7 +244,10 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
-          [ObjectEvents.CLICKED_RESET]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_RESET]: {
+            target: ObjectStates.IDLE,
+            actions: assign((context, event) => ({ object: context.original })),
+          },
           [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
         invoke: [

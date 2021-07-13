@@ -1,10 +1,9 @@
-import { throws } from 'assert';
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, debounce, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, Interpreter, State } from 'xstate';
+import { ActorRef, DoneInvokeEvent, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -158,6 +157,29 @@ export class ObjectRootComponent extends RxLitElement {
     super.updated(changed);
 
     if(changed && changed.has('actor') && this.actor){
+
+      this.actor.onEvent(async(event) => {
+
+        if (event instanceof ClickedObjectSidebarItem) {
+
+          this.requestUpdate();
+          await this.updateComplete;
+
+          const formCard = Array.from(this.formCards).find((card) => card.id === event.itemId);
+          formCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        }
+
+        if (event.type === `done.invoke.${TermActors.TERM_MACHINE}`) {
+
+          this.requestUpdate();
+          await this.updateComplete;
+
+          this.updateSelected();
+
+        }
+
+      });
 
       if(this.actor.parent){
 
@@ -344,8 +366,7 @@ export class ObjectRootComponent extends RxLitElement {
       component.object = this.object;
       component.formActor = this.formActor as any;
       component.translator = this.translator;
-      await component.requestUpdate('object');
-      // this.contentElement?.appendChild(component);
+      await component?.requestUpdate('object');
 
     });
 
@@ -411,14 +432,8 @@ export class ObjectRootComponent extends RxLitElement {
         <nde-sidebar-list slot="content">
           ${sidebarItems?.map((item) => html`
           <nde-sidebar-list-item slot="item"
-            ?selected="${ item === this.visibleCard }"
-            @click="${() => {
-
-    this.actor.send(new ClickedObjectSidebarItem());
-    Array.from(this.formCards).find((card) => card.id === item).scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-  }}"
-          >
+          ?selected="${ item === this.visibleCard }"
+          @click="${() => this.actor.send(new ClickedObjectSidebarItem(item))}">
             <div slot="title">${this.translator?.translate(item)}</div>
           </nde-sidebar-list-item>
           `)}
@@ -433,7 +448,6 @@ export class ObjectRootComponent extends RxLitElement {
     `
     : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
-        ${ this.updateSelected() }
 
         ${ this.formCards }
 
