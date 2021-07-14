@@ -31,6 +31,9 @@ export class LargeCardComponent extends LitElement {
           flex-direction: column;
           gap: 0;
         }
+        nde-content-header {
+          border: none;
+        }
         .content {
           background-color: var(--colors-foreground-inverse);
           padding: var(--gap-large);
@@ -63,7 +66,7 @@ export class LargeCardComponent extends LitElement {
 
         ${this.showHeader
     ? html`
-            <nde-content-header inverse>
+            <nde-content-header inverse noBorder>
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>

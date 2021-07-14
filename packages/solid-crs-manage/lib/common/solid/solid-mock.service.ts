@@ -8,7 +8,6 @@ import { SolidService } from './solid.service';
  */
 export class SolidMockService extends SolidService {
 
-  // TODO: replace with our own hosted css pods when available
   private profiles = [
     {
       webId: 'https://pod.inrupt.com/digitatestpod1/profile/card#me',

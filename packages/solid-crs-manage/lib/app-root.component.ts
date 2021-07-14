@@ -254,7 +254,7 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item>
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
-          <nde-form-element .inverse="${true}" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+          <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
             <input type="text"
               slot="input"
               .value="${this.searchTerm}"

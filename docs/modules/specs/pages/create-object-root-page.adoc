@@ -35,7 +35,7 @@ A basic implementation of the `CollectionObjectFormComponent` exists, or should 
 
 The finished component should look like this:
 
-image::../../assets/objects/object-details.svg[CollectionObjectRootComponent]
+image::../images/objects/object-details.svg[CollectionObjectRootComponent]
 
 Create in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/collection-object/collection-object-root.component'.
 

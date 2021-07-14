@@ -168,7 +168,7 @@ export class AuthenticateRootComponent extends RxLitElement {
           ${ alerts }
           
           <form onsubmit="return false">
-            <nde-form-element .inverse="${true}" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
+            <nde-form-element class="inverse" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
               <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
               <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
               <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
@@ -230,10 +230,6 @@ export class AuthenticateRootComponent extends RxLitElement {
         
         nde-form-element label {
           color: white;
-        }
-
-        nde-form-element input {
-          height: 100%;
         }
 
         .webid-container p {

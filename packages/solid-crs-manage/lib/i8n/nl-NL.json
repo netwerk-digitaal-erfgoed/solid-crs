@@ -225,12 +225,12 @@
         "value": "Het beeldmateriaal van dit object."
     },
     {
-        "key": "nde.features.object.card.image.field.file",
+        "key": "nde.features.object.card.field.file",
         "locale": "nl-NL",
         "value": "Bestand"
     },
     {
-        "key": "nde.features.object.card.image.field.license",
+        "key": "nde.features.object.card.field.license",
         "locale": "nl-NL",
         "value": "Licentie"
     },
@@ -320,37 +320,37 @@
         "value": "De identificatie van dit object."
     },
     {
-        "key": "nde.features.object.card.identification.field.object-number",
+        "key": "nde.features.object.card.field.identifier",
         "locale": "nl-NL",
         "value": "Objectnummer"
     },
     {
-        "key": "nde.features.object.card.identification.field.object-name",
+        "key": "nde.features.object.card.field.additionalType",
         "locale": "nl-NL",
         "value": "Objectnaam"
     },
     {
-        "key": "nde.features.object.card.identification.field.type",
+        "key": "nde.features.object.card.field.type",
         "locale": "nl-NL",
         "value": "Type"
     },
     {
-        "key": "nde.features.object.card.identification.field.title",
+        "key": "nde.features.object.card.field.name",
         "locale": "nl-NL",
         "value": "Titel"
     },
     {
-        "key": "nde.features.object.card.identification.field.description",
+        "key": "nde.features.object.card.field.description",
         "locale": "nl-NL",
         "value": "Korte beschrijving"
     },
     {
-        "key": "nde.features.object.card.identification.field.description.validation.max-characters",
+        "key": "nde.features.object.card.field.description.validation.max-characters",
         "locale": "nl-NL",
         "value": "De beschrijving mag maximum 10000 karakters lang zijn!"
     },
     {
-        "key": "nde.features.object.card.identification.field.collection",
+        "key": "nde.features.object.card.field.collection",
         "locale": "nl-NL",
         "value": "Collectie"
     },
@@ -365,27 +365,27 @@
         "value": "De vervaardiging van dit object."
     },
     {
-        "key": "nde.features.object.card.creation.field.creator",
+        "key": "nde.features.object.card.field.creator",
         "locale": "nl-NL",
         "value": "Vervaardiger"
     },
     {
-        "key": "nde.features.object.card.creation.field.location",
+        "key": "nde.features.object.card.field.locationCreated",
         "locale": "nl-NL",
         "value": "Plaats"
     },
     {
-        "key": "nde.features.object.card.creation.field.material",
+        "key": "nde.features.object.card.field.material",
         "locale": "nl-NL",
         "value": "Materiaal"
     },
     {
-        "key": "nde.features.object.card.creation.field.date",
+        "key": "nde.features.object.card.field.dateCreated",
         "locale": "nl-NL",
         "value": "Datum"
     },
     {
-        "key": "nde.features.object.card.creation.field.date.validation.invalid",
+        "key": "nde.features.object.card.field.date.validation.invalid",
         "locale": "nl-NL",
         "value": "De ingegeven datum is niet geldig."
     },
@@ -400,27 +400,27 @@
         "value": "De voorstelling van dit object."
     },
     {
-        "key": "nde.features.object.card.representation.field.subject",
+        "key": "nde.features.object.card.field.subject",
         "locale": "nl-NL",
         "value": "Onderwerp"
     },
     {
-        "key": "nde.features.object.card.representation.field.location",
+        "key": "nde.features.object.card.field.location",
         "locale": "nl-NL",
         "value": "Locatie"
     },
     {
-        "key": "nde.features.object.card.representation.field.person",
+        "key": "nde.features.object.card.field.person",
         "locale": "nl-NL",
         "value": "Persoon"
     },
     {
-        "key": "nde.features.object.card.representation.field.organization",
+        "key": "nde.features.object.card.field.organization",
         "locale": "nl-NL",
         "value": "Organisatie"
     },
     {
-        "key": "nde.features.object.card.representation.field.event",
+        "key": "nde.features.object.card.field.event",
         "locale": "nl-NL",
         "value": "Gebeurtenis"
     },
@@ -435,22 +435,22 @@
         "value": "De afmetingen van dit object."
     },
     {
-        "key": "nde.features.object.card.dimensions.field.depth",
+        "key": "nde.features.object.card.field.depth",
         "locale": "nl-NL",
         "value": "Diepte"
     },
     {
-        "key": "nde.features.object.card.dimensions.field.width",
+        "key": "nde.features.object.card.field.width",
         "locale": "nl-NL",
         "value": "Breedte"
     },
     {
-        "key": "nde.features.object.card.dimensions.field.height",
+        "key": "nde.features.object.card.field.height",
         "locale": "nl-NL",
         "value": "Hoogte"
     },
     {
-        "key": "nde.features.object.card.dimensions.field.weight",
+        "key": "nde.features.object.card.field.weight",
         "locale": "nl-NL",
         "value": "Gewicht"
     },
@@ -463,6 +463,72 @@
         "key": "nde.common.form.click-to-select",
         "locale": "nl-NL",
         "value": "Klik om te selecteren"
+    },
+    {
+        "key": "nde.features.term.n-sources-selected",
+        "locale": "nl-NL",
+        "value": "Bronnen geselecteerd"
+    },
+    {
+        "key": "nde.features.term.one-source-selected",
+        "locale": "nl-NL",
+        "value": "Bron geselecteerd"
+    },
+    {
+        "key": "nde.features.term.term",
+        "locale": "nl-NL",
+        "value": "Term"
+    },  
+    {
+        "key": "nde.features.term.terms",
+        "locale": "nl-NL",
+        "value": "Termen"
+    },  
+    {
+        "key": "nde.features.term.term-selected",
+        "locale": "nl-NL",
+        "value": "Term geselecteerd"
+    },    
+    {
+        "key": "nde.features.term.terms-selected",
+        "locale": "nl-NL",
+        "value": "Termen geselecteerd"
+    },     
+    {
+        "key": "nde.features.term.enter-query",
+        "locale": "nl-NL",
+        "value": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten"
+    },   
+    
+    {
+        "key": "nde.features.term.no-search-results",
+        "locale": "nl-NL",
+        "value": "Geen zoekresultaten voor deze zoekterm!"
+    }, 
+    { 
+        "key": "nde.features.term.field.description",
+        "locale": "nl-NL",
+        "value": "Beschrijving"
+    },
+    { 
+        "key": "nde.features.term.field.alternateName",
+        "locale": "nl-NL",
+        "value": "Alternatieve naam"
+    },
+    { 
+        "key": "nde.features.term.field.broader",
+        "locale": "nl-NL",
+        "value": "Ruimer"
+    },
+    { 
+        "key": "nde.features.term.field.narrower",
+        "locale": "nl-NL",
+        "value": "Specifieker"
+    },
+    { 
+        "key": "nde.features.term.field.hiddenName",
+        "locale": "nl-NL",
+        "value": "Verborgen naam"
     },
     {
         "key": "nde.common.date.just-now",

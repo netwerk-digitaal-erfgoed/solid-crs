@@ -1,4 +1,4 @@
-import { ArgumentError, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
 import { FormElementComponent } from './form-element.component';
@@ -110,11 +110,9 @@ describe('FormElementComponent', () => {
 
       machine.onEvent(((event) => {
 
-        if(event.type === FormEvents.FORM_UPDATED) {
+        if(event instanceof FormUpdatedEvent) {
 
-          const casted = event as FormUpdatedEvent;
-
-          if (casted.value === 'Lorem') {
+          if (event.value === 'Lorem') {
 
             done();
 
@@ -140,11 +138,9 @@ describe('FormElementComponent', () => {
 
       machine.onEvent(((event) => {
 
-        if(event.type === FormEvents.FORM_UPDATED) {
+        if(event instanceof FormUpdatedEvent) {
 
-          const casted = event as FormUpdatedEvent;
-
-          if (+casted.value === 123) {
+          if (+event.value === 123) {
 
             done();
 
@@ -196,19 +192,25 @@ describe('FormElementComponent', () => {
     let ul: HTMLUListElement;
     let titleListItem: HTMLLIElement;
     let inputListItem: HTMLLIElement;
+    let inputLabel: HTMLLabelElement;
 
     beforeEach(async() => {
 
       component.field = 'selected';
       ul = window.document.createElement('ul');
       ul.slot = 'input';
+      ul.type = 'multiselect';
       titleListItem = window.document.createElement('li');
       titleListItem.setAttribute('for', 'title');
       inputListItem = window.document.createElement('li');
+      inputLabel = window.document.createElement('label');
+      inputLabel.htmlFor = 'selected';
       input.type = 'checkbox';
       input.id = '1';
       input.value = '1';
+      input.name = 'selected';
       inputListItem.appendChild(input);
+      inputListItem.appendChild(inputLabel);
       ul.appendChild(titleListItem);
       ul.appendChild(inputListItem);
       component.appendChild(ul);
@@ -240,11 +242,13 @@ describe('FormElementComponent', () => {
 
     });
 
-    it('should send FORM_UPDATED event when a checkbox is clicked', (done) => {
+    it('should send FORM_UPDATED event when focus is lost on dropdown', (done) => {
+
+      input.checked = true;
 
       machine.onEvent((event) => {
 
-        if (event.type === FormEvents.FORM_UPDATED) {
+        if (event instanceof FormUpdatedEvent && event) {
 
           done();
 
@@ -252,7 +256,7 @@ describe('FormElementComponent', () => {
 
       });
 
-      input.click();
+      component.dispatchEvent(new FocusEvent('focusout'));
 
     });
 
@@ -300,7 +304,7 @@ describe('FormElementComponent', () => {
       input.click();
       input.click();
 
-      expect(titleListItem.textContent).toEqual('translation');
+      expect(titleListItem.textContent).toContain('translation');
 
     });
 
@@ -342,10 +346,10 @@ describe('FormElementComponent', () => {
 
   });
 
-  it('should show yellow border when showValidation is false', async () => {
+  it('should show yellow border when hideValidation is true', async () => {
 
     component.validationResults = [ { field: 'name', message: 'lorem' } ];
-    component.showValidation = false;
+    component.hideValidation = true;
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -430,6 +434,17 @@ describe('FormElementComponent', () => {
     await component.updateComplete;
 
     expect(input.disabled).toBeFalsy();
+
+  });
+
+  it('should set this.inverse when form element has inverse class', async () => {
+
+    component.className += ' inverse';
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    expect(component.inverse).toBeTruthy();
 
   });
 

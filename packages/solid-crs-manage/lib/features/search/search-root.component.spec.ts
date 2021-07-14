@@ -34,7 +34,6 @@ describe('SearchRootComponent', () => {
     name: 'Object 1',
     description: 'This is object 1',
     image: null,
-    subject: null,
     type: null,
     updated: '0',
     collection: 'collection-uri-1',
@@ -125,7 +124,6 @@ describe('SearchRootComponent', () => {
 
     const shownCollectionName = shownCollectionCards[0].shadowRoot.querySelector('nde-card > span[slot="title"]');
     const shownObjectName = shownObjectCards[0].shadowRoot.querySelector('nde-card > span[slot="title"]');
-
     expect(shownCollectionName.textContent.trim()).toBe(collection2.name);
     expect(shownObjectName.textContent.trim()).toBe(object1.name);
 

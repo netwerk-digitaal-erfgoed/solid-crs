@@ -75,11 +75,11 @@ export class ObjectImageryComponent extends RxLitElement {
       <img slot="image" src="${this.object.image}">
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="image">
-          <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.image.field.file')}</label>
+          <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.field.file')}</label>
           <input type="text" slot="input" name="image" id="image"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
-          <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.image.field.license')}</label>
+          <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.field.license')}</label>
           <select slot="input" name="license" id="license">
             ${this.licenses.map((license: string) => html`<option id="${license}" ?selected="${license === this.object.license}">${this.translator?.translate(`nde.features.object.card.image.field.license.${license}`)}</option>`)}
           </select>

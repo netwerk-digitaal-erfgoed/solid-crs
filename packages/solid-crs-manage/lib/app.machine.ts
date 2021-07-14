@@ -394,7 +394,7 @@ export const appMachine = (
               /**
                * Save collection to the store.
                */
-              src: () => collectionStore.save(collectionTemplate), // TODO: Update
+              src: () => collectionStore.save(collectionTemplate),
               onDone: {
                 target: AppDataStates.IDLE,
                 actions: [

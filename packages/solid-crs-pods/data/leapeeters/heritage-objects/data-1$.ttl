@@ -6,7 +6,7 @@
     # IDENTIFICATION
 
     rdf:type schema:Photograph ;
-    schema:additionalType "bidprentjes"@nl ;
+    schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
@@ -16,18 +16,18 @@
 
     # CREATION
 
-    schema:creator "Jan Willem Pieneman" ;
-    schema:locationCreated "Delft" ;
-    schema:material "olieverf" ;
+    schema:creator <http://www.wikidata.org/entity/Q512948> ;
+    schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
+    schema:material <http://vocab.getty.edu/aat/300015050> ;
     schema:dateCreated "1824-07-24" ;
 
 
     # REPRESENTATION
 
-    schema:DefinedTerm "veldslagen" ;
-    schema:Place "Waterloo" ;
-    schema:Person "Arthur Wellesley of Wellington" ;
-    schema:Event "Slag bij Waterloo" ;
+    schema:DefinedTerm <http://vocab.getty.edu/aat/300185692> ;
+    schema:Place <http://www.wikidata.org/entity/Q31579578> ;
+    schema:Person <http://data.bibliotheken.nl/id/thes/p067531180> ;
+    schema:Event <http://www.wikidata.org/entity/Q48314> ;
 
 
     # DIMENSIONS
@@ -75,7 +75,7 @@
     # IDENTIFICATION
 
     rdf:type schema:Photograph ;
-    schema:additionalType "bidprentjes"@nl ;
+    schema:additionalType <https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c> ;
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
@@ -85,19 +85,18 @@
 
     # CREATION
 
-    schema:creator "Jan Willem Pieneman" ;
-    schema:locationCreated "Delft" ;
-    schema:material "olieverf" ;
+    schema:creator <http://www.wikidata.org/entity/Q512948> ;
+    schema:locationCreated <http://www.wikidata.org/entity/Q33432813> ;
+    schema:material <http://vocab.getty.edu/aat/300015050> ;
     schema:dateCreated "1824-07-24" ;
 
 
     # REPRESENTATION
 
-    schema:DefinedTerm "veldslagen" ;
-    schema:Place "Waterloo" ;
-    schema:Person "Arthur Wellesley of Wellington" ;
-    schema:Organization "Onbekend" ;
-    schema:Event "Slag bij Waterloo" ;
+    schema:DefinedTerm <http://vocab.getty.edu/aat/300185692> ;
+    schema:Place <http://www.wikidata.org/entity/Q31579578> ;
+    schema:Person <http://data.bibliotheken.nl/id/thes/p067531180> ;
+    schema:Event <http://www.wikidata.org/entity/Q48314> ;
 
 
     # DIMENSIONS
@@ -137,3 +136,20 @@
     schema:contentUrl <https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg/1920px-De_Slag_bij_Waterloo_Rijksmuseum_SK-A-1115.jpeg> ;
     schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ;
     schema:mainEntity <#object-2> .
+
+<https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c>
+    schema:name "bidprentjes".
+<http://www.wikidata.org/entity/Q512948>
+    schema:name "Jan Willem Pieneman".
+<http://www.wikidata.org/entity/Q33432813>
+    schema:name "Delft".
+<http://vocab.getty.edu/aat/300015050>
+    schema:name "olieverf".
+<http://vocab.getty.edu/aat/300185692>
+    schema:name "veldslagen".
+<http://www.wikidata.org/entity/Q31579578>
+    schema:name "Waterloo".
+<http://data.bibliotheken.nl/id/thes/p067531180>
+    schema:name "Arthur Wellesley of Wellington".
+<http://www.wikidata.org/entity/Q48314>
+    schema:name "Slag bij Waterloo".

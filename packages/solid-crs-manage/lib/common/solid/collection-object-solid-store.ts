@@ -1,5 +1,6 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, getStringWithLocaleAll, getStringNoLocaleAll, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Term, CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+
 import { v4 } from 'uuid';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -42,6 +43,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`),
         getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`),
         getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`),
+        dataset
       ));
 
   }
@@ -70,6 +72,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${uri}-width`),
       getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${uri}-depth`),
       getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${uri}-weight`),
+      dataset
     );
 
   }
@@ -182,8 +185,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       width: widthThing,
       depth: depthThing,
       weight: weightThing,
-    }
-      = CollectionObjectSolidStore.toThing({ ...object, uri: objectUri });
+    } = CollectionObjectSolidStore.toThing({ ...object, uri: objectUri });
 
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, digitalObjectThing);
@@ -191,6 +193,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     updatedObjectsDataset = setThing(updatedObjectsDataset, widthThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, depthThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, weightThing);
+
+    // save all Terms seperately
+    [ 'additionalType',
+      'creator',
+      'locationCreated',
+      'material',
+      'subject',
+      'location',
+      'person',
+      'organization',
+      'event' ].forEach((termProperty) => {
+
+      const propertyValue: Term[] = (object as any)[termProperty];
+
+      if (propertyValue?.length > 0) {
+
+        updatedObjectsDataset = propertyValue.reduce((dataset, value) => setThing(dataset, addStringNoLocale(createThing({ url: value.uri }), 'http://schema.org/name', value.name)), updatedObjectsDataset);
+
+      }
+
+    });
+
     await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
 
     return { ...object, uri: objectUri };
@@ -224,7 +248,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
     objectThing = object.type ? addUrl(objectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type) : objectThing;
-    objectThing = object.additionalType ? addStringWithLocale(objectThing, 'http://schema.org/additionalType', object.additionalType, 'nl') : objectThing;
+    objectThing = object.additionalType?.length > 0 ? object.additionalType.reduce((thing, value) => addUrl(thing, 'http://schema.org/additionalType', value.uri), objectThing) : objectThing;
     objectThing = object.identifier ? addStringNoLocale(objectThing, 'http://schema.org/identifier', object.identifier) : objectThing;
     objectThing = object.name ? addStringWithLocale(objectThing, 'http://schema.org/name', object.name, 'nl') : objectThing;
     objectThing = object.description ? addStringWithLocale(objectThing, 'http://schema.org/description', object.description, 'nl') : objectThing;
@@ -232,17 +256,18 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.maintainer ? addUrl(objectThing, 'http://schema.org/maintainer', object.maintainer) : objectThing;
 
     // creation
-    objectThing = object.creator ? addStringNoLocale(objectThing, 'http://schema.org/creator', object.creator) : objectThing;
-    objectThing = object.locationCreated ? addStringNoLocale(objectThing, 'http://schema.org/locationCreated', object.locationCreated) : objectThing;
-    objectThing = object.material ? addStringNoLocale(objectThing, 'http://schema.org/material', object.material) : objectThing;
+    objectThing = object.creator?.length > 0 ? object.creator.reduce((thing, value) => addUrl(thing, 'http://schema.org/creator', value.uri), objectThing) : objectThing;
+    objectThing = object.locationCreated?.length > 0 ? object.locationCreated.reduce((thing, value) => addUrl(thing, 'http://schema.org/locationCreated', value.uri), objectThing) : objectThing;
+    objectThing = object.material?.length > 0 ? object.material.reduce((thing, value) => addUrl(thing, 'http://schema.org/material', value.uri), objectThing) : objectThing;
     objectThing = object.dateCreated ? addStringNoLocale(objectThing, 'http://schema.org/dateCreated', object.dateCreated) : objectThing;
 
     // representation
-    objectThing = object.subject ? addStringNoLocale(objectThing, 'http://schema.org/DefinedTerm', object.subject) : objectThing;
-    objectThing = object.location ? addStringNoLocale(objectThing, 'http://schema.org/Place', object.location) : objectThing;
-    objectThing = object.person ? addStringNoLocale(objectThing, 'http://schema.org/Person', object.person) : objectThing;
-    objectThing = object.organization ? addStringNoLocale(objectThing, 'http://schema.org/Organization', object.organization) : objectThing;
-    objectThing = object.event ? addStringNoLocale(objectThing, 'http://schema.org/Event', object.event) : objectThing;
+    objectThing = object.subject?.length > 0 ? object.subject.reduce((thing, value) => addUrl(thing, 'http://schema.org/DefinedTerm', value.uri), objectThing) : objectThing;
+    objectThing = object.location?.length > 0 ? object.location.reduce((thing, value) => addUrl(thing, 'http://schema.org/Place', value.uri), objectThing) : objectThing;
+    objectThing = object.person?.length > 0 ? object.person.reduce((thing, value) => addUrl(thing, 'http://schema.org/Person', value.uri), objectThing) : objectThing;
+    objectThing = object.organization?.length > 0 ? object.organization.reduce((thing, value) => addUrl(thing, 'http://schema.org/Organization', value.uri), objectThing) : objectThing;
+    objectThing = object.event?.length > 0 ? object.event.reduce((thing, value) => addUrl(thing, 'http://schema.org/Event', value.uri), objectThing) : objectThing;
+
     // dimensions
     let heightThing = createThing({ url: `${object.uri}-height` });
     heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
@@ -304,6 +329,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     width: ThingPersisted,
     depth: ThingPersisted,
     weight: ThingPersisted,
+    dataset: SolidDataset
   ): CollectionObject {
 
     if (!object) {
@@ -342,12 +368,18 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
+    if (!dataset) {
+
+      throw new ArgumentError('Argument dataset should be set', dataset);
+
+    }
+
     return {
       // identification
       uri: asUrl(object),
       updated: getStringNoLocale(object, 'http://schema.org/dateModified') || undefined,
       type: getUrl(object, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') || undefined,
-      additionalType: getStringWithLocale(object, 'http://schema.org/additionalType', 'nl') || undefined,
+      additionalType: getUrlAll(object, 'http://schema.org/additionalType')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
       identifier: getStringNoLocale(object, 'http://schema.org/identifier') || undefined,
       name: getStringWithLocale(object, 'http://schema.org/name', 'nl') || undefined,
       description: getStringWithLocale(object, 'http://schema.org/description', 'nl') || undefined,
@@ -355,17 +387,17 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       maintainer: getUrl(object, 'http://schema.org/maintainer') || undefined,
 
       // creation
-      creator: getStringNoLocale(object, 'http://schema.org/creator') || undefined,
-      locationCreated: getStringNoLocale(object, 'http://schema.org/locationCreated') || undefined,
-      material: getStringNoLocale(object, 'http://schema.org/material') || undefined,
+      creator: getUrlAll(object, 'http://schema.org/creator')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      locationCreated: getUrlAll(object, 'http://schema.org/locationCreated')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      material: getUrlAll(object, 'http://schema.org/material')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
       dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated') || undefined,
 
       // representation
-      subject: getStringNoLocale(object, 'http://schema.org/DefinedTerm') || undefined,
-      location: getStringNoLocale(object, 'http://schema.org/Place') || undefined,
-      person: getStringNoLocale(object, 'http://schema.org/Person') || undefined,
-      organization: getStringNoLocale(object, 'http://schema.org/Organization') || undefined,
-      event: getStringNoLocale(object, 'http://schema.org/Event') || undefined,
+      subject: getUrlAll(object, 'http://schema.org/DefinedTerm')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      location: getUrlAll(object, 'http://schema.org/Place')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      person: getUrlAll(object, 'http://schema.org/Person')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      organization: getUrlAll(object, 'http://schema.org/Organization')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      event: getUrlAll(object, 'http://schema.org/Event')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
 
       // dimensions
       height: getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,
@@ -433,6 +465,39 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     }
 
     return `${objectUri}-digital`;
+
+  }
+
+  /**
+   * Retrieves the name of a given Term
+   * Temporary function while individual Term lookups are not possible
+   *
+   * @param uri The uri of the Term
+   * @param dataset The related object's URI, in which the Term's name is saved
+   */
+  static getTerm(uri: string, dataset: SolidDataset): Term {
+
+    if (!uri) {
+
+      throw new ArgumentError('Argument uri should be set.', uri);
+
+    }
+
+    if (!dataset) {
+
+      throw new ArgumentError('Argument dataset should be set.', dataset);
+
+    }
+
+    const termThing = getThing(dataset, uri);
+
+    if (!termThing) {
+
+      throw new ArgumentError('No Thing found for uri.', { uri, dataset });
+
+    }
+
+    return { name: getStringNoLocale(termThing, 'http://schema.org/name'), uri };
 
   }
 

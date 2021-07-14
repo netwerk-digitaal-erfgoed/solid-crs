@@ -46,6 +46,8 @@ describe('CollectionMachine', () => {
 
     objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
+    objectStore.getObjectsForCollection = jest.fn(async() => [ object1 ]);
+
     machine = interpret(collectionMachine(collectionStore, objectStore, object1)
       .withContext({
         collection: collection1,
@@ -229,6 +231,52 @@ describe('CollectionMachine', () => {
       await expect(res).resolves.toHaveLength(1);
 
     });
+
+  });
+
+  it('should transition from IDLE to CREATING_OBJECT when CLICKED_CREATE_OBJECT', async (done) => {
+
+    collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        machine.send(CollectionEvents.CLICKED_CREATE_OBJECT);
+
+      }
+
+      if(state.matches(CollectionStates.CREATING_OBJECT)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+  });
+
+  it('should transition from IDLE to EDITING when CLICKED_EDIT', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        machine.send(CollectionEvents.CLICKED_EDIT);
+
+      }
+
+      if(state.matches(CollectionStates.EDITING)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
 
   });
 
