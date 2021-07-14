@@ -14,7 +14,7 @@
     schema:name "Heemkundevereniging Het Lage Land" ;
     schema:alternateName "Het Lage Land" ; # Optional
     a foaf:Person;
-    foaf:name "Lea Peeters";
+    foaf:name "Het Lage Land";
     solid:oidcIssuer <http://localhost:3000/>;
     solid:oidcIssuerRegistrationToken "9a112e5c-c520-4d1b-b17b-c63693520b72";
     space:storage <http://localhost:3000/hetlageland/>.
