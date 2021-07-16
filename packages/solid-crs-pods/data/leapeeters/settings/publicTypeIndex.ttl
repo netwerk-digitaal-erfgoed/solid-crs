@@ -3,8 +3,3 @@
 
 <>
     a solid:ListedDocument, solid:TypeIndex.
-
-<#256430a5-0e82-45ca-bb51-191372c15e74>
-    a solid:TypeRegistration;
-    solid:forClass schema:DataCatalog;
-    solid:instance <http://localhost:3000/hetlageland/heritage-collections/catalog>.

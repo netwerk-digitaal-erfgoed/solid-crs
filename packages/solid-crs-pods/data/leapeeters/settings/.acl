@@ -8,6 +8,13 @@
     acl:default     <./>;
     acl:mode        acl:Read.
 
+<#public>
+    a               acl:Authorization;
+    acl:agentClass  foaf:Agent;
+    acl:accessTo    <./publicTypeIndex.ttl>;
+    acl:default     <./publicTypeIndex.ttl>;
+    acl:mode        acl:Read.
+
 <#owner>
     a               acl:Authorization;
     acl:agent       <http://localhost:3000/leapeeters/profile/card#me>;

@@ -1,6 +1,7 @@
 import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
 import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
+import { AuthenticateSetupComponent } from '../lib/features/authenticate/authenticate-setup.component';
 import { AppRootComponent } from '../lib/app-root.component';
 import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
 import { SearchRootComponent } from '../lib/features/search/search-root.component';
@@ -28,6 +29,7 @@ customElements.define('nde-card', CardComponent);
 customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
+customElements.define('nde-authenticate-setup', AuthenticateSetupComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
 customElements.define('nde-term-search', TermSearchComponent);

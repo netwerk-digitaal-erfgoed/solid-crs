@@ -7,6 +7,7 @@ import { CollectionRootComponent } from './features/collection/collection-root.c
 import { ObjectRootComponent } from './features/object/object-root.component';
 import { TermSearchComponent } from './features/object/terms/term-search.component';
 import './index';
+import { AuthenticateSetupComponent } from './features/authenticate/authenticate-setup.component';
 
 /**
  * Starts the xstate devtools
@@ -27,6 +28,7 @@ if (process.env.MODE === 'DEV') {
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-authenticate-root', AuthenticateRootComponent);
+customElements.define('nde-authenticate-setup', AuthenticateSetupComponent);
 customElements.define('nde-object-root', ObjectRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-app-root', AppRootComponent);

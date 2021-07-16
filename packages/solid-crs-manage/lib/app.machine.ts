@@ -1,8 +1,8 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -13,6 +13,7 @@ import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
+import { CollectionSolidStore } from './common/solid/collection-solid-store';
 
 /**
  * The root context of the application.
@@ -42,6 +43,11 @@ export interface AppContext {
    * The selected collection from the user's pod
    */
   selected?: Collection;
+
+  /**
+   * The URI of the DataCatalog in which the collections are stored
+   */
+  catalog?: Collection;
 }
 
 /**
@@ -82,6 +88,8 @@ export enum AppDataStates {
   IDLE  = '[AppCreationStates: Idle]',
   REFRESHING  = '[AppCreationStates: Refreshing]',
   CREATING = '[AppCreationStates: Creating]',
+  CHECKING_TYPE_REGISTRATIONS = '[AppCreationStates: Checking Type Registrations]',
+  DETERMINING_POD_TYPE = '[AppCreationStates: Determining Pod Type]',
 }
 
 /**
@@ -103,7 +111,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const appMachine = (
   solid: SolidService,
-  collectionStore: CollectionStore,
+  collectionStore: CollectionSolidStore,
   objectStore: CollectionObjectStore,
   collectionTemplate: Collection,
   objectTemplate: CollectionObject,
@@ -273,7 +281,7 @@ export const appMachine = (
               {
                 src: (context, event) => solid.getProfile(context.session.webId),
                 onDone: {
-                  actions: setProfile,
+                  actions: [ setProfile, send(new SetProfileEvent()) ],
                 },
               },
               {
@@ -349,12 +357,63 @@ export const appMachine = (
           [AppDataStates.IDLE]: {
             on: {
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
-              [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
+              [AppEvents.SET_PROFILE]: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [ObjectEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
+          /**
+           * Checks existance of DataCatalog type registration
+           * When none was found, further set-up is needed (DETERMINING_POD_TYPE)
+           */
+          [AppDataStates.CHECKING_TYPE_REGISTRATIONS]: {
+            invoke: {
+              src: (context) => collectionStore.getInstanceForClass(context.profile.uri, 'http://schema.org/DataCatalog'),
+              onDone: [
+                {
+                  target: AppDataStates.DETERMINING_POD_TYPE,
+                  cond: (context, event) => !event.data,
+                },
+                {
+                  target: AppDataStates.REFRESHING,
+                },
+              ],
+              onError: {
+                actions:  [
+                  send(() => new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                  send({ type: AppEvents.LOGGING_OUT }),
+                ],
+              },
+            },
+          },
+          /**
+           * User can decide whether the current Solid pod should be used
+           * as heritage collection/object storage (pod type: institution),
+           * or that it is an administrator's pod, accessing an institution's pod (pod type: administrator)
+           */
+          [AppDataStates.DETERMINING_POD_TYPE]: {
+            on: {
+              [AppEvents.CLICKED_ADMINISTRATOR_TYPE]: [
+                {
+                  // The user is an admin, but no (valid) type registration was found
+                  target: AppDataStates.IDLE,
+                  actions: [
+                    send(() => new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                    send({ type: AppEvents.LOGGING_OUT }),
+                  ],
+                },
+              ],
+              [AppEvents.CLICKED_INSTITUTION_TYPE]: [
+                // The pod will be used as storage and necessary files
+                // will be created here when missing
+                {
+                  target: AppDataStates.REFRESHING,
+                },
+              ],
+            },
+          },
+          // TODO create another state for checking permissions?
           /**
            * Refresh collections, set current collection and assign to state.
            */
