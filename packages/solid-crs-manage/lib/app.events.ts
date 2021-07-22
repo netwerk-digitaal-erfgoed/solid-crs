@@ -64,7 +64,7 @@ export class ErrorEvent implements EventObject {
  */
 export class LoggedOutEvent implements EventObject {
 
-  public type: AppEvents.LOGGING_OUT = AppEvents.LOGGING_OUT;
+  public type: AppEvents.LOGGED_OUT = AppEvents.LOGGED_OUT;
 
 }
 
@@ -73,7 +73,7 @@ export class LoggedOutEvent implements EventObject {
  */
 export class LoggingOutEvent implements EventObject {
 
-  public type: AppEvents.LOGGED_OUT = AppEvents.LOGGED_OUT;
+  public type: AppEvents.LOGGING_OUT = AppEvents.LOGGING_OUT;
 
 }
 
