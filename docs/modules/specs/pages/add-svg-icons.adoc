@@ -1,0 +1,82 @@
+= Technical Documentation: Add svg icons
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+== Author(s)
+
+* Stijn Taelemans
+
+== References
+
+
+* https://www.wrike.com/open.htm?id=682525025[Wrike task]
+* Branch: `feat/add-svg-icons`
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-components]
+
+
+== Introduction
+
+=== Overview
+
+This document is about the creation of new, reusable svg icons.
+
+
+=== Assumptions
+
+All changes are to be made in the '@netwerk-digitaal-erfgoed/solid-crs-theme' package.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Icons 
+
+The finished icons should look like this:
+
+image::../images/collections/icons-1.svg[Icons]
+image::../images/collections/icons-2.svg[Icons]
+
+
+Create in '@netwerk-digitaal-erfgoed/solid-crs-theme' package under 'lib/icon/'.
+
+I suggest the following names:
+
+* Login (already exists)
+* Save
+* Object
+* Trash
+* DownArrow
+* Identity
+* Connect
+* Bell (already exists)
+* Search (already exists)
+* Cross (already exists, rename from Dismiss)
+* Plus
+* Context
+* Collection
+* Image
+* Logout (already exists)
+* Loading (already exists, change svg)
+
+Loading's exising svg should be replaced with the new icon. Ideally, it should turn clockwise in increments of 15%. I'm not sure how this is best done. The styling and animation of this icon should happen in the 'solid-crs-theme' package, be it in the svg itself or, if necessary, in a new 'icons.css' file under 'lib/elements/'.
+
+Export the icons from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=1%3A3[these Figma assets] to svg files in 'solid-crs-theme'. Test them out in 'solid-crs-components' to make sure they render properly. The https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=361%3A375[image from the empty collection page] should also be exported and kept in 'solid-crs-theme'.
+
+The exported svgs come with a default `fill`, `height` and `width` attributes, e.g.: 
+
+[source, html]
+----
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+...
+----
+
+Remove these, as they mess up the styling. (but keep the viewBox -- it makes sure the aspect ratio is set)
+
+
+[source, html]
+----
+<svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+...
+----

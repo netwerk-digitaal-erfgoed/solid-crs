@@ -1,10 +1,10 @@
-= Solid CBS
+= Solid CRS
 ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 
-Solid CBS is a system for managing collections of digital objects for small heritage institutions. Users will be administrators or visitors. Administrators are able to log in to the application and add collections and objects. Visitors can browse these collections and objects on the public website. The system is limited to imagery and had limited functions for its users. 
+Solid CRS is a system for managing collections of digital objects for small heritage institutions. Users will be administrators or visitors. Administrators are able to log in to the application and add collections and objects. Visitors can browse these collections and objects on the public website. The system is limited to imagery and had limited functions for its users.
 
 
 * xref:docs/modules/ROOT/nav.adoc[Project documentation]
 * xref:docs/modules/manual/nav.adoc[User manual]
 
-The test environment can be found at  https://app.nde.digita.ai/. This always runs the most recent release of the application. Alternatively, you can install and run the demo environment locally by following the xref:docs/modules/ROOT/pages/install.adoc[installation instructions].
+The test environment can be found at https://solid-crs.netwerkdigitaalerfgoed.nl. This always runs the most recent release of the application. Alternatively, you can install and run the demo environment locally by following the xref:docs/modules/ROOT/pages/install.adoc[installation instructions].

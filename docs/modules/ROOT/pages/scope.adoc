@@ -1,7 +1,7 @@
 = Scope 
 :description: A description of the scope used in the NDE erfgoedinstellingen project.
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :page-tags: nde-erfgoed
 :imagesdir: ../images
 :sectnums:

@@ -1,0 +1,77 @@
+= Technical Documentation: Create Solid store
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+== Author(s)
+
+* Stijn Taelemans
+
+== References
+
+
+* https://www.wrike.com/open.htm?id=684597956[Wrike task]
+* Branch: `feat/create-solid-store`
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-manage]
+
+
+== Introduction
+
+=== Overview
+
+This document is about the creation a Solid store, used for retrieving and storing data from and to Solid pods. 
+
+
+=== Assumptions
+
+The `SolidStore` is to be made in the '@netwerk-digitaal-erfgoed/solid-crs-manage' package. Don't use core, as the current way of bundling Inrupt's SDK messes up bundled file sizes.
+
+The predicates used for collections and collection objects are communicated by NDE.
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== ProfileInfo model
+
+Create in '@netwerk-digitaal-erfgoed/solid-crs-core' package under 'lib/profile/profile-info.ts'.
+
+This model is mainly to fill in the information at the top of the primary navigation.
+
+The model should look as follows: 
+
+[source, js]
+----
+{
+  name: string, // e.g. Jan Janssens
+  institution: string, // e.g. Heemkundevereniging Het Lage Land
+  logo: string, // url of the insititution's logo
+}
+----
+
+==== SolidStore 
+
+Create in '@netwerk-digitaal-erfgoed/solid-crs-manage' package under 'lib/common/solid/solid-store.ts'.
+
+This service should allow for the retrieval of Pod data, specifically its `Collections`, `CollectionObjects`, as well as some profile information. (name, name of institution , ...)
+
+I suggest storing the the collections and collection objects in a fixed location in the Solid pod:
+
+* '/something/collections' for collections
+* '/something/objects' for collection objects
+
+Use type indexes to define these locations. To fetch data using the Inrupt SDK, use `session.fetch`, with the session being retrieved by `getDefaultSession()`.
+
+Create following functions:
+
+* `getCollections(): Collection[]`
+* `getCollection(uri: string): Collection`
+* `getCollectionObjects(): CollectionObject[]`
+* `getCollectionObject(uri: string): CollectionObject[]`
+* `getProfileInfo(): ProfileInfo`
+
+==== Test data
+
+After implementing above changes, you should have a good idea of the test data that should be present in a Solid pod. In the 'data' directory, a dummy profile can be found. Add the necessary data to this profile. This way, we can use this pod for demos.
+
+I don't mean the data used in unit tests, you should mock the SDK's functions for unit tests. Don't make requests to actual pods online in unit tests.

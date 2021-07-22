@@ -1,0 +1,182 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+textarea,
+input,
+select {
+  border: none;
+  height: 42px;
+}
+
+form nde-form-element {
+  display: block;
+}
+
+form nde-form-element:last-child {
+  margin-bottom: 0;
+}
+
+nde-form-element input,
+nde-form-element select,
+nde-form-element textarea {
+  color: var(--colors-foreground-normal);
+  font-size: var(--font-size-small);
+  font-family: var(--font-family);
+  display: block;
+  width: 100%;
+}
+
+nde-content-header nde-form-element input {
+  height: var(--gap-normal);
+}
+
+nde-form-element select {
+  margin-right: var(--gap-normal);
+  padding-right: 0;
+}
+
+nde-form-element textarea {
+  resize: vertical;
+  min-height: 132px;
+}
+
+nde-form-element ul {
+  list-style-type: none;
+  height: 42px;
+  margin: 0;
+}
+
+nde-form-element ul.multiselect {
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-small);
+  position: absolute;
+  left: -2px;
+  top: 0;
+  border: 2px solid var(--colors-foreground-normal);
+  border-top: none;
+  width: calc(100% - 2 * var(--gap-normal));
+  background-color: var(--colors-background-light);
+  z-index: 20;
+  padding: var(--gap-small) var(--gap-normal);
+  line-height: 1.5;
+}
+
+nde-form-element ul.dismiss {
+  border: none;
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: var(--gap-small);
+  flex-wrap: wrap;
+  margin: var(--gap-small) 0;
+  height: auto;
+  min-height: 25px;
+}
+
+nde-form-element ul li {
+  display: flex;
+  flex-direction: row;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+nde-form-element ul.dismiss li {
+  background-color: var(--colors-foreground-normal);
+  color: var(--colors-foreground-inverse);
+  position: relative;
+  line-height: 15px;
+  padding: 5px;
+  width: fit-content;
+  height: 15px;
+  cursor: default;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+nde-form-element ul li input {
+  margin-right: var(--gap-normal) !important;
+}
+
+nde-form-element ul li label {
+  flex: 1;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  outline: none;
+}
+
+nde-form-element input:disabled {
+  color: var(--colors-foreground-light);
+}
+
+/* stylelint-disable-next-line no-descending-specificity */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--colors-background-light) inset !important;
+  box-shadow: 0 0 0 30px var(--colors-background-light) inset !important;
+  -webkit-text-fill-color: var(--colors-foreground-normal) !important;
+}
+
+nde-form-element div[slot="icon"] svg {
+  max-height: var(--gap-normal);
+  max-width: var(--gap-normal);
+}
+
+nde-form-element div[slot="help"] {
+  font-size: var(--font-size-small);
+  color: var(--colors-foreground-light);
+}
+
+nde-form-element button[slot="action"] {
+  height: 100%;
+  width: 100%;
+  line-height: 10px;
+  padding: 0 20px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  appearance: none;
+  border: 2px solid var(--colors-foreground-normal);
+  max-width: 25px;
+  max-height: 25px;
+  min-width: 25px;
+  min-height: 25px;
+  content: none;
+  outline: none;
+  margin: 0;
+}
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+  appearance: none;
+  outline: none;
+  padding: 0;
+  content: none;
+  border: none;
+  background: url(../icons/CheckboxChecked.svg);
+}
+
+input[type="radio"] ~ label,
+input[type="checkbox"] ~ label {
+  display: inline-block;
+  line-height: 25px;
+  vertical-align: middle;
+}
+
+div[slot="input"] {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-normal);
+}

@@ -1,0 +1,83 @@
+= Technical Documentation: Update collection object model
+
+== Author(s)
+
+* Stijn Taelemans
+
+
+== References
+
+* https://www.wrike.com/open.htm?id=691826164[Wrike task]
+* Branch: `feat/update-collection-object-model`
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
+
+== Introduction
+
+=== Overview
+
+This document is about aligning the collection object model with the model communicated by NDE. It features more properties, which should be editable it the new collection object feature.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+
+==== CollectionObject model
+
+Update 'collection-object.ts' under 'lib/collections/' in the 'nde-erfgoed-core' package.
+
+The new model should look like this. Commented are the corresponding predicates of that property.
+
+[source, ts]
+----
+{
+
+  // IDENTIFICATION
+  uri: string,
+  type: string,             // rdf:type 
+  additionalType: string,   // schema:additionalType
+  identifier: string,       // schema:identifier
+  name: string,             // schema:name, already present
+  description: string,      // schema:name, already present
+  collection: string,       // schema:isPartOf, already present
+  maintainer: string,       // schema:maintainer
+
+  // CREATION
+  creator: string,          // schema:creator
+  dateCreated: string,      // schema:dateCreated
+  locationCreated: string,  // schema:locationCreated
+  material: string,         // schema:material
+
+  // REPRESENTATION        
+  subjectName: string,      // schema:about type schema:DefinedTerm
+  subject: string,          // schema:about type schema:DefinedTerm
+  locationName: string,     // schema:about type schema:Place
+  location: string,         // schema:about type schema:Place
+  personName: string,       // schema:about type schema:Person
+  person: string,           // schema:about type schema:Person
+  organizationName: string, // schema:about type schema:Organization
+  organization: string,     // schema:about type schema:Organization
+  eventName: string,        // schema:about type schema:Event
+  event: string,            // schema:about type schema:Event
+
+  // ACQUISITION
+  // TBD
+
+  // DIMENSIONS
+  height: string,           // schema:height schema:value
+  heightUnit: string,       // schema:height schema:unitCode
+  width: string,            // schema:height schema:value
+  widthUnit: string,        // schema:height schema:unitCode
+  depth: string,            // schema:height schema:value
+  depthUnit: string,        // schema:height schema:unitCode
+  weight: string,           // schema:height schema:value
+  weightUnit: string,       // schema:height schema:unitCode
+
+  // OTHER
+  image: string,            // schema:image
+  mainEntityOfPage: string, //schema:mainEntityOfPage
+}
+----
+
+In the pods package, see 'data/leapeeters/heritage-objects/data-1' for an example of this model in turtle. Prefixes used in the example are also defined in there. 

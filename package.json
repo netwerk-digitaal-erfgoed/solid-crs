@@ -15,7 +15,7 @@
     "lint:staged": "lerna run lint:staged --since HEAD --stream --concurrency 1",
     "postinstall": "husky install",
     "release": "npm run release:antora && lerna version",
-    "release:antora": "echo \"$(yaml set docs/antora.yml version $(dot-json package.json version))\" > docs/antora.yml",
+    "release:antora": "echo \"$(yaml set docs/antora.yml version $(dot-json lerna.json version))\" > docs/antora.yml",
     "start": "lerna run start --parallel",
     "start:watch": "lerna run start:watch --parallel",
     "test": "lerna run test --since HEAD --parallel",

@@ -1,0 +1,118 @@
+= Technical Documentation: Set up collection feature
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+== Author(s)
+
+* Stijn Taelemans
+
+
+== References
+
+* https://www.wrike.com/open.htm?id=684057269[Wrike task]
+* Branch: `feat/599439372-set-up-collection-feature`
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-manage]
+
+== Introduction
+
+=== Overview
+
+This document is about the setup of the collection feature. Heritage institutions should be able to view (and edit) the collections stored in their Solid pods.
+
+
+== Solution
+
+=== Suggested or proposed solution
+
+==== Collection Feature
+
+Under 'lib/features', in the existing 'authenticate' directory, edit following files.
+
+* collection.machine.ts
+* collection.events.ts
+* collection-root.component.ts
+
+
+==== App Machine
+
+The list of collections should be stored in the `AppContext`. Retrieve them using a local `MemoryStore<Collection>`. We'll implement a new `Store` later that makes use of Solid pods. The list of collections should be retrieved and its first item passed to the context of the `CollectionsMachine`, when it is invoked. (`collection`)  
+
+
+==== App Events
+
+Some new events should be added to the `AppEvents`:
+
+[options="header"]
+|======================================
+| Event 	| Payload
+
+| `CollectionEvents.SELECTED_COLLECTION`
+| `collection: Collection`
+
+| `AppEvents.CLICKED_CREATE_COLLECTION`
+| No payload
+
+|======================================
+
+==== Collection Machine & States
+
+The collection machine is the brains of the `CollectionRootComponent`. Every button clicked on that page should translate to an event in this machine.
+
+Use the file structure and naming convention of the authenticate feature.
+
+
+The `CollectionMachine` has three possible states: 
+
+* `CollectionStates.IDLE` (initial)
+* `CollectionStates.EDITING`
+* `CollectionStates.SAVING`
+* `CollectionStates.DELETING`
+
+The `CollectionStates.IDLE` state is the initial state of the machine. Take a look at the state chart and the events described below for a better picture of how the machine can transition.
+
+When `CollectionEvents.CLICKED_DELETE` is fired, `collection` should be removed from the `AppContext.collections`. The `CollectionMachine` should be reinvoked as to retrieve a new `collection`.
+
+`CollectionEvents.CLICKED_EDIT` is should transition the `CollectionMachine` to `CollectionStates.EDITING`. It can exit this state if the `CollectionStates.CANCELLED_EDIT` event is fired while `EDITING`.
+
+`CollectionEvents.CLICKED_SAVED` transitions to `CollectionStates.SAVING`, where the store will save the edited collection. When saved, return to `CollectionStates.IDLE`.
+
+
+==== CollectionContext
+
+Create in 'lib/features/collection/collection.context.ts'
+
+The context of the `CollectionMachine` consists of one item: the current collection.
+[source, js]
+----
+{
+  collection: Collection,
+}
+----
+
+==== Collection Events
+
+Remove any existing `CollectionEvents` as they were made for testing purposes.
+
+Create following events in 'lib/features/collection/collection.events.ts'
+
+[options="header"]
+|======================================
+| Event 	| Payload
+
+| `CollectionEvents.CLICKED_DELETE`
+| No payload
+
+| `CollectionEvents.CLICKED_EDIT`
+| No payload
+
+| `CollectionEvents.CANCELLED_EDIT`
+| No payload
+
+| `CollectionEvents.CLICKED_SAVE`
+| `collection: Collection`
+
+| `CollectionEvents.CLICKED_CREATE_OBJECT`
+| No payload
+
+|======================================

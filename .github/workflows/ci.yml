@@ -2,23 +2,34 @@ name: CI
 
 on: push
 
-env:
-  NPM_TOKEN: ${{secrets.GA_TOKEN}}
-
 jobs:
+  variables:
+    name: Set variables
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.vars.outputs.tag }}
+      image_manage: ${{ steps.vars.outputs.image_manage }}
+      image_semcom_node: ${{ steps.vars.outputs.image_semcom_node }}
+      image_semcom_components: ${{ steps.vars.outputs.image_semcom_components }}
+    steps:
+      - name: Set variables
+        id: vars
+        run: |
+          echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
+          echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
+          echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
+          echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
+
   test:
     name: Run tests
+    needs: variables
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
       - name: Check tag
-        run: echo ${{ steps.extract-tag.outputs.tag }}
+        run: echo ${{ needs.variables.outputs.tag }}
 
       - name: Extract branch
         id: extract-branch
@@ -27,11 +38,14 @@ jobs:
       - name: Check branch
         run: echo ${{ steps.extract-branch.outputs.branch }}
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: 14
+          registry-url: https://npm.pkg.github.com
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
@@ -65,7 +79,7 @@ jobs:
     name: Publish NPM packages
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-    needs: release
+    needs: [variables, release]
     steps:
       - uses: actions/checkout@v2
 
@@ -75,37 +89,39 @@ jobs:
           registry-url: https://npm.pkg.github.com/
 
       - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
 
       - run: npm run build:all
 
-      - run: npm publish packages/nde-erfgoed-theme
+      - run: npm publish packages/solid-crs-theme
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-core
+      - run: npm publish packages/solid-crs-core
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-components
+      - run: npm publish packages/solid-crs-components
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/nde-erfgoed-client
+      - run: npm publish packages/solid-crs-client
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - run: npm publish packages/solid-crs-semcom-components
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
   publish-docker:
     name: Publish Docker images
-    needs: publish-npm
+    needs: [variables, publish-npm]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -113,83 +129,62 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to GitHub Container Registry
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GA_TOKEN }}
-
-      - name: Build and push pods
-        id: docker_build_pods
-        uses: docker/build-push-action@v2
-        with:
-          context: packages/nde-erfgoed-pods/
-          push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-pods:latest,ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
-          build-args: |
-            NPM_TOKEN=${{secrets.GA_TOKEN}}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
 
       - name: Build and push manage
-        id: docker_build_manage
         uses: docker/build-push-action@v2
         with:
-          context: packages/nde-erfgoed-manage/
+          context: packages/solid-crs-manage/
           push: true
-          tags: ghcr.io/digita-ai/nde-erfgoed-manage:latest,ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
+          tags: |
+            ${{ needs.variables.outputs.image_manage }}:latest
+            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GA_TOKEN}}
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
-  deploy-develop:
-    name: Deploy to develop
-    needs: publish-docker
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1
+      - name: Build and push semcom-node
+        uses: docker/build-push-action@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          context: packages/solid-crs-semcom-node/
+          push: true
+          tags: |
+            ${{ needs.variables.outputs.image_semcom_node }}:latest
+            ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - name: Build and push semcom-components
+        uses: docker/build-push-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GA_TOKEN }}
+          context: packages/solid-crs-semcom-components/
+          push: true
+          tags: |
+            ${{ needs.variables.outputs.image_semcom_components }}:latest
+            ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
-      - name: Deploy pods on develop
-        uses: 'azure/aci-deploy@v1'
+      - uses: digitalocean/action-doctl@v2
         with:
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: nde-erfgoed-pods-develop
-          image: ghcr.io/digita-ai/nde-erfgoed-pods:${{ steps.extract-tag.outputs.tag }}
-          registry-login-server: ghcr.io
-          registry-username: ${{ secrets.GA_USERNAME }}
-          registry-password: ${{ secrets.GA_TOKEN }}
-          name: nde-erfgoed-pods-develop
-          location: 'west europe'
-          ports: 80
-          command-line: ./node_modules/.bin/community-solid-server -b https://pods.nde.digita.ai -p 80 --rootFilePath /tmp/css -c config/config-file.json -l debug
-          # ip-address: 'Private'
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Deploy manage on develop
-        uses: 'azure/aci-deploy@v1'
-        with:
-          resource-group: ${{ secrets.RESOURCE_GROUP }}
-          dns-name-label: nde-erfgoed-manage-develop
-          image: ghcr.io/digita-ai/nde-erfgoed-manage:${{ steps.extract-tag.outputs.tag }}
-          registry-login-server: ghcr.io
-          registry-username: ${{ secrets.GA_USERNAME }}
-          registry-password: ${{ secrets.GA_TOKEN }}
-          name: nde-erfgoed-manage-develop
-          location: 'west europe'
-          ports: 3002
-          # ip-address: 'Private'
+      - name: Store DigitalOcean credentials
+        run: doctl kubernetes cluster kubeconfig save nde
+
+      # See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
+      - name: Update deployment
+        run: |
+          kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/solid-crs-manage
+          kubectl rollout status deployment/solid-crs-semcom-node
+          kubectl rollout status deployment/solid-crs-semcom-components

@@ -6,27 +6,35 @@
     },
     {
       "name": "manage",
-      "path": "packages/nde-erfgoed-manage"
+      "path": "packages/solid-crs-manage"
     },
     {
       "name": "components",
-      "path": "packages/nde-erfgoed-components"
+      "path": "packages/solid-crs-components"
     },
     {
       "name": "client",
-      "path": "packages/nde-erfgoed-client"
+      "path": "packages/solid-crs-client"
     },
     {
       "name": "core",
-      "path": "packages/nde-erfgoed-core"
+      "path": "packages/solid-crs-core"
     },
     {
       "name": "theme",
-      "path": "packages/nde-erfgoed-theme"
+      "path": "packages/solid-crs-theme"
     },
     {
       "name": "pods",
-      "path": "packages/nde-erfgoed-pods"
+      "path": "packages/solid-crs-pods"
+    },
+    {
+      "name": "semcom-node",
+      "path": "packages/solid-crs-semcom-node"
+    },
+    {
+      "name": "semcom-components",
+      "path": "packages/solid-crs-semcom-components"
     },
   ],
   "settings": {

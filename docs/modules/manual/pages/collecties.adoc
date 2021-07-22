@@ -1,5 +1,35 @@
-= Collecties
-:description: Een omschrijving van de architectuur van het project.
+= Hoe beheer ik de collecties van mijn erfgoedinstelling?
+:description: Een gebruikershandleiding voor het beheren van collecties in Solid CRS.
 :sectanchors:
-:url-repo: https://github.com/digita-ai/nde-erfgoedinstellingen
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
+:sectnums:
+
+
+Dit document toont je hoe je de collecties van je erfgoedinstelling beheert in het Solid Collectiebeheersysteem. 
+
+
+=== Vereisten
+Om collecties te kunnen beheren, moet je zijn ingelogd op het Collectiebeheersysteem van jouw erfgoedinstelling. Meer uitleg over inloggen vind je op xref:authenticeer.adoc[authenticeer].
+
+=== Maak een nieuwe collectie aan
+Klik links in de primaire navigatiebalk op het plusje, naast 'Collecties'. Er wordt nu een nieuwe collectie geopend.
+
+=== Pas de naam en onderschrift van de collectie aan
+Zorg dat je de gewenste collectie in de primaire naviagtiebalk hebt geselecteerd. Klik op de naam van de collectie, bovenaan de pagina. Je kan nu de naam en het onderschrift aanpassen. Wanneer je klaar bent, druk je rechts op het 'opslaan' icoontje of enter om op te slaan. Om te annuleren, druk je op het kruisje. 
+
+=== Verwijder de collectie
+Selecteer de collectie die je wilt verwijderen in de primaire naviagtiebalk. Druk in de rechterbovenhoek op het vuilbak-icoontje om de volledige collectie te verwijderen. 
+
+=== Voeg een object toe aan de collectie
+Net zoals je collecties kan toevoegen met het plus-icoontje in de linker navigatiebalk, kan je objecten toevoegen aan een collectie met het plus-icoontje in de rechterbovenhoek van het scherm. Wanneer je op het plus-icoontje rechtsboven drukt, zal er een nieuw object verschijnen in de collectie. Hoe je een object aanpast en beheert lees je in xref:objecten.adoc[objecten].
+
+
+:sectnums!:
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+
+* xref:authenticeer.adoc[Authenticatie]
+* xref:search.adoc[Zoeken]
+* xref:objecten.adoc[Objecten]
+
+
