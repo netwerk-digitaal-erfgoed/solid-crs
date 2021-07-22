@@ -1,7 +1,7 @@
 import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { assign, createMachine, sendParent, StateMachine } from 'xstate';
-import { AppEvents } from '../../../app.events';
+import { AppEvents, ErrorEvent } from '../../../app.events';
 import { TermEvent, TermEvents } from './term.events';
 
 /**
@@ -73,7 +73,8 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             ],
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: TermStates.IDLE,
+            actions: sendParent({ type: AppEvents.ERROR, data: { error: 'nde.features.term.error.term-network-error' } } as ErrorEvent),
           },
         },
       },
@@ -89,15 +90,6 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             data: { query: context.query||'', sources: context.selectedSources||[] },
             original: { query: context.query||'', sources: context.selectedSources||[] },
           }),
-          // onDone: {
-          //   target: TermStates.QUERYING,
-          //   actions: [
-          //     assign((context, event) => ({
-          //       query: event.data.data.query,
-          //       selectedSources: event.data.data.sources,
-          //     })),
-          //   ],
-          // },
         },
         on: {
           [TermEvents.QUERY_UPDATED]: {

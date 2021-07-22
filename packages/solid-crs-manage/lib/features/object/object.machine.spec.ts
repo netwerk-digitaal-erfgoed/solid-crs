@@ -3,7 +3,7 @@ import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, Logg
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 import { ClickedSubmitEvent } from './terms/term.events';
 import { TermActors, TermContext, TermStates } from './terms/term.machine';
@@ -163,6 +163,41 @@ describe('ObjectMachine', () => {
 
   });
 
+  it('should send error to parent when term machine errors', async () => {
+
+    machine = interpret(objectMachine(objectStore)
+      .withContext({
+        object: object1,
+        termService: { getSources: jest.fn().mockRejectedValueOnce('error') },
+      }));
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    machine.onTransition((state) => {
+
+      let passedTermMachine = false;
+
+      if(passedTermMachine && state.matches(ObjectStates.IDLE)) {
+
+        expect(machine.parent.parent.send).toHaveBeenCalledTimes(1);
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        passedTermMachine = true;
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
+
+  });
+
   it('should transition to IDLE when CLICKED_SIDEBAR_ITEM', async (done) => {
 
     machine.onTransition((state) => {
@@ -175,7 +210,7 @@ describe('ObjectMachine', () => {
 
       if(state.matches(ObjectStates.EDITING_FIELD)) {
 
-        machine.send(new ClickedObjectSidebarItem());
+        machine.send(new ClickedObjectSidebarItem('itemid'));
 
       }
 
@@ -220,6 +255,37 @@ describe('ObjectMachine', () => {
 
   });
 
+  it('should send error to parent when deleting threw error', () => {
+
+    objectStore.delete = jest.fn().mockRejectedValueOnce('error');
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    let passedDelete = false;
+
+    machine.onTransition((state) => {
+
+      if(passedDelete && state.matches(ObjectStates.IDLE)) {
+
+        expect(machine.parent.send).toHaveBeenCalledTimes(1);
+
+      }
+
+      if(state.matches(ObjectStates.DELETING)) {
+
+        passedDelete = true;
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedDeleteObjectEvent(object1));
+
+  });
+
   it('should save object when saving', async (done) => {
 
     objectStore.save = jest.fn().mockResolvedValueOnce(object1);
@@ -243,6 +309,43 @@ describe('ObjectMachine', () => {
 
         expect(objectStore.save).toHaveBeenCalledWith(expect.objectContaining({ ...object1, name: 'test' }));
 
+        done();
+
+      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
+
+      }
+
+    });
+
+  });
+
+  it('should send error to parent when saving threw error', (done) => {
+
+    objectStore.save = jest.fn().mockRejectedValueOnce('error');
+
+    machine.start();
+    machine.send(new SelectedObjectEvent(object1));
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    let alreadySaved = false;
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        alreadySaved = true;
+
+      }
+
+      if(alreadySaved && state.matches(ObjectStates.IDLE) && state.context?.object) {
+
+        expect(machine.parent.send).toHaveBeenCalledWith(expect.objectContaining({ data: 'error' }));
         done();
 
       } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {

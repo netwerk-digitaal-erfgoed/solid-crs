@@ -530,6 +530,11 @@
         "locale": "nl-NL",
         "value": "Verborgen naam"
     },
+    { 
+        "key": "nde.features.term.error.term-network-error",
+        "locale": "nl-NL",
+        "value": "Er kon geen verbinding gemaakt worden met het termennetwerk."
+    },
     {
         "key": "nde.common.date.just-now",
         "locale": "nl-NL",

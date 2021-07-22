@@ -6,7 +6,6 @@ import { formMachine,
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { AppEvents } from '../../app.events';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
@@ -235,7 +234,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             actions: assign((context) => ({ original: context.object })),
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },
@@ -330,7 +330,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               ],
             },
             onError: {
-              actions: sendParent(AppEvents.ERROR),
+              target: ObjectStates.IDLE,
+              actions: sendParent((context, event) => event),
             },
           },
         ],
@@ -345,7 +346,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             ],
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },
