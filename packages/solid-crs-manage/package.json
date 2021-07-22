@@ -19,7 +19,7 @@
   "scripts": {
     "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
     "start:watch": "vite serve --config vite.config.ts",
-    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
+    "build": "shx rm -rf dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
@@ -57,7 +57,7 @@
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
     "rdf-js": "^4.0.2",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",

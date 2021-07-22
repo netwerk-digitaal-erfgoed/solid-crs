@@ -9,7 +9,7 @@
   "scripts": {
     "start": "http-server --cors='*' -p 3004 --gzip --brotli --proxy 'http://localhost:3004?' dist/",
     "start:watch": "npm run build && npm run start",
-    "build": "rimraf ./dist && tsc && vite build --config vite-build.config.ts",
+    "build": "shx rm -rf dist && tsc && vite build --config vite-build.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
@@ -46,7 +46,7 @@
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "vite": "2.2.3"
