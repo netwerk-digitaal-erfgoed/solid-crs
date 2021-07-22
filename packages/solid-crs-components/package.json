@@ -19,7 +19,7 @@
   "scripts": {
     "start": "npm run start:watch",
     "start:watch": "vite --config vite.config.ts",
-    "build": "rimraf ./dist && vite build --config vite.config.ts && tsc",
+    "build": "shx rm -rf dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
@@ -46,7 +46,7 @@
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-environment-jsdom-sixteen": "^1.0.3",
     "lint-staged": "^10.5.4",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "vite": "2.2.3"
