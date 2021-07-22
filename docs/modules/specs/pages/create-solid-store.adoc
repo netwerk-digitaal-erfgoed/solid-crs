@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=684597956[Wrike task]
 * Branch: `feat/create-solid-store`
-* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-manage]
 
 
 == Introduction
