@@ -1,6 +1,7 @@
-import { FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import { AppEvents, DismissAlertEvent } from '../../../app.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
@@ -323,6 +324,51 @@ describe('TermSearchComponent', () => {
 
       expect(result[term.source].length).toEqual(source1Terms.length);
       expect(result[altTerm.source].length).toEqual(source2Terms.length);
+
+    });
+
+  });
+
+  describe('handleDismiss', () => {
+
+    const alert: Alert = { message: 'foo', type: 'success' };
+
+    it('should throw error when event is null', async () => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(() => component.handleDismiss(null)).toThrow(ArgumentError);
+
+    });
+
+    it('should throw error when actor is null', async () => {
+
+      component.actor = null;
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(() => component.handleDismiss({ detail: alert } as CustomEvent<Alert>)).toThrow(ArgumentError);
+
+    });
+
+    it('should send dismiss alert event to object machine\'s parent', async () => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      machine.parent = {
+        parent: {
+          send: jest.fn(),
+        } as any,
+      } as any;
+
+      component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+
+      expect(machine.parent.parent.send).toHaveBeenCalledWith(AppEvents.DISMISS_ALERT, { alert });
 
     });
 

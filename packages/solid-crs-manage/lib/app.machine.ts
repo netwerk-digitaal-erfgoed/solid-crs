@@ -132,9 +132,9 @@ export const appMachine = (
           [AppEvents.ERROR]: {
             actions: [
               log(() => 'An error occurred'),
-              send(() => ({
+              send((context, event) => ({
                 type: AppEvents.ADD_ALERT,
-                alert: { type: 'danger', message: 'nde.root.alerts.error' },
+                alert: { type: 'danger', message: event.data ? event.data.error : 'nde.root.alerts.error' },
               })),
             ],
           },
@@ -172,7 +172,7 @@ export const appMachine = (
                   collection: context.selected,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -219,7 +219,7 @@ export const appMachine = (
                   })),
                 },
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -249,7 +249,7 @@ export const appMachine = (
                   collections: context.collections,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -325,7 +325,7 @@ export const appMachine = (
                 actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
               },
               onError: {
-                actions: send({ type: AppEvents.ERROR }),
+                actions: send((context, event) => event),
               },
             },
             on: {
@@ -382,7 +382,7 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                actions: send((context, event) => event),
               },
             },
           },
@@ -404,7 +404,7 @@ export const appMachine = (
               },
               onError: {
                 actions: [
-                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                  send((context, event) => event),
                 ],
               },
             },
