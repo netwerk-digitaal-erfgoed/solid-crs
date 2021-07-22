@@ -1,5 +1,36 @@
-= Objecten
-:description: Een omschrijving van de architectuur van het project.
+= Hoe beheer ik de objecten van mijn erfgoedinstelling?
+:description: Een gebruikershandleiding voor het beheren van objecten in Solid CRS.
 :sectanchors:
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
+
+Dit document toont je hoe je de objecten van je erfgoedinstelling beheert in het Solid Collectieregistratiesysteem. 
+
+
+=== Vereisten
+Om objecten te kunnen beheren, moet je zijn ingelogd op het Collectiebeheersysteem van jouw erfgoedinstelling. Meer uitleg over inloggen vind je op xref:authenticeer.adoc[authenticeer]. 
+
+=== Maak een nieuw object aan
+Kies de collectie waaraan je het object wilt toewijzen door de gewenste collectie te selecteren in de primaire navigatie (links). Wanneer de collectie nog geen objecten bevat, kan je in het midden van het scherm op de knop 'object aanmaken' klikken. Wanneer de collectie wel reeds objecten bevat, kan je een object toevoegen door rechtsboven op het plusje te klikken. Je wordt nu doorgestuurd naar de objectdetailpagina. 
+
+=== Pas de naam en onderschrift van het object aan
+Klik op de naam van het object, bovenaan de pagina. Je kan nu de naam en het onderschrift aanpassen. Wanneer je klaar bent, druk je rechts op het 'opslaan' icoontje of enter om op te slaan. Om te annuleren, druk je op het kruisje. 
+
+=== Verwijder een object
+Ga naar het object dat je wilt verwijderen. Druk in de rechterbovenhoek op het vuilbak-icoontje. Het object is nu verwijderd.
+
+=== Wijs een object toe aan een andere collectie dan de huidige
+
+=== Details van een object aanpassen
+In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Hieronder worden de aan te passen velden per onderdeel besproken.
+
+* 
+
+
+
+:sectnums!:
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+
+* xref:authenticeer.adoc[Authenticatie]
+* xref:search.adoc[Zoeken]
+* xref:collecties.adoc[Collecties]
