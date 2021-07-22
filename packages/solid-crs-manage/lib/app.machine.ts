@@ -1,8 +1,8 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, ErrorEvent, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -13,7 +13,6 @@ import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
-import { CollectionSolidStore } from './common/solid/collection-solid-store';
 
 /**
  * The root context of the application.
@@ -111,7 +110,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const appMachine = (
   solid: SolidService,
-  collectionStore: CollectionSolidStore,
+  collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
   collectionTemplate: Collection,
   objectTemplate: CollectionObject,
@@ -140,10 +139,7 @@ export const appMachine = (
           [AppEvents.ERROR]: {
             actions: [
               log(() => 'An error occurred'),
-              send(() => ({
-                type: AppEvents.ADD_ALERT,
-                alert: { type: 'danger', message: 'nde.root.alerts.error' },
-              })),
+              send(new AddAlertEvent({ type: 'danger', message: 'nde.root.alerts.error' })),
             ],
           },
         },
@@ -180,7 +176,7 @@ export const appMachine = (
                   collection: context.selected,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => new ErrorEvent(event.data)),
                 },
               },
             ],
@@ -227,7 +223,7 @@ export const appMachine = (
                   })),
                 },
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => new ErrorEvent(event.data)),
                 },
               },
             ],
@@ -257,7 +253,7 @@ export const appMachine = (
                   collections: context.collections,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => new ErrorEvent(event.data)),
                 },
               },
             ],
@@ -311,7 +307,7 @@ export const appMachine = (
                */
               src: () => solid.logout(),
               onDone: {
-                actions: send({ type: AppEvents.LOGGED_OUT }),
+                actions: send(new LoggedOutEvent()),
               },
             },
             on: {
@@ -330,10 +326,10 @@ export const appMachine = (
                * Send logged in event when authenticate machine is done, and the user has authenticated.
                */
               onDone: {
-                actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
+                actions: send((_, event) => new LoggedInEvent(event.data.session)),
               },
               onError: {
-                actions: send({ type: AppEvents.ERROR }),
+                actions: send((context, event) => new ErrorEvent(event.data)),
               },
             },
             on: {
@@ -381,8 +377,8 @@ export const appMachine = (
               ],
               onError: {
                 actions:  [
-                  send(() => new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
-                  send({ type: AppEvents.LOGGING_OUT }),
+                  send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                  send(new LoggingOutEvent()),
                 ],
               },
             },
@@ -399,8 +395,8 @@ export const appMachine = (
                   // The user is an admin, but no (valid) type registration was found
                   target: AppDataStates.IDLE,
                   actions: [
-                    send(() => new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
-                    send({ type: AppEvents.LOGGING_OUT }),
+                    send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                    send(new LoggingOutEvent()),
                   ],
                 },
               ],
@@ -441,7 +437,7 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                actions: send((context, event) => new ErrorEvent(event.data)),
               },
             },
           },
@@ -463,7 +459,7 @@ export const appMachine = (
               },
               onError: {
                 actions: [
-                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                  send((context, event) => new ErrorEvent(event.data)),
                 ],
               },
             },

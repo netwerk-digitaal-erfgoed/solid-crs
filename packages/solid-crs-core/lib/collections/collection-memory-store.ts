@@ -42,4 +42,29 @@ export class CollectionMemoryStore extends MemoryStore<Collection> implements Co
 
   }
 
+  /**
+   * Returns the instance URI of a type registration for a given RDF class
+   * or null when none was found
+   *
+   * @param webId The WebID of the Solid pod
+   * @param forClass The forClass value of the type registration
+   */
+  async getInstanceForClass(webId: string, forClass: string): Promise<string> {
+
+    if (!webId) {
+
+      throw new ArgumentError('Argument webId should be set.', webId);
+
+    }
+
+    if (!forClass) {
+
+      throw new ArgumentError('Argument forClass should be set.', forClass);
+
+    }
+
+    return 'http://test.pod.com/heritage-collections/catalog';
+
+  }
+
 }

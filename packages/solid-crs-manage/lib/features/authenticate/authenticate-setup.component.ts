@@ -4,9 +4,9 @@ import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Interpreter } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Logo, Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ClickedAdministratorType, ClickedInstitutionType } from '../../app.events';
-import { AuthenticateContext } from './authenticate.machine';
+import { Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ClickedAdministratorTypeEvent, ClickedInstitutionTypeEvent } from '../../app.events';
+import { AppContext } from '../../app.machine';
 
 /**
  * The first time setup page of the authenticate process.
@@ -31,7 +31,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<AuthenticateContext>;
+  public actor: Interpreter<AppContext>;
 
   /**
    * Renders the component as HTML.
@@ -44,36 +44,38 @@ export class AuthenticateSetupComponent extends RxLitElement {
       <div class="title-container">
         <h1>${this.translator?.translate('nde.features.authenticate.pages.setup.title')}</h1>
       </div>
-        <div class="form-container">
-          
-          <nde-large-card
-          class="term-card"
-          .showImage="${false}"
-          .showContent="${false}"
-          @click=${() => this.actor.send(new ClickedAdministratorType())}>
-              <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.title') }</div>
-              <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.subtitle') }</div>
-              <div slot="icon">
-                ${unsafeSVG(Identity)}
-              </div>
-          </nde-large-card>
-          
-          <nde-large-card
-          class="term-card"
-          .showImage="${false}"
-          .showContent="${false}"
-          @click=${() => this.actor.send(new ClickedInstitutionType())}>
-              <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.title') }</div>
-              <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.subtitle') }</div>
-              <div slot="icon">
-                ${unsafeSVG(Identity)}
-              </div>
-          </nde-large-card>
+      
+      <div class="form-container">
         
-        </div>
-        <div class="webid-container">
-          <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
-        </div>
+        <nde-large-card
+        class="term-card"
+        .showImage="${false}"
+        .showContent="${false}"
+        @click=${() => this.actor.send(new ClickedAdministratorTypeEvent())}>
+            <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.title') }</div>
+            <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.subtitle') }</div>
+            <div slot="icon">
+              ${unsafeSVG(Identity)}
+            </div>
+        </nde-large-card>
+        
+        <nde-large-card
+        class="term-card"
+        .showImage="${false}"
+        .showContent="${false}"
+        @click=${() => this.actor.send(new ClickedInstitutionTypeEvent())}>
+            <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.title') }</div>
+            <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.subtitle') }</div>
+            <div slot="icon">
+              ${unsafeSVG(Identity)}
+            </div>
+        </nde-large-card>
+      
+      </div>
+
+      <div class="webid-container">
+        <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+      </div>
       `;
 
   }

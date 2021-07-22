@@ -9,7 +9,7 @@ import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfg
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { AppEvents } from './app.events';
+import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
@@ -149,7 +149,7 @@ export class AppRootComponent extends RxLitElement {
 
     }
 
-    this.actor.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.send(new DismissAlertEvent(event.detail));
 
   }
 
@@ -276,7 +276,7 @@ export class AppRootComponent extends RxLitElement {
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
-            <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
+            <div slot="actions" @click="${() => this.actor.send(new ClickedCreateCollectionEvent())}">${ unsafeSVG(Plus) }</div>
           </nde-sidebar-list-item>
           ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
         </nde-sidebar-list>

@@ -90,16 +90,6 @@ export class LoggedInEvent implements EventObject {
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export class CollectionsLoadedEvent implements EventObject {
-
-  public type: AppEvents.COLLECTIONS_LOADED = AppEvents.COLLECTIONS_LOADED;
-  constructor(public collections: Collection[]) { }
-
-}
-
-/**
- * An event which is dispatched when the collections were successfully retrieved
- */
 export class ClickedCreateCollectionEvent implements EventObject {
 
   public type: AppEvents.CLICKED_CREATE_COLLECTION = AppEvents.CLICKED_CREATE_COLLECTION;
@@ -109,7 +99,7 @@ export class ClickedCreateCollectionEvent implements EventObject {
 /**
  * An event which is dispatched when this pod should be used as an adminstrator pod
  */
-export class ClickedAdministratorType implements EventObject {
+export class ClickedAdministratorTypeEvent implements EventObject {
 
   public type: AppEvents.CLICKED_ADMINISTRATOR_TYPE = AppEvents.CLICKED_ADMINISTRATOR_TYPE;
 
@@ -118,7 +108,7 @@ export class ClickedAdministratorType implements EventObject {
 /**
  * An event which is dispatched when this pod should be set up as an instition pod
  */
-export class ClickedInstitutionType implements EventObject {
+export class ClickedInstitutionTypeEvent implements EventObject {
 
   public type: AppEvents.CLICKED_INSTITUTION_TYPE = AppEvents.CLICKED_INSTITUTION_TYPE;
 
@@ -146,13 +136,12 @@ export type AppEvent =
   | SelectedCollectionEvent
   | ClickedDeleteCollectionEvent
   | ClickedCreateCollectionEvent
-  | CollectionsLoadedEvent
   | SearchUpdatedEvent
   | SavedCollectionEvent
   | SelectedObjectEvent
   | ClickedDeleteObjectEvent
-  | ClickedInstitutionType
-  | ClickedAdministratorType
+  | ClickedInstitutionTypeEvent
+  | ClickedAdministratorTypeEvent
   | SetProfileEvent;
 
 /**

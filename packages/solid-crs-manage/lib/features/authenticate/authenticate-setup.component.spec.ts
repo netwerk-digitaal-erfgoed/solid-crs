@@ -1,77 +1,72 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent, LoggedInEvent } from '../../app.events';
-import { appMachine } from '../../app.machine';
+import { ClickedAdministratorTypeEvent, ClickedInstitutionTypeEvent } from '../../app.events';
+import { AppContext, appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { SolidService } from '../../common/solid/solid.service';
-import { AuthenticateRootComponent } from './authenticate-root.component';
-import { AuthenticateEvents } from './authenticate.events';
-import { AuthenticateContext, authenticateMachine } from './authenticate.machine';
+import { AuthenticateSetupComponent } from './authenticate-setup.component';
 
-describe('AuthenticateRootComponent', () => {
+const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
-  let component: AuthenticateRootComponent;
-  let machine: Interpreter<AuthenticateContext>;
-  let solid: SolidService;
+describe('AuthenticateSetupComponent', () => {
 
-  let collection1: Collection;
-  let collection2: Collection;
-  let object1: CollectionObject;
+  let component: AuthenticateSetupComponent;
+  let machine: Interpreter<AppContext>;
+
+  const collection1: Collection = {
+    uri: 'collection-uri-3',
+    name: 'Collection 3',
+    description: 'This is collection 3',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
+  };
+
+  const collection2: Collection = {
+    uri: 'collection-uri-1',
+    name: 'Collection 1',
+    description: 'This is collection 1',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
+  };
+
+  const collection3: Collection = {
+    uri: 'collection-uri-2',
+    name: 'Collection 2',
+    description: 'This is collection 2',
+    objectsUri: 'test-uri',
+    distribution: 'test-uri',
+  };
+
+  const object1: CollectionObject = {
+    uri: 'object-uri-1',
+    name: 'Object 1',
+    description: 'This is object 1',
+    image: null,
+    subject: null,
+    type: null,
+    updated: '0',
+    collection: 'collection-uri-1',
+  };
 
   beforeEach(() => {
 
-    collection1 = {
-      uri: 'collection-uri-1',
-      name: 'Collection 1',
-      description: 'This is collection 1',
-      objectsUri: '',
-      distribution: '',
-    };
-
-    collection2 = {
-      uri: 'collection-uri-2',
-      name: 'Collection 2',
-      description: 'This is collection 2',
-      objectsUri: '',
-      distribution: '',
-    };
-
-    object1 = {
-      uri: 'object-uri-1',
-      name: 'Object 1',
-      description: 'This is object 1',
-      image: null,
-      subject: null,
-      type: null,
-      updated: undefined,
-      collection: 'collection-uri-1',
-    };
-
-    const collectionStore = new CollectionMemoryStore([
-      collection1,
-      collection2,
-    ]);
-
-    const objectStore = new CollectionObjectMemoryStore([
-      object1,
-    ]);
-
-    solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
-    machine = interpret(authenticateMachine(solid));
-
-    machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
-      collectionStore,
-      objectStore,
+    machine = interpret(appMachine(
+      solid,
+      new CollectionMemoryStore([
+        collection2,
+        collection3,
+      ]),
+      new CollectionObjectMemoryStore([
+        object1,
+      ]),
       collection1,
       object1
-    ).withContext({
-      alerts: [],
-      selected: collection1,
-    }));
+    )
+      .withContext({
+        alerts: [],
+        session: { webId: 'lorem' },
+      }));
 
-    component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
+    component = window.document.createElement('nde-authenticate-setup') as AuthenticateSetupComponent;
 
     component.actor = machine;
 
@@ -89,103 +84,24 @@ describe('AuthenticateRootComponent', () => {
 
   });
 
-  it('should show alerts when set', async () => {
+  it('should show two buttons', async () => {
 
     machine.start();
-
-    component.alerts = [ {
-      type: 'success',
-      message: 'Foo',
-    } ];
-
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const alerts = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelectorAll('nde-alert');
+    const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelector('div.form-container').children;
 
-    expect(alerts).toBeTruthy();
-    expect(alerts.length).toBe(1);
-
-  });
-
-  it('should not show alerts when unset', async () => {
-
-    machine.start();
-
-    component.alerts = null;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const alerts = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelectorAll('nde-alert');
-
-    expect(alerts).toBeTruthy();
-    expect(alerts.length).toBe(0);
+    expect(buttons).toBeTruthy();
+    expect(buttons.length).toEqual(2);
 
   });
 
-  it.each([ true, false ])('should disable button when can not submit', async (canSubmit) => {
-
-    machine.start();
-
-    component.canSubmit = canSubmit;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
-
-    expect(button.disabled).toBe(!canSubmit);
-
-  });
-
-  it.each([ true, false ])('should disable button when is submitting', async (isSubmitting) => {
-
-    machine.start();
-
-    component.canSubmit = true;
-    component.isSubmitting = isSubmitting;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
-
-    expect(button.disabled).toBe(isSubmitting);
-
-  });
-
-  it.each([
-    [ false, false, true ],
-    [ true, false, false ],
-    [ false, true, false ],
-    [ true, true, false ],
-  ])('should not show form when initializing or redirecting', async (isInitializing, isRedirecting, showForm) => {
-
-    machine.start();
-
-    component.isInitializing = isInitializing;
-    component.isRedirecting = isRedirecting;
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const form = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelectorAll('.form-container');
-
-    expect(form.length > 0).toBe(showForm);
-
-  });
-
-  it.each([
-    [ null, AuthenticateEvents.LOGIN_ERROR ],
-    [ { webId:'foo' }, AuthenticateEvents.LOGIN_SUCCESS ],
-  ])('should dispatch events after getting session', async (session, eventType, done) => {
-
-    solid.getSession = jest.fn().mockResolvedValue(session);
+  it('should send ClickedAdministratorTypeEvent when admin button is clicked', async (done) => {
 
     machine.onEvent((event) => {
 
-      if(event.type === eventType) {
+      if (event instanceof ClickedAdministratorTypeEvent) {
 
         done();
 
@@ -194,61 +110,36 @@ describe('AuthenticateRootComponent', () => {
     });
 
     machine.start();
-
     window.document.body.appendChild(component);
     await component.updateComplete;
 
+    const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
+      .querySelector('div.form-container').children[0] as HTMLButtonElement;
+
+    button.click();
+
   });
 
-  describe('handleDismiss', () => {
+  it('should send ClickedInstitutionTypeEvent when institution button is clicked', async (done) => {
 
-    const alert: Alert = { message: 'foo', type: 'success' };
+    machine.onEvent((event) => {
 
-    it('should throw error when event is null', async () => {
+      if (event instanceof ClickedInstitutionTypeEvent) {
 
-      window.document.body.appendChild(component);
-      await component.updateComplete;
+        done();
 
-      expect(() => component.handleDismiss(null)).toThrow(ArgumentError);
-
-    });
-
-    it('should throw error when actor is null', async () => {
-
-      component.actor = null;
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      expect(() => component.handleDismiss({ detail: alert } as CustomEvent<Alert>)).toThrow(ArgumentError);
+      }
 
     });
 
-    it('should send dismiss alert event to parent', async (done) => {
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
-      machine.parent.onEvent((event) => {
+    const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
+      .querySelector('div.form-container').children[1] as HTMLButtonElement;
 
-        if(event && event.type === AppEvents.DISMISS_ALERT) {
-
-          const casted = event as DismissAlertEvent;
-          expect(casted.alert).toEqual(alert);
-          done();
-
-        }
-
-      });
-
-      machine.start();
-      machine.parent.start();
-
-      machine.parent.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
-
-    });
+    button.click();
 
   });
 
