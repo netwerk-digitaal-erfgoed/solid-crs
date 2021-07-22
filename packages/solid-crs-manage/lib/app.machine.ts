@@ -139,7 +139,7 @@ export const appMachine = (
           [AppEvents.ERROR]: {
             actions: [
               log(() => 'An error occurred'),
-              send(new AddAlertEvent({ type: 'danger', message: 'nde.root.alerts.error' })),
+              send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'nde.root.alerts.error' })),
             ],
           },
         },
