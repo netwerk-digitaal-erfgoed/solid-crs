@@ -86,4 +86,28 @@ describe('CollectionMemoryStore', () => {
 
   });
 
+  describe('getInstanceForClass', () => {
+
+    it('should error when webId is undefined', async () => {
+
+      await expect(service.getInstanceForClass('test', undefined)).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should error when forClass is undefined', async () => {
+
+      await expect(service.getInstanceForClass(undefined, 'test')).rejects.toThrow(ArgumentError);
+
+    });
+
+    it('should return a string', async () => {
+
+      const result = await service.getInstanceForClass('test', 'test');
+      expect(result).toBeTruthy();
+      expect(typeof result).toEqual('string');
+
+    });
+
+  });
+
 });

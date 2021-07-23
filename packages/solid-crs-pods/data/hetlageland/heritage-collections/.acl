@@ -10,7 +10,7 @@
 
 <#owner>
     a             acl:Authorization;
-    acl:agent     <http://localhost:3000/leapeeters/profile/card#me>;
+    acl:agent     <http://localhost:3000/hetlageland/profile/card#me>, <http://localhost:3000/leapeeters/profile/card#me>;
     acl:accessTo  <./>;
     acl:default	  <./>;
     acl:mode      acl:Read,

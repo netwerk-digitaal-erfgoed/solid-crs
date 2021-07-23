@@ -10,7 +10,7 @@
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
-    schema:isPartOf <http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1> ;
+    schema:isPartOf <http://localhost:3000/hetlageland/heritage-collections/catalog#collection-1> ;
     schema:maintainer <https://data.hetlageland.org/> ;
 
 
@@ -79,7 +79,7 @@
     schema:identifier "SK-A-1115" ;
     schema:name "De Slag bij Waterloo"@nl ;
     schema:description "De slag bij Waterloo, 18 juni 1815"@nl ;
-    schema:isPartOf <http://localhost:3000/leapeeters/heritage-collections/catalog#collection-1> ;
+    schema:isPartOf <http://localhost:3000/hetlageland/heritage-collections/catalog#collection-1> ;
     schema:maintainer <https://data.hetlageland.org/> ;
 
 

@@ -26,7 +26,7 @@
 <#distribution-1>
   rdf:type schema:DataDownload ;
   schema:encodingFormat "text/turtle" ;
-  schema:contentUrl <http://localhost:3000/leapeeters/heritage-objects/data-1> ;
+  schema:contentUrl <http://localhost:3000/hetlageland/heritage-objects/data-1> ;
   schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ; # License of the dataset
   schema:datePublished "2021-04-26" ;
   schema:dateModified "2021-05-07" .
