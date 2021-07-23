@@ -2,7 +2,7 @@ import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@net
 import { Collection, CollectionObjectStore, CollectionObject, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, ErrorEvent, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -176,7 +176,7 @@ export const appMachine = (
                   collection: context.selected,
                 }),
                 onError: {
-                  actions: send((context, event) => new ErrorEvent(event.data)),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -223,7 +223,7 @@ export const appMachine = (
                   })),
                 },
                 onError: {
-                  actions: send((context, event) => new ErrorEvent(event.data)),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -253,7 +253,7 @@ export const appMachine = (
                   collections: context.collections,
                 }),
                 onError: {
-                  actions: send((context, event) => new ErrorEvent(event.data)),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -329,7 +329,7 @@ export const appMachine = (
                 actions: send((_, event) => new LoggedInEvent(event.data.session)),
               },
               onError: {
-                actions: send((context, event) => new ErrorEvent(event.data)),
+                actions: send((context, event) => event),
               },
             },
             on: {
@@ -437,7 +437,7 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((context, event) => new ErrorEvent(event.data)),
+                actions: send((context, event) => event),
               },
             },
           },
@@ -459,7 +459,7 @@ export const appMachine = (
               },
               onError: {
                 actions: [
-                  send((context, event) => new ErrorEvent(event.data)),
+                  send((context, event) => event),
                 ],
               },
             },
