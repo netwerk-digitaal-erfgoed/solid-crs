@@ -31,5 +31,6 @@ Net zoals je collecties kan toevoegen met het plus-icoontje in de linker navigat
 * xref:authenticeer.adoc[Authenticatie]
 * xref:search.adoc[Zoeken]
 * xref:objecten.adoc[Objecten]
+* xref:termennetwerk.adoc[Termennetwerk]
 
 

@@ -1,0 +1,38 @@
+= Hoe gebruik ik het termennetwerk?
+:description: Een gebruikershandleiding voor het zoeken van termen in Solid CRS.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+Dit document toont je hoe je termen kan zoeken in het Solid Collectieregistratiesysteem. 
+
+
+=== Vereisten
+Het termennetwerk wordt gebruikt om xref:objecten.adoc[objecten te beheren]. Om objecten te kunnen beheren, moet je zijn ingelogd op het Collectiebeheersysteem van jouw erfgoedinstelling. Meer uitleg over inloggen vind je op xref:authenticeer.adoc[authenticatie]. 
+
+=== Wat is het termennetwerk?
+Het Termennetwerk is een zoekmachine voor termen. Je voert er een zoekvraag in – zoals ‘Rembrandt’ – en het Termennetwerk zoekt vervolgens rechtstreeks, realtime in terminologiebronnen naar overeenkomende termen. Uit de termen die dit oplevert kun je een keuze maken. Bijvoorbeeld ‘Rembrandt’ in RKDartists of ‘Rembrandt Harmensz. van Rijn’ in de Nederlandse Thesaurus van Auteursnamen. 
+
+=== Veelgestelde vragen over het termennetwerk
+Het Netwerk Digitaal Erfgoed beantwoordt de meestgestelde vragen omtrent het termennetwerk in de link:https://termennetwerk.netwerkdigitaalerfgoed.nl/faq[FAQ] op hun website.
+
+=== Hoe zoek ik termen?
+Wanneer je termen wilt zoeken om toe te voegen aan een object, ga je eerst naar de detailpagina van het object. De velden waarbij je een term kan toevoegen, hebben langs de rechterkant een knop die verwijst naar de zoekpagina van het termennetwerk. Op deze pagina kan je termen zoeken. In het linkse veld geef je de zoekterm in. In de keuzelijst rechts klik je de gewenste link:https://termennetwerk.netwerkdigitaalerfgoed.nl/faq[thesaurus] aan. 
+
+
+=== Hoe voeg ik termen toe aan een object?
+Wanneer je de zoekterm hebt ingevoerd en de lijst met zoekresultaten krijgt, kan je één of meerdere resultaten aanklikken. Deze komen bovenaan bij de geselecteerde termen te staan. Klik op 'bevestig'. Je wordt nu teruggeleid naar de detailpagina van het object en de term is toegevoegd. 
+
+
+
+
+
+
+
+:sectnums!:
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+
+* xref:authenticeer.adoc[Authenticatie]
+* xref:search.adoc[Zoeken]
+* xref:collecties.adoc[Collecties]
+* xref:objecten.adoc[Objecten]

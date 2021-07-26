@@ -19,10 +19,12 @@ Klik op de titel van het object, bovenaan de pagina. Je kan nu de naam en het on
 === Verwijder een object
 Ga naar het object dat je wilt verwijderen. Druk in de rechterbovenhoek op het vuilbak-icoontje. Het object is nu verwijderd.
 
-=== Wijs een object toe aan een andere collectie dan de huidige
+=== Sla wijzingingen op
+Klik na het uitvoeren van wijzigingen op het 'opslaan'-icoontje in de rechterbovenhoek.
 
 === Details van een object aanpassen
-In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Hieronder worden de aan te passen velden per onderdeel besproken.
+In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
+Hieronder worden de aan te passen velden per onderdeel besproken.
 
 . Beeldmateriaal
 * Bestand: +
@@ -43,23 +45,30 @@ Geef een korte en bondige beschrijving van het object.
 Indien je het object aan een andere collectie wilt toewijzen dan waar het object werd in gemaakt, kan je dit hier doen door de gewenste collectie te selecteren uit de lijst.
 
 . Vervaardiging
-* Vervaardiger
-* Plaats
-* Materiaal
-* Datum
+* Vervaardiger: +
+Klik rechts op de knop om naar de pagina van het xref:termennetwerk.adoc[termennetwerk] te gaan. Zoek op naam van de vervaardiger in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Plaats: + 
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de plaatsnaam in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Materiaal: + 
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek het materiaal in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Datum: + 
+Geef de datum van vervaardiging in als YYYY-MM-DD, waarbij YYYY staat voor jaar, MM staat voor maand en DD staat voor dag. Het is echter ook mogelijk om enkel een jaartal of enkel een jaartal en maand in te geven wanneer de exacte datum niet geweten is.
 
 . Voorstelling
-* Onderwerp
-* Locatie
-* Persoon
-* Organisatie
-* Gebeurtenis
+* Onderwerp: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek het onderwerp in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Locatie: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de locatie in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Persoon: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de persoon in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Organisatie: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de organisatie in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
+* Gebeurtenis: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de gebeurtenis in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
 
-. Afmetingen
-* Hoogte
-* Breedte
-* Diepte
-* Gewicht
+. Afmetingen: +
+Vul voor de hoogte, breedte, diepte en het gewicht het cijfer in en duidt in de lijst aan in welke maateenheid dit wordt gemeten.
+
 
 
 
