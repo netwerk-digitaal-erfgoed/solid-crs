@@ -70,6 +70,11 @@
         "value": "De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ."
     },
     {
+        "key": "nde.features.authenticate.error.no-valid-type-registration",
+        "locale": "nl-NL",
+        "value": "Je pod is nog niet gelinkt aan een erfgoedinstelling."
+    },
+    {
         "key": "nde.features.authenticate.pages.login.title",
         "locale": "nl-NL",
         "value": "Collectiebeheersysteem"
@@ -88,6 +93,31 @@
         "key": "nde.features.authenticate.pages.login.create-webid",
         "locale": "nl-NL",
         "value": "Nog geen WebID? Klik <a href=\"https://signup.pod.inrupt.com\">hier</a>."
+    },
+    {
+        "key": "nde.features.authenticate.pages.setup.title",
+        "locale": "nl-NL",
+        "value": "Hoe wil je deze pod gebruiken?"
+    },
+    {
+        "key": "nde.features.authenticate.pages.setup.button-administrator.title",
+        "locale": "nl-NL",
+        "value": "Als beheerder"
+    },
+    {
+        "key": "nde.features.authenticate.pages.setup.button-administrator.subtitle",
+        "locale": "nl-NL",
+        "value": "De data staat niet op deze pod."
+    },
+    {
+        "key": "nde.features.authenticate.pages.setup.button-institution.title",
+        "locale": "nl-NL",
+        "value": "Als erfgoedinstelling"
+    },
+    {
+        "key": "nde.features.authenticate.pages.setup.button-institution.subtitle",
+        "locale": "nl-NL",
+        "value": "De data wordt bijgehouden op deze pod."
     },
     {
         "key": "nde.features.collections.alerts.created-collection",
@@ -529,6 +559,11 @@
         "key": "nde.features.term.field.hiddenName",
         "locale": "nl-NL",
         "value": "Verborgen naam"
+    },
+    { 
+        "key": "nde.features.term.error.term-network-error",
+        "locale": "nl-NL",
+        "value": "Er kon geen verbinding gemaakt worden met het termennetwerk."
     },
     {
         "key": "nde.common.date.just-now",

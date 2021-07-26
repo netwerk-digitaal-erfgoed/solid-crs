@@ -33,6 +33,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
   /**
    * Returns the instance URI of a type registration for a given RDF class
+   * or null when none was found
    *
    * @param webId The WebID of the Solid pod
    * @param forClass The forClass value of the type registration

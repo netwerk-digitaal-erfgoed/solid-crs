@@ -9,7 +9,7 @@ import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digita
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
 import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
@@ -285,7 +285,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
   /**
@@ -449,14 +449,14 @@ export class ObjectRootComponent extends RxLitElement {
     ${ this.isEditingTermField
     ? html`
       ${ this.appendComponents(this.formCards)}
-      <nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
+      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
     `
     : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
+        ${ alerts }
         ${ this.formCards }
 
-        ${ alerts }
         
       </div>
     ` : html`no formcards`}
