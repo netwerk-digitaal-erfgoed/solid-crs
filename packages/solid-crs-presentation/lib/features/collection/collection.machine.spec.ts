@@ -1,5 +1,5 @@
 import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -114,36 +114,6 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should save collection when saving', async (done) => {
-
-    collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.IDLE)) {
-
-        machine.send(CollectionEvents.CLICKED_EDIT);
-
-      }
-
-      if(state.matches(CollectionStates.EDITING)) {
-
-        machine.send(CollectionEvents.CLICKED_SAVE);
-
-      }
-
-      if(state.matches(CollectionStates.SAVING)) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-  });
-
   it('should assign when selected collection', async (done) => {
 
     machine.onChange((context) => {
@@ -231,52 +201,6 @@ describe('CollectionMachine', () => {
       await expect(res).resolves.toHaveLength(1);
 
     });
-
-  });
-
-  it('should transition from IDLE to CREATING_OBJECT when CLICKED_CREATE_OBJECT', async (done) => {
-
-    collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.IDLE)) {
-
-        machine.send(CollectionEvents.CLICKED_CREATE_OBJECT);
-
-      }
-
-      if(state.matches(CollectionStates.CREATING_OBJECT)) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-  });
-
-  it('should transition from IDLE to EDITING when CLICKED_EDIT', async (done) => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(CollectionStates.IDLE)) {
-
-        machine.send(CollectionEvents.CLICKED_EDIT);
-
-      }
-
-      if(state.matches(CollectionStates.EDITING)) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
 
   });
 
