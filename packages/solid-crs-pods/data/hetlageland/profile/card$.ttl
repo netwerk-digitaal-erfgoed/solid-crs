@@ -17,4 +17,5 @@
     foaf:name "Het Lage Land";
     solid:oidcIssuer <http://localhost:3000/>;
     solid:oidcIssuerRegistrationToken "9a112e5c-c520-4d1b-b17b-c63693520b72";
+    solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;
     space:storage <http://localhost:3000/hetlageland/>.

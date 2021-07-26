@@ -1,0 +1,10 @@
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix schema: <http://schema.org/> .
+
+<>
+    a solid:ListedDocument, solid:TypeIndex.
+
+<#catalog>
+    a solid:TypeRegistration;
+    solid:forClass schema:DataCatalog;
+    solid:instance <http://localhost:3000/hetlageland/heritage-collections/catalog>.
