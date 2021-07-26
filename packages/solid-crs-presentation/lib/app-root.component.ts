@@ -5,11 +5,11 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Logo, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
+import { DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
@@ -40,7 +40,7 @@ export class AppRootComponent extends RxLitElement {
   constructor() {
 
     super();
-    this.actor.start();
+    this.actor?.start();
 
   }
 
@@ -218,7 +218,6 @@ export class AppRootComponent extends RxLitElement {
       <nde-content-header>
         <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">${this.profile?.name}</div>
-        <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-item>
         <div slot="content">
@@ -241,7 +240,6 @@ export class AppRootComponent extends RxLitElement {
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
-            <div slot="actions" @click="${() => this.actor.send(new ClickedCreateCollectionEvent())}">${ unsafeSVG(Plus) }</div>
           </nde-sidebar-list-item>
           ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
         </nde-sidebar-list>

@@ -1,17 +1,17 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
-import { ObjectContext, ObjectStates } from './object.machine';
+import { ObjectContext } from './object.machine';
 import { ClickedObjectSidebarItem } from './object.events';
 
 /**
@@ -322,7 +322,11 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    this.appendComponents(this.formCards);
+    if (this.formCards) {
+
+      this.appendComponents(this.formCards);
+
+    }
 
   }
 
@@ -335,7 +339,7 @@ export class ObjectRootComponent extends RxLitElement {
   | ObjectRepresentationComponent
   | ObjectDimensionsComponent)[]): void {
 
-    components.forEach(async(component) => {
+    components?.forEach(async(component) => {
 
       component.object = this.object;
       component.formActor = this.formActor as any;
@@ -369,8 +373,6 @@ export class ObjectRootComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render(): TemplateResult {
-
-    const idle = this.state?.matches(ObjectStates.IDLE);
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
@@ -413,8 +415,8 @@ export class ObjectRootComponent extends RxLitElement {
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
         ${ alerts }
-        ${ this.formCards }
 
+        ${ this.formCards }
         
       </div>
     ` : html`no formcards`}

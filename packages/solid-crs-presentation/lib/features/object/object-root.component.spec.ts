@@ -1,10 +1,9 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectRootComponent } from './object-root.component';
 import { ObjectContext, objectMachine } from './object.machine';
 
@@ -42,6 +41,8 @@ describe('ObjectRootComponent', () => {
 
   beforeEach(() => {
 
+    if (!customElements.get('nde-object-imagery')) customElements.define('nde-object-imagery', ObjectImageryComponent);
+
     jest.restoreAllMocks();
 
     const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
@@ -57,11 +58,8 @@ describe('ObjectRootComponent', () => {
       }));
 
     machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      { ...collection1 },
-      { ...object1 },
     ).withContext({
       collections: [ collection1, collection2 ],
       alerts: [],
@@ -135,9 +133,8 @@ describe('ObjectRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const div = document.createElement('div');
+    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
     div.id = 'nde.features.object.sidebar.image';
-
     component.formCards = [ div ];
     component.components = [];
 
@@ -153,9 +150,8 @@ describe('ObjectRootComponent', () => {
 
     it('should set this.visibleCard to the currently visible card', async () => {
 
-      const div = document.createElement('div');
+      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
       div.id = 'nde.features.object.sidebar.image';
-
       component.formCards = [ div ];
 
       component.updateSelected();
@@ -227,9 +223,8 @@ describe('ObjectRootComponent', () => {
 
       component.subscribe = jest.fn();
 
-      const div = document.createElement('div');
+      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
       div.id = 'nde.features.object.sidebar.image';
-
       component.formCards = [ div ];
 
       const map = new Map<string, string>();
@@ -238,7 +233,7 @@ describe('ObjectRootComponent', () => {
 
       await component.updated(map);
 
-      expect(component.subscribe).toHaveBeenCalledTimes(13);
+      expect(component.subscribe).toHaveBeenCalledTimes(11);
 
     });
 
@@ -350,7 +345,6 @@ describe('ObjectRootComponent', () => {
 
     window.document.body.appendChild(component);
 
-    customElements.define('nde-object-imagery', ObjectImageryComponent);
     const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
     div.id = 'nde.features.object.sidebar.image';
 
@@ -419,13 +413,15 @@ describe('ObjectRootComponent', () => {
 
     it('should set formCard attributes', async () => {
 
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-      component.appendComponents([ div as any ]);
+      window.document.body.appendChild(component);
 
-      customElements.define('nde-object-imagery', ObjectImageryComponent);
+      const imagery = document.createElement('nde-object-imagery') as ObjectImageryComponent;
+      imagery.id = 'nde.features.object.sidebar.image';
+      component.formCards = [ imagery ];
+      await component.updateComplete;
+      component.appendComponents([ imagery ]);
 
-      expect(div.object).toBeTruthy();
+      expect(imagery.object).toBeTruthy();
 
     });
 

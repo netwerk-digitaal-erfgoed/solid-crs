@@ -1,11 +1,9 @@
-import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
-import { CollectionContext, collectionMachine, CollectionStates, validateCollectionForm } from './collection.machine';
+import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
 
 describe('CollectionMachine', () => {
 
@@ -48,17 +46,14 @@ describe('CollectionMachine', () => {
 
     objectStore.getObjectsForCollection = jest.fn(async() => [ object1 ]);
 
-    machine = interpret(collectionMachine(collectionStore, objectStore, object1)
+    machine = interpret(collectionMachine(objectStore)
       .withContext({
         collection: collection1,
       }));
 
     machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      collection1,
-      object1
     ).withContext({
       alerts: [],
     }));
@@ -157,48 +152,6 @@ describe('CollectionMachine', () => {
     it('should return action', () => {
 
       expect(addAlert({ type: 'success', message: 'foo' }).event()).toEqual({ alert: { type: 'success', message: 'foo' }, type: AppEvents.ADD_ALERT });
-
-    });
-
-  });
-
-  describe('validateCollectionForm()', () => {
-
-    let context: FormContext<Collection>;
-
-    beforeEach(() => {
-
-      context = {
-        data: {
-          description: 'description',
-          name: 'name',
-          uri: '',
-          objectsUri: '',
-          distribution: '',
-        },
-        original: {
-          description: 'description',
-          name: 'name',
-          uri: '',
-          objectsUri: '',
-          distribution: '',
-        },
-      };
-
-    });
-
-    it('should return an empty list if no problems were found', async () => {
-
-      const res = validateCollectionForm(context);
-      await expect(res).resolves.toHaveLength(0);
-
-    });
-
-    it('should return an error when name is an empty string', async () => {
-
-      context.data = { ...context.data, name: '' };
-      const res = validateCollectionForm(context);
-      await expect(res).resolves.toHaveLength(1);
 
     });
 

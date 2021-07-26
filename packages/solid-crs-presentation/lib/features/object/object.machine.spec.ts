@@ -1,9 +1,8 @@
-import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ClickedResetEvent, SelectedObjectEvent } from './object.events';
-import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
+import { SelectedObjectEvent } from './object.events';
+import { ObjectContext, objectMachine } from './object.machine';
 
 describe('ObjectMachine', () => {
 
@@ -69,11 +68,8 @@ describe('ObjectMachine', () => {
       }));
 
     machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      collection1,
-      object1,
     ));
 
   });
@@ -81,23 +77,6 @@ describe('ObjectMachine', () => {
   it('should be correctly instantiated', () => {
 
     expect(machine).toBeTruthy();
-
-  });
-
-  it('should transition to IDLE when clicked reset was emitted', async (done) => {
-
-    machine.onTransition((state) => {
-
-      if(state.matches(ObjectStates.IDLE)) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-    machine.send(new ClickedResetEvent());
 
   });
 

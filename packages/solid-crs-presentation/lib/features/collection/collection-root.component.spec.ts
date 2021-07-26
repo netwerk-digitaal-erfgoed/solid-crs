@@ -1,12 +1,10 @@
-import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
-import { CollectionEvents } from './collection.events';
-import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
+import { CollectionContext, collectionMachine } from './collection.machine';
 
 describe('CollectionRootComponent', () => {
 
@@ -48,18 +46,15 @@ describe('CollectionRootComponent', () => {
 
     objectStore = new CollectionObjectMemoryStore([ object1 ]);
 
-    machine = interpret(collectionMachine(collectionStore, objectStore, object1)
+    machine = interpret(collectionMachine(objectStore)
       .withContext({
         collection: collection1,
         objects: [ object1 ],
       }));
 
     machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      { ...collection1 },
-      { ...object1 },
     ).withContext({
       alerts: [],
       selected: collection1,
@@ -68,8 +63,6 @@ describe('CollectionRootComponent', () => {
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
-
-    component.formActor = machine.children.get(FormActors.FORM_MACHINE);
 
     component.translator = new MemoryTranslator([], 'nl-NL');
 
@@ -197,7 +190,7 @@ describe('CollectionRootComponent', () => {
 
     component.updated(map);
 
-    expect(component.subscribe).toHaveBeenCalledTimes(5);
+    expect(component.subscribe).toHaveBeenCalledTimes(4);
 
   });
 

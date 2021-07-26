@@ -40,8 +40,7 @@ export enum CollectionStates {
  * The collection machine.
  */
 export const collectionMachine =
-  (objectStore: CollectionObjectStore):
-  StateMachine<CollectionContext, unknown, CollectionEvent, State<CollectionStates, CollectionContext>> =>
+  (objectStore: CollectionObjectStore) =>
     createMachine<CollectionContext, CollectionEvent, State<CollectionStates, CollectionContext>>({
       id: CollectionActors.COLLECTION_MACHINE,
       context: { },
@@ -112,9 +111,6 @@ export const collectionMachine =
         [CollectionStates.IDLE]: {
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
-              actions: sendParent((context, event) => event),
-            },
-            [ObjectEvents.CLICKED_DELETE]: {
               actions: sendParent((context, event) => event),
             },
           },

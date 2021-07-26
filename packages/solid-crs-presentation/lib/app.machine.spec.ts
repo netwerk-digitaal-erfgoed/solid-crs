@@ -1,14 +1,10 @@
-import { doesNotMatch } from 'assert';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AddAlertEvent, AppEvents, ClickedAdministratorTypeEvent, DismissAlertEvent, ErrorEvent, LoggedInEvent, SetProfileEvent } from './app.events';
-import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { SolidMockService } from './common/solid/solid-mock.service';
+import { AddAlertEvent, AppEvents, DismissAlertEvent } from './app.events';
+import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
-
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 describe('AppMachine', () => {
 
@@ -45,15 +41,11 @@ describe('AppMachine', () => {
 
     machine = interpret(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1
-      )
-        .withContext({
-          alerts: [],
-        }),
+      ).withContext({
+        alerts: [],
+      }),
     );
 
   });
@@ -82,11 +74,8 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1
       )
         .withContext({
           alerts: [ alert ],
@@ -126,11 +115,8 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1
       )
         .withContext({
           alerts: [ alert ],
@@ -190,87 +176,6 @@ describe('AppMachine', () => {
 
   });
 
-  it('should assign session when logged in', async (done) => {
-
-    machine.onChange((context) => {
-
-      if(context.session?.webId === 'lorem') {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'lorem' } } as LoggedInEvent);
-
-  });
-
-  it('should remove session when logged out', async (done) => {
-
-    const alert: Alert = { type: 'success', message: 'foo' };
-
-    machine = interpret<AppContext>(
-      appMachine(
-        solid,
-        new CollectionMemoryStore([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1
-      )
-        .withContext({
-          alerts: [ alert ],
-          session: { webId: 'lorem' },
-        }),
-    );
-
-    machine.onChange((context) => {
-
-      if(!context.session) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
-    machine.send(AppEvents.LOGGING_OUT);
-
-  });
-
-  it('should send logged in when authenticate machine is done', async (done) => {
-
-    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
-
-    machine = interpret<AppContext>(
-      appMachine(solid,
-        new CollectionMemoryStore([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1).withContext({
-        alerts: [],
-      }),
-    );
-
-    machine.onEvent((event) => {
-
-      if(event.type === AppEvents.LOGGED_IN && (event as LoggedInEvent).session?.webId === 'lorem') {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-  });
-
   it('should emit selected collection after login', async (done) => {
 
     machine.onEvent((event) => {
@@ -285,8 +190,6 @@ describe('AppMachine', () => {
 
     machine.start();
 
-    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
-
   });
 
   it('should transition to SEARCH when SEARCH_UPDATED is fired', (done) => {
@@ -300,56 +203,6 @@ describe('AppMachine', () => {
       }
 
       if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH })) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
-
-  });
-
-  it('should add alert when ClickedAdministratorType is fired', async (done) => {
-
-    machine = interpret<AppContext>(
-      appMachine(solid,
-        {
-          search: jest.fn(),
-          all: jest.fn(),
-          delete: jest.fn(),
-          save: jest.fn(),
-          get: jest.fn(),
-          getInstanceForClass: jest.fn(() => null),
-        },
-        new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1).withContext({
-        alerts: [],
-      }),
-    );
-
-    let clicked = false;
-
-    machine.onTransition((state) => {
-
-      if(!clicked && state.matches({ [AppRootStates.DATA]: AppDataStates.IDLE })) {
-
-        clicked = true;
-        machine.send(new SetProfileEvent());
-
-      }
-
-      if(state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
-
-        machine.send(new ClickedAdministratorTypeEvent());
-
-      }
-
-      if(clicked && state.matches({ [AppRootStates.DATA]: AppDataStates.IDLE })) {
 
         done();
 

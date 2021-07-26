@@ -3,10 +3,9 @@ import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
-import { SolidSession } from './common/solid/solid-session';
-import { ClickedDeleteCollectionEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
-import { SearchUpdatedEvent } from 'features/search/search.events';
-import { ClickedDeleteObjectEvent, SelectedObjectEvent } from 'features/object/object.events';
+import { SearchUpdatedEvent } from './features/search/search.events';
+import { SelectedCollectionEvent } from 'features/collection/collection.events';
+import { SelectedObjectEvent } from 'features/object/object.events';
 
 /**
  * Event references for the application root, with readable log format.
@@ -15,13 +14,7 @@ export enum AppEvents {
   ADD_ALERT = '[AppEvent: Add alert]',
   DISMISS_ALERT = '[AppEvent: Dismiss alert]',
   ERROR = 'xstate.error',
-  LOGGED_IN = '[AppEvent: Logged in]',
-  LOGGING_OUT = '[AppEvent: Logging out]',
-  LOGGED_OUT = '[AppEvent: Logged out]',
-  CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
-  CLICKED_ADMINISTRATOR_TYPE = '[AppEvent: Clicked Admin Pod Type]',
-  CLICKED_INSTITUTION_TYPE = '[AppEvent: Clicked Institution Pod Type]',
   SET_PROFILE = '[AppEvent: Set Profile]',
 }
 
@@ -60,61 +53,6 @@ export class ErrorEvent implements EventObject {
 }
 
 /**
- * An event which is dispatched when an error occurs.
- */
-export class LoggedOutEvent implements EventObject {
-
-  public type: AppEvents.LOGGED_OUT = AppEvents.LOGGED_OUT;
-
-}
-
-/**
- * An event which is dispatched when an error occurs.
- */
-export class LoggingOutEvent implements EventObject {
-
-  public type: AppEvents.LOGGING_OUT = AppEvents.LOGGING_OUT;
-
-}
-
-/**
- * An event which is dispatched when an error occurs.
- */
-export class LoggedInEvent implements EventObject {
-
-  public type: AppEvents.LOGGED_IN = AppEvents.LOGGED_IN;
-  constructor(public session: SolidSession) { }
-
-}
-
-/**
- * An event which is dispatched when the collections were successfully retrieved
- */
-export class ClickedCreateCollectionEvent implements EventObject {
-
-  public type: AppEvents.CLICKED_CREATE_COLLECTION = AppEvents.CLICKED_CREATE_COLLECTION;
-
-}
-
-/**
- * An event which is dispatched when this pod should be used as an adminstrator pod
- */
-export class ClickedAdministratorTypeEvent implements EventObject {
-
-  public type: AppEvents.CLICKED_ADMINISTRATOR_TYPE = AppEvents.CLICKED_ADMINISTRATOR_TYPE;
-
-}
-
-/**
- * An event which is dispatched when this pod should be set up as an instition pod
- */
-export class ClickedInstitutionTypeEvent implements EventObject {
-
-  public type: AppEvents.CLICKED_INSTITUTION_TYPE = AppEvents.CLICKED_INSTITUTION_TYPE;
-
-}
-
-/**
  * An event which is dispatched when this pod should be set up as an instition pod
  */
 export class SetProfileEvent implements EventObject {
@@ -127,22 +65,13 @@ export class SetProfileEvent implements EventObject {
  * Union type of app events.
  */
 export type AppEvent =
-  | LoggedInEvent
-  | LoggingOutEvent
-  | LoggedOutEvent
   | ErrorEvent
   | DismissAlertEvent
   | AddAlertEvent
   | SelectedCollectionEvent
-  | ClickedDeleteCollectionEvent
-  | ClickedCreateCollectionEvent
-  | SearchUpdatedEvent
-  | SavedCollectionEvent
   | SelectedObjectEvent
-  | ClickedDeleteObjectEvent
-  | ClickedInstitutionTypeEvent
-  | ClickedAdministratorTypeEvent
-  | SetProfileEvent;
+  | SetProfileEvent
+  | SearchUpdatedEvent;
 
 /**
  * Actions for the alerts component.
@@ -195,17 +124,6 @@ export const dismissAlert = choose<AppContext, DismissAlertEvent>([
     ],
   },
 ]);
-
-/**
- * Action which sets a session in the machine's context.
- */
-export const setSession = assign({ session: (context, event: LoggedInEvent) => event.session });
-
-/**
- * Action which removes a session in the machine's context.
- */
-export const removeSession = assign({ session: (context, event) => undefined });
-
 /**
  * Action which saves a list of collections to the machine's context.
  */
