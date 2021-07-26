@@ -1,10 +1,9 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
-import { SolidService } from './common/solid/solid.service';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
@@ -93,11 +92,8 @@ export type AppStates = AppRootStates | AppFeatureStates;
  * The application root machine and its configuration.
  */
 export const appMachine = (
-  solid: SolidService,
   collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
-  collectionTemplate: Collection,
-  objectTemplate: CollectionObject,
 ) =>
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
@@ -155,7 +151,7 @@ export const appMachine = (
             invoke: [
               {
                 id: AppActors.COLLECTION_MACHINE,
-                src: collectionMachine(collectionStore, objectStore, objectTemplate),
+                src: collectionMachine(objectStore),
                 data: (context) => ({
                   collection: context.selected,
                 }),
@@ -232,7 +228,7 @@ export const appMachine = (
             invoke: [
               {
                 id: AppActors.OBJECT_MACHINE,
-                src: objectMachine(objectStore),
+                src: objectMachine(),
                 data: (context) => ({
                   collections: context.collections,
                 }),

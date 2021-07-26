@@ -6,8 +6,7 @@ import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectRootComponent } from './object-root.component';
-import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
-import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
+import { ObjectContext, objectMachine } from './object.machine';
 
 describe('ObjectRootComponent', () => {
 
@@ -51,17 +50,10 @@ describe('ObjectRootComponent', () => {
       object1,
     ]);
 
-    const termService = {
-      endpoint: 'https://endpoint.url/',
-      queryComponents: jest.fn(async() => []),
-      getSources: jest.fn(async() => []),
-    };
-
-    machine = interpret(objectMachine(objectStore)
+    machine = interpret(objectMachine()
       .withContext({
         object: object1,
         collections: [ collection1, collection2 ],
-        termService: termService as any,
       }));
 
     machine.parent = interpret(appMachine(
@@ -135,81 +127,6 @@ describe('ObjectRootComponent', () => {
 
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);
-
-  });
-
-  it('should send event when delete is clicked', async () => {
-
-    machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
-
-      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
-
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
-
-        if(button) {
-
-          button.click();
-
-          expect(machine.send).toHaveBeenCalledTimes(1);
-
-        }
-
-      }
-
-    });
-
-  });
-
-  it('should send event when create is clicked', async () => {
-
-    machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    machine.onTransition((state) => {
-
-      machine.send = jest.fn();
-
-      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
-
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.create') as HTMLElement;
-
-        if(button) {
-
-          button.click();
-
-          expect(machine.send).toHaveBeenCalledTimes(1);
-
-        }
-
-      }
-
-    });
-
-  });
-
-  it('should only show save and cancel buttons when form is dirty', async () => {
-
-    machine.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-    const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
-
-    expect(save).toBeFalsy();
-    expect(cancel).toBeFalsy();
 
   });
 
@@ -358,33 +275,6 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should send ClickedTermFieldEvent when CLICKED_TERM_FIELD event is caught', async (done) => {
-
-    machine.start();
-    machine.parent.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    machine.onEvent((event) => {
-
-      if(event instanceof ClickedTermFieldEvent
-        && event.type === ObjectEvents.CLICKED_TERM_FIELD
-        && event.field === 'additionalType') {
-
-        done();
-
-      }
-
-    });
-
-    component.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>(
-      'CLICKED_TERM_FIELD',
-      { bubbles: true, composed: true, detail: { field: 'additionalType', terms: [] } }
-    ));
-
-  });
-
   describe('registerComponents()', () => {
 
     it('should create customElements for this.components', async () => {
@@ -469,31 +359,8 @@ describe('ObjectRootComponent', () => {
 
     const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
     const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
-    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
     expect(sidebar).toBeTruthy();
     expect(formContent).toBeTruthy();
-    expect(termSearch).toBeFalsy();
-
-  });
-
-  it('should show term search when editing term field', async () => {
-
-    window.document.body.appendChild(component);
-
-    customElements.define('nde-object-imagery', ObjectImageryComponent);
-    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
-
-    component.formCards = [ div ];
-    component.isEditingTermField = true;
-    await component.updateComplete;
-
-    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
-    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
-    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
-    expect(sidebar).toBeTruthy();
-    expect(formContent).toBeFalsy();
-    expect(termSearch).toBeTruthy();
 
   });
 
@@ -506,10 +373,8 @@ describe('ObjectRootComponent', () => {
 
     const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
     const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
-    const termSearch = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-term-search');
     expect(sidebar).toBeFalsy();
     expect(formContent).toBeFalsy();
-    expect(termSearch).toBeFalsy();
 
   });
 

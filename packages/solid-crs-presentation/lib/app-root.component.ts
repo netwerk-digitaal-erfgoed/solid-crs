@@ -7,10 +7,9 @@ import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-cr
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
+import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
-import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
@@ -53,34 +52,8 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   actor = interpret(
     (appMachine(
-      new SolidSDKService(this.logger),
       new CollectionSolidStore(),
       new CollectionObjectSolidStore(),
-      {
-        uri: undefined,
-        name: this.translator.translate('nde.features.collections.new-collection-name'),
-        description: this.translator.translate('nde.features.collections.new-collection-description'),
-        objectsUri: undefined,
-        distribution: undefined,
-      },
-      {
-        uri: undefined,
-        name: this.translator.translate('nde.features.object.new-object-name'),
-        description: this.translator.translate('nde.features.object.new-object-description'),
-        collection: undefined,
-        type: 'http://schema.org/CreativeWork',
-        identifier: this.translator.translate('nde.features.object.new-object-name').toLowerCase().replace(' ', '-'),
-        image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-        license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
-        height: 0,
-        width: 0,
-        depth: 0,
-        weight: 0,
-        heightUnit: 'CMT',
-        widthUnit: 'CMT',
-        depthUnit: 'CMT',
-        weightUnit: 'KGM',
-      }
     )).withContext({
       alerts: [],
     }), { devTools: process.env.MODE === 'DEV' },

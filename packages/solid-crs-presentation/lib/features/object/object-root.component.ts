@@ -1,20 +1,18 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, debounce, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, DoneInvokeEvent, Interpreter, State } from 'xstate';
+import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
-import { TermActors } from './terms/term.machine';
-import { TermEvent } from './terms/term.events';
+import { ClickedObjectSidebarItem } from './object.events';
 
 /**
  * The root page of the object feature.
@@ -84,12 +82,6 @@ export class ObjectRootComponent extends RxLitElement {
   formActor: ActorRef<FormEvent>;
 
   /**
-   * The actor responsible for editing term fields.
-   */
-  @internalProperty()
-  termActor: ActorRef<TermEvent>;
-
-  /**
    * Indicates if the form is being submitted.
    */
   @internalProperty()
@@ -140,13 +132,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
 
-    this.addEventListener('CLICKED_TERM_FIELD', (event: CustomEvent<ClickedTermFieldEvent>) => {
-
-      this.actor?.send(new ClickedTermFieldEvent(event.detail.field, event.detail.terms));
-      event.stopPropagation();
-
-    });
-
   }
 
   /**
@@ -170,15 +155,6 @@ export class ObjectRootComponent extends RxLitElement {
 
         }
 
-        if (event.type === `done.invoke.${TermActors.TERM_MACHINE}`) {
-
-          this.requestUpdate();
-          await this.updateComplete;
-
-          this.updateSelected();
-
-        }
-
       });
 
       if(this.actor.parent){
@@ -198,10 +174,6 @@ export class ObjectRootComponent extends RxLitElement {
         })
       ));
 
-      this.subscribe('termActor', from(this.actor).pipe(
-        map((state) => state.children[TermActors.TERM_MACHINE]),
-      ));
-
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collections', from(this.actor).pipe(
@@ -217,9 +189,6 @@ export class ObjectRootComponent extends RxLitElement {
 
         })
       ));
-
-      this.subscribe('isEditingTermField', from(this.actor)
-        .pipe(map((state) => state.matches(ObjectStates.EDITING_FIELD))));
 
     }
 
@@ -408,11 +377,9 @@ export class ObjectRootComponent extends RxLitElement {
 
     const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
-    const showLoading = !(this.state?.matches(ObjectStates.IDLE) || this.state?.matches(ObjectStates.EDITING_FIELD));
-
     return this.object ? html`
 
-    ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+    ${ !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
@@ -423,10 +390,6 @@ export class ObjectRootComponent extends RxLitElement {
       <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
         <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
       </nde-form-element>
-
-      ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(new ClickedDeleteObjectEvent(this.object))}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 
     <div class="content-and-sidebar">
@@ -446,12 +409,7 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-sidebar-item>
     </nde-sidebar>
 
-    ${ this.isEditingTermField
-    ? html`
-      ${ this.appendComponents(this.formCards)}
-      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
-    `
-    : this.formCards ? html`
+    ${ this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
         ${ alerts }
