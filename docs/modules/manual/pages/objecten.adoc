@@ -52,7 +52,7 @@ Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de 
 * Materiaal: + 
 Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek het materiaal in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
 * Datum: + 
-Geef de datum van vervaardiging in als YYYY-MM-DD, waarbij YYYY staat voor jaar, MM staat voor maand en DD staat voor dag. Het is echter ook mogelijk om enkel een jaartal of enkel een jaartal en maand in te geven wanneer de exacte datum niet geweten is.
+Geef de datum van vervaardiging in als YYYY-MM-DD, waarbij YYYY staat voor jaar, MM staat voor maand en DD staat voor dag. Het speciale Extended Date/Time Format (EDTF) maakt het echter ook mogelijk om naast specifieke datums een bredere periode te specifiëren, zoals een volledig jaar, een seizoen, intervallen, etc. Zo zal bijvoorbeeld 1996-12 ook aanvaard worden en gelezen worden als december 1996.
 
 . Voorstelling
 * Onderwerp: +
