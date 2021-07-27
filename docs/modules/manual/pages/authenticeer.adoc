@@ -10,7 +10,7 @@ Dit document toont je hoe je inlogt op het Solid Collectieregistratiesysteem en 
 
 
 === Vereisten
-Om te kunnen inloggen is een *WebID* vereist. Heb je nog geen WebID, dan vind je in link:url[dit document] de nodige info om er een aan te maken.
+Om te kunnen inloggen is een WebID vereist. Heb je er nog geen, dan moet je eerst een link:url[WebID aanmaken].
 
 === Stap 1: Geef je WebID in
 Wanneer de WebID correct is ingevoerd en correct werd gelinkt aan een profielpagina, zal de verbindknop rechts van het kadertje actief worden. 
@@ -31,8 +31,11 @@ Log in bij jouw OIDC-provider en verleen de applicatie van het collectiebeheersy
 
 Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je worden teruggestuurd naar loginpagina van het collectiebeheersysteem. Er zal een foutmelding op het scherm komen. Probeer opnieuw. Wanneer de fout blijft terugkomen, neem je best contact op met de link:url[beheerders].
 
-=== Stap 4: Succesvolle authenticatie
-Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem en ben je ingelogd bij jouw erfgoedinstelling. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 
+=== Stap 4: Kies om in te loggen als beheerder of erfgoedinstelling (enkel de eerste keer!)
+Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. 
+
+=== Stap 5: Succesvolle authenticatie
+Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 
 
 :sectnums!:
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
@@ -40,3 +43,4 @@ Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving
 * xref:collecties.adoc[Collecties]
 * xref:search.adoc[Zoeken]
 * xref:objecten.adoc[Objecten]
+* xref:termennetwerk.adoc[Termennetwerk]

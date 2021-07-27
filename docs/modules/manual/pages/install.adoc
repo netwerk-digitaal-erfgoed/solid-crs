@@ -24,7 +24,7 @@ After installing and building once, you can start the app at any time by executi
 
 [source,bash]
 ----
-$ npm run start
+$ npm run start:watch
 ----
 
 == Run with Docker
