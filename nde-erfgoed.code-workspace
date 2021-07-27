@@ -9,6 +9,10 @@
       "path": "packages/solid-crs-manage"
     },
     {
+      "name": "presentation",
+      "path": "packages/solid-crs-presentation"
+    },
+    {
       "name": "components",
       "path": "packages/solid-crs-components"
     },
