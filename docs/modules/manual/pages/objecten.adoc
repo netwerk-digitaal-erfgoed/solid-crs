@@ -67,7 +67,7 @@ Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de 
 Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de gebeurtenis in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. 
 
 . Afmetingen: +
-Vul voor de hoogte, breedte, diepte en het gewicht het cijfer in en duidt in de lijst aan in welke maateenheid dit wordt gemeten.
+Vul voor de hoogte, breedte, diepte en het gewicht het cijfer in en duid in de lijst aan in welke maateenheid van toepassing is.
 
 
 
