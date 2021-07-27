@@ -8,7 +8,7 @@ Dit document toont je hoe je de objecten van je erfgoedinstelling beheert in het
 
 
 === Vereisten
-Om objecten te kunnen beheren, moet je zijn ingelogd op het Collectiebeheersysteem van jouw erfgoedinstelling. Meer uitleg over inloggen vind je op xref:authenticeer.adoc[authenticeer]. 
+Om objecten te beheren, moet je aangemeld zijn op het Collectieregistratiesysteem. Meer uitleg over aanmelden vind je op xref:authenticeer.adoc[de authenticeer pagina]. 
 
 === Maak een nieuw object aan
 Kies de collectie waaraan je het object wilt toewijzen door de gewenste collectie te selecteren in de primaire navigatie (links). Wanneer de collectie nog geen objecten bevat, kan je in het midden van het scherm op de knop 'object aanmaken' klikken. Wanneer de collectie wel reeds objecten bevat, kan je een object toevoegen door rechtsboven op het plusje te klikken. Je wordt nu doorgestuurd naar de objectdetailpagina. 
