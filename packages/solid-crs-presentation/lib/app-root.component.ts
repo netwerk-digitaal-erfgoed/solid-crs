@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logo, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Logo, Cross, Search, Dropdown } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -14,7 +14,7 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
-import { SearchEvent, SearchEvents } from './features/search/search.events';
+import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -51,12 +51,11 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   actor = interpret(
-    (appMachine(
+    appMachine(
       new CollectionSolidStore(),
-      new CollectionObjectSolidStore(),
-    )).withContext({
-      alerts: [],
-    }), { devTools: process.env.MODE === 'DEV' },
+      new CollectionObjectSolidStore()
+    ).withContext({ alerts: [] }),
+    { devTools: process.env.MODE === 'DEV' }
   );
 
   /**
@@ -100,6 +99,12 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   searchActor: ActorRef<SearchEvent>;
+
+  /**
+   * The last value of the search input field
+   */
+  @internalProperty()
+  lastSearchTerm: string;
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
@@ -146,6 +151,10 @@ export class AppRootComponent extends RxLitElement {
 
     this.subscribe('selected', from(this.actor).pipe(
       map((state) => state.context.selected),
+    ));
+
+    this.subscribe('lastSearchTerm', from(this.actor).pipe(
+      map((state) => state.context.lastSearchTerm),
     ));
 
   }
@@ -222,18 +231,24 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item>
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
-          <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+          <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm" .debounceTimeout="${0}">
             <input type="text"
               slot="input"
-              .value="${this.searchTerm}"
+              .value="${this.searchTerm||this.lastSearchTerm||''}"
               class="searchTerm"
               @input="${this.searchUpdated}"
             />
-            ${this.searchTerm
+            ${this.searchTerm || this.lastSearchTerm
     ? html`<div class="cross" slot="icon" @click="${this.clearSearchTerm}">${ unsafeSVG(Cross) }</div>`
     : html`<div slot="icon">${ unsafeSVG(Search) }</div>`
 }
           </nde-form-element>
+          ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) && this.lastSearchTerm
+    ? html`<div class="search-subtitle">
+            ${ unsafeSVG(Dropdown) }
+            <a @click="${() => this.actor.send(new SearchUpdatedEvent(this.lastSearchTerm))}">Terug naar zoekresultaten</a>
+          </div>`
+    : ''}
         </div>
       </nde-sidebar-item>
       <nde-sidebar-item .padding="${false}" .showBorder="${false}">
@@ -282,6 +297,11 @@ export class AppRootComponent extends RxLitElement {
           width: var(--size-sidebar);
         }
 
+        nde-sidebar-item div[slot="content"] {
+          display: flex;
+          flex-direction: column;
+        }
+
         nde-content-header div[slot="icon"] svg {
           fill: var(--colors-foreground-inverse);
         }
@@ -292,7 +312,26 @@ export class AppRootComponent extends RxLitElement {
         }
 
         .search-title {
-          padding-bottom: var(--gap-normal);
+          margin-bottom: var(--gap-normal);
+        }
+
+        .search-subtitle {
+          margin-top: var(--gap-normal);
+          font-size: var(--font-size-small);
+          cursor: pointer;
+        }
+
+        .search-subtitle a {
+          text-decoration: underline;
+        }
+
+        .search-subtitle svg {
+          width: var(--font-size-small);
+          height: var(--font-size-small);
+          fill: var(--colors-foreground-inverse);
+          transform: rotate(90deg);
+          position: relative;
+          top: 2px;
         }
 
         div[slot="icon"] svg {

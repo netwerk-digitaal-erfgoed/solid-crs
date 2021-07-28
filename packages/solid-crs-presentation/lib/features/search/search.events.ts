@@ -1,4 +1,4 @@
-import { Event } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { EventObject } from 'xstate';
 
 /**
  * Event references for the search feature, with readable log format.
@@ -10,9 +10,11 @@ export enum SearchEvents {
 /**
  * Event fired when the search term was updated.
  */
-export interface SearchUpdatedEvent extends Event<SearchEvents> {
-  type: SearchEvents.SEARCH_UPDATED;
-  searchTerm: string;
+export class SearchUpdatedEvent implements EventObject {
+
+  public type: SearchEvents.SEARCH_UPDATED = SearchEvents.SEARCH_UPDATED;
+  constructor(public searchTerm: string) { }
+
 }
 
 /**

@@ -1,6 +1,6 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { createMachine } from 'xstate';
+import { Actions, createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
@@ -50,6 +50,11 @@ export interface AppContext {
    * The URL path
    */
   path?: string;
+
+  /**
+   * The last value of the search input field
+   */
+  lastSearchTerm?: string;
 }
 
 /**
@@ -102,7 +107,7 @@ export enum AppDataStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppRouterStates | AppDataStates;
 
 /**
  * The application root machine and its configuration.
@@ -110,113 +115,120 @@ export type AppStates = AppRootStates | AppFeatureStates;
 export const appMachine = (
   collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
-) =>
-  createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
-    id: AppActors.APP_MACHINE,
-    type: 'parallel',
-    on: {
-      [ObjectEvents.SELECTED_OBJECT]: {
-        actions: [
-          forwardTo(AppActors.OBJECT_MACHINE),
-          (context, event: SelectedObjectEvent) => window.history.pushState({ page: '' }, '', `object/${encodeURIComponent(event.object.uri)}`),
-        ],
-      },
-      [AppEvents.NAVIGATE]: {
-        target: `#${AppRouterStates.RESOLVING_ROUTE}`,
+) => createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
+  id: AppActors.APP_MACHINE,
+  context: {
+    alerts: [],
+  },
+  type: 'parallel',
+  on: {
+    [ObjectEvents.SELECTED_OBJECT]: {
+      actions: [
+        forwardTo(AppActors.OBJECT_MACHINE),
+        (context, event: SelectedObjectEvent) => window.history.pushState({ page: '' }, '', `object/${encodeURIComponent(event.object.uri)}`),
+      ],
+    },
+    [AppEvents.NAVIGATE]: {
+      target: `#${AppRouterStates.RESOLVING_ROUTE}`,
+    },
+  },
+  states: {
+    /**
+     * Resolves URL path to a state
+     */
+    [AppRootStates.ROUTER]: {
+      initial: AppRouterStates.IDLE,
+      states: {
+        [AppRouterStates.IDLE]: {
+        },
+        [AppRouterStates.RESOLVING_ROUTE]: {
+          id: AppRouterStates.RESOLVING_ROUTE,
+          entry: assign({ path: (context, event) => window.location.pathname }),
+          always: { target: AppRouterStates.NAVIGATING },
+        },
+        [AppRouterStates.NAVIGATING]: {
+          always: [
+            {
+              cond: (context) => !!context.path?.match(/^\/collection\/.+\/?$/),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+            },
+            {
+              cond: (context) => !!context.path?.match(/^\/object\/.+\/?$/),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.OBJECT}` ],
+            },
+            {
+              cond: (context) => !!context.path?.match(/^\/search\/.+?/),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
+            },
+            {
+              cond: (context) => context.path.replace('/', '').trim().length < 1,
+              actions: (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+            },
+            {
+              actions: [
+                (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
+                log((context) => `no path found for ${context.path}`),
+              ],
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+            },
+          ],
+        },
       },
     },
-    states: {
-      /**
-       * Resolves URL path to a state
-       */
-      [AppRootStates.ROUTER]: {
-        initial: AppRouterStates.IDLE,
-        states: {
-          [AppRouterStates.IDLE]: {
-          },
-          [AppRouterStates.RESOLVING_ROUTE]: {
-            id: AppRouterStates.RESOLVING_ROUTE,
-            entry: assign({ path: () => window.location.pathname }),
-            always: { target: AppRouterStates.NAVIGATING },
-          },
-          [AppRouterStates.NAVIGATING]: {
-            always: [
-              {
-                cond: (context) => !!context.path?.match(/^\/collection\/?$/),
-                actions: (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
-              },
-              {
-                cond: (context) => !!context.path?.match(/^\/collection\/.+\/?$/),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
-              },
-              {
-                cond: (context) => !!context.path?.match(/^\/object\/?$/),
-                actions: (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
-              },
-              {
-                cond: (context) => !!context.path?.match(/^\/object\/.+\/?$/),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.OBJECT}` ],
-              },
-              {
-                cond: (context) => !!context.path?.match(/^\/search\/?/),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
-              },
-              {
-                cond: (context) => context.path.replace('/', '').trim().length < 1,
-                actions: (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
-              },
-              {
-                actions: [
-                  (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-                  log((context) => `no path found for ${context.path}`),
-                ],
-                target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
-              },
-            ],
-          },
+    /**
+     * Determines which feature is currently active.
+     */
+    [AppRootStates.FEATURE]: {
+      initial: AppFeatureStates.INIT,
+      on: {
+        [AppEvents.DISMISS_ALERT]: {
+          actions: dismissAlert,
         },
+        [AppEvents.ADD_ALERT]: {
+          actions: addAlert,
+        },
+        [AppEvents.ERROR]: {
+          actions: [
+            log(() => 'An error occurred'),
+            send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'nde.root.alerts.error' })),
+          ],
+        },
+        [SearchEvents.SEARCH_UPDATED]: [
+          {
+            cond: (_, event: SearchUpdatedEvent) => event.searchTerm?.length > 0,
+            target: `#${AppFeatureStates.SEARCH}`,
+            actions: assign((context, event) => ({
+              selected: undefined,
+            })),
+          },
+          {
+            actions: assign((context, event) => ({
+              lastSearchTerm: event.searchTerm,
+            })),
+          },
+        ],
       },
-      /**
-       * Determines which feature is currently active.
-       */
-      [AppRootStates.FEATURE]: {
-        initial: AppFeatureStates.INIT,
-        on: {
-          [AppEvents.DISMISS_ALERT]: {
-            actions: dismissAlert,
-          },
-          [AppEvents.ADD_ALERT]: {
-            actions: addAlert,
-          },
-          [AppEvents.ERROR]: {
-            actions: [
-              log(() => 'An error occurred'),
-              send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'nde.root.alerts.error' })),
-            ],
-          },
-        },
-        states: {
-          /**
-           * Loads data before needed in other feature states
-           */
-          [AppFeatureStates.INIT]: {
+      states: {
+        /**
+         * Loads data before needed in other feature states
+         */
+        [AppFeatureStates.INIT]: {
 
-            initial: AppDataStates.REFRESHING,
-            states: {
-              /**
-               * Not refreshing or creating collections.
-               */
-              [AppDataStates.LOADED_DATA]: {
-                type: 'final',
-              },
-              /**
-               * Refresh collections, set current collection and assign to state.
-               */
-              [AppDataStates.REFRESHING]: {
-                invoke: {
+          initial: AppDataStates.REFRESHING,
+          states: {
+            /**
+             * Not refreshing or creating collections.
+             */
+            [AppDataStates.LOADED_DATA]: {
+              type: 'final',
+            },
+            /**
+             * Refresh collections, set current collection and assign to state.
+             */
+            [AppDataStates.REFRESHING]: {
+              invoke: [
+                {
                   /**
                    * Get all collections from store.
                    */
@@ -234,128 +246,116 @@ export const appMachine = (
                     actions: send((context, event) => event),
                   },
                 },
-              },
+              ],
             },
           },
-          /**
-           * The collection feature is shown.
-           */
-          [AppFeatureStates.COLLECTION]: {
-            entry: [
-              log('entered collection state'),
-              assign({ selected: (context) =>
-                context.selected
+        },
+        /**
+         * The collection feature is shown.
+         */
+        [AppFeatureStates.COLLECTION]: {
+          entry: [
+            assign({ selected: (context) =>
+              context.selected
                 || context.collections?.find((collection) =>
                   collection.uri === decodeURIComponent(window.location.pathname.split('/collection/')[1]))
                 || context.collections[0] }),
-              (context) => window.history.pushState({ page: '' }, '', `collection/${encodeURIComponent(context.selected.uri)}`),
-            ],
-            id: AppFeatureStates.COLLECTION,
-            on: {
-              [ObjectEvents.SELECTED_OBJECT]: {
-                target: AppFeatureStates.OBJECT,
+            (context) => window.history.pushState({ page: '' }, '', `collection/${encodeURIComponent(context.selected.uri)}`),
+          ],
+          id: AppFeatureStates.COLLECTION,
+          on: {
+            [ObjectEvents.SELECTED_OBJECT]: {
+              target: AppFeatureStates.OBJECT,
+              actions: send((context, event) => event),
+            },
+            [CollectionEvents.SELECTED_COLLECTION]: {
+              actions: [
+                forwardTo(AppActors.COLLECTION_MACHINE),
+                assign({ selected: (context, event) => event.collection }),
+              ],
+            },
+          },
+          invoke: [
+            {
+              id: AppActors.COLLECTION_MACHINE,
+              src: collectionMachine(objectStore),
+              data: (context) => ({
+                collection: context.selected,
+              }),
+              onError: {
                 actions: send((context, event) => event),
-              },
-              [SearchEvents.SEARCH_UPDATED]: {
-                actions: assign({
-                  selected: (context, event) => undefined,
-                }),
-                target: AppFeatureStates.SEARCH,
-                cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
-              },
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                actions: [
-                  forwardTo(AppActors.COLLECTION_MACHINE),
-                  assign({ selected: (context, event) => event.collection }),
-                ],
               },
             },
-            invoke: [
-              {
-                id: AppActors.COLLECTION_MACHINE,
-                src: collectionMachine(objectStore),
-                data: (context) => ({
-                  collection: context.selected,
-                }),
-                onError: {
-                  actions: send((context, event) => event),
-                },
-              },
-            ],
-          },
-          /**
-           * Shows the search feature.
-           */
-          [AppFeatureStates.SEARCH]: {
-            id: AppFeatureStates.SEARCH,
-            on: {
-              [ObjectEvents.SELECTED_OBJECT]: {
-                target: AppFeatureStates.OBJECT,
-                actions: send((context, event) => event),
-              },
-              /**
-               * Forward the search updated event to the search machine.
-               */
-              [SearchEvents.SEARCH_UPDATED]: {
-                actions: [
-                  send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
-                  (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `search/${encodeURIComponent(event.searchTerm)}`),
-                ],
-              },
-              /**
-               * Transition to collection feature when a collection is selected.
-               */
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                target: AppFeatureStates.COLLECTION,
-                actions: [
-                  assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
-                ],
-              },
+          ],
+        },
+        /**
+         * Shows the search feature.
+         */
+        [AppFeatureStates.SEARCH]: {
+          id: AppFeatureStates.SEARCH,
+          on: {
+            [ObjectEvents.SELECTED_OBJECT]: {
+              target: AppFeatureStates.OBJECT,
+              actions: send((context, event) => event),
             },
             /**
-             * Invoke the search achine.
+             * Forward the search updated event to the search machine.
              */
-            invoke: [
-              {
-                id: AppActors.SEARCH_MACHINE,
-                src: searchMachine(collectionStore, objectStore),
-                data: (context, event: SearchUpdatedEvent) => ({
-                  searchTerm: event.searchTerm||(window.location.pathname.split('/search/')[1]||''),
-                }),
-                onDone: {
-                  actions: send((context, event) => ({
-                    type: CollectionEvents.SELECTED_COLLECTION,
-                    collection: context.collections[0],
-                  })),
-                },
-                onError: {
-                  actions: send((context, event) => event),
-                },
-              },
-            ],
+            [SearchEvents.SEARCH_UPDATED]: {
+              actions: [
+                assign({ lastSearchTerm: (context, event) => event.searchTerm }),
+                send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
+                (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `search/${encodeURIComponent(event.searchTerm)}`),
+              ],
+            },
+            /**
+             * Transition to collection feature when a collection is selected.
+             */
+            [CollectionEvents.SELECTED_COLLECTION]: {
+              target: AppFeatureStates.COLLECTION,
+              actions: [
+                assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
+              ],
+            },
           },
           /**
-           * The object feature is shown.
+           * Invoke the search achine.
            */
-          [AppFeatureStates.OBJECT]: {
-            entry: log('entered OBJECT state'),
-            id: AppFeatureStates.OBJECT,
-            on: {
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                target: AppFeatureStates.COLLECTION,
+          invoke: [
+            {
+              id: AppActors.SEARCH_MACHINE,
+              src: searchMachine(collectionStore, objectStore),
+              data: (context, event: SearchUpdatedEvent) => ({
+                searchTerm: event.searchTerm||(window.location.pathname.split('/search/')[1]||''),
+              }),
+              onDone: {
+                actions: send((context, event) => ({
+                  type: CollectionEvents.SELECTED_COLLECTION,
+                  collection: context.collections[0],
+                })),
+              },
+              onError: {
                 actions: send((context, event) => event),
               },
-              [SearchEvents.SEARCH_UPDATED]: {
-                actions: assign({
-                  selected: (context, event) => undefined,
-                }),
-                target: AppFeatureStates.SEARCH,
-                cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
-              },
             },
-            invoke: {
+          ],
+        },
+        /**
+         * The object feature is shown.
+         */
+        [AppFeatureStates.OBJECT]: {
+          exit: assign({ lastSearchTerm: (context, event) => undefined }),
+          id: AppFeatureStates.OBJECT,
+          on: {
+            [CollectionEvents.SELECTED_COLLECTION]: {
+              target: AppFeatureStates.COLLECTION,
+              actions: send((context, event) => event),
+            },
+          },
+          invoke: [
+            {
               id: AppActors.OBJECT_MACHINE,
-              src: objectMachine(objectStore),
+              src: objectMachine(),
               data: (context) => ({
                 collections: context.collections,
               }),
@@ -363,8 +363,9 @@ export const appMachine = (
                 actions: send((context, event) => event),
               },
             },
-          },
+          ],
         },
       },
     },
-  });
+  },
+});
