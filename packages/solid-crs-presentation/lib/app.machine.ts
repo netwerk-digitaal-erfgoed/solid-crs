@@ -296,7 +296,10 @@ export const appMachine = (
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
               target: AppFeatureStates.OBJECT,
-              actions: send((context, event) => event),
+              actions: [
+                send((context, event) => event),
+                assign({ lastSearchTerm: (context, event) => undefined }),
+              ],
             },
             [CollectionEvents.SELECTED_COLLECTION]: {
               actions: [
@@ -374,7 +377,6 @@ export const appMachine = (
          * The object feature is shown.
          */
         [AppFeatureStates.OBJECT]: {
-          exit: assign({ lastSearchTerm: (context, event) => undefined }),
           id: AppFeatureStates.OBJECT,
           on: {
             [CollectionEvents.SELECTED_COLLECTION]: {
