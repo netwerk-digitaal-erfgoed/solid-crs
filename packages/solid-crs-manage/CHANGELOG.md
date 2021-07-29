@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.7.0) (2021-07-29)
+
+
+### **Bug Fixes**
+
+* added term error message ([#378](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/378)) ([33a12e0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/33a12e08057c899b0b7e688067ba2d064f39cec2))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+### **Features**
+
+* administrator access to heritage pod ([#363](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/363)) ([5c51ed1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5c51ed15b45161ecc8e935b064c93e1a2cc5630f))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+
 ## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
 
 
