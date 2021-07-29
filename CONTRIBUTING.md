@@ -88,6 +88,6 @@ This Code of Conduct is adapted from the [Contributor Covenant][homepage], versi
 available at [http://contributor-covenant.org/version/1/4][version]
 
 [conventional]: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type
-[install]: https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#type
+[install]: https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/master/docs/modules/manual/pages/install.adoc#install-instructions
 [homepage]: http://contributor-covenant.org
 [version]: http://contributor-covenant.org/version/1/4/
