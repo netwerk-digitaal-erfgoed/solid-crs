@@ -1,8 +1,8 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make by creating an issue.
+When contributing to this repository, you are welcome to submit a PR right away. To avoid disappointment, however, for larger changes it can be good to discuss it beforehand in a GitHub issue.
 
-Please note we have a code of conduct, please follow it in all your interactions with the project.
+Please note we have a [Code of Conduct](#code-of-conduct), please follow it in all your interactions with the project.
 
 ## Pull Request Process
 
