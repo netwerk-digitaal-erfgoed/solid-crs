@@ -1,5 +1,5 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Actions, createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections } from './app.events';
@@ -94,6 +94,7 @@ export enum AppRouterStates {
   IDLE = '[AppRouterStates: Idle]',
   NAVIGATING = '[AppRouterStates: Navigating]',
   RESOLVING_ROUTE  = '[AppRouterStates: Resolving Route]',
+  LOADING_DATA  = '[AppRouterStates: Loading Data]',
 }
 
 /**
@@ -154,7 +155,7 @@ export const appMachine = (
             },
             {
               cond: (context) => !!context.path?.match(/^\/object\/.+\/?$/),
-              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.OBJECT}` ],
+              target: [ AppRouterStates.LOADING_DATA, `#${AppFeatureStates.OBJECT}` ],
             },
             {
               cond: (context) => !!context.path?.match(/^\/search\/.+?/),
@@ -171,6 +172,30 @@ export const appMachine = (
                 log((context) => `no path found for ${context.path}`),
               ],
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+            },
+          ],
+        },
+        [AppRouterStates.LOADING_DATA]: {
+          invoke: [
+            {
+              src: (context) => {
+
+                if (context.path?.match(/^\/object\/.+\/?$/)) {
+
+                  return objectStore.get(decodeURIComponent(window.location.pathname.split('/object/')[1]));
+
+                } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
+
+              },
+              onDone: [
+                {
+                  target: AppRouterStates.IDLE,
+                  actions: send((context, event) => new SelectedObjectEvent(event.data)),
+                },
+              ],
+              onError: {
+                target: AppRouterStates.IDLE,
+              },
             },
           ],
         },
