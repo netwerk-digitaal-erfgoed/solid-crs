@@ -197,7 +197,7 @@ export class AppRootComponent extends RxLitElement {
    */
   searchUpdated(event: KeyboardEvent): void {
 
-    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: (event.target as HTMLInputElement).value });
+    this.actor.send(new SearchUpdatedEvent((event.target as HTMLInputElement).value));
 
   }
 
@@ -206,7 +206,7 @@ export class AppRootComponent extends RxLitElement {
    */
   clearSearchTerm(): void {
 
-    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' });
+    this.actor.send(new SearchUpdatedEvent(''));
 
   }
 

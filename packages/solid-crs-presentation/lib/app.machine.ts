@@ -1,6 +1,6 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Actions, createMachine } from 'xstate';
+import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
@@ -130,7 +130,8 @@ export const appMachine = (
       ],
     },
     [AppEvents.NAVIGATE]: {
-      target: `#${AppRouterStates.RESOLVING_ROUTE}`,
+      target: `#${AppRouterStates.NAVIGATING}`,
+      actions: assign({ path: (context, event) => event.path||window.location.pathname }),
     },
   },
   states: {
@@ -142,12 +143,8 @@ export const appMachine = (
       states: {
         [AppRouterStates.IDLE]: {
         },
-        [AppRouterStates.RESOLVING_ROUTE]: {
-          id: AppRouterStates.RESOLVING_ROUTE,
-          entry: assign({ path: (context, event) => window.location.pathname }),
-          always: { target: AppRouterStates.NAVIGATING },
-        },
         [AppRouterStates.NAVIGATING]: {
+          id: AppRouterStates.NAVIGATING,
           always: [
             {
               cond: (context) => !!context.path?.match(/^\/collection\/.+\/?$/),
@@ -189,12 +186,19 @@ export const appMachine = (
               },
               onDone: [
                 {
+                  cond: (context, event) => !!event.data,
                   target: AppRouterStates.IDLE,
                   actions: send((context, event) => new SelectedObjectEvent(event.data)),
+                },
+                {
+                  cond: (context, event) => !event.data,
+                  target: AppRouterStates.IDLE,
+                  actions: send((context, event) => new NavigateEvent('/')),
                 },
               ],
               onError: {
                 target: AppRouterStates.IDLE,
+                actions: send((context, event) => new NavigateEvent('/')),
               },
             },
           ],
@@ -223,9 +227,10 @@ export const appMachine = (
           {
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm?.length > 0,
             target: `#${AppFeatureStates.SEARCH}`,
-            actions: assign((context, event) => ({
-              selected: undefined,
-            })),
+            actions: [
+              assign((context, event) => ({ selected: undefined })),
+              (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `search/${encodeURIComponent(event.searchTerm)}`),
+            ],
           },
           {
             actions: assign((context, event) => ({
