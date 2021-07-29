@@ -14,7 +14,7 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
-import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
+import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 
 /**
  * The root page of the application.
