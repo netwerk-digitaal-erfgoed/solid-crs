@@ -1,6 +1,7 @@
-import { assign, createMachine } from 'xstate';
+import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ErrorEvent } from '../../app.events';
 import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './search.events';
 
 /**
@@ -107,9 +108,9 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             }),
             target: SearchStates.IDLE,
           },
-          // onError: {
-          //   actions: sendParent(AppEvents.ERROR),
-          // },
+          onError: {
+            actions: sendParent(new ErrorEvent()),
+          },
         },
       },
       /**
