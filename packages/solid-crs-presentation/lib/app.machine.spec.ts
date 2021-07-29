@@ -176,11 +176,11 @@ describe('AppMachine', () => {
 
   });
 
-  it('should emit selected collection after login', async (done) => {
+  it('should start in collection feature', async (done) => {
 
-    machine.onEvent((event) => {
+    machine.onTransition((state) => {
 
-      if(event.type === CollectionEvents.SELECTED_COLLECTION) {
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION })) {
 
         done();
 

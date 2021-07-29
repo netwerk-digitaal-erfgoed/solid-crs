@@ -74,7 +74,7 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "jest": {
-    "displayName": "manage",
+    "displayName": "presentation",
     "preset": "@digita-ai/jest-config",
     "testEnvironment": "jest-environment-jsdom-sixteen",
     "setupFiles": [
@@ -85,10 +85,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 90.86,
-        "branches": 89.73,
-        "lines": 92.12,
-        "functions": 79.46
+        "statements": 88.59,
+        "branches": 87.7,
+        "lines": 89.65,
+        "functions": 74.4
       }
     },
     "automock": false,
