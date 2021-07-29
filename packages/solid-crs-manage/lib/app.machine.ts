@@ -1,8 +1,8 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionStore, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, addCollection, AppEvent, AppEvents, dismissAlert, removeSession, setCollections, setProfile, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { SolidService } from './common/solid/solid.service';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
@@ -42,6 +42,11 @@ export interface AppContext {
    * The selected collection from the user's pod
    */
   selected?: Collection;
+
+  /**
+   * The URI of the DataCatalog in which the collections are stored
+   */
+  catalog?: Collection;
 }
 
 /**
@@ -82,6 +87,8 @@ export enum AppDataStates {
   IDLE  = '[AppCreationStates: Idle]',
   REFRESHING  = '[AppCreationStates: Refreshing]',
   CREATING = '[AppCreationStates: Creating]',
+  CHECKING_TYPE_REGISTRATIONS = '[AppCreationStates: Checking Type Registrations]',
+  DETERMINING_POD_TYPE = '[AppCreationStates: Determining Pod Type]',
 }
 
 /**
@@ -132,10 +139,7 @@ export const appMachine = (
           [AppEvents.ERROR]: {
             actions: [
               log(() => 'An error occurred'),
-              send(() => ({
-                type: AppEvents.ADD_ALERT,
-                alert: { type: 'danger', message: 'nde.root.alerts.error' },
-              })),
+              send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'nde.root.alerts.error' })),
             ],
           },
         },
@@ -172,7 +176,7 @@ export const appMachine = (
                   collection: context.selected,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -219,7 +223,7 @@ export const appMachine = (
                   })),
                 },
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -249,7 +253,7 @@ export const appMachine = (
                   collections: context.collections,
                 }),
                 onError: {
-                  actions: send({ type: AppEvents.ERROR }),
+                  actions: send((context, event) => event),
                 },
               },
             ],
@@ -273,7 +277,7 @@ export const appMachine = (
               {
                 src: (context, event) => solid.getProfile(context.session.webId),
                 onDone: {
-                  actions: setProfile,
+                  actions: [ setProfile, send(new SetProfileEvent()) ],
                 },
               },
               {
@@ -303,7 +307,7 @@ export const appMachine = (
                */
               src: () => solid.logout(),
               onDone: {
-                actions: send({ type: AppEvents.LOGGED_OUT }),
+                actions: send(new LoggedOutEvent()),
               },
             },
             on: {
@@ -322,10 +326,10 @@ export const appMachine = (
                * Send logged in event when authenticate machine is done, and the user has authenticated.
                */
               onDone: {
-                actions: send((_, event) => ({ type: AppEvents.LOGGED_IN, session: event.data.session })),
+                actions: send((_, event) => new LoggedInEvent(event.data.session)),
               },
               onError: {
-                actions: send({ type: AppEvents.ERROR }),
+                actions: send((context, event) => event),
               },
             },
             on: {
@@ -349,12 +353,63 @@ export const appMachine = (
           [AppDataStates.IDLE]: {
             on: {
               [AppEvents.CLICKED_CREATE_COLLECTION]: AppDataStates.CREATING,
-              [AppEvents.LOGGED_IN]: AppDataStates.REFRESHING,
+              [AppEvents.SET_PROFILE]: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
               [CollectionEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [ObjectEvents.CLICKED_DELETE]: AppDataStates.REFRESHING,
               [CollectionEvents.SAVED_COLLECTION]: AppDataStates.REFRESHING,
             },
           },
+          /**
+           * Checks existance of DataCatalog type registration
+           * When none was found, further set-up is needed (DETERMINING_POD_TYPE)
+           */
+          [AppDataStates.CHECKING_TYPE_REGISTRATIONS]: {
+            invoke: {
+              src: (context) => collectionStore.getInstanceForClass(context.profile.uri, 'http://schema.org/DataCatalog'),
+              onDone: [
+                {
+                  target: AppDataStates.DETERMINING_POD_TYPE,
+                  cond: (context, event) => !event.data,
+                },
+                {
+                  target: AppDataStates.REFRESHING,
+                },
+              ],
+              onError: {
+                actions:  [
+                  send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                  send(new LoggingOutEvent()),
+                ],
+              },
+            },
+          },
+          /**
+           * User can decide whether the current Solid pod should be used
+           * as heritage collection/object storage (pod type: institution),
+           * or that it is an administrator's pod, accessing an institution's pod (pod type: administrator)
+           */
+          [AppDataStates.DETERMINING_POD_TYPE]: {
+            on: {
+              [AppEvents.CLICKED_ADMINISTRATOR_TYPE]: [
+                {
+                  // The user is an admin, but no (valid) type registration was found
+                  target: AppDataStates.IDLE,
+                  actions: [
+                    send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                    send(new LoggingOutEvent()),
+                  ],
+                },
+              ],
+              [AppEvents.CLICKED_INSTITUTION_TYPE]: [
+                // The pod will be used as storage and necessary files
+                // will be created here when missing
+                {
+                  target: AppDataStates.REFRESHING,
+                },
+              ],
+            },
+          },
+          // TODO create another state for checking permissions?
           /**
            * Refresh collections, set current collection and assign to state.
            */
@@ -382,7 +437,7 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                actions: send((context, event) => event),
               },
             },
           },
@@ -394,7 +449,7 @@ export const appMachine = (
               /**
                * Save collection to the store.
                */
-              src: () => collectionStore.save(collectionTemplate), // TODO: Update
+              src: () => collectionStore.save(collectionTemplate),
               onDone: {
                 target: AppDataStates.IDLE,
                 actions: [
@@ -404,7 +459,7 @@ export const appMachine = (
               },
               onError: {
                 actions: [
-                  send((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
+                  send((context, event) => event),
                 ],
               },
             },

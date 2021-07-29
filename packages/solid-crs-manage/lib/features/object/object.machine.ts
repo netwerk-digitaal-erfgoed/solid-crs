@@ -2,25 +2,34 @@ import { formMachine,
   FormActors,
   FormValidatorResult,
   FormContext,
-  FormEvents, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+  State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { AppEvents } from '../../app.events';
-import { ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { TermActors, termMachine } from './terms/term.machine';
 
 /**
  * The context of the object feature.
  */
 export interface ObjectContext {
   /**
-   * The currently selected object.
+   * The currently selected object with potential edits.
    */
   object?: CollectionObject;
+  /**
+   * The original CollectionObject, equals the object in the pod.
+   * Used for form validation
+   */
+  original?: CollectionObject;
   /**
    * A list of all collections.
    */
   collections?: Collection[];
+  /**
+   * A list of all collections.
+   */
+  termService?: TermService;
 }
 
 /**
@@ -36,7 +45,7 @@ export enum ObjectActors {
 export enum ObjectStates {
   IDLE      = '[ObjectsState: Idle]',
   SAVING    = '[ObjectsState: Saving]',
-  EDITING   = '[ObjectsState: Editing]',
+  EDITING_FIELD   = '[ObjectsState: Editing Field]',
   DELETING  = '[ObjectsState: Deleting]',
 }
 
@@ -66,39 +75,34 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
         message: 'nde.features.object.card.identification.field.description.validation.max-characters',
       });
 
-    }
+    } else if (field === 'name' && !value) {
 
-    // the name/title of an object can not be empty
-    if (field === 'name' && !value) {
+      // the name/title of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
+    } else if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
 
-    // the name/title of an object can not be longer than 100 characters
-    if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
+      // the name/title of an object can not be longer than 100 characters
 
       res.push({
         field,
         message: 'nde.features.object.card.identification.field.title.validation.max-characters',
       });
 
-    }
+    } else if (field === 'identifier' && !value) {
 
-    // the identifier of an object can not be empty
-    if (field === 'identifier' && !value) {
+      // the identifier of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
-
-    if (field === 'type') {
+    } else if (field === 'type') {
 
       // the type of an object can not be empty
       if (!value) {
@@ -126,12 +130,10 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
-
-    // the additionalType of an object can not be empty
-    if (field === 'additionalType') {
+    } else if (field === 'additionalType') {
 
       // the additionalType of an object can not be empty
+
       if (!value || (value as typeof context.data[typeof field])?.length < 1) {
 
         res.push({
@@ -141,20 +143,18 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if (field === 'image' && !value) {
 
-    // the identifier of an object can not be empty
-    if (field === 'image' && !value) {
+      // the identifier of an object can not be empty
 
       res.push({
         field,
         message: 'nde.features.object.card.common.empty',
       });
 
-    }
+    } else if (field === 'image' && value) {
 
-    // the image url should be valid and return png/jpeg mime type
-    if (field === 'image' && value) {
+      // the image url should be valid and return png/jpeg mime type
 
       try {
 
@@ -169,10 +169,9 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
 
-    // the date should be valid EDTF
-    if (field === 'dateCreated' && (value as typeof context.data[typeof field])?.length > 0) {
+      // the date should be valid EDTF
 
       try {
 
@@ -187,10 +186,9 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       }
 
-    }
+    } else if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
 
-    // validate numbers
-    if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
+      // validate numbers
 
       if (value.toString() === 'NaN') {
 
@@ -221,6 +219,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: assign({
           object: (context, event) => event.object,
+          original: (context, event) => event.object,
         }),
         target: ObjectStates.IDLE,
       },
@@ -228,38 +227,111 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
     states: {
       [ObjectStates.SAVING]: {
         invoke: {
-          src: (context, event) => objectStore.save(context.object),
-          onDone: ObjectStates.IDLE,
+          src: (context) => objectStore.save(context.object),
+          onDone: {
+            target: ObjectStates.IDLE,
+            // overwrite original with new, edited object
+            actions: assign((context) => ({ original: context.object })),
+          },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },
       [ObjectStates.IDLE]: {
         on: {
-          [ObjectEvents.CLICKED_SAVE]: ObjectStates.SAVING,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
-          [FormEvents.FORM_SUBMITTED]: ObjectStates.SAVING,
-          [ObjectEvents.CLICKED_RESET]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_RESET]: {
+            target: ObjectStates.IDLE,
+            actions: assign((context) => ({ object: context.original })),
+          },
+          [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
         invoke: [
           {
             id: FormActors.FORM_MACHINE,
             src: formMachine<CollectionObject>(
-              (context) => validateObjectForm(context),
-              async (c: FormContext<CollectionObject>) => c.data
+              (formContext) => validateObjectForm(formContext),
             ),
-            data: (context) => ({
-              data: { ...context.object },
-              original: { ...context.object },
-            }),
+            data: (context) => {
+
+              // replace Terms with lists of uri
+              // form machine can only handle (lists of) strings, not objects (Terms)
+              const parseObject = (object: CollectionObject) => ({
+                ...object,
+                additionalType: object?.additionalType
+                  ? object.additionalType.map((term) => term.uri) : undefined,
+                creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
+                locationCreated: object?.locationCreated
+                  ? object.locationCreated.map((term) => term.uri) : undefined,
+                material: object?.material ? object.material.map((term) => term.uri) : undefined,
+                subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
+                location: object?.location ? object.location.map((term) => term.uri) : undefined,
+                person: object?.person ? object.person.map((term) => term.uri) : undefined,
+                organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
+                event: object?.event ? object.event.map((term) => term.uri) : undefined,
+              });
+
+              return {
+                data: { ... parseObject(context.object) },
+                original: { ... parseObject(context.original) },
+              };
+
+            },
             onDone: {
               target: ObjectStates.SAVING,
               actions: [
                 assign((context, event) => ({
-                  object: { ...event.data.data },
+                  object: {
+                    ...event.data.data,
+                    // don't use form values for Terms
+                    // as form machine will only return URIs for these fields, not full Terms
+                    // See also: ObjectStates.IDLE's invoked machine's initial data
+                    additionalType: context.object.additionalType,
+                    creator: context.object.creator,
+                    locationCreated: context.object.locationCreated,
+                    material: context.object.material,
+                    subject: context.object.subject,
+                    location: context.object.location,
+                    person: context.object.person,
+                    organization: context.object.organization,
+                    event: context.object.event,
+                  },
                 })),
               ],
+            },
+          },
+        ],
+      },
+      [ObjectStates.EDITING_FIELD]: {
+        on: {
+          [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
+          [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
+        },
+        invoke: [
+          {
+            id: TermActors.TERM_MACHINE,
+            src: termMachine,
+            data: (context, event: ClickedTermFieldEvent) => ({
+              field: event.field,
+              selectedTerms: event.terms,
+              termService: context.termService || new TermService(process.env.VITE_TERM_ENDPOINT),
+            }),
+            onDone: {
+              target: ObjectStates.IDLE,
+              actions: [
+                assign((context, event) => ({
+                  object: {
+                    ...context.object,
+                    [event.data.field]: event.data.selectedTerms,
+                  },
+                })),
+              ],
+            },
+            onError: {
+              target: ObjectStates.IDLE,
+              actions: sendParent((context, event) => event),
             },
           },
         ],
@@ -274,7 +346,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             ],
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },

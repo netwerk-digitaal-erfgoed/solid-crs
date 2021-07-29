@@ -1,0 +1,27 @@
+@prefix  acl:   <http://www.w3.org/ns/auth/acl#>.
+@prefix  foaf:  <http://xmlns.com/foaf/0.1/>.
+
+<#public>
+    a               acl:Authorization;
+    acl:agentClass  foaf:Agent;
+    acl:accessTo    <./>;
+    acl:default     <./>;
+    acl:mode        acl:Read.
+
+<#public>
+    a               acl:Authorization;
+    acl:agentClass  foaf:Agent;
+    acl:accessTo    <./publicTypeIndex.ttl>;
+    acl:default     <./publicTypeIndex.ttl>;
+    acl:mode        acl:Read.
+
+<#owner>
+    a               acl:Authorization;
+    acl:agent       <http://localhost:3000/leapeeters/profile/card#me>;
+    acl:accessTo    <./>;
+    acl:default	    <./>;
+    acl:mode        acl:Read,
+                    acl:Write,
+                    acl:Append,
+                    acl:Delete,
+                    acl:Control.

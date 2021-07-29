@@ -1,0 +1,21 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix space: <http://www.w3.org/ns/pim/space#>.
+
+<>
+    a foaf:PersonalProfileDocument;
+    foaf:maker <http://localhost:3000/hetlageland/profile/card#me>;
+    foaf:primaryTopic <http://localhost:3000/hetlageland/profile/card#me>.
+
+<http://localhost:3000/hetlageland/profile/card#me>
+    rdf:type schema:Organization;
+    schema:name "Heemkundevereniging Het Lage Land" ;
+    schema:alternateName "Het Lage Land" ; # Optional
+    a foaf:Person;
+    foaf:name "Het Lage Land";
+    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuerRegistrationToken "9a112e5c-c520-4d1b-b17b-c63693520b72";
+    solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;
+    space:storage <http://localhost:3000/hetlageland/>.

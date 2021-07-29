@@ -1,5 +1,4 @@
 import { createMachine, send } from 'xstate';
-import { map } from 'rxjs/operators';
 import { State } from '../state/state';
 import { FormValidatorResult } from './form-validator-result';
 import { FormValidator } from './form-validator';
@@ -71,7 +70,7 @@ export type FormStates = FormRootStates | FormSubmissionStates | FormCleanliness
  * @returns A form machine.
  */
 export const formMachine = <T>(
-  validator: FormValidator<T>,
+  validator: FormValidator<T> = async (): Promise<FormValidatorResult[]> => [],
   submitter: FormSubmitter<T> = async (context) => context.data
 ) => createMachine<FormContext<T>, FormEvent, State<FormStates, FormContext<T>>>(
   {
@@ -93,7 +92,7 @@ export const formMachine = <T>(
            * State which determines if form has changed.
            */
           [FormRootStates.CLEANLINESS]: {
-            initial: FormCleanlinessStates.PRISTINE,
+            initial: FormCleanlinessStates.CHECKING_CLEANLINESS,
             states: {
               /**
                * The form has not changed.
@@ -161,8 +160,7 @@ export const formMachine = <T>(
                 invoke: {
                   src: (context, event) => validator(context, event),
                   onDone: {
-                    actions: send((context, event) =>
-                      ({ type: FormEvents.FORM_VALIDATED, results: event.data })),
+                    actions: send((context, event) => new FormValidatedEvent(event.data)),
                   },
                 },
                 on: {

@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=682525025[Wrike task]
 * Branch: `feat/add-svg-icons`
-* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-components]
 
 
 == Introduction
@@ -60,9 +60,9 @@ I suggest the following names:
 * Logout (already exists)
 * Loading (already exists, change svg)
 
-Loading's exising svg should be replaced with the new icon. Ideally, it should turn clockwise in increments of 15%. I'm not sure how this is best done. The styling and animation of this icon should happen in the 'nde-erfgoed-theme' package, be it in the svg itself or, if necessary, in a new 'icons.css' file under 'lib/elements/'.
+Loading's exising svg should be replaced with the new icon. Ideally, it should turn clockwise in increments of 15%. I'm not sure how this is best done. The styling and animation of this icon should happen in the 'solid-crs-theme' package, be it in the svg itself or, if necessary, in a new 'icons.css' file under 'lib/elements/'.
 
-Export the icons from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=1%3A3[these Figma assets] to svg files in 'nde-erfgoed-theme'. Test them out in 'nde-erfgoed-components' to make sure they render properly. The https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=361%3A375[image from the empty collection page] should also be exported and kept in 'nde-erfgoed-theme'.
+Export the icons from https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=1%3A3[these Figma assets] to svg files in 'solid-crs-theme'. Test them out in 'solid-crs-components' to make sure they render properly. The https://www.figma.com/file/K91OgRUlaDf6fhd95Rjgrg/NDE---CBS?node-id=361%3A375[image from the empty collection page] should also be exported and kept in 'solid-crs-theme'.
 
 The exported svgs come with a default `fill`, `height` and `width` attributes, e.g.: 
 

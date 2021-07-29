@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-theme",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Theme for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-theme.umd.js",
@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf ./dist && vite build && tsc",
+    "build": "shx rm -rf dist && vite build && tsc",
     "lint": "stylelint \"lib/**/*.css\"",
     "lint:fix": "stylelint \"lib/**/*.css\" --fix",
     "lint:staged": "lint-staged"
@@ -26,7 +26,7 @@
     "@digita-ai/typescript-config": "^0.3.3",
     "@types/node": "^15.0.2",
     "normalize.css": "8.0.1",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "stylelint": "^13.12.0",
     "stylelint-config-standard": "^21.0.0",
     "ts-node": "^9.1.1",

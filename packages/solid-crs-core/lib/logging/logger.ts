@@ -55,13 +55,13 @@ export abstract class Logger {
 
     if (!typeName) {
 
-      throw new ArgumentError('Typename should be set', typeName);
+      throw new ArgumentError('typeName should be set', typeName);
 
     }
 
     if (!message) {
 
-      throw new ArgumentError('Message should be set', message);
+      throw new ArgumentError('message should be set', message);
 
     }
 

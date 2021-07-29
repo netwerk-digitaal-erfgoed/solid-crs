@@ -7,7 +7,7 @@ import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
@@ -116,7 +116,7 @@ export class SearchRootComponent extends RxLitElement {
 
     }
 
-    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
 

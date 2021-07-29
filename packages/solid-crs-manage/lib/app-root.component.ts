@@ -9,7 +9,7 @@ import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfg
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { AppEvents } from './app.events';
+import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { SolidSDKService } from './common/solid/solid-sdk.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
@@ -149,7 +149,7 @@ export class AppRootComponent extends RxLitElement {
 
     }
 
-    this.actor.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.send(new DismissAlertEvent(event.detail));
 
   }
 
@@ -238,10 +238,14 @@ export class AppRootComponent extends RxLitElement {
     const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.CREATING })
       || this.state?.matches({ [AppRootStates.DATA]: AppDataStates.REFRESHING });
 
+    const hideSidebar = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })
+      || this.state?.matches({ [AppRootStates.DATA]: AppDataStates.CHECKING_TYPE_REGISTRATIONS })
+      || !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED });
+
     return html`
 
 
-    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`
+    ${ !hideSidebar ? html`
 
     ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
@@ -254,7 +258,7 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item>
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
-          <nde-form-element .inverse="${true}" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
+          <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
             <input type="text"
               slot="input"
               .value="${this.searchTerm}"
@@ -272,20 +276,21 @@ export class AppRootComponent extends RxLitElement {
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
-            <div slot="actions" @click="${() => this.actor.send(AppEvents.CLICKED_CREATE_COLLECTION)}">${ unsafeSVG(Plus) }</div>
+            <div slot="actions" @click="${() => this.actor.send(new ClickedCreateCollectionEvent())}">${ unsafeSVG(Plus) }</div>
           </nde-sidebar-list-item>
           ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
         </nde-sidebar-list>
       </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
-    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED })
-    ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`
-    : ''
-}  
+    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`: ''}   
+    ${ this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE }) ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
+    
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
+    ` }  
+  
     `;
 
   }

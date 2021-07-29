@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-client",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Re-bundled version of the Solid client.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
@@ -10,7 +10,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf ./dist && webpack",
+    "build": "shx rm -rf dist && webpack",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged"
@@ -20,7 +20,7 @@
     "@types/node": "^15.0.2",
     "eslint": "^7.16.0",
     "lint-staged": "^10.5.4",
-    "rimraf": "^3.0.2",
+    "shx": "^0.3.3",
     "ts-loader": "9.1.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",

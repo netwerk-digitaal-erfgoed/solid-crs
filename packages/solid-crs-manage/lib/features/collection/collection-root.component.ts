@@ -7,7 +7,7 @@ import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppEvents } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
 import { CollectionEvents } from './collection.events';
@@ -164,7 +164,7 @@ export class CollectionRootComponent extends RxLitElement {
 
     }
 
-    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
 
@@ -189,10 +189,10 @@ export class CollectionRootComponent extends RxLitElement {
       <div slot="icon">${ unsafeSVG(CollectionIcon) }</div>
       ${this.actor.state.matches(CollectionStates.EDITING)
     ? html`
-          <nde-form-element slot="title" class="title" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+          <nde-form-element slot="title" class="title inverse" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
             <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
-          <nde-form-element slot="subtitle" class="subtitle" .inverse="${true}" .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+          <nde-form-element slot="subtitle" class="subtitle inverse"  .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
             <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
           </nde-form-element>
         `
@@ -284,7 +284,6 @@ export class CollectionRootComponent extends RxLitElement {
           height: var(--gap-normal);
         }
         nde-form-element input {
-          height: var(--gap-normal);
           padding: 0;
           line-height: var(--gap-normal);
         }

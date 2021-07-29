@@ -6,9 +6,9 @@ import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { FormCleanlinessStates, FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
+import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormEvents, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
@@ -36,7 +36,7 @@ export class FormElementComponent<T> extends RxLitElement {
   /**
    * Decides whether a border should be shown around the content
    */
-  @property({ type: Boolean })
+  @internalProperty()
   public inverse = false;
 
   /**
@@ -107,10 +107,10 @@ export class FormElementComponent<T> extends RxLitElement {
 
   /**
    * Decides whether validation results should be shown below the form element
-   * When false, only shows a yellow border to the left of the component
+   * When false, only shows a yellow border
    */
   @property({ type: Boolean })
-  public showValidation = true;
+  public hideValidation = false;
 
   /**
    * Hook called on every update after connection to the DOM.
@@ -118,6 +118,8 @@ export class FormElementComponent<T> extends RxLitElement {
   updated(changed: PropertyValues): void {
 
     super.updated(changed);
+
+    this.inverse = this.className?.includes('inverse');
 
     if(changed.has('actor') && this.actor) {
 
@@ -208,9 +210,7 @@ export class FormElementComponent<T> extends RxLitElement {
       (element) => element instanceof HTMLInputElement ||
                     element instanceof HTMLSelectElement ||
                     element instanceof HTMLTextAreaElement ||
-                    Array.from(element.childNodes).find((li) =>
-                      Array.from(li.childNodes).find((input) =>
-                        input instanceof HTMLInputElement))
+                    element instanceof HTMLUListElement
     ).map((element) => element as HTMLElement);
 
     this.inputs?.forEach((element) => {
@@ -223,7 +223,7 @@ export class FormElementComponent<T> extends RxLitElement {
         element.namedItem(fieldData && (typeof fieldData === 'string' || typeof fieldData === 'number') ? fieldData.toString() : '').selected = true;
 
         // Send event when input field's value changes.
-        element.addEventListener('input', () => actor.send({ type: FormEvents.FORM_UPDATED, value: element.options[element.selectedIndex].id, field } as FormUpdatedEvent));
+        element.addEventListener('input', () => actor.send(new FormUpdatedEvent(field.toString(), element.options[element.selectedIndex].id)));
 
       } else if ((element instanceof HTMLTextAreaElement) || (element instanceof HTMLInputElement)) {
 
@@ -235,24 +235,26 @@ export class FormElementComponent<T> extends RxLitElement {
           'input',
           debounce(() => {
 
-            let elementValue;
+            let formValue;
+            const inputStringValue = element.value.trim();
 
             if (typeof fieldData === 'number') {
 
-              elementValue = isNaN(+element.value) ? NaN : +element.value;
+              const parsedNumberValue = inputStringValue.replace(',', '.');
+              formValue = isNaN(+(parsedNumberValue)) ? NaN : parsedNumberValue;
 
             } else {
 
-              elementValue = element.value.trim();
+              formValue = inputStringValue;
 
             }
 
-            actor.send({ type: FormEvents.FORM_UPDATED, value: elementValue, field } as FormUpdatedEvent);
+            actor.send(new FormUpdatedEvent(field.toString(), formValue.toString()));
 
           }, this.debounceTimeout),
         );
 
-      } else if (Array.from(element.children).find((li) =>
+      } else if ((element as HTMLUListElement).type === 'multiselect' && Array.from(element.children).find((li) =>
         Array.from(li.children).find((input) =>
           input instanceof HTMLInputElement && input.type === 'checkbox'))
       ) {
@@ -264,19 +266,23 @@ export class FormElementComponent<T> extends RxLitElement {
         const checkboxListItems = Array.from(element.children).slice(1) as HTMLElement[];
         checkboxListItems.forEach((li) => li.hidden = true);
 
-        const checkboxInputs = [].concat(...checkboxListItems
+        // A list of all the checkboxes
+        const checkboxInputs: HTMLInputElement[] = [].concat(...checkboxListItems
           .map((li: HTMLLIElement) => Array.from(li.children)))
           .filter((node) => node instanceof HTMLInputElement);
 
+        // Make the <ul> focusable, to be able to catch focusout events
+        element.tabIndex = 0;
+
         if (Array.isArray(fieldData)) {
 
-          // set default values
+          // Set default (checked) values
           checkboxListItems.forEach((node: HTMLInputElement) =>
             node.checked = fieldData.includes(node.id));
 
-          titleListItem.innerHTML = fieldData.join(', ');
+          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}` : this.translator.translate('nde.common.form.click-to-select');
 
-          titleListItem.addEventListener('click', () => {
+          titleListItem.parentElement.addEventListener('click', () => {
 
             checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
             titleListItem.hidden = true;
@@ -284,32 +290,32 @@ export class FormElementComponent<T> extends RxLitElement {
 
           });
 
+          // When the user clicks outside of the list of elements, hide the list and update form machine
           element.parentElement.addEventListener('focusout', (event) => {
 
-            if (!checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
+            if (event.relatedTarget !== element
+              && !checkboxInputs.map((el) => el.id).includes((event.relatedTarget as HTMLElement)?.id)) {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
+
+              const selectedValues = checkboxInputs.filter((input) => input.checked).map((input) => input.id);
+
+              titleListItem.textContent = selectedValues?.length > 0
+                ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'nde.features.term.n-sources-selected' : 'nde.features.term.one-source-selected').toLowerCase()}`
+                : this.translator.translate('nde.common.form.click-to-select');
+
+              actor.send(new FormUpdatedEvent(field.toString(), selectedValues));
 
             }
 
           });
 
-          element.addEventListener('input', () => {
-
-            const selectedValues = [].concat(...checkboxInputs
-              .filter((node) => node.checked))
-              .map((node: HTMLInputElement) => node.value);
-
-            titleListItem.textContent = selectedValues.length > 0 ? selectedValues.join(', ') : this.translator.translate('nde.common.form.click-to-select');
-
-            actor.send({ type: FormEvents.FORM_UPDATED, value: selectedValues, field } as FormUpdatedEvent);
-
-          });
-
         } else {
 
-          throw Error();
+          // A multi select's fieldData should always be a list, since multiple values can be selected
+          // This error will only be thrown when a programming mistake was made when setting up the form machine
+          throw Error('Invalid field data (not a list)');
 
         }
 
@@ -324,7 +330,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
             event.preventDefault();
 
-            actor.send({ type: FormEvents.FORM_SUBMITTED });
+            actor.send(new FormSubmittedEvent());
 
           }
 
@@ -352,7 +358,7 @@ export class FormElementComponent<T> extends RxLitElement {
           </div>
         ` : ''
 }     
-      <div class="content ${!this.showValidation && this.validationResults?.length > 0  ? 'no-validation' : ''}">
+      <div class="content${this.hideValidation && this.validationResults?.length > 0  ? ' no-validation' : ''}${this.inverse ? ' no-border' : ''}">
         <div class="field ${this.inverse ? 'no-border' : ''}">
           <slot name="input"></slot>
           <div class="icon">
@@ -366,8 +372,8 @@ export class FormElementComponent<T> extends RxLitElement {
       <div class="help" ?hidden="${this.validationResults && this.validationResults?.length > 0}">
         <slot name="help"></slot>
       </div>
-      <div class="results" ?hidden="${!this.showValidation || !this.validationResults || this.validationResults.length === 0}">
-        ${this.validationResults?.map((result) => html`<div class="result">${this.translator ? this.translator.translate(result.message) : result.message}</div>`)}
+      <div class="results" ?hidden="${this.hideValidation || this.validationResults?.length === 0}">
+        ${this.validationResults?.map((result) => html`<div class="result">${this.translator.translate(result.message)}</div>`)}
       </div>
     </div>
   `;
@@ -385,12 +391,15 @@ export class FormElementComponent<T> extends RxLitElement {
         :root {
           display: block;
         }
-
-        .loading svg .loadCircle {
-          stroke: var(--colors-primary-normal);
+        .loading, .loading svg {
+          margin-right: var(--gap-normal);
+          max-height: var(--gap-normal);
+          max-width: var(--gap-normal);
+          height: var(--gap-normal);
+          width: var(--gap-normal);
         }
-        .no-border, .no-border ::slotted(*) {
-          border: none !important;
+        .loading svg .loading-circle {
+          stroke: var(--colors-primary-normal);
         }
         .no-validation {
           border-bottom: solid 2px var(--colors-status-warning);
@@ -408,23 +417,25 @@ export class FormElementComponent<T> extends RxLitElement {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          background-color: var(--colors-background-light)
-        }
-        .form-element .content .action ::slotted(button){
+          background-color: var(--colors-background-light);
           height: 100%;
         }
         .form-element .content .field {
           display: flex;
           flex-direction: row;
           align-items: stretch;
-          justify-content: space-between;
           flex: 1 0;
           border: var(--border-normal) solid var(--colors-foreground-normal);
+          justify-content: flex-end;
+          position: relative;
+        }
+        .form-element .content .field.no-border {
+          border: none;
         }
         .form-element .content .field ::slotted(*) {
           padding: 0 var(--gap-normal);
           flex: 1 0;
-          height: 44px;
+          height: 100%;
           max-height: auto;
           font-size: var(--font-size-small);
           font-family: var(--font-family);
@@ -433,22 +444,17 @@ export class FormElementComponent<T> extends RxLitElement {
         .form-element .content .field ::slotted(select), 
         .form-element .content .field ::slotted(textarea) {
           box-sizing: border-box;
-        } 
-        .form-element .content .field ::slotted(ul) {
-          height: auto;
-          display: flex;
-          flex-direction: column;
-          gap: var(--gap-small);
         }
         .form-element .content .field ::slotted(textarea) {
           padding: var(--gap-normal);
-          height: 132px;
+          height: 128px;
         }
         .form-element .content .field .icon {
           margin: var(--gap-small) 0;
           height: 100%;
           display: flex;
           align-items: flex-start;
+          z-index: 30;
         }
         .form-element .content .field .icon ::slotted(*), .form-element .content .field .icon div svg  {
           padding-right: var(--gap-normal);

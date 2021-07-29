@@ -40,11 +40,11 @@ Alternatively, you can build and run an image locally.
 
 [source,bash]
 ----
-# Build on Mac
-$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/nde-erfgoed-manage/
+# Build on Linux/Mac
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/solid-crs-manage/
 
 # Build on Windows
-$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/solid-crs-manage/
 
 # Run local image
 $ docker run -p 3002:3002 crs:local

@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=682525025[Wrike task]
 * Branch: `feat/create-content-header-component`
-* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-components]
 
 
 == Introduction
@@ -44,7 +44,7 @@ Make use of https://lit-element.readthedocs.io/en/v0.6.4/docs/templates/slots/#s
 
 Export the component in 'lib/index.ts'.
 
-To preview the component while developing: register the component in 'lib/demo.ts', then add the component's tag to the 'index.html' file in the 'lib' directory. Running `npm run start:watch` in the 'nde-erfgoed-components' package will serve the 'index.html' file you just edited.
+To preview the component while developing: register the component in 'lib/demo.ts', then add the component's tag to the 'index.html' file in the 'lib' directory. Running `npm run start:watch` in the 'solid-crs-components' package will serve the 'index.html' file you just edited.
 
 
 
@@ -61,4 +61,4 @@ The purpose of this component is to keep track of the currently selected list it
 
 Export the component in 'lib/index.ts'.
 
-To preview the component while developing: register the component in 'lib/demo.ts', then add the component's tag to the 'index.html' file in the 'lib' directory (add it to the existing sidebar). Running `npm run start:watch` in the 'nde-erfgoed-components' package will serve the 'index.html' file you just edited.
+To preview the component while developing: register the component in 'lib/demo.ts', then add the component's tag to the 'index.html' file in the 'lib' directory (add it to the existing sidebar). Running `npm run start:watch` in the 'solid-crs-components' package will serve the 'index.html' file you just edited.

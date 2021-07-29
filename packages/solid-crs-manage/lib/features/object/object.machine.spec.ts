@@ -1,10 +1,12 @@
-import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormActors, FormContext, FormSubmittedEvent, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { ObjectEvents, SelectedObjectEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
+import { ClickedSubmitEvent } from './terms/term.events';
+import { TermActors, TermContext, TermStates } from './terms/term.machine';
 
 describe('ObjectMachine', () => {
 
@@ -31,7 +33,7 @@ describe('ObjectMachine', () => {
     image: null,
     subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
   };
 
@@ -40,10 +42,22 @@ describe('ObjectMachine', () => {
     name: 'Object 2',
     description: 'This is object 2',
     image: null,
-    subject: null,
     type: null,
-    updated: 0,
+    updated: '0',
     collection: 'collection-uri-1',
+    additionalType: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    creator: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    locationCreated: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    material: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    subject: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    location: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    person: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    organization: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+    event: [ { name: 'bidprentjes', uri: 'https://test.uri/' } ],
+  };
+
+  const termService = {
+    getSources: jest.fn(async() => []),
   };
 
   let machine: Interpreter<ObjectContext>;
@@ -56,16 +70,18 @@ describe('ObjectMachine', () => {
 
     objectStore = new CollectionObjectMemoryStore([ object1, object2 ]);
 
-    machine = interpret<ObjectContext>(objectMachine(objectStore)
+    machine = interpret(objectMachine(objectStore)
       .withContext({
         object: object1,
+        termService,
       }));
 
     machine.parent = interpret(appMachine(
       new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       collectionStore,
       objectStore,
-      {}
+      collection1,
+      object1,
     ));
 
   });
@@ -89,11 +105,11 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_RESET);
+    machine.send(new ClickedResetEvent());
 
   });
 
-  it('should transition to SAVING when clicked save was emitted', async (done) => {
+  it('should transition to SAVING when form machine exits', async (done) => {
 
     machine.onTransition((state) => {
 
@@ -106,7 +122,119 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_SAVE);
+    const formMachine = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<unknown>>;
+    expect(formMachine).toBeTruthy();
+    formMachine.send(new FormUpdatedEvent('field', 'value'));
+    formMachine.send(new FormSubmittedEvent());
+
+  });
+
+  it('should transition to IDLE when term machine exits', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.IDLE)) {
+
+        done();
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        const termMachine = machine.children.get(TermActors.TERM_MACHINE) as Interpreter<TermContext>;
+        expect(termMachine).toBeTruthy();
+
+        termMachine.onTransition((termState) => {
+
+          if (termState.matches(TermStates.IDLE)) {
+
+            termMachine.send(new ClickedSubmitEvent());
+
+          }
+
+        });
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
+
+  });
+
+  it('should send error to parent when term machine errors', async () => {
+
+    machine = interpret(objectMachine(objectStore)
+      .withContext({
+        object: object1,
+        termService: { getSources: jest.fn().mockRejectedValueOnce('error') },
+      }));
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    machine.onTransition((state) => {
+
+      let passedTermMachine = false;
+
+      if(passedTermMachine && state.matches(ObjectStates.IDLE)) {
+
+        expect(machine.parent.parent.send).toHaveBeenCalledTimes(1);
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        passedTermMachine = true;
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
+
+  });
+
+  it('should transition to IDLE when CLICKED_SIDEBAR_ITEM', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.IDLE) && state.event instanceof ClickedObjectSidebarItem) {
+
+        done();
+
+      }
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        machine.send(new ClickedObjectSidebarItem('itemid'));
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
+
+  });
+
+  it('should transition to EDITING_FIELD when CLICKED_TERM_FIELD was fired', async (done) => {
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.EDITING_FIELD)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedTermFieldEvent('name', [ { name: 'test', uri: 'test' } ]));
 
   });
 
@@ -123,7 +251,38 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(ObjectEvents.CLICKED_DELETE);
+    machine.send(new ClickedDeleteObjectEvent(object1));
+
+  });
+
+  it('should send error to parent when deleting threw error', () => {
+
+    objectStore.delete = jest.fn().mockRejectedValueOnce('error');
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    let passedDelete = false;
+
+    machine.onTransition((state) => {
+
+      if(passedDelete && state.matches(ObjectStates.IDLE)) {
+
+        expect(machine.parent.send).toHaveBeenCalledTimes(1);
+
+      }
+
+      if(state.matches(ObjectStates.DELETING)) {
+
+        passedDelete = true;
+
+      }
+
+    });
+
+    machine.start();
+    machine.send(new ClickedDeleteObjectEvent(object1));
 
   });
 
@@ -132,7 +291,7 @@ describe('ObjectMachine', () => {
     objectStore.save = jest.fn().mockResolvedValueOnce(object1);
 
     machine.start();
-    machine.send(ObjectEvents.SELECTED_OBJECT, { object: object1 });
+    machine.send(new SelectedObjectEvent(object1));
 
     let alreadySaved = false;
 
@@ -148,15 +307,55 @@ describe('ObjectMachine', () => {
 
         expect(objectStore.save).toHaveBeenCalledTimes(1);
 
-        expect(objectStore.save).toHaveBeenCalledWith(object1);
+        expect(objectStore.save).toHaveBeenCalledWith(expect.objectContaining({ ...object1, name: 'test' }));
 
         done();
+
+      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
 
       }
 
     });
 
-    machine.send(ObjectEvents.CLICKED_SAVE);
+  });
+
+  it('should send error to parent when saving threw error', (done) => {
+
+    objectStore.save = jest.fn().mockRejectedValueOnce('error');
+
+    machine.start();
+    machine.send(new SelectedObjectEvent(object1));
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    let alreadySaved = false;
+
+    machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.SAVING)) {
+
+        alreadySaved = true;
+
+      }
+
+      if(alreadySaved && state.matches(ObjectStates.IDLE) && state.context?.object) {
+
+        expect(machine.parent.send).toHaveBeenCalledWith(expect.objectContaining({ data: 'error' }));
+        done();
+
+      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
+        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
+
+      }
+
+    });
 
   });
 
@@ -174,7 +373,7 @@ describe('ObjectMachine', () => {
 
     machine.start();
 
-    machine.send({ type: ObjectEvents.SELECTED_OBJECT, object: object2 } as SelectedObjectEvent);
+    machine.send(new SelectedObjectEvent(object2));
 
   });
 
@@ -248,9 +447,9 @@ describe('ObjectMachine', () => {
 
     });
 
-    it('should return an error when additionalType is an empty string', async () => {
+    it('should return an error when additionalType is an empty list', async () => {
 
-      context.data = { ...context.data, additionalType: '' };
+      context.data = { ...context.data, additionalType: [] };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

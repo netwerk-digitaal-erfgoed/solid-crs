@@ -145,4 +145,20 @@ describe('ConsoleLogger', () => {
 
   });
 
+  describe('debug', () => {
+
+    it('should throw when typename is undefined', async() => {
+
+      expect(() => service.debug(undefined, 'message')).toThrow(ArgumentError);
+
+    });
+
+    it('should throw when message is undefined', async() => {
+
+      expect(() => service.debug('ConsoleLoggerTests', undefined)).toThrow(ArgumentError);
+
+    });
+
+  });
+
 });

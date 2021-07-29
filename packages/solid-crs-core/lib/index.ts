@@ -23,3 +23,6 @@ export * from './stores/store';
 export * from './utils/date-parser';
 export * from './utils/debounce';
 export * from './utils/fulltext-match';
+export * from './terms/term';
+export * from './terms/term-source';
+export * from './terms/term.service';
