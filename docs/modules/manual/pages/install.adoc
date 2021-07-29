@@ -33,7 +33,7 @@ You can run the application by using docker. To use the latest published version
 
 [source,bash]
 ----
-$ docker run -p 3002:3002 ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest
+$ docker run -p 3002:80 ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage:latest
 ----
 
 Alternatively, you can build and run an image locally.
@@ -47,7 +47,7 @@ $ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/solid-cr
 $ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/solid-crs-manage/
 
 # Run local image
-$ docker run -p 3002:3002 crs:local
+$ docker run -p 3002:80 crs:local
 ----
 
 == Configure Git
