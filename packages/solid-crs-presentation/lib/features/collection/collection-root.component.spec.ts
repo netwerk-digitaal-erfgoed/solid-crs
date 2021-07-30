@@ -1,8 +1,9 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
 import { CollectionContext, collectionMachine } from './collection.machine';
 
@@ -53,6 +54,7 @@ describe('CollectionRootComponent', () => {
       }));
 
     machine.parent = interpret(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error)),
       collectionStore,
       objectStore,
     ).withContext({

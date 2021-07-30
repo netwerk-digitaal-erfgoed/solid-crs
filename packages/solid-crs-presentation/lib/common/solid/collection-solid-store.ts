@@ -8,27 +8,29 @@ import { SolidStore } from './solid-store';
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
   /**
+   * The webId to use when retrieving
+   */
+  public webId: string;
+
+  /**
    * Retrieves a list of all collections
    *
    */
   async all(): Promise<Collection[]> {
 
-    // const webId = getDefaultSession()?.info?.webId;
-    const webId = 'http://localhost:3000/hetlageland/profile/card#me';
+    if (!this.webId) {
 
-    if (!webId) {
-
-      throw new ArgumentError('Argument WebID should be set',  webId);
+      throw new ArgumentError('Argument WebID should be set',  this.webId);
 
     }
 
     // retrieve the catalog
-    const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog') ||
-      await this.saveInstanceForClass(webId, 'http://schema.org/DataCatalog', 'heritage-collections/catalog');
+    const catalogUri = await this.getInstanceForClass(this.webId, 'http://schema.org/DataCatalog') ||
+      await this.saveInstanceForClass(this.webId, 'http://schema.org/DataCatalog', 'heritage-collections/catalog');
 
     if (!catalogUri) {
 
-      throw new ArgumentError('Could not retrieve type registration',  { webId, class: 'http://schema.org/DataCatalog' });
+      throw new ArgumentError('Could not retrieve type registration',  { webId: this.webId, class: 'http://schema.org/DataCatalog' });
 
     }
 

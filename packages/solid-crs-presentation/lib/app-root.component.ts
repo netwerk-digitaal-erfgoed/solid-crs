@@ -15,6 +15,7 @@ import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
+import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**
  * The root page of the application.
@@ -52,6 +53,7 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   actor = interpret(
     appMachine(
+      new SolidSDKService(this.logger),
       new CollectionSolidStore(),
       new CollectionObjectSolidStore()
     ).withContext({ alerts: [] }),

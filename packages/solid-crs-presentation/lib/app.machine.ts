@@ -2,7 +2,7 @@ import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections } from './app.events';
+import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections, setProfile } from './app.events';
 import { SolidSession } from './common/solid/solid-session';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
@@ -11,6 +11,8 @@ import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents, SelectedObjectEvent } from './features/object/object.events';
+import { SolidService } from './common/solid/solid.service';
+import { CollectionSolidStore } from './common/solid/collection-solid-store';
 
 /**
  * The root context of the application.
@@ -85,6 +87,7 @@ export enum AppFeatureStates {
   COLLECTION  = '[AppFeatureState: Collection]',
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',
+  NOT_FOUND = '[AppFeatureState: Not found]',
 }
 
 /**
@@ -101,6 +104,7 @@ export enum AppRouterStates {
  * State indicates if a collection is being created.
  */
 export enum AppDataStates {
+  LOADING_PROFILE  = '[AppDataStates: Loading Profile]',
   REFRESHING  = '[AppDataStates: Refreshing]',
   LOADED_DATA  = '[AppDataStates: Loaded data]',
 }
@@ -114,6 +118,7 @@ export type AppStates = AppRootStates | AppFeatureStates | AppRouterStates | App
  * The application root machine and its configuration.
  */
 export const appMachine = (
+  solidService: SolidService,
   collectionStore: CollectionStore,
   objectStore: CollectionObjectStore,
 ) => createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
@@ -126,7 +131,7 @@ export const appMachine = (
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
         forwardTo(AppActors.OBJECT_MACHINE),
-        (context, event: SelectedObjectEvent) => window.history.pushState({ page: '' }, '', `object/${encodeURIComponent(event.object.uri)}`),
+        (context, event: SelectedObjectEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`),
       ],
     },
     [AppEvents.NAVIGATE]: {
@@ -147,28 +152,27 @@ export const appMachine = (
           id: AppRouterStates.NAVIGATING,
           always: [
             {
-              cond: (context) => !!context.path?.match(/^\/collection\/.+\/?$/),
+              cond: (context) => !!context.path?.match(/^\/.+\/collection\/.+\/?$/),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
             },
             {
-              cond: (context) => !!context.path?.match(/^\/object\/.+\/?$/),
+              cond: (context) => !!context.path?.match(/^\/.+\/object\/.+\/?$/),
               target: [ AppRouterStates.LOADING_DATA, `#${AppFeatureStates.OBJECT}` ],
             },
             {
-              cond: (context) => !!context.path?.match(/^\/search\/.+?/),
+              cond: (context) => !!context.path?.match(/^\/.+\/search\/.*\/?/),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
             },
             {
-              cond: (context) => context.path.replace('/', '').trim().length < 1,
-              actions: (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+              cond: (context) => !!context.path?.match(/^\/.+\/overview\/?/),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
             },
             {
               actions: [
-                (context) => window.history.pushState({ page: 'another' }, 'another page', `collection/${encodeURIComponent(context.collections[0].uri)}`),
-                log((context) => `no path found for ${context.path}`),
+                (context) => window.history.pushState({ page: '' }, '', `404`),
+                log((context) => `no path found for ${context.path}, 404`),
               ],
-              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.NOT_FOUND}` ],
             },
           ],
         },
@@ -177,7 +181,7 @@ export const appMachine = (
             {
               src: (context) => {
 
-                if (context.path?.match(/^\/object\/.+\/?$/)) {
+                if (context.path?.match(/^\/.+\/object\/.+\/?$/)) {
 
                   return objectStore.get(decodeURIComponent(window.location.pathname.split('/object/')[1]));
 
@@ -229,7 +233,7 @@ export const appMachine = (
             target: `#${AppFeatureStates.SEARCH}`,
             actions: [
               assign((context, event) => ({ selected: undefined })),
-              (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `search/${encodeURIComponent(event.searchTerm)}`),
+              (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`),
             ],
           },
           {
@@ -241,17 +245,45 @@ export const appMachine = (
       },
       states: {
         /**
+         * Shows the 404 page for invalid URLs
+         */
+        [AppFeatureStates.NOT_FOUND]: {
+          id: AppFeatureStates.NOT_FOUND,
+        },
+        /**
          * Loads data before needed in other feature states
          */
         [AppFeatureStates.INIT]: {
 
-          initial: AppDataStates.REFRESHING,
+          initial: AppDataStates.LOADING_PROFILE,
           states: {
             /**
              * Not refreshing or creating collections.
              */
             [AppDataStates.LOADED_DATA]: {
               type: 'final',
+            },
+            [AppDataStates.LOADING_PROFILE]: {
+              invoke: [
+                {
+                  /**
+                   * Get all collections from store.
+                   */
+                  src: () => solidService.getProfile(decodeURIComponent(window.location.pathname.split('/')[1])),
+                  onDone: [
+                    {
+                      target: AppDataStates.REFRESHING,
+                      actions: [
+                        setProfile,
+                        (context, event) => (collectionStore as CollectionSolidStore).webId = event.data.uri,
+                      ],
+                    },
+                  ],
+                  onError: {
+                    target: `#${AppFeatureStates.NOT_FOUND}`,
+                  },
+                },
+              ],
             },
             /**
              * Refresh collections, set current collection and assign to state.
@@ -290,7 +322,7 @@ export const appMachine = (
                 || context.collections?.find((collection) =>
                   collection.uri === decodeURIComponent(window.location.pathname.split('/collection/')[1]))
                 || context.collections[0] }),
-            (context) => window.history.pushState({ page: '' }, '', `collection/${encodeURIComponent(context.selected.uri)}`),
+            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected.uri)}`),
           ],
           id: AppFeatureStates.COLLECTION,
           on: {
@@ -338,7 +370,7 @@ export const appMachine = (
               actions: [
                 assign({ lastSearchTerm: (context, event) => event.searchTerm }),
                 send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
-                (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `search/${encodeURIComponent(event.searchTerm)}`),
+                (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`),
               ],
             },
             /**

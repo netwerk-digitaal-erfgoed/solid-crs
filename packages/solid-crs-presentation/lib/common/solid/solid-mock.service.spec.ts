@@ -50,6 +50,12 @@ describe('SolidMockService', () => {
 
     });
 
+    it('should should return null', async () => {
+
+      await expect(service.getSession()).resolves.toEqual(null);
+
+    });
+
   });
 
   describe('login()', () => {
@@ -74,6 +80,12 @@ describe('SolidMockService', () => {
       await expect(service.login('https://test.com')).resolves.toBeUndefined();
 
     });
+
+  });
+
+  describe('logout', async () => {
+
+    await expect(service.logout()).resolves.toEqual(undefined);
 
   });
 
