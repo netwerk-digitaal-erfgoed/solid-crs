@@ -15,7 +15,7 @@ export const fulltextMatch = (object: unknown, term: string): boolean => {
 
   }
 
-  if (!term) {
+  if (!term && term !== '') {
 
     throw new ArgumentError('Argument term should be set.', term);
 

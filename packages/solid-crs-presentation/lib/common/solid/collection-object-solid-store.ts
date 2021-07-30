@@ -429,7 +429,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async search(searchTerm: string, objects: CollectionObject[]): Promise<CollectionObject[]> {
 
-    if (!searchTerm) {
+    if (!searchTerm && searchTerm !== '') {
 
       throw new ArgumentError('Argument searchTerm should be set.', searchTerm);
 

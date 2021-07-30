@@ -1,7 +1,7 @@
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { AppEvents } from './../../app.events';
+import { ErrorEvent } from '../../app.events';
 import { SearchEvent, SearchEvents, SearchUpdatedEvent } from './search.events';
 
 /**
@@ -46,7 +46,6 @@ export enum SearchStates {
 export const searchMachine = (collectionStore: CollectionStore, objectStore: CollectionObjectStore) =>
   createMachine<SearchContext, SearchEvent, State<SearchStates, SearchContext>>({
     id: SearchActors.SEARCH_MACHINE,
-    context: { },
     initial: SearchStates.SEARCHING,
     states: {
       /**
@@ -110,7 +109,7 @@ export const searchMachine = (collectionStore: CollectionStore, objectStore: Col
             target: SearchStates.IDLE,
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            actions: sendParent(new ErrorEvent()),
           },
         },
       },

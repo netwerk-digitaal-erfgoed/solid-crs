@@ -3,7 +3,6 @@ import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMe
 import { interpret, Interpreter } from 'xstate';
 import { AddAlertEvent, AppEvents, DismissAlertEvent } from './app.events';
 import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
 describe('AppMachine', () => {
@@ -176,11 +175,11 @@ describe('AppMachine', () => {
 
   });
 
-  it('should emit selected collection after login', async (done) => {
+  it('should start in collection feature', async (done) => {
 
-    machine.onEvent((event) => {
+    machine.onTransition((state) => {
 
-      if(event.type === CollectionEvents.SELECTED_COLLECTION) {
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION })) {
 
         done();
 

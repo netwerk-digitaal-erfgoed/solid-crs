@@ -1,4 +1,4 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
@@ -278,6 +278,34 @@ describe('AppRootComponent', () => {
     await component.updateComplete;
 
     machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
+
+  });
+
+  describe('searchUpdated()', () => {
+
+    it('should send FormUpdatedEvent when called', () => {
+
+      machine.send = jest.fn();
+
+      component.searchUpdated({ target: { value: 'test' } as HTMLInputElement } as any);
+
+      expect(machine.send).toHaveBeenCalledWith(expect.objectContaining({ searchTerm: 'test' }));
+
+    });
+
+  });
+
+  describe('clearSearchTerm()', () => {
+
+    it('should send FormUpdatedEvent when called', () => {
+
+      machine.send = jest.fn();
+
+      component.clearSearchTerm();
+
+      expect(machine.send).toHaveBeenCalledWith(expect.objectContaining({ searchTerm: '' }));
+
+    });
 
   });
 

@@ -2,7 +2,7 @@ import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
-import { AppContext } from './app.machine';
+import { AppContext, AppFeatureStates } from './app.machine';
 import { SearchUpdatedEvent } from './features/search/search.events';
 import { SelectedCollectionEvent } from 'features/collection/collection.events';
 import { SelectedObjectEvent } from 'features/object/object.events';
@@ -16,6 +16,9 @@ export enum AppEvents {
   ERROR = 'xstate.error',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
   SET_PROFILE = '[AppEvent: Set Profile]',
+  NAVIGATE = '[AppEvent: Navigated]',
+  RESOLVED_ROUTE = '[AppEvent: Resolved Route]',
+  NAVIGATED = '[AppEvent: Navigated]',
 }
 
 /**
@@ -62,6 +65,36 @@ export class SetProfileEvent implements EventObject {
 }
 
 /**
+ * An event which is dispatched when the user navigates
+ */
+export class NavigateEvent implements EventObject {
+
+  public type: AppEvents.NAVIGATE = AppEvents.NAVIGATE;
+  constructor(public path?: string) { }
+
+}
+
+/**
+ * An event which is dispatched when the user navigates
+ */
+export class ResolvedRouteEvent implements EventObject {
+
+  public type: AppEvents.RESOLVED_ROUTE = AppEvents.RESOLVED_ROUTE;
+  constructor(public target: AppFeatureStates[keyof AppFeatureStates]) { }
+
+}
+
+/**
+ * An event which is dispatched when the user navigates
+ */
+export class NavigatedEvent implements EventObject {
+
+  public type: AppEvents.NAVIGATED = AppEvents.NAVIGATED;
+  constructor(public path?: string) { }
+
+}
+
+/**
  * Union type of app events.
  */
 export type AppEvent =
@@ -71,7 +104,10 @@ export type AppEvent =
   | SelectedCollectionEvent
   | SelectedObjectEvent
   | SetProfileEvent
-  | SearchUpdatedEvent;
+  | SearchUpdatedEvent
+  | NavigateEvent
+  | NavigatedEvent
+  | ResolvedRouteEvent;
 
 /**
  * Actions for the alerts component.

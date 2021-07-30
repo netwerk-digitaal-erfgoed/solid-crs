@@ -15,7 +15,7 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
-import { SearchEvent, SearchEvents } from './features/search/search.events';
+import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 
 /**
  * The root page of the application.
@@ -215,7 +215,7 @@ export class AppRootComponent extends RxLitElement {
    */
   searchUpdated(event: KeyboardEvent): void {
 
-    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: (event.target as HTMLInputElement).value });
+    this.actor.send(new SearchUpdatedEvent((event.target as HTMLInputElement).value));
 
   }
 
@@ -224,7 +224,7 @@ export class AppRootComponent extends RxLitElement {
    */
   clearSearchTerm(): void {
 
-    this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' });
+    this.actor.send(new SearchUpdatedEvent(''));
 
   }
 
