@@ -88,6 +88,7 @@ export enum AppFeatureStates {
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',
   NOT_FOUND = '[AppFeatureState: Not found]',
+  ABOUT  = '[AppFeatureState: About]',
 }
 
 /**
@@ -138,6 +139,9 @@ export const appMachine = (
       target: `#${AppRouterStates.NAVIGATING}`,
       actions: assign({ path: (context, event) => event.path||window.location.pathname }),
     },
+    [AppEvents.CLICKED_HOME]: {
+      target: `#${AppFeatureStates.ABOUT}`,
+    },
   },
   states: {
     /**
@@ -164,8 +168,8 @@ export const appMachine = (
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
             },
             {
-              cond: (context) => !!context.path?.match(/^\/.+\/overview\/?/),
-              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
+              cond: (context) => !!context.path?.match(/^\/.+\/about\/?/),
+              target: [ AppRouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
             },
             {
               actions: [
@@ -312,10 +316,14 @@ export const appMachine = (
             },
           },
         },
+        [AppFeatureStates.ABOUT]: {
+          id: AppFeatureStates.ABOUT,
+        },
         /**
          * The collection feature is shown.
          */
         [AppFeatureStates.COLLECTION]: {
+          id: AppFeatureStates.COLLECTION,
           entry: [
             assign({ selected: (context) =>
               context.selected
@@ -324,7 +332,6 @@ export const appMachine = (
                 || context.collections[0] }),
             (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected.uri)}`),
           ],
-          id: AppFeatureStates.COLLECTION,
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
               target: AppFeatureStates.OBJECT,

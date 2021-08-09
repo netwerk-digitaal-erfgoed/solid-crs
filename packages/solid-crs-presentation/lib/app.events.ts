@@ -19,6 +19,7 @@ export enum AppEvents {
   NAVIGATE = '[AppEvent: Navigated]',
   RESOLVED_ROUTE = '[AppEvent: Resolved Route]',
   NAVIGATED = '[AppEvent: Navigated]',
+  CLICKED_HOME = '[AppEvent: Clicked Home]',
 }
 
 /**
@@ -95,6 +96,15 @@ export class NavigatedEvent implements EventObject {
 }
 
 /**
+ * An event which is dispatched when the user navigates
+ */
+export class ClickedHomeEvent implements EventObject {
+
+  public type: AppEvents.CLICKED_HOME = AppEvents.CLICKED_HOME;
+
+}
+
+/**
  * Union type of app events.
  */
 export type AppEvent =
@@ -107,7 +117,8 @@ export type AppEvent =
   | SearchUpdatedEvent
   | NavigateEvent
   | NavigatedEvent
-  | ResolvedRouteEvent;
+  | ResolvedRouteEvent
+  | ClickedHomeEvent;
 
 /**
  * Actions for the alerts component.

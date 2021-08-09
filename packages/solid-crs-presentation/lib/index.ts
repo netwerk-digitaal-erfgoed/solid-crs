@@ -8,3 +8,4 @@ export * from './common/solid/solid.service';
 export * from './features/collection/collection-root.component';
 export * from './features/search/search-root.component';
 export * from './features/object/object-root.component';
+export * from './features/about/about-root.component';

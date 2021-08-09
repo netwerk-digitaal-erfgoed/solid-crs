@@ -415,6 +415,26 @@
         "value": "Eenheid"
     },
     {
+        "key": "nde.features.about.header.title",
+        "locale": "nl-NL",
+        "value": "Deze erfgoedinstelling"
+    },
+    {
+        "key": "nde.features.about.header.subtitle",
+        "locale": "nl-NL",
+        "value": "Meer informatie over"
+    },
+    {
+        "key": "nde.features.about.more-information",
+        "locale": "nl-NL",
+        "value": "Meer over de instelling"
+    },
+    {
+        "key": "nde.features.about.collection-overview",
+        "locale": "nl-NL",
+        "value": "Overzicht van de collecties"
+    },
+    {
         "key": "nde.common.form.click-to-select",
         "locale": "nl-NL",
         "value": "Klik om te selecteren"

@@ -9,7 +9,7 @@ import { Theme, Logo, Cross, Search, Dropdown } from '@netwerk-digitaal-erfgoed/
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { DismissAlertEvent } from './app.events';
+import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
@@ -226,7 +226,7 @@ export class AppRootComponent extends RxLitElement {
     ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
     <nde-sidebar inverse>
-      <nde-content-header>
+      <nde-content-header @click="${() => this.actor.send(new ClickedHomeEvent())}">
         <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">${this.profile?.name}</div>
       </nde-content-header>
@@ -265,6 +265,7 @@ export class AppRootComponent extends RxLitElement {
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT }) ? html`<nde-about-root .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-about-root>` : '' }
   
     `;
 
@@ -297,6 +298,10 @@ export class AppRootComponent extends RxLitElement {
         }
         nde-sidebar {
           width: var(--size-sidebar);
+        }
+
+        nde-sidebar nde-content-header {
+          cursor: pointer;
         }
 
         nde-sidebar-item div[slot="content"] {

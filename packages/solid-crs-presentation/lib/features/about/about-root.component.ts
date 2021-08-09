@@ -1,0 +1,187 @@
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { ArgumentError, Collection, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { map } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { Interpreter, State } from 'xstate';
+import { RxLitElement } from 'rx-lit';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { DismissAlertEvent } from '../../app.events';
+import { AppContext } from '../../app.machine';
+import { SolidProfile } from '../../common/solid/solid-profile';
+
+/**
+ * The root page of the search feature.
+ */
+export class AboutRootComponent extends RxLitElement {
+
+  /**
+   * The component's logger.
+   */
+  @property({ type: Object })
+  public logger: Logger;
+
+  /**
+   * The component's translator.
+   */
+  @property({ type: Object })
+  public translator: Translator;
+
+  /**
+   * The actor controlling this component.
+   */
+  @property({ type: Object })
+  public actor: Interpreter<AppContext>;
+
+  /**
+   * The component's alerts.
+   */
+  @property({ type: Array })
+  public alerts: Alert[];
+
+  /**
+   * The state of this component.
+   */
+  @internalProperty()
+  state?: State<AppContext>;
+
+  /**
+   * The collections that match the searched term.
+   */
+  @internalProperty()
+  collections?: Collection[];
+
+  /**
+   * The profile of the heritage institution.
+   */
+  @internalProperty()
+  profile?: SolidProfile;
+
+  /**
+   * Hook called on at every update after connection to the DOM.
+   */
+  updated(changed: PropertyValues): void {
+
+    super.updated(changed);
+
+    if(changed && changed.has('actor') && this.actor){
+
+      this.subscribe('alerts', from(this.actor)
+        .pipe(map((state) => state.context?.alerts)));
+
+      this.subscribe('state', from(this.actor));
+
+      this.subscribe('collections', from(this.actor)
+        .pipe(map((state) => state.context?.collections)));
+
+      this.subscribe('profile', from(this.actor)
+        .pipe(map((state) => state.context?.profile)));
+
+    }
+
+  }
+
+  /**
+   * Handles a dismiss event by sending a dismiss alert event to its parent.
+   *
+   * @param event Dismiss event dispatched by an alert componet.
+   */
+  handleDismiss(event: CustomEvent<Alert>): void {
+
+    if (!event || !event.detail) {
+
+      throw new ArgumentError('Argument event || event.detail should be set.', event);
+
+    }
+
+    if (!this.actor) {
+
+      throw new ArgumentError('Argument this.actor should be set.', this.actor);
+
+    }
+
+    this.actor.send(new DismissAlertEvent(event.detail));
+
+  }
+
+  /**
+   * Renders the component as HTML.
+   *
+   * @returns The rendered HTML of the component.
+   */
+  render(): TemplateResult {
+
+    return html`
+      <nde-content-header inverse>
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+        <div slot="title">${this.translator?.translate('nde.features.about.header.title')}</div>
+        <div slot="subtitle">${this.translator?.translate('nde.features.about.header.subtitle')}</div>
+      </nde-content-header>
+
+      <div class="content">
+
+        <nde-large-card
+        .showImage="${false}">
+          <div slot="title">Heemkundevereniging Maas- en Swalmdal</div>
+          <div slot="content">
+            <span> Welkom op de collectie van Heemkundevereniging Maas- en Swalmdal. Op 24 oktober 1980 werd de vereniging opgericht. Onze vereniging zet zich in voor het behoud, herstel en bescherming van het cultureel erfgoed en het bestuderen en vastleggen van de eigen leefomgeving. Het werkgebied omvat Belfeld, Reuver, Offenbeek, Beesel, Swalmen, Asselt en Boukoul, maar ook daarbuiten komen wij in voorkomende gevallen op voor cultuurhistorische belangen. </span>
+            <br>
+            <br>
+            <a>${this.translator.translate('nde.features.about.more-information')}</a>
+          </div>
+        </nde-large-card> 
+
+        <span>${this.translator?.translate('nde.features.about.collection-overview')}</span>
+
+        ${this.collections?.map((collection) => html`
+        <nde-large-card
+        .showImage="${false}"
+        .showContent="${false}">
+          <div slot="title">${ collection.name }</div>
+        </nde-large-card>
+        `) }
+      </div>
+    `;
+
+  }
+
+  /**
+   * The styles associated with the component.
+   */
+  static get styles(): CSSResult[] {
+
+    return [
+      unsafeCSS(Theme),
+      css`
+
+        *::-webkit-scrollbar-thumb {
+          background-color: var(--colors-foreground-light);
+          border: 3px solid var(--colors-background-normal);
+        }
+        *::-webkit-scrollbar-track {
+          background: var(--colors-background-normal);
+        }
+        :host {
+          scrollbar-color: var(--colors-foreground-light) var(--colors-background-normal);
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+        .content {
+          margin: 0 var(--gap-large);
+          margin-top: 41px;
+          height: 100%;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+        }
+        .content > * {
+          margin-bottom: var(--gap-large);
+        }
+      `,
+    ];
+
+  }
+
+}
