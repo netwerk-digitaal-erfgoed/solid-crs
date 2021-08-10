@@ -24,4 +24,12 @@ export interface SolidProfile extends Resource {
    * The website of the heritage institution.
    */
   website?: string;
+  /**
+   * The e-mail of the heritage institution.
+   */
+  email?: string;
+  /**
+   * The telephone number of the heritage institution.
+   */
+  telephone?: string;
 }

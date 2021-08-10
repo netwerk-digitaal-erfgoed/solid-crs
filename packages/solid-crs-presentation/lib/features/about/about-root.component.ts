@@ -128,7 +128,17 @@ export class AboutRootComponent extends RxLitElement {
           <div slot="content">
             <p>${ this.profile?.name }</p>
             ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
-            <a href="${this.profile?.website}">${this.translator.translate('nde.features.about.more-information')}</a>
+            <div class="links">
+              <a href="${this.profile?.website}">${this.translator.translate('nde.features.about.more-information')}</a>
+              <span>
+                E-mail: 
+                <a href="mailto:${this.profile?.email}">${this.profile?.email}</a>
+              </span>
+              <span>
+                Tel: 
+                <a href="tel:${this.profile?.telephone}">${this.profile?.telephone}</a>
+              </span>
+            </div>
           </div>
         </nde-large-card> 
 
@@ -193,6 +203,16 @@ export class AboutRootComponent extends RxLitElement {
           cursor: pointer;
           text-decoration: underline;
           color: var(--colors-primary-light);
+        }
+        .links {
+          display: flex;
+          flex-direction: column;
+        }
+        .links > * {
+          margin-bottom: var(--gap-small);
+        }
+        .links :first-child {
+          margin-bottom: var(--gap-large);
         }
         .collection {
           cursor: pointer;

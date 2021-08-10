@@ -227,7 +227,7 @@ export class AppRootComponent extends RxLitElement {
 
     <nde-sidebar inverse>
       <nde-content-header @click="${() => this.actor.send(new ClickedHomeEvent())}">
-        <div slot="icon">${ unsafeSVG(Logo) }</div>
+        <img slot="icon" src="${this.profile?.logo}"/>
         <div slot="title">${this.profile?.name}</div>
       </nde-content-header>
       <nde-sidebar-item>
@@ -286,7 +286,6 @@ export class AppRootComponent extends RxLitElement {
           overflow: hidden;
           max-height: 100%;
         }
-
         :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
@@ -311,6 +310,10 @@ export class AppRootComponent extends RxLitElement {
 
         nde-content-header div[slot="icon"] svg {
           fill: var(--colors-foreground-inverse);
+        }
+
+        nde-content-header div[slot="title"] {
+          height: 100%;
         }
 
         div[slot="actions"] svg {

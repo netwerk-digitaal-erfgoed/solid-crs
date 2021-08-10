@@ -237,8 +237,20 @@ export class SolidSDKService extends SolidService {
     const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description') || undefined;
     const website = getUrl(profile, 'http://schema.org/url') || undefined;
     const logo = getUrl(profile, 'http://schema.org/logo') || undefined;
+    const contactPoint = getUrl(profile, 'http://schema.org/contactPoint');
 
-    return { uri: webId, name, alternateName, description, website, logo };
+    let email;
+    let telephone;
+
+    if (contactPoint) {
+
+      const contactPointThing = getThing(profileDataset, contactPoint);
+      email = getStringNoLocale(contactPointThing, 'http://schema.org/email') || undefined;
+      telephone = getStringNoLocale(contactPointThing, 'http://schema.org/telephone') || undefined;
+
+    }
+
+    return { uri: webId, name, alternateName, description, website, logo, email, telephone };
 
   }
 
