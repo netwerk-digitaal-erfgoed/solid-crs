@@ -164,11 +164,11 @@ export const appMachine = (
               target: [ AppRouterStates.LOADING_DATA, `#${AppFeatureStates.OBJECT}` ],
             },
             {
-              cond: (context) => !!context.path?.match(/^\/.+\/search\/.*\/?/),
+              cond: (context) => !!context.path?.match(/^\/.+\/search\/.*\/?$/),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
             },
             {
-              cond: (context) => !!context.path?.match(/^\/.+\/about\/?/),
+              cond: (context) => !!context.path?.match(/^\/.+\/about\/?$/),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
             },
             {

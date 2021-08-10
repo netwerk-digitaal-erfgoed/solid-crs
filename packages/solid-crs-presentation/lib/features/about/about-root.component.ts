@@ -10,7 +10,6 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { AppContext } from '../../app.machine';
 import { SolidProfile } from '../../common/solid/solid-profile';
-import { SelectedObjectEvent } from '../object/object.events';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 
 /**
@@ -128,8 +127,8 @@ export class AboutRootComponent extends RxLitElement {
         .showHeader="${false}">
           <div slot="content">
             <p>${ this.profile?.name }</p>
-            <p>${ this.profile?.description }</p>
-            <a href="${this.profile?.uri}">${this.translator.translate('nde.features.about.more-information')}</a>
+            ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
+            <a href="${this.profile?.website}">${this.translator.translate('nde.features.about.more-information')}</a>
           </div>
         </nde-large-card> 
 

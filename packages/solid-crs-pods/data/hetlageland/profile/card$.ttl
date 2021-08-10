@@ -10,12 +10,15 @@
     foaf:primaryTopic <http://localhost:3000/hetlageland/profile/card#me>.
 
 <http://localhost:3000/hetlageland/profile/card#me>
-    rdf:type schema:Organization;
+    a foaf:Person;
+    rdf:type schema:Organization ;
     schema:name "Heemkundevereniging Het Lage Land" ;
     schema:alternateName "Het Lage Land" ; # Optional
-    schema:description "Welkom op de collectie van Het Lage Land. Op 24 oktober 1980 werd de vereniging opgericht. Onze vereniging zet zich in voor het behoud, herstel en bescherming van het cultureel erfgoed en het bestuderen en vastleggen van de eigen leefomgeving. Het werkgebied omvat Belfeld, Reuver, Offenbeek, Beesel, Swalmen, Asselt en Boukoul, maar ook daarbuiten komen wij in voorkomende gevallen op voor cultuurhistorische belangen."@nl ;
-    a foaf:Person;
-    foaf:name "Het Lage Land";
+    schema:description "Het Lage Land specialiseert zich in alles wat te maken heeft met Het Lage Land. Hier kan nog een langer verhaaltje komen."; # Optional
+    schema:logo <https://www.hetlageland.org/logo.svg> ; # Optional
+    schema:contactPoint [a schema:ContactPoint ; schema:email "collecties@hetlageland.org"] ; # Optional
+    schema:sameAs <https://www.hetlageland.org> . # Optional
+
     solid:oidcIssuer <http://localhost:3000/>;
     solid:oidcIssuerRegistrationToken "9a112e5c-c520-4d1b-b17b-c63693520b72";
     solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;

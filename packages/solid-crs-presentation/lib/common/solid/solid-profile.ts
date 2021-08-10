@@ -9,9 +9,17 @@ export interface SolidProfile extends Resource {
    */
   name: string;
   /**
+   * The alternative name of the heritage institution.
+   */
+  alternateName?: string;
+  /**
    * The description of the heritage institution.
    */
   description?: string;
+  /**
+   * The URI of the logo of the heritage institution.
+   */
+  logo?: string;
   /**
    * The website of the heritage institution.
    */

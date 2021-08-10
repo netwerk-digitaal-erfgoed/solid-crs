@@ -232,10 +232,13 @@ export class SolidSDKService extends SolidService {
 
     }
 
-    const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
-    const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description');
+    const name = getStringNoLocale(profile, 'http://schema.org/name') || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') || undefined;
+    const alternateName = getStringNoLocale(profile, 'http://schema.org/alternateName') || undefined;
+    const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description') || undefined;
+    const website = getUrl(profile, 'http://schema.org/url') || undefined;
+    const logo = getUrl(profile, 'http://schema.org/logo') || undefined;
 
-    return { uri: webId, name, description };
+    return { uri: webId, name, alternateName, description, website, logo };
 
   }
 
