@@ -18,9 +18,11 @@ export enum CollectionEvents {
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export interface SelectedCollectionEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.SELECTED_COLLECTION;
-  collection: Collection;
+export class SelectedCollectionEvent implements EventObject {
+
+  public type: CollectionEvents.SELECTED_COLLECTION = CollectionEvents.SELECTED_COLLECTION;
+  constructor(public collection: Collection) { }
+
 }
 
 /**

@@ -1,4 +1,4 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout, getStringNoLocale, getStringWithLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { ArgumentError, Logger } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
@@ -233,8 +233,9 @@ export class SolidSDKService extends SolidService {
     }
 
     const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name');
+    const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description');
 
-    return { uri: webId, name };
+    return { uri: webId, name, description };
 
   }
 

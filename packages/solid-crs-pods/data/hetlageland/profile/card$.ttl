@@ -13,6 +13,7 @@
     rdf:type schema:Organization;
     schema:name "Heemkundevereniging Het Lage Land" ;
     schema:alternateName "Het Lage Land" ; # Optional
+    schema:description "Welkom op de collectie van Het Lage Land. Op 24 oktober 1980 werd de vereniging opgericht. Onze vereniging zet zich in voor het behoud, herstel en bescherming van het cultureel erfgoed en het bestuderen en vastleggen van de eigen leefomgeving. Het werkgebied omvat Belfeld, Reuver, Offenbeek, Beesel, Swalmen, Asselt en Boukoul, maar ook daarbuiten komen wij in voorkomende gevallen op voor cultuurhistorische belangen."@nl ;
     a foaf:Person;
     foaf:name "Het Lage Land";
     solid:oidcIssuer <http://localhost:3000/>;

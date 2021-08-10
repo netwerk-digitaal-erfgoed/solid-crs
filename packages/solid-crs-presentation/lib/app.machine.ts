@@ -318,6 +318,20 @@ export const appMachine = (
         },
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
+          entry: [
+            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/about`),
+          ],
+          on: {
+            /**
+             * Transition to collection feature when a collection is selected.
+             */
+            [CollectionEvents.SELECTED_COLLECTION]: {
+              target: AppFeatureStates.COLLECTION,
+              actions: [
+                assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
+              ],
+            },
+          },
         },
         /**
          * The collection feature is shown.
