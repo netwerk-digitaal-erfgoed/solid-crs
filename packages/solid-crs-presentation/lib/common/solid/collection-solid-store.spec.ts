@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, NotImplementedError } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionSolidStore } from './collection-solid-store';
 
 describe('CollectionSolidStore', () => {
@@ -17,6 +17,7 @@ describe('CollectionSolidStore', () => {
   beforeEach(() => {
 
     service = new CollectionSolidStore();
+    service.webId = mockSession.info.webId;
 
     jest.clearAllMocks();
 
@@ -40,11 +41,28 @@ describe('CollectionSolidStore', () => {
 
     it('should error when no type registration could be found', async () => {
 
+      service.webId = undefined;
+
+      await expect(service.all()).rejects.toThrow('Argument WebID should be set');
+
+    });
+
+    it('should error when no type registration could be found', async () => {
+
       client.getDefaultSession = jest.fn(() => mockSession);
       service.getInstanceForClass = jest.fn(async () => undefined);
       service.saveInstanceForClass = jest.fn(async () => undefined);
 
       await expect(service.all()).rejects.toThrow('Could not retrieve type registration');
+
+    });
+
+    it('should error when no catalog could be found', async () => {
+
+      client.getDefaultSession = jest.fn(() => mockSession);
+      service.getInstanceForClass = jest.fn(async () => 'test-uri');
+      client.getSolidDataset = jest.fn().mockRejectedValueOnce('err');
+      await expect(service.all()).rejects.toThrow('Could not retrieve catalog');
 
     });
 
@@ -135,6 +153,26 @@ describe('CollectionSolidStore', () => {
       const result = await service.search(mockCollection.name, collections);
       expect(result).toBeTruthy();
       expect(result.length).toEqual(2);
+
+    });
+
+  });
+
+  describe('delete', () => {
+
+    it('should not be implemented', async () => {
+
+      await expect(() => service.delete(undefined)).rejects.toThrow(NotImplementedError);
+
+    });
+
+  });
+
+  describe('save', () => {
+
+    it('should not be implemented', async () => {
+
+      await expect(() => service.save(undefined)).rejects.toThrow(NotImplementedError);
 
     });
 

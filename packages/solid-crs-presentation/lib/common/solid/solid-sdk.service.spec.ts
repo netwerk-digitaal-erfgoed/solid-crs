@@ -246,10 +246,21 @@ describe('SolidService', () => {
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(() => validProfileThing);
       client.getStringNoLocale = jest.fn(() => validName);
+      client.getStringWithLocale = jest.fn(() => validName);
+      client.getUrl = jest.fn(() => validName);
 
       const profile = await service.getProfile(webId);
 
-      expect(profile).toEqual(expect.objectContaining({ name: validName }));
+      expect(profile).toEqual(expect.objectContaining({
+        name: validName,
+        uri: webId,
+        alternateName: validName,
+        description: validName,
+        website: validName,
+        logo: validName,
+        email: validName,
+        telephone: validName,
+      }));
 
     });
 

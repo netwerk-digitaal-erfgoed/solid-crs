@@ -70,6 +70,7 @@ export class LargeCardComponent extends LitElement {
               <slot name="icon" slot="icon"></slot>
               <slot name="title" slot="title"></slot>
               <slot name="subtitle" slot="subtitle"></slot>
+              <slot name="actions" slot="actions"></slot>
             </nde-content-header>
           `
     : html``

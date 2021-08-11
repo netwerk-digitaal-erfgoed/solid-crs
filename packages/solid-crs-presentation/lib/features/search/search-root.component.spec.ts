@@ -3,6 +3,7 @@ import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, Col
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SearchRootComponent } from './search-root.component';
 import { SearchEvents, SearchUpdatedEvent } from './search.events';
 import { SearchContext, searchMachine } from './search.machine';
@@ -47,6 +48,7 @@ describe('SearchRootComponent', () => {
     machine = interpret(searchMachine(collectionStore, objectStore).withContext({ searchTerm }));
 
     machine.parent = interpret(appMachine(
+      new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error)),
       collectionStore,
       objectStore,
     ).withContext({

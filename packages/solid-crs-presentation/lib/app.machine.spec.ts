@@ -1,9 +1,15 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AddAlertEvent, AppEvents, DismissAlertEvent } from './app.events';
 import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
+import { SolidMockService } from './common/solid/solid-mock.service';
+
+global.window = Object.create(window);
+const url = 'http://test.presentation.solid-crs/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fprofile%2Fcard%23me/collection/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fheritage-collections%2Fcatalog%23collection-1';
+delete window.location;
+(window.location as any) = new URL(url);
 
 describe('AppMachine', () => {
 
@@ -40,6 +46,7 @@ describe('AppMachine', () => {
 
     machine = interpret(
       appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
       ).withContext({
@@ -73,6 +80,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
       )
@@ -114,6 +122,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
+        new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error)),
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
       )

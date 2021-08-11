@@ -4,6 +4,7 @@ import { AppRootComponent } from '../lib/app-root.component';
 import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
 import { SearchRootComponent } from '../lib/features/search/search-root.component';
 import { ObjectRootComponent } from '../lib/features/object/object-root.component';
+import { AboutRootComponent } from '../lib/features/about/about-root.component';
 
 /**
  * Enable mocks for fetch.
@@ -16,6 +17,7 @@ fetchMock.enableMocks();
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-object-root', ObjectRootComponent);
+customElements.define('nde-about-root', AboutRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-alert', AlertComponent);
 customElements.define('nde-form-element', FormElementComponent);

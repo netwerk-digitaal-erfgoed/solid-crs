@@ -5,16 +5,17 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logo, Cross, Search, Dropdown } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Cross, Search, Dropdown, Info } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { DismissAlertEvent } from './app.events';
+import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SolidProfile } from './common/solid/solid-profile';
 import { CollectionSolidStore } from './common/solid/collection-solid-store';
 import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
+import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**
  * The root page of the application.
@@ -52,6 +53,7 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   actor = interpret(
     appMachine(
+      new SolidSDKService(this.logger),
       new CollectionSolidStore(),
       new CollectionObjectSolidStore()
     ).withContext({ alerts: [] }),
@@ -224,11 +226,21 @@ export class AppRootComponent extends RxLitElement {
     ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
     <nde-sidebar inverse>
-      <nde-content-header>
-        <div slot="icon">${ unsafeSVG(Logo) }</div>
+      <nde-content-header @click="${() => this.actor.send(new ClickedHomeEvent())}">
+        <img slot="icon" src="${this.profile?.logo}"/>
         <div slot="title">${this.profile?.name}</div>
       </nde-content-header>
-      <nde-sidebar-item>
+      <nde-sidebar-item .padding="${false}" id="about-item">
+        <nde-sidebar-list slot="content">
+          <nde-sidebar-list-item slot="item" inverse
+          @click="${() => this.actor.send(new ClickedHomeEvent())}"
+          .selected="${this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT })}">
+            <div slot="title">${this.translator?.translate('nde.navigation.about.title')}</div>
+            <div slot="actions"> ${unsafeSVG(Info)} </div>
+          </nde-sidebar-list-item>
+        </nde-sidebar-list>
+      </nde-sidebar-item>
+      <nde-sidebar-item id="search-item">
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm" .debounceTimeout="${0}">
@@ -251,7 +263,7 @@ export class AppRootComponent extends RxLitElement {
     : ''}
         </div>
       </nde-sidebar-item>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}" id="collections-item">
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
@@ -263,6 +275,7 @@ export class AppRootComponent extends RxLitElement {
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT }) ? html`<nde-about-root .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-about-root>` : '' }
   
     `;
 
@@ -283,7 +296,6 @@ export class AppRootComponent extends RxLitElement {
           overflow: hidden;
           max-height: 100%;
         }
-
         :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
@@ -297,6 +309,18 @@ export class AppRootComponent extends RxLitElement {
           width: var(--size-sidebar);
         }
 
+        nde-sidebar nde-content-header {
+          cursor: pointer;
+        }
+
+        nde-sidebar-item#collections-item {
+          margin: var(--gap-normal) 0;
+        }
+
+        nde-sidebar-item#search-item {
+          margin-top: var(--gap-small);
+        }
+
         nde-sidebar-item div[slot="content"] {
           display: flex;
           flex-direction: column;
@@ -304,6 +328,10 @@ export class AppRootComponent extends RxLitElement {
 
         nde-content-header div[slot="icon"] svg {
           fill: var(--colors-foreground-inverse);
+        }
+
+        nde-content-header div[slot="title"] {
+          height: 100%;
         }
 
         div[slot="actions"] svg {

@@ -20,6 +20,11 @@
         "value": "Zoeken"
     },
     {
+        "key": "nde.navigation.about.title",
+        "locale": "nl-NL",
+        "value": "Over"
+    },
+    {
         "key": "nde.navigation.collections.title",
         "locale": "nl-NL",
         "value": "Collecties"
@@ -413,6 +418,26 @@
         "key": "nde.features.object.card.dimensions.field.unit",
         "locale": "nl-NL",
         "value": "Eenheid"
+    },
+    {
+        "key": "nde.features.about.header.title",
+        "locale": "nl-NL",
+        "value": "Collecties"
+    },
+    {
+        "key": "nde.features.about.header.subtitle",
+        "locale": "nl-NL",
+        "value": "Een overzicht van alle collecties"
+    },
+    {
+        "key": "nde.features.about.more-information",
+        "locale": "nl-NL",
+        "value": "Meer over de instelling"
+    },
+    {
+        "key": "nde.features.about.collection-overview",
+        "locale": "nl-NL",
+        "value": "Overzicht van de collecties"
     },
     {
         "key": "nde.common.form.click-to-select",
