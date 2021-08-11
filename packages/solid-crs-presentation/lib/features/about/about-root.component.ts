@@ -113,6 +113,8 @@ export class AboutRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
+
     return html`
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
@@ -126,6 +128,9 @@ export class AboutRootComponent extends RxLitElement {
         .showImage="${false}"
         .showHeader="${false}">
           <div slot="content">
+            
+            ${ alerts }
+
             <p>${ this.profile?.name }</p>
             ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
             <div class="links">

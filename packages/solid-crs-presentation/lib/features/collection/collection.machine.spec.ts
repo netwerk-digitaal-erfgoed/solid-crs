@@ -1,9 +1,16 @@
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
+import { SolidMockService } from '../../common/solid/solid-mock.service';
+import { SolidService } from '../../common/solid/solid.service';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
+
+global.window = Object.create(window);
+const url = 'http://test.presentation.solid-crs/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fprofile%2Fcard%23me/collection/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fheritage-collections%2Fcatalog%23collection-1';
+delete window.location;
+(window.location as any) = new URL(url);
 
 describe('CollectionMachine', () => {
 
@@ -37,13 +44,16 @@ describe('CollectionMachine', () => {
   let machine: Interpreter<CollectionContext>;
   let collectionStore: CollectionStore;
   let objectStore: CollectionObjectStore;
+  let solidService: SolidService;
 
   beforeEach(() => {
+
+    solidService = new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error));
+    solidService.getProfile = jest.fn(async() => ({ uri: 'https://test.url/', name: 'name' }));
 
     collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
     objectStore = new CollectionObjectMemoryStore([ object1 ]);
-
     objectStore.getObjectsForCollection = jest.fn(async() => [ object1 ]);
 
     machine = interpret(collectionMachine(objectStore)
@@ -51,12 +61,15 @@ describe('CollectionMachine', () => {
         collection: collection1,
       }));
 
-    machine.parent = interpret(appMachine(
-      collectionStore,
-      objectStore,
-    ).withContext({
-      alerts: [],
-    }));
+    machine.parent = interpret(
+      appMachine(
+        solidService,
+        collectionStore,
+        objectStore,
+      ).withContext({
+        alerts: [],
+      }),
+    );
 
   });
 
@@ -124,26 +137,6 @@ describe('CollectionMachine', () => {
     machine.start();
 
     machine.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: collection2 } as SelectedCollectionEvent);
-
-  });
-
-  it('should send error event to parent when loading failed', async(done) => {
-
-    objectStore.getObjectsForCollection = jest.fn().mockRejectedValue(undefined);
-
-    machine.parent.onEvent((event) => {
-
-      if(event && event.type === AppEvents.ERROR) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    machine.parent.start();
 
   });
 

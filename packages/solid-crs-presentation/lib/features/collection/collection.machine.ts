@@ -1,7 +1,7 @@
 import { State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, sendParent, StateMachine } from 'xstate';
+import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { AppEvents } from '../../app.events';
+import { AppEvents, ErrorEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionEvent, CollectionEvents } from './collection.events';
 
@@ -61,8 +61,14 @@ export const collectionMachine =
         [CollectionStates.LOADING]: {
 
           invoke: {
-            src: (context) =>
-              objectStore.getObjectsForCollection(context.collection),
+            src: (context) => objectStore.getObjectsForCollection(context.collection),
+            onError: {
+              /**
+               * Notify the parent machine when something goes wrong.
+               */
+              target: CollectionStates.IDLE,
+              actions: (context, event) => sendParent(new ErrorEvent(event.data)),
+            },
             onDone: {
             /**
              * When done, assign objects to the context and transition to idle.
@@ -73,13 +79,6 @@ export const collectionMachine =
                 ),
               }),
               target: CollectionStates.IDLE,
-            },
-            onError: {
-            /**
-             * Notify the parent machine when something goes wrong.
-             */
-              target: CollectionStates.IDLE,
-              actions: sendParent((context, event) => ({ type: AppEvents.ERROR, data: event.data })),
             },
           },
         },

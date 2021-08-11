@@ -283,9 +283,9 @@ export const appMachine = (
                       ],
                     },
                   ],
-                  // onError: {
-                  //   target: `#${AppFeatureStates.NOT_FOUND}`,
-                  // },
+                  onError: {
+                    target: `#${AppFeatureStates.NOT_FOUND}`,
+                  },
                 },
               ],
             },

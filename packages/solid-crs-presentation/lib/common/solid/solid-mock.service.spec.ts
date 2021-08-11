@@ -85,7 +85,11 @@ describe('SolidMockService', () => {
 
   describe('logout', async () => {
 
-    await expect(service.logout()).resolves.toEqual(undefined);
+    it('should resolve', async () => {
+
+      await expect(service.logout()).resolves.toEqual(undefined);
+
+    });
 
   });
 
