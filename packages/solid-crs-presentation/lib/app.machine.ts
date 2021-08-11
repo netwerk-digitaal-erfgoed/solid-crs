@@ -140,6 +140,7 @@ export const appMachine = (
       actions: assign({ path: (context, event) => event.path||window.location.pathname }),
     },
     [AppEvents.CLICKED_HOME]: {
+      actions: assign({ selected: (context) => undefined }),
       target: `#${AppFeatureStates.ABOUT}`,
     },
   },
@@ -382,7 +383,11 @@ export const appMachine = (
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
               target: AppFeatureStates.OBJECT,
-              actions: send((context, event) => event),
+              actions: [
+                send((context, event) => event),
+                assign({ selected: (context, event) =>
+                  context.collections.find((collection) => collection.uri === event.object.collection) }),
+              ],
             },
             /**
              * Forward the search updated event to the search machine.

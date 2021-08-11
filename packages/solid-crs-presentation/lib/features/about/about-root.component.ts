@@ -119,7 +119,7 @@ export class AboutRootComponent extends RxLitElement {
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title">${this.translator?.translate('nde.features.about.header.title')}</div>
-        <div slot="subtitle">${this.translator?.translate('nde.features.about.header.subtitle')} ${this.profile?.name}</div>
+        <div slot="subtitle">${this.translator?.translate('nde.features.about.header.subtitle')}</div>
       </nde-content-header>
 
       <div class="content">

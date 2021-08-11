@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logo, Cross, Search, Dropdown } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Cross, Search, Dropdown, Info } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -230,7 +230,17 @@ export class AppRootComponent extends RxLitElement {
         <img slot="icon" src="${this.profile?.logo}"/>
         <div slot="title">${this.profile?.name}</div>
       </nde-content-header>
-      <nde-sidebar-item>
+      <nde-sidebar-item .padding="${false}" id="about-item">
+        <nde-sidebar-list slot="content">
+          <nde-sidebar-list-item slot="item" inverse
+          @click="${() => this.actor.send(new ClickedHomeEvent())}"
+          .selected="${this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT })}">
+            <div slot="title">${this.translator?.translate('nde.navigation.about.title')}</div>
+            <div slot="actions"> ${unsafeSVG(Info)} </div>
+          </nde-sidebar-list-item>
+        </nde-sidebar-list>
+      </nde-sidebar-item>
+      <nde-sidebar-item id="search-item">
         <div slot="content">
           <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
           <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm" .debounceTimeout="${0}">
@@ -253,7 +263,7 @@ export class AppRootComponent extends RxLitElement {
     : ''}
         </div>
       </nde-sidebar-item>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+      <nde-sidebar-item .padding="${false}" .showBorder="${false}" id="collections-item">
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
             <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
@@ -301,6 +311,14 @@ export class AppRootComponent extends RxLitElement {
 
         nde-sidebar nde-content-header {
           cursor: pointer;
+        }
+
+        nde-sidebar-item#collections-item {
+          margin: var(--gap-normal) 0;
+        }
+
+        nde-sidebar-item#search-item {
+          margin-top: var(--gap-small);
         }
 
         nde-sidebar-item div[slot="content"] {
