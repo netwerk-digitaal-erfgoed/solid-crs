@@ -5,34 +5,19 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
-import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { Connect, Identity, Image, Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
+import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
-import { ClickedObjectSidebarItem } from './object.events';
 
 /**
  * The root page of the object feature.
  */
 export class ObjectRootComponent extends RxLitElement {
 
-  /**
-   * The form cards in this component
-   */
-  @internalProperty()
-  formCards: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[];
-  /**
-   * The id of the currently visible form card
-   */
-  @internalProperty()
-  visibleCard: string;
   /**
    * The component's logger.
    */
@@ -143,20 +128,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     if(changed && changed.has('actor') && this.actor){
 
-      this.actor.onEvent(async(event) => {
-
-        if (event instanceof ClickedObjectSidebarItem) {
-
-          this.requestUpdate();
-          await this.updateComplete;
-
-          const formCard = Array.from(this.formCards).find((card) => card.id === event.itemId);
-          formCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        }
-
-      });
-
       if(this.actor.parent){
 
         this.subscribe('alerts', from(this.actor.parent)
@@ -165,13 +136,7 @@ export class ObjectRootComponent extends RxLitElement {
       }
 
       this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => {
-
-          this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
-
-          return state.children[FormActors.FORM_MACHINE];
-
-        })
+        map((state) => state.children[FormActors.FORM_MACHINE]),
       ));
 
       this.subscribe('state', from(this.actor));
@@ -181,13 +146,7 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('object', from(this.actor).pipe(
-        map((state) => {
-
-          this.formCards?.forEach((card) => card.object = state.context?.object);
-
-          return state.context?.object;
-
-        })
+        map((state) => state.context?.object),
       ));
 
     }
@@ -221,18 +180,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
-
-      await this.registerComponents(this.components);
-
-    }
-
-    if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
-
-      this.appendComponents(this.formCards);
-
-    }
-
   }
 
   /**
@@ -257,115 +204,6 @@ export class ObjectRootComponent extends RxLitElement {
     this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
-  /**
-   * Registers and adds all components to DOM
-   *
-   * @param components The component metadata to register and add
-   */
-  async registerComponents(components: ComponentMetadata[]): Promise<void> {
-
-    for (const component of components) {
-
-      if (!customElements.get(component.tag)) {
-
-        // eslint-disable-next-line no-eval
-        const elementComponent = await eval(`import("${component.uri}")`);
-
-        const ctor = customElements.get(component.tag)
-          || customElements.define(component.tag, elementComponent.default);
-
-      }
-
-      let element;
-
-      if (component.tag.includes('imagery')) {
-
-        element = document.createElement(component.tag) as ObjectImageryComponent;
-        element.id = 'nde.features.object.sidebar.image';
-
-      } else if (component.tag.includes('creation')) {
-
-        element = document.createElement(component.tag) as ObjectCreationComponent;
-        element.id = 'nde.features.object.sidebar.creation';
-
-      } else if (component.tag.includes('identification')) {
-
-        element = document.createElement(component.tag) as ObjectIdentificationComponent;
-        element.collections = this.collections;
-        element.id = 'nde.features.object.sidebar.identification';
-
-      } else if (component.tag.includes('representation')) {
-
-        element = document.createElement(component.tag) as ObjectRepresentationComponent;
-        element.id = 'nde.features.object.sidebar.representation';
-
-      } else if (component.tag.includes('dimensions')) {
-
-        element = document.createElement(component.tag) as ObjectDimensionsComponent;
-        element.id = 'nde.features.object.sidebar.dimensions';
-
-      }
-
-      if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
-
-        element.addEventListener('contextmenu', (event: MouseEvent) => {
-
-          event.stopPropagation();
-          event.preventDefault();
-
-        });
-
-      }
-
-      this.formCards = this.formCards?.includes(element)
-        ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
-
-    }
-
-    if (this.formCards) {
-
-      this.appendComponents(this.formCards);
-
-    }
-
-  }
-
-  /**
-   * Appends the formCards to the page content and removes previous children
-   */
-  appendComponents(components: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[]): void {
-
-    components?.forEach(async(component) => {
-
-      component.object = this.object;
-      component.formActor = this.formActor as any;
-      component.translator = this.translator;
-      await component?.requestUpdate('object');
-
-    });
-
-    this.updateSelected();
-
-  }
-
-  /**
-   * Sets this.selected to the currently visible form card's id
-   */
-  updateSelected(): void {
-
-    this.visibleCard = Array.from(this.formCards).find((formCard) => {
-
-      const box = formCard.getBoundingClientRect();
-
-      return box.top >= -(box.height / (3 + 20));
-
-    })?.id;
-
-  }
 
   /**
    * Renders the component as HTML.
@@ -376,54 +214,168 @@ export class ObjectRootComponent extends RxLitElement {
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
-
-    const sidebarItems = this.formCards?.map((formCard) => formCard.id);
+    const collection = this.collections?.find((coll) => coll.uri === this.object?.collection);
 
     return this.object ? html`
 
-    ${ !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
-
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-
-      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-        <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
-      </nde-form-element>
-      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
-      </nde-form-element>
+      <div slot="title" class="title">
+        ${ this.object.name}
+      </div>
+      <div slot="subtitle" class="subtitle">
+        ${ this.object.description }
+      </div>
     </nde-content-header>
 
-    <div class="content-and-sidebar">
+    <div class="content">
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Image) }</div>
+        <div slot="title" class="title">
+          Beeldmateriaal
+        </div>
+        <div slot="subtitle" class="subtitle">
+          Dit is een ondertitel
+        </div>
+        <div slot="content">
+          <img src="${this.object.image}"/>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.license') } </span>
+            <span> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </span>
+          </div>
+        </div>
+      </nde-large-card>
 
-      ${ this.formCards
-    ? html`<nde-sidebar>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
-        <nde-sidebar-list slot="content">
-          ${sidebarItems?.map((item) => html`
-          <nde-sidebar-list-item slot="item"
-          ?selected="${ item === this.visibleCard }"
-          @click="${() => this.actor.send(new ClickedObjectSidebarItem(item))}">
-            <div slot="title">${this.translator?.translate(item)}</div>
-          </nde-sidebar-list-item>
-          `)}
-        </nde-sidebar-list>
-      </nde-sidebar-item>
-    </nde-sidebar>
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Identity) }</div>
+        <div slot="title" class="title">
+          Identificatie
+        </div>
+        <div slot="subtitle" class="subtitle">
+          Dit is een ondertitel
+        </div>
+        <div slot="content">
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.identifier') } </span>
+            <span> ${ this.object.identifier } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.type') } </span>
+            <span> ${ this.object.type } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </span>
+            <span> ${ this.object.additionalType.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.name') } </span>
+            <span> ${ this.object.name } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.description') } </span>
+            <span> ${ this.object.description } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.collection') } </span>
+            <span> <a @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection.name }</a>  </span>
+          </div>
+        </div>
+      </nde-large-card>
 
-    ${ this.formCards ? html`
-      <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+        <div slot="title" class="title">
+          Vervaardiging
+        </div>
+        <div slot="subtitle" class="subtitle">
+          Dit is een ondertitel
+        </div>
+        <div slot="content">
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.creator') } </span>
+            <span> ${ this.object.creator.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </span>
+            <span> ${ this.object.locationCreated.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.material') } </span>
+            <span> ${ this.object.material.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </span>
+            <span> ${ this.object.dateCreated } </span>
+          </div>
+        </div>
+      </nde-large-card>
 
-        ${ alerts }
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+        <div slot="title" class="title">
+          Voorstelling
+        </div>
+        <div slot="subtitle" class="subtitle">
+          Dit is een ondertitel
+        </div>
+        <div slot="content">
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.subject') } </span>
+            <span> ${ this.object.subject.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.location') } </span>
+            <span> ${ this.object.location.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.person') } </span>
+            <span> ${ this.object.person.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.organization') } </span>
+            <span> ${ this.object.organization.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.event') } </span>
+            <span> ${ this.object.event.map((term) => html`<span>${term.name}</span>`) } </span>
+          </div>
+        </div>
+      </nde-large-card>
 
-        ${ this.formCards }
-        
-      </div>
-    ` : html`no formcards`}
-    `
-    : html``}
-    </div>`
-      : html``;
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Connect) }</div>
+        <div slot="title" class="title">
+          Afmetingen
+        </div>
+        <div slot="subtitle" class="subtitle">
+          Dit is een ondertitel
+        </div>
+        <div slot="content">
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.height') } </span>
+            <span> ${ this.object.height } ${ this.object.heightUnit } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.width') } </span>
+            <span> ${ this.object.width } ${ this.object.widthUnit } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.depth') } </span>
+            <span> ${ this.object.depth } ${ this.object.depthUnit } </span>
+          </div>
+          <div class="object-property">
+            <span> ${ this.translator.translate('nde.features.object.card.field.weight') } </span>
+            <span> ${ this.object.weight } ${ this.object.weightUnit } </span>
+          </div>
+        </div>
+      </nde-large-card>
+    </div>
+    ` : html`<nde-progress-bar></nde-progress-bar>`;
 
   }
 
@@ -444,47 +396,53 @@ export class ObjectRootComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           height: 100%;
-        }
-        .content-and-sidebar {
-          margin-top: 1px;
-          display: flex;
-          flex-direction: row;
-        height: 1px;
-          flex: 1 1;
+          width: 100%;
         }
         .content {
+          margin-top: 1px;
           padding: var(--gap-large);
-          width: 100%;
           overflow-y: auto;
           overflow-x: clip;
           display: flex;
           flex-direction: column;
-          gap: var(--gap-large);
         }
-        nde-progress-bar {
-          position: absolute;
+        .content div[slot="content"] {
+          margin: 0 45px; /* gap-large + gap-small */
+        }
+        img {
+          height: 200px;
           width: 100%;
-          top: 0;
-          left: 0;
+          object-fit: cover;
+          margin-bottom: var(--gap-normal);
         }
-        nde-content-header nde-form-element input {
-          height: var(--gap-normal);
-          padding: 0;
-          line-height: var(--gap-normal);
+        a {
+          cursor: pointer;
+          text-decoration: underline;
+          color: var(--colors-primary-light);
         }
-        .name {
-          font-weight: bold;
-          font-size: var(--font-size-large);
+        .object-property {
+          margin-bottom: var(--gap-small);
+          width: 100%;
+          display: flex;
         }
-        .description {
-          margin-top: var(--gap-tiny);
+        .object-property * {
+          overflow: hidden;
+          font-size: var(--font-size-small);
+          line-height: 21px;
         }
-        nde-sidebar-list > slot[name="title"] {
-          font-weight: bold;
+        .object-property span:first-child {
+          font-weight: var(--font-weight-bold);
+          width: 33%;
+          max-width: 33%;
         }
-        button svg {
-          max-width: var(--gap-normal);
-          height: var(--gap-normal);
+        .object-property span:last-child {
+          width: 66%;
+          max-width: 66%;
+          display: flex;
+          flex-direction: column;
+        }
+        [hidden] {
+          display: none;
         }
       `,
     ];
