@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -101,6 +101,11 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @query('.content')
   contentElement: HTMLDivElement;
+  /**
+   * The content element to append SemComs to
+   */
+  @query('nde-popup')
+  imagePopup: PopupComponent;
 
   /**
    * The ComponentMetadata of the SemComs
@@ -216,6 +221,8 @@ export class ObjectRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
     const collection = this.collections?.find((coll) => coll.uri === this.object?.collection);
 
+    const toggleImage =  () => { this.imagePopup.hidden = !this.imagePopup?.hidden; };
+
     return this.object ? html`
 
     <nde-content-header inverse>
@@ -239,11 +246,18 @@ export class ObjectRootComponent extends RxLitElement {
           Dit is een ondertitel
         </div>
         <div slot="content">
-          <img src="${this.object.image}"/>
+          <img src="${this.object.image}" @click="${ () => toggleImage() }"/>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.license') } </span>
-            <span> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.license') } </div>
+            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </div>
           </div>
+          <div class="object-property">
+            <div> ${ this.translator.translate('nde.features.object.card.field.download') } </div>
+            <div> <a href="${this.object.image}" download> click </a> </div>
+          </div>
+          <nde-popup dark>
+            <img slot="content" src="${ this.object.image }"/>
+          </nde-popup>
         </div>
       </nde-large-card>
 
@@ -258,28 +272,28 @@ export class ObjectRootComponent extends RxLitElement {
         </div>
         <div slot="content">
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.identifier') } </span>
-            <span> ${ this.object.identifier } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.identifier') } </div>
+            <div> ${ this.object.identifier } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.type') } </span>
-            <span> ${ this.object.type } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.type') } </div>
+            <div> ${ this.object.type } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </span>
-            <span> ${ this.object.additionalType.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </div>
+            <div> ${ this.object.additionalType.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.name') } </span>
-            <span> ${ this.object.name } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.name') } </div>
+            <div> ${ this.object.name } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.description') } </span>
-            <span> ${ this.object.description } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.description') } </div>
+            <div> ${ this.object.description } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.collection') } </span>
-            <span> <a @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection.name }</a>  </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.collection') } </div>
+            <div> <a @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection.name }</a>  </div>
           </div>
         </div>
       </nde-large-card>
@@ -295,20 +309,20 @@ export class ObjectRootComponent extends RxLitElement {
         </div>
         <div slot="content">
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.creator') } </span>
-            <span> ${ this.object.creator.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.creator') } </div>
+            <div> ${ this.object.creator.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </span>
-            <span> ${ this.object.locationCreated.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </div>
+            <div> ${ this.object.locationCreated.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.material') } </span>
-            <span> ${ this.object.material.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.material') } </div>
+            <div> ${ this.object.material.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </span>
-            <span> ${ this.object.dateCreated } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </div>
+            <div> ${ this.object.dateCreated } </div>
           </div>
         </div>
       </nde-large-card>
@@ -324,24 +338,24 @@ export class ObjectRootComponent extends RxLitElement {
         </div>
         <div slot="content">
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.subject') } </span>
-            <span> ${ this.object.subject.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.subject') } </div>
+            <div> ${ this.object.subject.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.location') } </span>
-            <span> ${ this.object.location.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.location') } </div>
+            <div> ${ this.object.location.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.person') } </span>
-            <span> ${ this.object.person.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.person') } </div>
+            <div> ${ this.object.person.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.organization') } </span>
-            <span> ${ this.object.organization.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.organization') } </div>
+            <div> ${ this.object.organization.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.event') } </span>
-            <span> ${ this.object.event.map((term) => html`<span>${term.name}</span>`) } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.event') } </div>
+            <div> ${ this.object.event.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
         </div>
       </nde-large-card>
@@ -357,20 +371,20 @@ export class ObjectRootComponent extends RxLitElement {
         </div>
         <div slot="content">
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.height') } </span>
-            <span> ${ this.object.height } ${ this.object.heightUnit } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.height') } </div>
+            <div> ${ this.object.height } ${ this.object.heightUnit } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.width') } </span>
-            <span> ${ this.object.width } ${ this.object.widthUnit } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.width') } </div>
+            <div> ${ this.object.width } ${ this.object.widthUnit } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.depth') } </span>
-            <span> ${ this.object.depth } ${ this.object.depthUnit } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.depth') } </div>
+            <div> ${ this.object.depth } ${ this.object.depthUnit } </div>
           </div>
           <div class="object-property">
-            <span> ${ this.translator.translate('nde.features.object.card.field.weight') } </span>
-            <span> ${ this.object.weight } ${ this.object.weightUnit } </span>
+            <div> ${ this.translator.translate('nde.features.object.card.field.weight') } </div>
+            <div> ${ this.object.weight } ${ this.object.weightUnit } </div>
           </div>
         </div>
       </nde-large-card>
@@ -409,7 +423,7 @@ export class ObjectRootComponent extends RxLitElement {
         .content div[slot="content"] {
           margin: 0 45px; /* gap-large + gap-small */
         }
-        img {
+        div[slot="content"] > img {
           height: 200px;
           width: 100%;
           object-fit: cover;
@@ -430,15 +444,13 @@ export class ObjectRootComponent extends RxLitElement {
           font-size: var(--font-size-small);
           line-height: 21px;
         }
-        .object-property span:first-child {
+        .object-property > div:first-child {
           font-weight: var(--font-weight-bold);
           width: 33%;
           max-width: 33%;
         }
-        .object-property span:last-child {
-          width: 66%;
-          max-width: 66%;
-          display: flex;
+        .object-property > div:last-child {
+          display: inline-flex;
           flex-direction: column;
         }
         [hidden] {

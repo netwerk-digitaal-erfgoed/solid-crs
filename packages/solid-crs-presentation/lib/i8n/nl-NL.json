@@ -195,6 +195,11 @@
         "value": "Licentie"
     },
     {
+        "key": "nde.features.object.card.field.download",
+        "locale": "nl-NL",
+        "value": "Download"
+    },
+    {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC/1.0/",
         "locale": "nl-NL",
         "value": "AUTEURSRECHTELIJK BESCHERMD"
