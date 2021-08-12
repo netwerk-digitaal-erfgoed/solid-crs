@@ -1,6 +1,5 @@
 
 import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
-import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 
 /**
@@ -14,18 +13,6 @@ export class PopupComponent extends LitElement {
    */
   @property({ type: Boolean })
   public dark = false;
-
-  /**
-   * The component's logger.
-   */
-  @property({ type: Object })
-  public logger: Logger;
-
-  /**
-   * The component's translator.
-   */
-  @property({ type: Object })
-  public translator: Translator;
 
   /**
    * Renders the component as HTML.

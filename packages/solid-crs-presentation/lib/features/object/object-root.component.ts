@@ -1,15 +1,13 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, Interpreter, State } from 'xstate';
+import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
-import { SemComService } from '../../common/semcom/semcom.service';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
 
@@ -59,70 +57,11 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @property({ type: Object })
   object?: CollectionObject;
-
   /**
-   * The actor responsible for form validation in this component.
-   */
-  @internalProperty()
-  formActor: ActorRef<FormEvent>;
-
-  /**
-   * Indicates if the form is being submitted.
-   */
-  @internalProperty()
-  isSubmitting? = false;
-
-  /**
-   * Indicates if if the form validation passed.
-   */
-  @internalProperty()
-  isValid? = false;
-
-  /**
-   * Indicates if one the form fields has changed.
-   */
-  @internalProperty()
-  isDirty? = false;
-
-  /**
-   * Indicates whether the user is editing a field containing a Term.
-   */
-  @internalProperty()
-  isEditingTermField? = false;
-
-  /**
-   * The semcom service to use in this component
-   */
-  @internalProperty()
-  semComService? = new SemComService();
-
-  /**
-   * The content element to append SemComs to
-   */
-  @query('.content')
-  contentElement: HTMLDivElement;
-  /**
-   * The content element to append SemComs to
+   * The popup component shown when the image preview is clicked
    */
   @query('nde-popup')
   imagePopup: PopupComponent;
-
-  /**
-   * The ComponentMetadata of the SemComs
-   */
-  @internalProperty()
-  components: ComponentMetadata[];
-
-  /**
-   * Hook called on first update after connection to the DOM.
-   */
-  async firstUpdated(changed: PropertyValues): Promise<void> {
-
-    super.firstUpdated(changed);
-
-    this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
-
-  }
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -140,10 +79,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
-      this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => state.children[FormActors.FORM_MACHINE]),
-      ));
-
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collections', from(this.actor).pipe(
@@ -152,35 +87,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       this.subscribe('object', from(this.actor).pipe(
         map((state) => state.context?.object),
-      ));
-
-    }
-
-    if(changed?.has('formActor') && this.formActor){
-
-      // this validates the form when form machine is started
-      // needed for validation when coming back from the term machine
-      // otherwise, form machine state is not_validated and the user can't save
-      this.formActor.send(new FormUpdatedEvent('name', this.object?.name));
-
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-      ));
-
-      this.subscribe('isValid', from(this.formActor).pipe(
-        map((state) => !state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-          },
-        })),
-      ));
-
-      this.subscribe('isDirty', from(this.formActor).pipe(
-        map((state) => state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-          },
-        })),
       ));
 
     }
@@ -262,7 +168,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <nde-popup dark>
             <div slot="content">
-              <div @click="${ () => toggleImage() }"> ${ unsafeSVG(Cross) } </div>
+              <div id="dismiss-popup" @click="${ () => toggleImage() }"> ${ unsafeSVG(Cross) } </div>
               <img src="${ this.object.image }"/>
             </div>
           </nde-popup>
@@ -270,6 +176,7 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-large-card>
 
       <nde-large-card
+      id="identification-card"
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Identity) }</div>
         <div slot="title" class="title">
@@ -289,7 +196,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property" ?hidden="${ !this.object.additionalType || this.object.additionalType?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </div>
-            <div> ${ this.object.additionalType.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.additionalType?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.name || this.object.name?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.name') } </div>
@@ -301,7 +208,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property" ?hidden="${ !this.object.collection || this.object.collection?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.collection') } </div>
-            <div> <a @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection.name }</a>  </div>
+            <div> <a @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection?.name }</a>  </div>
           </div>
         </div>
       </nde-large-card>
@@ -318,15 +225,15 @@ export class ObjectRootComponent extends RxLitElement {
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.creator || this.object.creator?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.creator') } </div>
-            <div> ${ this.object.creator.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.creator?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.locationCreated || this.object.locationCreated?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </div>
-            <div> ${ this.object.locationCreated.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.locationCreated?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.material || this.object.material?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.material') } </div>
-            <div> ${ this.object.material.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.material?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.dateCreated || this.object.dateCreated?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </div>
@@ -347,23 +254,23 @@ export class ObjectRootComponent extends RxLitElement {
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.subject || this.object.subject?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.subject') } </div>
-            <div> ${ this.object.subject.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.subject?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.location || this.object.location?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.location') } </div>
-            <div> ${ this.object.location.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.location?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.person || this.object.person?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.person') } </div>
-            <div> ${ this.object.person.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.person?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.organization || this.object.organization?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.organization') } </div>
-            <div> ${ this.object.organization.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.organization?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.event || this.object.event?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.event') } </div>
-            <div> ${ this.object.event.map((term) => html`<div>${term.name}</div>`) } </div>
+            <div> ${ this.object.event?.map((term) => html`<div>${term.name}</div>`) } </div>
           </div>
         </div>
       </nde-large-card>

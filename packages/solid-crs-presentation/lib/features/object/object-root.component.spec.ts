@@ -5,6 +5,7 @@ import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SolidMockService } from '../../common/solid/solid-mock.service';
+import { CollectionEvents } from '../collection/collection.events';
 import { ObjectRootComponent } from './object-root.component';
 import { ObjectContext, objectMachine } from './object.machine';
 
@@ -30,14 +31,35 @@ describe('ObjectRootComponent', () => {
   };
 
   const object1: CollectionObject = {
+    image: 'test-uri',
     uri: 'object-uri-1',
     name: 'Object 1',
     description: 'This is object 1',
-    image: null,
-    subject: null,
-    type: null,
     updated: '0',
     collection: 'collection-uri-1',
+    type: 'http://schema.org/Photograph',
+    additionalType: [ { 'name':'bidprentjes', 'uri':'https://data.cultureelerfgoed.nl/term/id/cht/1e0adea5-71fa-4197-ad73-90b706d2357c' } ],
+    identifier: 'SK-A-1115',
+    maintainer: 'https://data.hetlageland.org/',
+    creator: [ { 'name':'Jan Willem Pieneman', 'uri':'http://www.wikidata.org/entity/Q512948' } ],
+    locationCreated: [ { 'name':'Delft', 'uri':'http://www.wikidata.org/entity/Q33432813' } ],
+    material: [ { 'name':'olieverf', 'uri':'http://vocab.getty.edu/aat/300015050' } ],
+    dateCreated: '1824-07-24',
+    subject: [ { 'name':'veldslagen', 'uri':'http://vocab.getty.edu/aat/300185692' } ],
+    location: [ { 'name':'Waterloo', 'uri':'http://www.wikidata.org/entity/Q31579578' } ],
+    person: [ { 'name':'Arthur Wellesley of Wellington', 'uri':'http://data.bibliotheken.nl/id/thes/p067531180' } ],
+    event: [ { 'name':'Slag bij Waterloo', 'uri':'http://www.wikidata.org/entity/Q48314' } ],
+    organization: [ { 'name':'Slag bij Waterloo', 'uri':'http://www.wikidata.org/entity/Q48314' } ],
+    height: 52,
+    width: 82,
+    depth: 2,
+    weight: 120,
+    heightUnit: 'CMT',
+    widthUnit: 'CMT',
+    depthUnit: 'CMT',
+    weightUnit: 'KGM',
+    mainEntityOfPage: 'http://localhost:3000/hetlageland/heritage-objects/data-1#object-1-digital',
+    license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
   };
 
   beforeEach(() => {
@@ -76,8 +98,6 @@ describe('ObjectRootComponent', () => {
     component.object = object1;
 
     component.collections = [ collection1, collection2 ];
-
-    component.formCards = [];
 
   });
 
@@ -127,41 +147,6 @@ describe('ObjectRootComponent', () => {
 
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);
-
-  });
-
-  it('should select sidebar item when content is scrolled', async () => {
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
-    component.formCards = [ div ];
-    component.components = [];
-
-    const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
-    content.dispatchEvent(new CustomEvent('scroll'));
-    await component.updateComplete;
-
-    expect(component.visibleCard).toBeTruthy();
-
-  });
-
-  describe('updateSelected()', () => {
-
-    it('should set this.visibleCard to the currently visible card', async () => {
-
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-      component.formCards = [ div ];
-
-      component.updateSelected();
-
-      expect(component.visibleCard).toBeTruthy();
-      expect(component.visibleCard).toEqual(component.formCards[0].id);
-
-    });
 
   });
 
@@ -225,207 +210,84 @@ describe('ObjectRootComponent', () => {
 
       component.subscribe = jest.fn();
 
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-      component.formCards = [ div ];
-
       const map = new Map<string, string>();
       map.set('actor', 'test');
       map.set('formActor', 'test');
 
       await component.updated(map);
 
-      expect(component.subscribe).toHaveBeenCalledTimes(11);
-
-    });
-
-    it('should should call registerComponents() when formCards is undefined', async () => {
-
-      machine.start();
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      component.registerComponents = jest.fn(async() => undefined);
-
-      component.formCards = undefined;
-
-      component.components = [
-        {
-          description: 'Digita SemCom component voor beeldmateriaal informatie.',
-          label: 'Erfgoedobject Beeldmateriaal',
-          uri: 'http://localhost:3004/object-imagery.component.js',
-          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-imagery',
-          version: '0.1.0',
-          latest: true,
-        },
-      ];
-
-      await component.updateComplete;
-      await component.updated(undefined);
-
-      expect(component.registerComponents).toHaveBeenCalled();
+      expect(component.subscribe).toHaveBeenCalledTimes(4);
 
     });
 
   });
 
-  describe('registerComponents()', () => {
-
-    it('should create customElements for this.components', async () => {
-
-      window.eval = jest.fn(() => ObjectImageryComponent);
-      customElements.define = jest.fn(() => ObjectImageryComponent);
-
-      machine.start();
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      component.components = [
-        {
-          description: 'Digita SemCom component voor beeldmateriaal informatie.',
-          label: 'Erfgoedobject Beeldmateriaal',
-          uri: 'http://localhost:3004/object-imagery.component.js',
-          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-imagery',
-          version: '0.1.0',
-          latest: true,
-        },
-        {
-          description: 'Digita SemCom component voor identificatie informatie.',
-          label: 'Erfgoedobject Identificatie',
-          uri: 'http://localhost:3004/object-identification.component.js',
-          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-identification',
-          version: '0.1.0',
-          latest: true,
-        },
-        {
-          description: 'Digita SemCom component voor vervaardiging informatie.',
-          label: 'Erfgoedobject Vervaardiging',
-          uri: 'http://localhost:3004/object-creation.component.js',
-          shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-creation',
-          version: '0.1.0',
-          latest: true,
-        },
-        {
-          description: 'Digita SemCom component voor voorstellingsinformatie.',
-          label: 'Erfgoedobject Voorstelling',
-          uri: 'http://localhost:3004/object-representation.component.js',
-          shapes: [ 'http://digita.ai/voc/input#input' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-representation',
-          version: '0.1.0',
-          latest: true,
-        },
-        {
-          description: 'Digita SemCom component voor afmeting informatie.',
-          label: 'Erfgoedobject Afmetingen',
-          uri: 'http://localhost:3004/object-dimensions.component.js',
-          shapes: [ 'http://digita.ai/voc/payslip#payslip' ],
-          author: 'https://digita.ai',
-          tag: 'nde-object-dimensions',
-          version: '0.1.0',
-          latest: true,
-        },
-      ];
-
-      await component.registerComponents(component.components);
-
-    });
-
-  });
-
-  it('should show content when formCards is set', async () => {
+  it('should show content when object is set', async () => {
 
     window.document.body.appendChild(component);
-
-    const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
-
-    component.formCards = [ div ];
     await component.updateComplete;
 
-    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
-    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
-    expect(sidebar).toBeTruthy();
+    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content');
     expect(formContent).toBeTruthy();
 
   });
 
-  it('should hide content when formCards is undefined', async () => {
+  it('should hide content when object is undefined', async () => {
 
     window.document.body.appendChild(component);
 
-    component.formCards = undefined;
+    component.object = undefined;
     await component.updateComplete;
 
-    const sidebar = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar nde-sidebar');
-    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content-and-sidebar div.content');
-    expect(sidebar).toBeFalsy();
+    const formContent = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('div.content');
     expect(formContent).toBeFalsy();
 
   });
 
-  it('should prevent contextmenu events from being propagated on macos chrome', async () => {
-
-    Object.defineProperty(window, 'navigator', {
-      value: { userAgent: '... Macintosh ... Chrome/ ...' },
-      writable: true,
-    });
-
-    window.eval = jest.fn(() => ObjectImageryComponent);
-    customElements.define = jest.fn(() => ObjectImageryComponent);
-
-    component.components = [
-      {
-        description: 'Digita SemCom component voor beeldmateriaal informatie.',
-        label: 'Erfgoedobject Beeldmateriaal',
-        uri: 'http://localhost:3004/object-imagery.component.js',
-        shapes: [ 'http://xmlns.com/foaf/0.1/PersonalProfileDocument' ],
-        author: 'https://digita.ai',
-        tag: 'nde-object-imagery',
-        version: '0.1.0',
-        latest: true,
-      },
-    ];
+  it('should call toggleImage and show popup when image is clicked', async () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
-    await component.registerComponents(component.components);
+    component.imagePopup.hidden = false;
 
-    const event = new MouseEvent('contextmenu');
-    event.stopPropagation = jest.fn();
-    event.preventDefault = jest.fn();
-    component.formCards[0].dispatchEvent(event);
-
-    expect(event.stopPropagation).toHaveBeenCalled();
-    expect(event.preventDefault).toHaveBeenCalled();
+    const image = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('div.content img:first-of-type');
+    image.click();
+    expect(component.imagePopup.hidden).toEqual(true);
 
   });
 
-  describe('appendComponents()', () => {
+  it('should call toggleImage and hide popup when cross icon is clicked', async () => {
 
-    it('should set formCard attributes', async () => {
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.imagePopup.hidden = true;
 
-      window.document.body.appendChild(component);
+    const image = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('#dismiss-popup');
+    image.click();
+    expect(component.imagePopup.hidden).toEqual(false);
 
-      const imagery = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      imagery.id = 'nde.features.object.sidebar.image';
-      component.formCards = [ imagery ];
-      await component.updateComplete;
-      component.appendComponents([ imagery ]);
+  });
 
-      expect(imagery.object).toBeTruthy();
+  it('should send SelectedCollectionEvent to parent when collection is clicked', async (done) => {
+
+    machine.parent.onEvent((event) => {
+
+      if (event.type === CollectionEvents.SELECTED_COLLECTION) {
+
+        done();
+
+      }
 
     });
+
+    machine.start();
+    machine.parent.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const collectionAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLAnchorElement>('#identification-card div a');
+    collectionAnchor.click();
 
   });
 
