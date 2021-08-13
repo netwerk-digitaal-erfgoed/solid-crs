@@ -66,4 +66,21 @@ describe('PopupComponent', () => {
 
   });
 
+  describe('toggle', () => {
+
+    it('should toggle this.hidden', async () => {
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(component.hidden).toEqual(true);
+      component.toggle();
+      expect(component.hidden).toEqual(false);
+      component.toggle();
+      expect(component.hidden).toEqual(true);
+
+    });
+
+  });
+
 });
