@@ -7,7 +7,7 @@ import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { DismissAlertEvent } from '../../app.events';
+import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
 
@@ -60,8 +60,13 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The popup component shown when the image preview is clicked
    */
-  @query('nde-popup')
+  @query('nde-popup#image-popup')
   imagePopup: PopupComponent;
+  /**
+   * The popup component shown when the info menu is clicked
+   */
+  @query('nde-popup#info-popup')
+  infoPopup: PopupComponent;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -127,7 +132,9 @@ export class ObjectRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
     const collection = this.collections?.find((coll) => coll.uri === this.object?.collection);
 
-    const toggleImage =  () => { this.imagePopup.hidden = !this.imagePopup?.hidden; };
+    const toggleImage =  () => { this.imagePopup.toggle(); };
+
+    const toggleInfo =  () => { this.infoPopup.toggle(); };
 
     return this.object ? html`
 
@@ -140,7 +147,20 @@ export class ObjectRootComponent extends RxLitElement {
         ${ this.object.description }
       </div>
       <div slot="actions">
-        ${ unsafeSVG(Dots) }
+        <div @click="${() => toggleInfo()}">
+          ${ unsafeSVG(Dots) }
+          <nde-popup id="info-popup">
+            <div slot="content">
+              <a target="_blank" href="${this.object.uri}">
+                ${this.translator.translate('nde.features.object.options.view-rdf')}
+              </a>
+              <a @click="${ () => navigator.clipboard.writeText(window.location.href)
+    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('nde.common.copied-url') })))}">
+                ${this.translator.translate('nde.features.object.options.share')}
+              </a>
+            </div>
+          </nde-popup>
+        </div>
       </div>
     </nde-content-header>
 
@@ -151,10 +171,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Image) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.sidebar.image') }
+          ${ this.translator.translate('nde.features.object.card.image.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          Dit is een ondertitel
+          ${ this.translator.translate('nde.features.object.card.image.subtitle') }
         </div>
         <div slot="content">
           <img src="${this.object.image}" @click="${ () => toggleImage() }"/>
@@ -166,7 +186,7 @@ export class ObjectRootComponent extends RxLitElement {
             <div> ${ this.translator.translate('nde.features.object.card.field.download') } </div>
             <div> <a target="_blank" href="${this.object.image}" download> ${ unsafeSVG(Download) } </a> </div>
           </div>
-          <nde-popup dark>
+          <nde-popup dark id="image-popup">
             <div slot="content">
               <div id="dismiss-popup" @click="${ () => toggleImage() }"> ${ unsafeSVG(Cross) } </div>
               <img src="${ this.object.image }"/>
@@ -180,10 +200,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Identity) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.sidebar.identification') }
+          ${ this.translator.translate('nde.features.object.card.identification.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          Dit is een ondertitel
+          ${ this.translator.translate('nde.features.object.card.identification.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.identifier || this.object.identifier?.length < 1 }">
@@ -217,10 +237,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.sidebar.creation') }
+          ${ this.translator.translate('nde.features.object.card.creation.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          Dit is een ondertitel
+          ${ this.translator.translate('nde.features.object.card.creation.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.creator || this.object.creator?.length < 1 }">
@@ -246,10 +266,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.sidebar.representation') }
+          ${ this.translator.translate('nde.features.object.card.representation.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          Dit is een ondertitel
+          ${ this.translator.translate('nde.features.object.card.representation.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.subject || this.object.subject?.length < 1 }">
@@ -279,10 +299,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Connect) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.sidebar.dimensions') }
+          ${ this.translator.translate('nde.features.object.card.dimensions.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          Dit is een ondertitel
+          ${ this.translator.translate('nde.features.object.card.dimensions.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.height }">
@@ -327,6 +347,35 @@ export class ObjectRootComponent extends RxLitElement {
           height: 100%;
           width: 100%;
         }
+        nde-alert {
+          margin-bottom: var(--gap-large);
+        }
+        #info-popup {
+          height: auto;
+          width: auto;
+          position: absolute;
+          left: unset;
+          right: var(--gap-normal);
+          top: var(--gap-huge);
+          background-color: var(--colors-background-light);
+          /* box-shadow: 0 0 5px grey; */
+          border: 1px var(--colors-foreground-normal) solid;
+        }
+        #info-popup div {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #info-popup a {
+          padding: var(--gap-small);
+          color: var(--colors-primary-normal);
+          text-decoration: none;
+          /* text-align: center; */
+        }
+        #info-popup a:hover {
+          background-color: var(--colors-primary-normal);
+          color: var(--colors-background-light);
+        }
         .content {
           margin-top: 1px;
           padding: var(--gap-large);
@@ -345,15 +394,15 @@ export class ObjectRootComponent extends RxLitElement {
           margin-bottom: var(--gap-normal);
           cursor: pointer;
         }
-        nde-popup div[slot="content"] {
+        #image-popup div[slot="content"] {
           display: flex;
           flex-direction: column;
         }
-        nde-popup div[slot="content"] img {
+        #image-popup div[slot="content"] img {
           max-width: 100%;
           max-height: 95%;
         }
-        nde-popup div[slot="content"] div {
+        #image-popup div[slot="content"] div {
           fill: white;
           margin-bottom: var(--gap-normal);
           min-height: 20px;

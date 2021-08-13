@@ -1,4 +1,4 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
@@ -265,6 +265,43 @@ describe('ObjectRootComponent', () => {
     const image = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('#dismiss-popup');
     image.click();
     expect(component.imagePopup.hidden).toEqual(false);
+
+  });
+
+  it('should call toggleInfo and show menu when dots icon is clicked', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.infoPopup.hidden = true;
+
+    const infoIcon = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('nde-content-header div[slot="actions"] div');
+    infoIcon.click();
+    expect(component.infoPopup.hidden).toEqual(false);
+
+  });
+
+  it('should copy url to clipboard when info menu item is clicked', async () => {
+
+    navigator.clipboard = {
+      writeText: jest.fn(async() => undefined),
+    };
+
+    machine.parent.onEvent((event) => {
+
+      if (event.type === AppEvents.ADD_ALERT) {
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.infoPopup.hidden = false;
+
+    const copyAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('nde-content-header div[slot="actions"] div a:last-of-type');
+    copyAnchor.click();
 
   });
 

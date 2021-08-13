@@ -40,7 +40,7 @@ describe('PopupComponent', () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
-    component.hidden = false;
+    component.show();
     expect(component.hidden).toBeFalsy();
 
     const div = window.document.body.getElementsByTagName('nde-popup')[0].shadowRoot.querySelector<HTMLDivElement>('div.overlay');
@@ -55,7 +55,7 @@ describe('PopupComponent', () => {
 
     window.document.body.appendChild(component);
     await component.updateComplete;
-    component.hidden = false;
+    component.show();
     expect(component.hidden).toBeFalsy();
 
     const content = window.document.body.getElementsByTagName('nde-popup')[0].shadowRoot.querySelector<HTMLSlotElement>('slot');

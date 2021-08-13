@@ -1,18 +1,52 @@
 
-import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, property, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { RxLitElement } from 'rx-lit';
 
 /**
  * A component that displays any content over the whole webpage
  * Hide by toggling this.hidden
  */
-export class PopupComponent extends LitElement {
+export class PopupComponent extends RxLitElement {
+
+  /**
+   * The content element of this component
+   */
+  @query('slot[name="content"]')
+  content: HTMLSlotElement;
 
   /**
    * Decides whether the component has a dark background
    */
   @property({ type: Boolean })
   public dark = false;
+
+  /**
+   * Hides/shows the component
+   */
+  toggle(): void {
+
+    this.hidden ? this.show() : this.hide();
+
+  }
+
+  /**
+   * Shows the component
+   */
+  show(): void {
+
+    this.hidden = false;
+
+  }
+
+  /**
+   * Hides the component
+   */
+  hide(): void {
+
+    this.hidden = true;
+
+  }
 
   /**
    * Renders the component as HTML.
@@ -22,10 +56,10 @@ export class PopupComponent extends LitElement {
   render(): TemplateResult {
 
     // initially, always hide the component
-    this.hidden = true;
+    this.hide();
 
     return html`
-    <div class="overlay${ this.dark ? ' dark' : ''}" @click="${ () => this.hidden = true }">
+    <div class="overlay${ this.dark ? ' dark' : ''}" @click="${ () => this.hide() }">
       <slot name="content" @click="${ (event: MouseEvent) => event.stopPropagation() }"></slot>
     </div>
   `;
@@ -40,20 +74,20 @@ export class PopupComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
-        .overlay {
+        :host {
+          height: 100%;
+          width: 100%;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
           position: fixed;
+        }
+        .overlay {
+          height: 100%;
+          width: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-        }
-        .overlay ::slotted(*) {
-          max-width: 90%;
-          max-height: 90%;
         }
         .dark {
           background-color: rgba(0, 0, 0, 0.8);
