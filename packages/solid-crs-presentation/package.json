@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "start": "http-server -p 3002 --gzip --brotli --proxy 'http://localhost:3002?' dist/",
+    "start": "http-server -p 3005 --gzip --brotli --proxy 'http://localhost:3005?' dist/",
     "start:watch": "vite serve --config vite.config.ts",
     "build": "shx rm -rf dist && vite build --config vite.config.ts && tsc",
     "lint": "eslint .",
