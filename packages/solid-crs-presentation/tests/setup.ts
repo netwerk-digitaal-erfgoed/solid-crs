@@ -1,4 +1,4 @@
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent, LargeCardComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
 import { AppRootComponent } from '../lib/app-root.component';
 import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
@@ -31,3 +31,4 @@ customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar-item', SidebarItemComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
 customElements.define('nde-app-root', AppRootComponent);
+customElements.define('nde-popup', PopupComponent);
