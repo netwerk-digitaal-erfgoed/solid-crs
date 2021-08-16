@@ -50,7 +50,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
   @internalProperty()
   weightUnits: Map<string, string> = new Map()
     .set('KGM', 'kg')
-    .set('GM', 'g');
+    .set('GRM', 'g');
 
   /**
    * Renders the component as HTML.
