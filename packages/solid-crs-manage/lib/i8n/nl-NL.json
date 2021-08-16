@@ -360,11 +360,6 @@
         "value": "Objectnaam"
     },
     {
-        "key": "nde.features.object.card.field.type",
-        "locale": "nl-NL",
-        "value": "Type"
-    },
-    {
         "key": "nde.features.object.card.field.name",
         "locale": "nl-NL",
         "value": "Titel"
