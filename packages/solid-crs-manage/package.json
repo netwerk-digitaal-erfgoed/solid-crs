@@ -31,7 +31,6 @@
   "dependencies": {
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.7.0",
     "@netwerk-digitaal-erfgoed/solid-crs-components": "0.7.0",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.7.0",
     "@netwerk-digitaal-erfgoed/solid-crs-semcom-components": "0.7.0",
@@ -86,10 +85,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 95.06,
-        "branches": 93.91,
-        "lines": 95.7,
-        "functions": 87.13
+        "statements": 92.65,
+        "branches": 90,
+        "lines": 93.52,
+        "functions": 84.42
       }
     },
     "automock": false,

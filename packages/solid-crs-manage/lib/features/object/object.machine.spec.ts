@@ -1,8 +1,7 @@
 import { FormActors, FormContext, FormSubmittedEvent, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 import { ClickedSubmitEvent } from './terms/term.events';

@@ -1,4 +1,5 @@
-import { ArgumentError, ConsoleLogger } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError } from '../errors/argument-error';
+import { ConsoleLogger } from '../logging/console-logger';
 import { SolidMockService } from './solid-mock.service';
 
 describe('SolidMockService', () => {
@@ -50,12 +51,6 @@ describe('SolidMockService', () => {
 
     });
 
-    it('should should return null', async () => {
-
-      await expect(service.getSession()).resolves.toEqual(null);
-
-    });
-
   });
 
   describe('login()', () => {
@@ -78,16 +73,6 @@ describe('SolidMockService', () => {
 
       (service as any).profiles = [ { webId: 'https://test.com', issuer: 'test' } ];
       await expect(service.login('https://test.com')).resolves.toBeUndefined();
-
-    });
-
-  });
-
-  describe('logout', async () => {
-
-    it('should resolve', async () => {
-
-      await expect(service.logout()).resolves.toEqual(undefined);
 
     });
 

@@ -1,10 +1,8 @@
 import { Alert, FormActors, FormContext, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidService, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateRootComponent } from './authenticate-root.component';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext, authenticateMachine, AuthenticateStates } from './authenticate.machine';

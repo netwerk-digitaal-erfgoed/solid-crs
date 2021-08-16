@@ -1,5 +1,5 @@
-import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Collection } from '../collections/collection';
 import { SolidStore } from './solid-store';
 
 describe('SolidStore', () => {

@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { ArgumentError, Collection, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, Logger, SolidProfile, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Dropdown, Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
@@ -9,7 +9,6 @@ import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { AppContext } from '../../app.machine';
-import { SolidProfile } from '../../common/solid/solid-profile';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 
 /**

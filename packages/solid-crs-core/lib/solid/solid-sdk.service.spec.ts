@@ -1,7 +1,9 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
+import { LoggerLevel } from '../logging/logger-level';
+import { ConsoleLogger } from '../logging/console-logger';
 import { SolidSDKService } from './solid-sdk.service';
+fetchMock.enableMocks();
 
 describe('SolidService', () => {
 
@@ -246,10 +248,21 @@ describe('SolidService', () => {
       client.getSolidDataset = jest.fn(async () => validProfileDataset);
       client.getThing = jest.fn(() => validProfileThing);
       client.getStringNoLocale = jest.fn(() => validName);
+      client.getStringWithLocale = jest.fn(() => validName);
+      client.getUrl = jest.fn(() => validName);
 
       const profile = await service.getProfile(webId);
 
-      expect(profile).toEqual(expect.objectContaining({ name: validName }));
+      expect(profile).toEqual(expect.objectContaining({
+        name: validName,
+        uri: webId,
+        alternateName: validName,
+        description: validName,
+        website: validName,
+        logo: validName,
+        email: validName,
+        telephone: validName,
+      }));
 
     });
 
