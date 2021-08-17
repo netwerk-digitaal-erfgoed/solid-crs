@@ -77,7 +77,7 @@
     {
         "key": "nde.features.authenticate.pages.login.title",
         "locale": "nl-NL",
-        "value": "Collectiebeheersysteem"
+        "value": "Collectieregistratiesysteem"
     },
     {
         "key": "nde.features.authenticate.pages.login.webid-placeholder",
