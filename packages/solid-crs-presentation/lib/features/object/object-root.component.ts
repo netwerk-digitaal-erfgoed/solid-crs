@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
 import { SelectedCollectionEvent } from '../collection/collection.events';
@@ -177,7 +177,10 @@ export class ObjectRootComponent extends RxLitElement {
           ${ this.translator.translate('nde.features.object.card.image.subtitle') }
         </div>
         <div slot="content">
-          <img src="${this.object.image}" @click="${ () => toggleImage() }"/>
+          <div class="overlay" @click="${ () => toggleImage() }">
+            ${ unsafeSVG(Open) }
+            <img src="${this.object.image}"/>
+          </div>
           <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.license') } </div>
             <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </div>
@@ -383,16 +386,30 @@ export class ObjectRootComponent extends RxLitElement {
         .content div[slot="content"] {
           margin: 0 45px; /* gap-large + gap-small */
         }
-        nde-large-card > div[slot="content"] > img {
+        .content .overlay {
+          position: relative;
+          cursor: pointer;
+          height: 200px;
+          width: 100%;
+          display: block;
+          margin-bottom: var(--gap-normal);
+        }
+        .content .overlay svg {
+          position: absolute;
+          top: var(--gap-small);
+          right: var(--gap-small);
+          fill: white;
+        }
+        .content .overlay img {
+          display: block;
           height: 200px;
           width: 100%;
           object-fit: cover;
-          margin-bottom: var(--gap-normal);
-          cursor: pointer;
         }
         #image-popup div[slot="content"] {
           display: flex;
           flex-direction: column;
+          max-height: 90%;
         }
         #image-popup div[slot="content"] img {
           max-width: 100%;

@@ -26,6 +26,7 @@ export { default as CheckboxChecked } from './icons/CheckboxChecked.svg?raw';
 export { default as CheckboxUnchecked } from './icons/CheckboxUnchecked.svg?raw';
 export { default as Info } from './icons/Info.svg?raw';
 export { default as Download } from './icons/Download.svg?raw';
+export { default as Open } from './icons/Open.svg?raw';
 
 /**
  * Export theme
