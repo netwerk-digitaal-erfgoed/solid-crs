@@ -3,7 +3,7 @@ import { ArgumentError, Collection, CollectionObject, Logger, Translator } from 
 import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, interpret, Interpreter, State } from 'xstate';
+import { ActorRef, interpret, Interpreter, InterpreterStatus, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -12,7 +12,7 @@ import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
 
@@ -80,7 +80,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form machine used by the form actor
    */
-  formMachine = formMachine<CollectionObject>((context) => validateObjectForm(context));
+  formMachine = formMachine<any>((context) => validateObjectForm(context));
 
   /**
    * The actor responsible for form validation in this component.
@@ -217,14 +217,81 @@ export class ObjectRootComponent extends RxLitElement {
 
           this.formCards?.forEach((card) => card.object = state.context?.object);
 
-          this.formMachine = this.formMachine.withContext({
-            data: state.context?.object,
-            original: state.context?.object,
-          });
+          // when the object is loaded, prepare and start up the form machine (once)
+          if (this.formActor.status !== InterpreterStatus.Running) {
 
-          this.formActor = interpret(this.formMachine, { devTools: true });
+            // replace Terms with lists of uri
+            // form machine can only handle (lists of) strings, not objects (Terms)
+            const parseObject = (object: CollectionObject) => ({
+              ...object,
+              additionalType: object?.additionalType
+                ? object.additionalType.map((term) => term.uri) : undefined,
+              creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
+              locationCreated: object?.locationCreated
+                ? object.locationCreated.map((term) => term.uri) : undefined,
+              material: object?.material ? object.material.map((term) => term.uri) : undefined,
+              subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
+              location: object?.location ? object.location.map((term) => term.uri) : undefined,
+              person: object?.person ? object.person.map((term) => term.uri) : undefined,
+              organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
+              event: object?.event ? object.event.map((term) => term.uri) : undefined,
+            });
 
-          this.formActor.start();
+            this.formMachine = this.formMachine.withContext({
+              data: { ... parseObject(state.context?.object) },
+              original: { ... parseObject(state.context?.original) },
+            });
+
+            this.formActor = interpret(this.formMachine, { devTools: true });
+
+            this.formActor.onDone((event) => {
+
+              this.actor.send(new ClickedSaveEvent({
+                ...event.data.data,
+                // don't use form values for Terms
+                // as form machine will only return URIs for these fields, not full Terms
+                // See above: this.formMachine's initial data
+                additionalType: state.context?.object.additionalType,
+                creator: state.context?.object.creator,
+                locationCreated: state.context?.object.locationCreated,
+                material: state.context?.object.material,
+                subject: state.context?.object.subject,
+                location: state.context?.object.location,
+                person: state.context?.object.person,
+                organization: state.context?.object.organization,
+                event: state.context?.object.event,
+              }));
+
+            });
+
+            // this validates the form when form machine is started
+            // needed for validation when coming back from the term machine
+            // otherwise, form machine state is not_validated and the user can't save
+            this.formActor.send(new FormUpdatedEvent('name', state.context?.object.name));
+
+            this.subscribe('isSubmitting', from(this.formActor).pipe(
+              map((actor) => actor.matches(FormSubmissionStates.SUBMITTING)),
+            ));
+
+            this.subscribe('isValid', from(this.formActor).pipe(
+              map((actor) => !actor.matches({
+                [FormSubmissionStates.NOT_SUBMITTED]:{
+                  [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
+                },
+              })),
+            ));
+
+            this.subscribe('isDirty', from(this.formActor).pipe(
+              map((actor) => actor.matches({
+                [FormSubmissionStates.NOT_SUBMITTED]:{
+                  [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+                },
+              })),
+            ));
+
+            this.formActor.start();
+
+          }
 
           return state.context?.object;
 
@@ -233,35 +300,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       this.subscribe('isEditingTermField', from(this.actor)
         .pipe(map((state) => state.matches(ObjectStates.EDITING_FIELD))));
-
-    }
-
-    if(changed?.has('formActor') && this.formActor){
-
-      // this validates the form when form machine is started
-      // needed for validation when coming back from the term machine
-      // otherwise, form machine state is not_validated and the user can't save
-      this.formActor.send(new FormUpdatedEvent('name', this.object?.name));
-
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-      ));
-
-      this.subscribe('isValid', from(this.formActor).pipe(
-        map((state) => !state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-          },
-        })),
-      ));
-
-      this.subscribe('isDirty', from(this.formActor).pipe(
-        map((state) => state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-          },
-        })),
-      ));
 
     }
 

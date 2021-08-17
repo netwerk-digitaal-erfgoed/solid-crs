@@ -1,6 +1,4 @@
-import { FormValidatorResult,
-  FormContext,
-  State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
@@ -239,6 +237,10 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.IDLE]: {
         on: {
+          [ObjectEvents.CLICKED_SAVE]: {
+            target: ObjectStates.SAVING,
+            actions: assign({ object: (context, event) => event.object }),
+          },
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_RESET]: {
             target: ObjectStates.IDLE,

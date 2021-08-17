@@ -2,7 +2,7 @@ import { FormActors, FormContext, FormSubmittedEvent, FormUpdatedEvent } from '@
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent, SelectedObjectEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, SelectedObjectEvent } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 import { ClickedSubmitEvent } from './terms/term.events';
 import { TermActors, TermContext, TermStates } from './terms/term.machine';
@@ -108,7 +108,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to SAVING when form machine exits', async (done) => {
+  it('should transition to SAVING when CLICKED_SAVE is fired', async (done) => {
 
     machine.onTransition((state) => {
 
@@ -121,10 +121,7 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    const formMachine = machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<unknown>>;
-    expect(formMachine).toBeTruthy();
-    formMachine.send(new FormUpdatedEvent('field', 'value'));
-    formMachine.send(new FormSubmittedEvent());
+    machine.send(new ClickedSaveEvent(object1));
 
   });
 
@@ -306,14 +303,13 @@ describe('ObjectMachine', () => {
 
         expect(objectStore.save).toHaveBeenCalledTimes(1);
 
-        expect(objectStore.save).toHaveBeenCalledWith(expect.objectContaining({ ...object1, name: 'test' }));
+        expect(objectStore.save).toHaveBeenCalledWith(expect.objectContaining(object1));
 
         done();
 
-      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+      } else if (state.matches(ObjectStates.IDLE)) {
 
-        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
-        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
+        machine.send(new ClickedSaveEvent(object1));
 
       }
 
@@ -347,10 +343,9 @@ describe('ObjectMachine', () => {
         expect(machine.parent.send).toHaveBeenCalledWith(expect.objectContaining({ data: 'error' }));
         done();
 
-      } else if (state.matches(ObjectStates.IDLE) && machine.children.get(FormActors.FORM_MACHINE)) {
+      } else if (state.matches(ObjectStates.IDLE)) {
 
-        machine.children.get(FormActors.FORM_MACHINE).send(new FormUpdatedEvent('name', 'test'));
-        machine.children.get(FormActors.FORM_MACHINE).send(new FormSubmittedEvent());
+        machine.send(new ClickedSaveEvent(object1));
 
       }
 
