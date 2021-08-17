@@ -214,10 +214,6 @@ export class ObjectRootComponent extends RxLitElement {
             <div> ${ this.translator.translate('nde.features.object.card.field.identifier') } </div>
             <div> ${ this.object.identifier } </div>
           </div>
-          <div class="object-property" ?hidden="${ !this.object.type || this.object.type?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.type') } </div>
-            <div> ${ this.object.type } </div>
-          </div>
           <div class="object-property" ?hidden="${ !this.object.additionalType || this.object.additionalType?.length < 1 }">
             <div> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </div>
             <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
