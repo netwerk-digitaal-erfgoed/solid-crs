@@ -181,7 +181,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.creation.field.date.validation.invalid',
+          message: 'nde.features.object.card.field.date.validation.invalid',
         });
 
       }
