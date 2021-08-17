@@ -154,10 +154,6 @@ export class ObjectRootComponent extends RxLitElement {
               <a target="_blank" href="${this.object.uri}">
                 ${this.translator.translate('nde.features.object.options.view-rdf')}
               </a>
-              <a @click="${ () => navigator.clipboard.writeText(window.location.href)
-    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('nde.common.copied-url') })))}">
-                ${this.translator.translate('nde.features.object.options.share')}
-              </a>
             </div>
           </nde-popup>
         </div>
@@ -183,8 +179,13 @@ export class ObjectRootComponent extends RxLitElement {
             <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </div>
           </div>
           <div class="object-property">
-            <div> ${ this.translator.translate('nde.features.object.card.field.download') } </div>
-            <div> <a target="_blank" href="${this.object.image}" download> ${ unsafeSVG(Download) } </a> </div>
+            <div> ${ this.translator.translate('nde.features.object.card.field.image-source') } </div>
+            <div>
+              <a target="_blank" @click="${ () => navigator.clipboard.writeText(this.object?.image)
+    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('nde.common.copied-image-url') })))}">
+              ${ this.translator.translate('nde.features.object.options.share') }
+              </a>
+            </div>
           </div>
           <nde-popup dark id="image-popup">
             <div slot="content">

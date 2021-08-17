@@ -432,7 +432,7 @@
     {
         "key": "nde.features.object.options.share",
         "locale": "nl-NL",
-        "value": "URL kopieren"
+        "value": "URL kopiëren"
     },
     {
         "key": "nde.features.about.header.title",
@@ -533,5 +533,11 @@
         "key": "nde.common.unit.KGM",
         "locale": "nl-NL",
         "value": "kg"
+    },
+    {
+        "key": "nde.common.copied-image-url",
+        "locale": "nl-NL",
+        "value": "De URL van de afbeelding werd gekopieerd."
     }
+    
 ]
