@@ -323,7 +323,8 @@ describe('ObjectRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const collectionAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLAnchorElement>('#identification-card div a');
+    const collectionAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLAnchorElement>('#collection-link');
+
     collectionAnchor.click();
 
   });
