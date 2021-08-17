@@ -1,11 +1,12 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { AppContext, appMachine } from '../../app.machine';
+import { CollectionEvents } from '../collection/collection.events';
 import { AboutRootComponent } from './about-root.component';
 
-describe('SearchRootComponent', () => {
+describe('AboutRootComponent', () => {
 
   let component: AboutRootComponent;
   let machine: Interpreter<AppContext>;
@@ -50,6 +51,7 @@ describe('SearchRootComponent', () => {
 
     component = window.document.createElement('nde-about-root') as AboutRootComponent;
     component.actor = machine;
+    component.collections = [ collection1, collection2 ];
     component.translator = new MemoryTranslator([], 'nl-NL');
 
   });
@@ -143,6 +145,28 @@ describe('SearchRootComponent', () => {
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
 
     });
+
+  });
+
+  it('should send SelectedCollectionEvent when collection is clicked', async (done) => {
+
+    machine.onEvent((event) => {
+
+      if (event.type === CollectionEvents.SELECTED_COLLECTION) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const largeCard = window.document.body.getElementsByTagName('nde-about-root')[0].shadowRoot.querySelector<LargeCardComponent>('nde-large-card.collection');
+    largeCard.click();
 
   });
 

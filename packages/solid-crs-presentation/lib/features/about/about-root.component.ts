@@ -122,13 +122,13 @@ export class AboutRootComponent extends RxLitElement {
       </nde-content-header>
 
       <div class="content">
+            
+        ${ alerts }
 
         <nde-large-card
         .showImage="${false}"
         .showHeader="${false}">
           <div slot="content">
-            
-            ${ alerts }
 
             <p>${ this.profile?.name }</p>
             ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
@@ -180,6 +180,9 @@ export class AboutRootComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           height: 100%;
+        }
+        nde-alert {
+          margin-bottom: var(--gap-large);
         }
         .content {
           margin: 0 var(--gap-large);

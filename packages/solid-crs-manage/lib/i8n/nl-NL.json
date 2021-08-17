@@ -357,11 +357,6 @@
     {
         "key": "nde.features.object.card.field.additionalType",
         "locale": "nl-NL",
-        "value": "Objectnaam"
-    },
-    {
-        "key": "nde.features.object.card.field.type",
-        "locale": "nl-NL",
         "value": "Type"
     },
     {

@@ -1,38 +1,21 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, Interpreter, State } from 'xstate';
+import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Object as ObjectIcon, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
+import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { DismissAlertEvent } from '../../app.events';
-import { SemComService } from '../../common/semcom/semcom.service';
+import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
+import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
-import { ClickedObjectSidebarItem } from './object.events';
 
 /**
  * The root page of the object feature.
  */
 export class ObjectRootComponent extends RxLitElement {
 
-  /**
-   * The form cards in this component
-   */
-  @internalProperty()
-  formCards: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[];
-  /**
-   * The id of the currently visible form card
-   */
-  @internalProperty()
-  visibleCard: string;
   /**
    * The component's logger.
    */
@@ -74,65 +57,16 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @property({ type: Object })
   object?: CollectionObject;
-
   /**
-   * The actor responsible for form validation in this component.
+   * The popup component shown when the image preview is clicked
    */
-  @internalProperty()
-  formActor: ActorRef<FormEvent>;
-
+  @query('nde-popup#image-popup')
+  imagePopup: PopupComponent;
   /**
-   * Indicates if the form is being submitted.
+   * The popup component shown when the info menu is clicked
    */
-  @internalProperty()
-  isSubmitting? = false;
-
-  /**
-   * Indicates if if the form validation passed.
-   */
-  @internalProperty()
-  isValid? = false;
-
-  /**
-   * Indicates if one the form fields has changed.
-   */
-  @internalProperty()
-  isDirty? = false;
-
-  /**
-   * Indicates whether the user is editing a field containing a Term.
-   */
-  @internalProperty()
-  isEditingTermField? = false;
-
-  /**
-   * The semcom service to use in this component
-   */
-  @internalProperty()
-  semComService? = new SemComService();
-
-  /**
-   * The content element to append SemComs to
-   */
-  @query('.content')
-  contentElement: HTMLDivElement;
-
-  /**
-   * The ComponentMetadata of the SemComs
-   */
-  @internalProperty()
-  components: ComponentMetadata[];
-
-  /**
-   * Hook called on first update after connection to the DOM.
-   */
-  async firstUpdated(changed: PropertyValues): Promise<void> {
-
-    super.firstUpdated(changed);
-
-    this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
-
-  }
+  @query('nde-popup#info-popup')
+  infoPopup: PopupComponent;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -143,36 +77,12 @@ export class ObjectRootComponent extends RxLitElement {
 
     if(changed && changed.has('actor') && this.actor){
 
-      this.actor.onEvent(async(event) => {
-
-        if (event instanceof ClickedObjectSidebarItem) {
-
-          this.requestUpdate();
-          await this.updateComplete;
-
-          const formCard = Array.from(this.formCards).find((card) => card.id === event.itemId);
-          formCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-        }
-
-      });
-
       if(this.actor.parent){
 
         this.subscribe('alerts', from(this.actor.parent)
           .pipe(map((state) => state.context?.alerts)));
 
       }
-
-      this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => {
-
-          this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
-
-          return state.children[FormActors.FORM_MACHINE];
-
-        })
-      ));
 
       this.subscribe('state', from(this.actor));
 
@@ -181,55 +91,8 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('object', from(this.actor).pipe(
-        map((state) => {
-
-          this.formCards?.forEach((card) => card.object = state.context?.object);
-
-          return state.context?.object;
-
-        })
+        map((state) => state.context?.object),
       ));
-
-    }
-
-    if(changed?.has('formActor') && this.formActor){
-
-      // this validates the form when form machine is started
-      // needed for validation when coming back from the term machine
-      // otherwise, form machine state is not_validated and the user can't save
-      this.formActor.send(new FormUpdatedEvent('name', this.object?.name));
-
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-      ));
-
-      this.subscribe('isValid', from(this.formActor).pipe(
-        map((state) => !state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-          },
-        })),
-      ));
-
-      this.subscribe('isDirty', from(this.formActor).pipe(
-        map((state) => state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-          },
-        })),
-      ));
-
-    }
-
-    if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
-
-      await this.registerComponents(this.components);
-
-    }
-
-    if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
-
-      this.appendComponents(this.formCards);
 
     }
 
@@ -257,115 +120,6 @@ export class ObjectRootComponent extends RxLitElement {
     this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
-  /**
-   * Registers and adds all components to DOM
-   *
-   * @param components The component metadata to register and add
-   */
-  async registerComponents(components: ComponentMetadata[]): Promise<void> {
-
-    for (const component of components) {
-
-      if (!customElements.get(component.tag)) {
-
-        // eslint-disable-next-line no-eval
-        const elementComponent = await eval(`import("${component.uri}")`);
-
-        const ctor = customElements.get(component.tag)
-          || customElements.define(component.tag, elementComponent.default);
-
-      }
-
-      let element;
-
-      if (component.tag.includes('imagery')) {
-
-        element = document.createElement(component.tag) as ObjectImageryComponent;
-        element.id = 'nde.features.object.sidebar.image';
-
-      } else if (component.tag.includes('creation')) {
-
-        element = document.createElement(component.tag) as ObjectCreationComponent;
-        element.id = 'nde.features.object.sidebar.creation';
-
-      } else if (component.tag.includes('identification')) {
-
-        element = document.createElement(component.tag) as ObjectIdentificationComponent;
-        element.collections = this.collections;
-        element.id = 'nde.features.object.sidebar.identification';
-
-      } else if (component.tag.includes('representation')) {
-
-        element = document.createElement(component.tag) as ObjectRepresentationComponent;
-        element.id = 'nde.features.object.sidebar.representation';
-
-      } else if (component.tag.includes('dimensions')) {
-
-        element = document.createElement(component.tag) as ObjectDimensionsComponent;
-        element.id = 'nde.features.object.sidebar.dimensions';
-
-      }
-
-      if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
-
-        element.addEventListener('contextmenu', (event: MouseEvent) => {
-
-          event.stopPropagation();
-          event.preventDefault();
-
-        });
-
-      }
-
-      this.formCards = this.formCards?.includes(element)
-        ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
-
-    }
-
-    if (this.formCards) {
-
-      this.appendComponents(this.formCards);
-
-    }
-
-  }
-
-  /**
-   * Appends the formCards to the page content and removes previous children
-   */
-  appendComponents(components: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[]): void {
-
-    components?.forEach(async(component) => {
-
-      component.object = this.object;
-      component.formActor = this.formActor as any;
-      component.translator = this.translator;
-      await component?.requestUpdate('object');
-
-    });
-
-    this.updateSelected();
-
-  }
-
-  /**
-   * Sets this.selected to the currently visible form card's id
-   */
-  updateSelected(): void {
-
-    this.visibleCard = Array.from(this.formCards).find((formCard) => {
-
-      const box = formCard.getBoundingClientRect();
-
-      return box.top >= -(box.height / (3 + 20));
-
-    })?.id;
-
-  }
 
   /**
    * Renders the component as HTML.
@@ -376,54 +130,201 @@ export class ObjectRootComponent extends RxLitElement {
 
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
+    const collection = this.collections?.find((coll) => coll.uri === this.object?.collection);
 
-    const sidebarItems = this.formCards?.map((formCard) => formCard.id);
+    const toggleImage =  () => { this.imagePopup.toggle(); };
+
+    const toggleInfo =  () => { this.infoPopup.toggle(); };
 
     return this.object ? html`
 
-    ${ !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
-
     <nde-content-header inverse>
       <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-
-      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-        <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
-      </nde-form-element>
-      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
-      </nde-form-element>
+      <div slot="title" class="title">
+        ${ this.object.name}
+      </div>
+      <div slot="subtitle" class="subtitle">
+        ${ this.object.description }
+      </div>
+      <div slot="actions">
+        <div @click="${() => toggleInfo()}">
+          ${ unsafeSVG(Dots) }
+          <nde-popup id="info-popup">
+            <div slot="content">
+              <a target="_blank" href="${this.object.uri}">
+                ${this.translator.translate('nde.features.object.options.view-rdf')}
+              </a>
+            </div>
+          </nde-popup>
+        </div>
+      </div>
     </nde-content-header>
 
-    <div class="content-and-sidebar">
+    <div class="content">
 
-      ${ this.formCards
-    ? html`<nde-sidebar>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
-        <nde-sidebar-list slot="content">
-          ${sidebarItems?.map((item) => html`
-          <nde-sidebar-list-item slot="item"
-          ?selected="${ item === this.visibleCard }"
-          @click="${() => this.actor.send(new ClickedObjectSidebarItem(item))}">
-            <div slot="title">${this.translator?.translate(item)}</div>
-          </nde-sidebar-list-item>
-          `)}
-        </nde-sidebar-list>
-      </nde-sidebar-item>
-    </nde-sidebar>
+      ${ alerts }
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Image) }</div>
+        <div slot="title" class="title">
+          ${ this.translator.translate('nde.features.object.card.image.title') }
+        </div>
+        <div slot="subtitle" class="subtitle">
+          ${ this.translator.translate('nde.features.object.card.image.subtitle') }
+        </div>
+        <div slot="content">
+          <div class="overlay" @click="${ () => toggleImage() }">
+            ${ unsafeSVG(Open) }
+            <img src="${this.object.image}"/>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.license') } </div>
+            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </div>
+          </div>
+          <div class="object-property">
+            <div> ${ this.translator.translate('nde.features.object.card.field.image-source') } </div>
+            <div>
+              <a target="_blank" @click="${ () => navigator.clipboard.writeText(this.object?.image)
+    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('nde.common.copied-image-url') })))}">
+              ${ this.translator.translate('nde.features.object.options.share') }
+              </a>
+            </div>
+          </div>
+          <nde-popup dark id="image-popup">
+            <div slot="content">
+              <div id="dismiss-popup" @click="${ () => toggleImage() }"> ${ unsafeSVG(Cross) } </div>
+              <img src="${ this.object.image }"/>
+            </div>
+          </nde-popup>
+        </div>
+      </nde-large-card>
 
-    ${ this.formCards ? html`
-      <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
+      <nde-large-card
+      id="identification-card"
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Identity) }</div>
+        <div slot="title" class="title">
+          ${ this.translator.translate('nde.features.object.card.identification.title') }
+        </div>
+        <div slot="subtitle" class="subtitle">
+          ${ this.translator.translate('nde.features.object.card.identification.subtitle') }
+        </div>
+        <div slot="content">
+          <div class="object-property" ?hidden="${ !this.object.identifier || this.object.identifier?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.identifier') } </div>
+            <div> ${ this.object.identifier } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.additionalType || this.object.additionalType?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </div>
+            <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.name || this.object.name?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.name') } </div>
+            <div> ${ this.object.name } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.description || this.object.description?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.description') } </div>
+            <div> ${ this.object.description } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.collection || this.object.collection?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.collection') } </div>
+            <div> <a id="collection-link" @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection?.name }</a>  </div>
+          </div>
+        </div>
+      </nde-large-card>
 
-        ${ alerts }
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+        <div slot="title" class="title">
+          ${ this.translator.translate('nde.features.object.card.creation.title') }
+        </div>
+        <div slot="subtitle" class="subtitle">
+          ${ this.translator.translate('nde.features.object.card.creation.subtitle') }
+        </div>
+        <div slot="content">
+          <div class="object-property" ?hidden="${ !this.object.creator || this.object.creator?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.creator') } </div>
+            <div> ${ this.object.creator?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.locationCreated || this.object.locationCreated?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </div>
+            <div> ${ this.object.locationCreated?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.material || this.object.material?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.material') } </div>
+            <div> ${ this.object.material?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.dateCreated || this.object.dateCreated?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </div>
+            <div> ${ this.object.dateCreated } </div>
+          </div>
+        </div>
+      </nde-large-card>
 
-        ${ this.formCards }
-        
-      </div>
-    ` : html`no formcards`}
-    `
-    : html``}
-    </div>`
-      : html``;
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+        <div slot="title" class="title">
+          ${ this.translator.translate('nde.features.object.card.representation.title') }
+        </div>
+        <div slot="subtitle" class="subtitle">
+          ${ this.translator.translate('nde.features.object.card.representation.subtitle') }
+        </div>
+        <div slot="content">
+          <div class="object-property" ?hidden="${ !this.object.subject || this.object.subject?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.subject') } </div>
+            <div> ${ this.object.subject?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.location || this.object.location?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.location') } </div>
+            <div> ${ this.object.location?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.person || this.object.person?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.person') } </div>
+            <div> ${ this.object.person?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.organization || this.object.organization?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.organization') } </div>
+            <div> ${ this.object.organization?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.event || this.object.event?.length < 1 }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.event') } </div>
+            <div> ${ this.object.event?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+          </div>
+        </div>
+      </nde-large-card>
+
+      <nde-large-card
+      .showImage="${false}">
+        <div slot="icon">${ unsafeSVG(Connect) }</div>
+        <div slot="title" class="title">
+          ${ this.translator.translate('nde.features.object.card.dimensions.title') }
+        </div>
+        <div slot="subtitle" class="subtitle">
+          ${ this.translator.translate('nde.features.object.card.dimensions.subtitle') }
+        </div>
+        <div slot="content">
+          <div class="object-property" ?hidden="${ !this.object.height }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.height') } </div>
+            <div> ${ this.object.height } ${ this.translator.translate(`nde.common.unit.${this.object.heightUnit}`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.width }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.width') } </div>
+            <div> ${ this.object.width } ${ this.translator.translate(`nde.common.unit.${this.object.widthUnit}`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.depth }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.depth') } </div>
+            <div> ${ this.object.depth } ${ this.translator.translate(`nde.common.unit.${this.object.depthUnit}`) } </div>
+          </div>
+          <div class="object-property" ?hidden="${ !this.object.weight }">
+            <div> ${ this.translator.translate('nde.features.object.card.field.weight') } </div>
+            <div> ${ this.object.weight } ${ this.translator.translate(`nde.common.unit.${this.object.weightUnit}`) } </div>
+          </div>
+        </div>
+      </nde-large-card>
+    </div>
+    ` : html`<nde-progress-bar></nde-progress-bar>`;
 
   }
 
@@ -444,47 +345,114 @@ export class ObjectRootComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           height: 100%;
+          width: 100%;
         }
-        .content-and-sidebar {
-          margin-top: 1px;
+        nde-alert {
+          margin-bottom: var(--gap-large);
+        }
+        #info-popup {
+          height: auto;
+          width: auto;
+          position: absolute;
+          left: unset;
+          right: var(--gap-normal);
+          top: var(--gap-huge);
+          background-color: var(--colors-background-light);
+          /* box-shadow: 0 0 5px grey; */
+          border: 1px var(--colors-foreground-normal) solid;
+        }
+        #info-popup div {
           display: flex;
-          flex-direction: row;
-        height: 1px;
-          flex: 1 1;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #info-popup a {
+          padding: var(--gap-small);
+          color: var(--colors-primary-normal);
+          text-decoration: none;
+          /* text-align: center; */
+        }
+        #info-popup a:hover {
+          background-color: var(--colors-primary-normal);
+          color: var(--colors-background-light);
         }
         .content {
+          margin-top: 1px;
           padding: var(--gap-large);
-          width: 100%;
           overflow-y: auto;
           overflow-x: clip;
           display: flex;
           flex-direction: column;
-          gap: var(--gap-large);
         }
-        nde-progress-bar {
-          position: absolute;
+        .content div[slot="content"] {
+          margin: 0 45px; /* gap-large + gap-small */
+        }
+        .content .overlay {
+          position: relative;
+          cursor: pointer;
+          height: 200px;
           width: 100%;
-          top: 0;
-          left: 0;
+          display: block;
+          margin-bottom: var(--gap-normal);
         }
-        nde-content-header nde-form-element input {
-          height: var(--gap-normal);
-          padding: 0;
-          line-height: var(--gap-normal);
+        .content .overlay svg {
+          position: absolute;
+          top: var(--gap-small);
+          right: var(--gap-small);
+          fill: white;
         }
-        .name {
-          font-weight: bold;
-          font-size: var(--font-size-large);
+        .content .overlay img {
+          display: block;
+          height: 200px;
+          width: 100%;
+          object-fit: cover;
         }
-        .description {
-          margin-top: var(--gap-tiny);
+        #image-popup div[slot="content"] {
+          display: flex;
+          flex-direction: column;
+          max-height: 90%;
         }
-        nde-sidebar-list > slot[name="title"] {
-          font-weight: bold;
+        #image-popup div[slot="content"] img {
+          max-width: 100%;
+          max-height: 95%;
         }
-        button svg {
-          max-width: var(--gap-normal);
-          height: var(--gap-normal);
+        #image-popup div[slot="content"] div {
+          fill: white;
+          margin-bottom: var(--gap-normal);
+          min-height: 20px;
+          min-width: 20px;
+          align-self: flex-end;
+          cursor: pointer;
+        }
+        a {
+          cursor: pointer;
+          text-decoration: underline;
+          color: var(--colors-primary-light);
+        }
+        .object-property {
+          margin-bottom: var(--gap-small);
+          width: 100%;
+          display: flex;
+        }
+        .object-property * {
+          overflow: hidden;
+          font-size: var(--font-size-small);
+          line-height: 21px;
+        }
+        .object-property > div:first-child {
+          font-weight: var(--font-weight-bold);
+          width: 33%;
+          max-width: 33%;
+        }
+        .object-property > div:last-child {
+          display: inline-flex;
+          flex-direction: column;
+        }
+        .object-property > div:last-child svg {
+          fill: var(--colors-primary-light);
+        }
+        [hidden] {
+          display: none;
         }
       `,
     ];

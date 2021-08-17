@@ -4,6 +4,7 @@
 export * from './alerts/alert';
 export * from './alerts/alert.component';
 export * from './alerts/alert.component';
+export * from './alerts/popup.component';
 export * from './collections/card.component';
 export * from './collections/large-card.component';
 export * from './collections/object-card.component';

@@ -133,7 +133,9 @@ export const appMachine = (
     },
     [AppEvents.NAVIGATE]: {
       target: `#${AppRouterStates.NAVIGATING}`,
-      actions: assign({ path: (context, event) => event.path||window.location.pathname }),
+      actions: assign({
+        path: (context, event) => event.path||window.location.pathname,
+      }),
     },
     [AppEvents.CLICKED_HOME]: {
       actions: assign({ selected: (context) => undefined }),
