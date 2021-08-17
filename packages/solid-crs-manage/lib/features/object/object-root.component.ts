@@ -1,17 +1,17 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, debounce, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, DoneInvokeEvent, Interpreter, State } from 'xstate';
+import { ActorRef, interpret, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
-import { ObjectContext, ObjectStates } from './object.machine';
+import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
 import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
@@ -78,10 +78,14 @@ export class ObjectRootComponent extends RxLitElement {
   object?: CollectionObject;
 
   /**
+   * The form machine used by the form actor
+   */
+  formMachine = formMachine<CollectionObject>((context) => validateObjectForm(context));
+
+  /**
    * The actor responsible for form validation in this component.
    */
-  @internalProperty()
-  formActor: ActorRef<FormEvent>;
+  formActor = interpret(this.formMachine, { devTools: true });
 
   /**
    * The actor responsible for editing term fields.
@@ -188,15 +192,15 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
-      this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => {
+      // this.subscribe('formActor', from(this.actor).pipe(
+      //   map((state) => {
 
-          this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
+      //     this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
 
-          return state.children[FormActors.FORM_MACHINE];
+      //     return state.children[FormActors.FORM_MACHINE];
 
-        })
-      ));
+      //   })
+      // ));
 
       this.subscribe('termActor', from(this.actor).pipe(
         map((state) => state.children[TermActors.TERM_MACHINE]),
@@ -212,6 +216,15 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => {
 
           this.formCards?.forEach((card) => card.object = state.context?.object);
+
+          this.formMachine = this.formMachine.withContext({
+            data: state.context?.object,
+            original: state.context?.object,
+          });
+
+          this.formActor = interpret(this.formMachine, { devTools: true });
+
+          this.formActor.start();
 
           return state.context?.object;
 
@@ -489,7 +502,7 @@ export class ObjectRootComponent extends RxLitElement {
           margin-top: 1px;
           display: flex;
           flex-direction: row;
-        height: 1px;
+          height: 1px;
           flex: 1 1;
         }
         .content {

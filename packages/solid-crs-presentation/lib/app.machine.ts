@@ -316,7 +316,7 @@ export const appMachine = (
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
           entry: [
-            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/about`),
+            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile?.uri)}/about`),
           ],
           on: {
             /**
