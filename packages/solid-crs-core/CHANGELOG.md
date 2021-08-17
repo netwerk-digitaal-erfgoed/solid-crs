@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
+
+
+### **Bug Fixes**
+
+* fixed search on object properties ([#364](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/364)) ([0177ef5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0177ef5c1eaa9170e04e9da66820cac479dc2bbf))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+### **Features**
+
+* add routing to presentation ([#385](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/385)) ([4e94ae9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/4e94ae92e6290f9e9c9e0e94e43cb94554fc122d)), closes [#381](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/381)
+* administrator access to heritage pod ([#363](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/363)) ([5c51ed1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5c51ed15b45161ecc8e935b064c93e1a2cc5630f))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+
 ## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.7.0) (2021-07-29)
 
 
