@@ -9,9 +9,10 @@ export enum ObjectEvents {
   CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
   CLICKED_DELETE              = '[ObjectsEvent: Clicked Delete]',
   CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
-  SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
   CLICKED_TERM_FIELD          = '[ObjectsEvent: Clicked Term Field]',
   CLICKED_SIDEBAR_ITEM        = '[ObjectsEvent: Clicked Sidebar Item]',
+  SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
+  SELECTED_TERMS              = '[ObjectsEvent: Selected Terms]',
 }
 
 /**
@@ -41,6 +42,16 @@ export class SelectedObjectEvent implements EventObject {
 
   public type: ObjectEvents.SELECTED_OBJECT = ObjectEvents.SELECTED_OBJECT;
   constructor(public object: CollectionObject) { }
+
+}
+
+/**
+ * Fired when the users selects an object.
+ */
+export class SelectedTermsEvent implements EventObject {
+
+  public type: ObjectEvents.SELECTED_TERMS = ObjectEvents.SELECTED_TERMS;
+  constructor(public field: string, public terms: Term[]) { }
 
 }
 

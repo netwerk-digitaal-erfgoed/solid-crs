@@ -12,7 +12,7 @@ import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
 
@@ -251,16 +251,26 @@ export class ObjectRootComponent extends RxLitElement {
                 // don't use form values for Terms
                 // as form machine will only return URIs for these fields, not full Terms
                 // See above: this.formMachine's initial data
-                additionalType: state.context?.object.additionalType,
-                creator: state.context?.object.creator,
-                locationCreated: state.context?.object.locationCreated,
-                material: state.context?.object.material,
-                subject: state.context?.object.subject,
-                location: state.context?.object.location,
-                person: state.context?.object.person,
-                organization: state.context?.object.organization,
-                event: state.context?.object.event,
+                additionalType: this.object?.additionalType,
+                creator: this.object?.creator,
+                locationCreated: this.object?.locationCreated,
+                material: this.object?.material,
+                subject: this.object?.subject,
+                location: this.object?.location,
+                person: this.object?.person,
+                organization: this.object?.organization,
+                event: this.object?.event,
               }));
+
+            });
+
+            this.actor.onEvent((event) => {
+
+              if (event instanceof SelectedTermsEvent) {
+
+                this.formActor.send(new FormUpdatedEvent(event.field, event.terms.map((term) => term.uri)));
+
+              }
 
             });
 

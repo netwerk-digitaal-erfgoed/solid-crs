@@ -1,8 +1,8 @@
 import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, sendParent } from 'xstate';
+import { assign, createMachine, send, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
 /**
@@ -266,6 +266,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             onDone: {
               target: ObjectStates.IDLE,
               actions: [
+                send((context, event) => new SelectedTermsEvent(event.data.field, event.data.selectedTerms)),
                 assign((context, event) => ({
                   object: {
                     ...context.object,
