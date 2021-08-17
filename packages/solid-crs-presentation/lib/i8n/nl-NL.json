@@ -195,9 +195,9 @@
         "value": "Licentie"
     },
     {
-        "key": "nde.features.object.card.field.download",
+        "key": "nde.features.object.card.field.image-source",
         "locale": "nl-NL",
-        "value": "Download"
+        "value": "Afbeeldingslocatie"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC/1.0/",
@@ -510,8 +510,28 @@
         "value": "jaar geleden"
     },
     {
-        "key": "nde.common.copied-url",
+        "key": "nde.common.unit.MMT",
         "locale": "nl-NL",
-        "value": "URL van deze pagina werd gekopieerd"
+        "value": "mm"
+    },
+    {
+        "key": "nde.common.unit.CMT",
+        "locale": "nl-NL",
+        "value": "cm"
+    },
+    {
+        "key": "nde.common.unit.MTR",
+        "locale": "nl-NL",
+        "value": "m"
+    },
+    {
+        "key": "nde.common.unit.GRM",
+        "locale": "nl-NL",
+        "value": "g"
+    },
+    {
+        "key": "nde.common.unit.KGM",
+        "locale": "nl-NL",
+        "value": "kg"
     }
 ]
