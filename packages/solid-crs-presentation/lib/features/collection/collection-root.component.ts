@@ -184,9 +184,6 @@ export class CollectionRootComponent extends RxLitElement {
           flex-direction: column;
           height: 100%;
         }
-        nde-alert {
-          margin-bottom: var(--gap-large);
-        }
         .content {
           margin-top: 1px;
           padding: var(--gap-large);
