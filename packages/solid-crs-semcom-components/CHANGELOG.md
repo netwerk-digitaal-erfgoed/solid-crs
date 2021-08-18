@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
+
+
+### **Bug Fixes**
+
+* change schema:unitCode value from GM to GRM ([#419](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/419)) ([762241e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/762241efb9a7f25ce3caf2dc01f7303b86de47b7))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+### **Features**
+
+* hide type field in object description form ([#420](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/420)) ([ca684c9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/ca684c90efa2571a859bd158bac8d962b89fcc0d))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+
 ## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.7.0) (2021-07-29)
 
 

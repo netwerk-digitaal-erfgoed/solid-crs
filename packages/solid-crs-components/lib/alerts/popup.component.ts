@@ -80,6 +80,7 @@ export class PopupComponent extends RxLitElement {
           top: 0;
           left: 0;
           position: fixed;
+          z-index: 20;
         }
         .overlay {
           height: 100%;

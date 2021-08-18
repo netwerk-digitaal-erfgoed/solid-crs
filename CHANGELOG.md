@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.6.0...v0.8.0) (2021-08-17)
+
+
+### **Documentation**
+
+* vocabulary ([#141](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/141)) ([2d7038a](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/2d7038abb5af42fd7122629df5ad4640cbe4404b))
+
+
+### **Bug Fixes**
+
+* added missing enlarge icon to image preview ([#425](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/425)) ([8e9bcd9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/8e9bcd97b77c3503b2661e0923bddfea267ee2a2))
+* added term error message ([#378](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/378)) ([33a12e0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/33a12e08057c899b0b7e688067ba2d064f39cec2))
+* change schema:unitCode value from GM to GRM ([#419](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/419)) ([762241e](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/762241efb9a7f25ce3caf2dc01f7303b86de47b7))
+* date validation message ([#427](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/427)) ([dd88337](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/dd88337bb28340af7cd5a54ff9955c321cfb788c))
+* fixed search on object properties ([#364](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/364)) ([0177ef5](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/0177ef5c1eaa9170e04e9da66820cac479dc2bbf))
+* nde-erfgoed renames in docs ([#366](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/366)) ([a642e74](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a642e749ceb33b2a5caf9ba3b4db91a64edc987b))
+* presentation-object-root-fixes ([#426](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/426)) ([d693fb5](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/d693fb577e25ecfaaf8b59088521f45ce6baca94))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+* unique port for presentation module ([e321a02](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/e321a024a0ccbf05d96cc71571c320e694c96ee2))
+
+
+### **Features**
+
+* add routing to presentation ([#385](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/385)) ([4e94ae9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/4e94ae92e6290f9e9c9e0e94e43cb94554fc122d)), closes [#381](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/381)
+* administrator access to heritage pod ([#363](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/363)) ([5c51ed1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5c51ed15b45161ecc8e935b064c93e1a2cc5630f))
+* change title on landing page ([#428](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/428)) ([8c4ff9e](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/8c4ff9edde051552042ecd4bf9749ce9e225ba16)), closes [#420](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/420) [#427](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/427) [#426](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/426)
+* create presentation landing page ([#396](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/396)) ([b9f6ea8](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/b9f6ea8d1de0c6459f1319612b29451141cac39c))
+* hide type field in object description form ([#420](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/420)) ([ca684c9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ca684c90efa2571a859bd158bac8d962b89fcc0d))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+* set up presentation module ([#381](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/381)) ([77e1a90](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/77e1a90aa204daf99be4569050e10ab1ebda0480))
+* update presentation object page ([#418](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/418)) ([1ee3caa](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/1ee3caa865e75cf3651e3b80bf2bedb105e735c8))
+
+
+
 ## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.6.0...v0.7.0) (2021-07-29)
 
 
