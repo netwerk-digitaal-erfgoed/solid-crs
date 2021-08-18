@@ -347,9 +347,6 @@ export class ObjectRootComponent extends RxLitElement {
           height: 100%;
           width: 100%;
         }
-        nde-alert {
-          margin-bottom: var(--gap-large);
-        }
         #info-popup {
           height: auto;
           width: auto;

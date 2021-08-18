@@ -560,7 +560,11 @@ export class ObjectRootComponent extends RxLitElement {
           overflow-x: clip;
           display: flex;
           flex-direction: column;
-          gap: var(--gap-large);
+          display:flex; 
+          flex-direction: column;
+        }
+        .content > *:not(:last-child) {
+          margin-bottom: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;

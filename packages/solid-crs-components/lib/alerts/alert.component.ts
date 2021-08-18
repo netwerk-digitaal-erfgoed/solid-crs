@@ -35,6 +35,9 @@ export class AlertComponent extends LitElement {
     return [
       unsafeCSS(Theme),
       css`
+        :host {
+          margin-bottom: var(--gap-large);
+        }
         .alert {
           padding: var(--gap-normal) var(--gap-small);
           display: flex;

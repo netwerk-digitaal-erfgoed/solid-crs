@@ -181,9 +181,6 @@ export class AboutRootComponent extends RxLitElement {
           flex-direction: column;
           height: 100%;
         }
-        nde-alert {
-          margin-bottom: var(--gap-large);
-        }
         .content {
           margin: 0 var(--gap-large);
           margin-top: 41px;
