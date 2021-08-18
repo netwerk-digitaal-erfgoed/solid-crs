@@ -1,9 +1,9 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, interpret, Interpreter, InterpreterStatus, State } from 'xstate';
+import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent, doneInvoke } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
@@ -12,7 +12,7 @@ import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent, SelectedTermsEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
 
@@ -80,11 +80,13 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form machine used by the form actor
    */
+  @internalProperty()
   formMachine = formMachine<any>((context) => validateObjectForm(context));
 
   /**
    * The actor responsible for form validation in this component.
    */
+  @internalProperty()
   formActor = interpret(this.formMachine, { devTools: true });
 
   /**
@@ -166,20 +168,23 @@ export class ObjectRootComponent extends RxLitElement {
 
         if (event instanceof ClickedObjectSidebarItem) {
 
-          this.requestUpdate();
-          await this.updateComplete;
-
           const formCard = Array.from(this.formCards).find((card) => card.id === event.itemId);
           formCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         }
 
-        if (event.type === `done.invoke.${TermActors.TERM_MACHINE}`) {
+        if (event instanceof SelectedTermsEvent) {
 
-          this.requestUpdate();
-          await this.updateComplete;
+          this.formActor.send(new FormUpdatedEvent(event.field, event.terms.map((term) => term.uri)));
+          this.createComponents(this.components);
 
-          this.updateSelected();
+        }
+
+        if (event.type === `done.invoke.ObjectMachine.${ObjectStates.SAVING}:invocation[0]`) {
+
+          const parsed = event as DoneInvokeEvent<CollectionObject>;
+          this.initFormMachine(parsed.data, parsed.data, true);
+          this.createComponents(this.components);
 
         }
 
@@ -191,16 +196,6 @@ export class ObjectRootComponent extends RxLitElement {
           .pipe(map((state) => state.context?.alerts)));
 
       }
-
-      // this.subscribe('formActor', from(this.actor).pipe(
-      //   map((state) => {
-
-      //     this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
-
-      //     return state.children[FormActors.FORM_MACHINE];
-
-      //   })
-      // ));
 
       this.subscribe('termActor', from(this.actor).pipe(
         map((state) => state.children[TermActors.TERM_MACHINE]),
@@ -217,91 +212,7 @@ export class ObjectRootComponent extends RxLitElement {
 
           this.formCards?.forEach((card) => card.object = state.context?.object);
 
-          // when the object is loaded, prepare and start up the form machine (once)
-          if (this.formActor.status !== InterpreterStatus.Running) {
-
-            // replace Terms with lists of uri
-            // form machine can only handle (lists of) strings, not objects (Terms)
-            const parseObject = (object: CollectionObject) => ({
-              ...object,
-              additionalType: object?.additionalType
-                ? object.additionalType.map((term) => term.uri) : undefined,
-              creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
-              locationCreated: object?.locationCreated
-                ? object.locationCreated.map((term) => term.uri) : undefined,
-              material: object?.material ? object.material.map((term) => term.uri) : undefined,
-              subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
-              location: object?.location ? object.location.map((term) => term.uri) : undefined,
-              person: object?.person ? object.person.map((term) => term.uri) : undefined,
-              organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
-              event: object?.event ? object.event.map((term) => term.uri) : undefined,
-            });
-
-            this.formMachine = this.formMachine.withContext({
-              data: { ... parseObject(state.context?.object) },
-              original: { ... parseObject(state.context?.original) },
-            });
-
-            this.formActor = interpret(this.formMachine, { devTools: true });
-
-            this.formActor.onDone((event) => {
-
-              this.actor.send(new ClickedSaveEvent({
-                ...event.data.data,
-                // don't use form values for Terms
-                // as form machine will only return URIs for these fields, not full Terms
-                // See above: this.formMachine's initial data
-                additionalType: this.object?.additionalType,
-                creator: this.object?.creator,
-                locationCreated: this.object?.locationCreated,
-                material: this.object?.material,
-                subject: this.object?.subject,
-                location: this.object?.location,
-                person: this.object?.person,
-                organization: this.object?.organization,
-                event: this.object?.event,
-              }));
-
-            });
-
-            this.actor.onEvent((event) => {
-
-              if (event instanceof SelectedTermsEvent) {
-
-                this.formActor.send(new FormUpdatedEvent(event.field, event.terms.map((term) => term.uri)));
-
-              }
-
-            });
-
-            // this validates the form when form machine is started
-            // needed for validation when coming back from the term machine
-            // otherwise, form machine state is not_validated and the user can't save
-            this.formActor.send(new FormUpdatedEvent('name', state.context?.object.name));
-
-            this.subscribe('isSubmitting', from(this.formActor).pipe(
-              map((actor) => actor.matches(FormSubmissionStates.SUBMITTING)),
-            ));
-
-            this.subscribe('isValid', from(this.formActor).pipe(
-              map((actor) => !actor.matches({
-                [FormSubmissionStates.NOT_SUBMITTED]:{
-                  [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
-                },
-              })),
-            ));
-
-            this.subscribe('isDirty', from(this.formActor).pipe(
-              map((actor) => actor.matches({
-                [FormSubmissionStates.NOT_SUBMITTED]:{
-                  [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-                },
-              })),
-            ));
-
-            this.formActor.start();
-
-          }
+          this.initFormMachine(state.context?.object, state.context?.original);
 
           return state.context?.object;
 
@@ -316,12 +227,87 @@ export class ObjectRootComponent extends RxLitElement {
     if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
 
       await this.registerComponents(this.components);
+      await this.createComponents(this.components);
 
     }
 
-    if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
+  }
 
-      this.appendComponents(this.formCards);
+  initFormMachine(object: CollectionObject, original: CollectionObject, restart = false): void {
+
+    // when the object is loaded, prepare and start up the form machine (once)
+    if (restart || this.formActor.status !== InterpreterStatus.Running) {
+
+      // replace Terms with lists of uri
+      // form machine can only handle (lists of) strings, not objects (Terms)
+      const parseObject = (obj: CollectionObject) => ({
+        ...obj,
+        additionalType: obj?.additionalType
+          ? obj.additionalType.map((term) => term.uri) : undefined,
+        creator: obj?.creator ? obj.creator.map((term) => term.uri) : undefined,
+        locationCreated: obj?.locationCreated
+          ? obj.locationCreated.map((term) => term.uri) : undefined,
+        material: obj?.material ? obj.material.map((term) => term.uri) : undefined,
+        subject: obj?.subject ? obj.subject.map((term) => term.uri) : undefined,
+        location: obj?.location ? obj.location.map((term) => term.uri) : undefined,
+        person: obj?.person ? obj.person.map((term) => term.uri) : undefined,
+        organization: obj?.organization ? obj.organization.map((term) => term.uri) : undefined,
+        event: obj?.event ? obj.event.map((term) => term.uri) : undefined,
+      });
+
+      this.formMachine = this.formMachine.withContext({
+        data: { ... parseObject(object) },
+        original: { ... parseObject(original) },
+      });
+
+      this.formActor = interpret(this.formMachine, { devTools: true });
+
+      this.formActor.onDone((event) => {
+
+        this.actor.send(new ClickedSaveEvent({
+          ...event.data.data,
+          // don't use form values for Terms
+          // as form machine will only return URIs for these fields, not full Terms
+          // See above: this.formMachine's initial data
+          additionalType: this.object?.additionalType,
+          creator: this.object?.creator,
+          locationCreated: this.object?.locationCreated,
+          material: this.object?.material,
+          subject: this.object?.subject,
+          location: this.object?.location,
+          person: this.object?.person,
+          organization: this.object?.organization,
+          event: this.object?.event,
+        }));
+
+      });
+
+      // this validates the form when form machine is started
+      // needed for validation when coming back from the term machine
+      // otherwise, form machine state is not_validated and the user can't save
+      this.formActor.send(new FormUpdatedEvent('name', object.name));
+
+      this.subscribe('isSubmitting', from(this.formActor).pipe(
+        map((actor) => actor.matches(FormSubmissionStates.SUBMITTING)),
+      ));
+
+      this.subscribe('isValid', from(this.formActor).pipe(
+        map((actor) => !actor.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
+          },
+        })),
+      ));
+
+      this.subscribe('isDirty', from(this.formActor).pipe(
+        map((actor) => actor.matches({
+          [FormSubmissionStates.NOT_SUBMITTED]:{
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+          },
+        })),
+      ));
+
+      this.formActor.start();
 
     }
 
@@ -368,6 +354,19 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
+    }
+
+  }
+
+  /**
+   * Appends the formCards to the page content and removes previous children
+   */
+  async createComponents(components: ComponentMetadata[]): Promise<void> {
+
+    this.formCards = undefined;
+
+    for (const component of components) {
+
       let element;
 
       if (component.tag.includes('imagery')) {
@@ -409,32 +408,15 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
+      element.object = this.object;
+      element.formActor = this.formActor as any;
+      element.translator = this.translator;
+      element.logger = this.logger;
+
       this.formCards = this.formCards?.includes(element)
         ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
 
     }
-
-    this.appendComponents(this.formCards);
-
-  }
-
-  /**
-   * Appends the formCards to the page content and removes previous children
-   */
-  appendComponents(components: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[]): void {
-
-    components.forEach(async(component) => {
-
-      component.object = this.object;
-      component.formActor = this.formActor as any;
-      component.translator = this.translator;
-      await component?.requestUpdate('object');
-
-    });
 
     this.updateSelected();
 
@@ -509,7 +491,6 @@ export class ObjectRootComponent extends RxLitElement {
 
     ${ this.isEditingTermField
     ? html`
-      ${ this.appendComponents(this.formCards)}
       <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
     `
     : this.formCards ? html`

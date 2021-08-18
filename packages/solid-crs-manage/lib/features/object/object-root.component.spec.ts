@@ -212,25 +212,6 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should select sidebar item when content is scrolled', async () => {
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const div = document.createElement('div');
-    div.id = 'nde.features.object.sidebar.image';
-
-    component.formCards = [ div ];
-    component.components = [];
-
-    const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
-    content.dispatchEvent(new CustomEvent('scroll'));
-    await component.updateComplete;
-
-    expect(component.visibleCard).toBeTruthy();
-
-  });
-
   describe('updateSelected()', () => {
 
     it('should set this.visibleCard to the currently visible card', async () => {
@@ -538,6 +519,7 @@ describe('ObjectRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
     await component.registerComponents(component.components);
+    await component.createComponents(component.components);
 
     const event = new MouseEvent('contextmenu');
     event.stopPropagation = jest.fn();
@@ -546,22 +528,6 @@ describe('ObjectRootComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(event.preventDefault).toHaveBeenCalled();
-
-  });
-
-  describe('appendComponents()', () => {
-
-    it('should set formCard attributes', async () => {
-
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-      component.appendComponents([ div as any ]);
-
-      customElements.define('nde-object-imagery', ObjectImageryComponent);
-
-      expect(div.object).toBeTruthy();
-
-    });
 
   });
 
