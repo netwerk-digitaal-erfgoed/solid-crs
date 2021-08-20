@@ -1,4 +1,4 @@
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
 import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
 import { AuthenticateSetupComponent } from '../lib/features/authenticate/authenticate-setup.component';
