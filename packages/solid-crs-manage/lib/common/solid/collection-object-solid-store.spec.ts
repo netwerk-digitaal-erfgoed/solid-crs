@@ -1,5 +1,5 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { asUrl, getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
@@ -45,6 +45,10 @@ describe('CollectionObjectSolidStore', () => {
       depthUnit: 'CMT',
       widthUnit: 'CMT',
       subject: [ { name: 'subject', uri: 'https://uri/' } ],
+      location: [ { name: 'location', uri: 'https://uri/' } ],
+      person: [ { name: 'person', uri: 'https://uri/' } ],
+      organization: [ { name: 'organization', uri: 'https://uri/' } ],
+      event: [ { name: 'event', uri: 'https://uri/' } ],
     };
 
   });
@@ -311,15 +315,28 @@ describe('CollectionObjectSolidStore', () => {
       client.addInteger = jest.fn(() => 'test-url');
       client.addDecimal = jest.fn(() => 'test-url');
 
-      const result = await service.save(mockObject)
+      const objectWithoutSubject = {
+        ...mockObject,
+        subject: undefined,
+        location: undefined,
+        person: undefined,
+        organization: undefined,
+        event: undefined,
+      };
+
+      const result = await service.save(objectWithoutSubject)
 ;
 
       expect(result).toEqual(expect.objectContaining({
-        description: mockObject.description,
-        image: mockObject.image,
-        name: mockObject.name,
-        type: mockObject.type,
+        description: objectWithoutSubject.description,
+        image: objectWithoutSubject.image,
+        name: objectWithoutSubject.name,
+        type: objectWithoutSubject.type,
         subject: undefined,
+        location: undefined,
+        person: undefined,
+        organization: undefined,
+        event: undefined,
       }));
 
     });
