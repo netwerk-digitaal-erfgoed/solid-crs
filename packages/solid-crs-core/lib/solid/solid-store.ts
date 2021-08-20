@@ -1,6 +1,8 @@
 import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError, Resource, Store } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
+import { ArgumentError } from '../errors/argument-error';
+import { Resource } from '../stores/resource';
+import { Store } from '../stores/store';
 
 export class SolidStore<T extends Resource> implements Store<T> {
 

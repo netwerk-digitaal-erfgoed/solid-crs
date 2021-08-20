@@ -1,4 +1,4 @@
-import { Resource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Resource } from '../stores/resource';
 
 /**
  * Represents a profile

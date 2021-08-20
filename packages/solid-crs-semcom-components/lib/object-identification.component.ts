@@ -1,4 +1,4 @@
-import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
@@ -26,13 +26,13 @@ export class ObjectIdentificationComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @property()
+  @property({ type: Object })
   object?: CollectionObject;
 
   /**
    * The actor responsible for form validation in this component.
    */
-  @property()
+  @property({ type: Object })
   formActor: SpawnedActorRef<FormEvent>;
 
   /**
@@ -40,6 +40,12 @@ export class ObjectIdentificationComponent extends RxLitElement {
    */
   @property()
   collections?: Collection[];
+
+  async updated(changed: PropertyValues): Promise<void> {
+
+    super.updated(changed);
+
+  }
 
   /**
    * Renders the component as HTML.

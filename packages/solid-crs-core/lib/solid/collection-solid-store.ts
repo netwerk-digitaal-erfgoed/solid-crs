@@ -1,6 +1,9 @@
 import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { Collection, CollectionStore, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
+import { Collection } from '../collections/collection';
+import { CollectionStore } from '../collections/collection-store';
+import { ArgumentError } from '../errors/argument-error';
+import { fulltextMatch } from '../utils/fulltext-match';
 import { SolidStore } from './solid-store';
 
 /**
@@ -8,13 +11,19 @@ import { SolidStore } from './solid-store';
  */
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
+  constructor(public webId?: string) {
+
+    super();
+
+  }
+
   /**
    * Retrieves a list of all collections
    *
    */
   async all(): Promise<Collection[]> {
 
-    const webId = getDefaultSession()?.info?.webId;
+    const webId = this.webId || getDefaultSession()?.info?.webId;
 
     if (!webId) {
 

@@ -1,6 +1,7 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection } from '../collections/collection';
+import { CollectionObject } from '../collections/collection-object';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
 
 describe('CollectionObjectSolidStore', () => {

@@ -1,4 +1,5 @@
-import { ArgumentError, Logger } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError } from '../errors/argument-error';
+import { Logger } from '../logging/logger';
 import { SolidProfile } from './solid-profile';
 import { SolidSession } from './solid-session';
 import { SolidService } from './solid.service';

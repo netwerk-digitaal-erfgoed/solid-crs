@@ -1,7 +1,7 @@
+import { SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Event } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { DoneInvokeEvent } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
-import { SolidSession } from '../../common/solid/solid-session';
 import { AuthenticateContext } from './authenticate.machine';
 
 /**

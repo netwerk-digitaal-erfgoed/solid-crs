@@ -1,9 +1,8 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
-import { SolidSession } from './common/solid/solid-session';
 import { ClickedDeleteCollectionEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 import { SearchUpdatedEvent } from 'features/search/search.events';
 import { ClickedDeleteObjectEvent, SelectedObjectEvent } from 'features/object/object.events';

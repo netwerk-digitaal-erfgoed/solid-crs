@@ -1,5 +1,6 @@
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection } from '../collections/collection';
+import { ArgumentError } from '../errors/argument-error';
 import { CollectionSolidStore } from './collection-solid-store';
 
 describe('CollectionSolidStore', () => {

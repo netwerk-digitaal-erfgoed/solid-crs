@@ -1,10 +1,9 @@
-import { Alert, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, CollectionObjectMemoryStore, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectRootComponent } from './object-root.component';
 import { ObjectContext, objectMachine } from './object.machine';
