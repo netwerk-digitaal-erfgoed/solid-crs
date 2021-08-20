@@ -1,18 +1,14 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections, setProfile } from './app.events';
-import { SolidSession } from './common/solid/solid-session';
-import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents } from './features/collection/collection.events';
-import { SolidProfile } from './common/solid/solid-profile';
 import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents, SelectedObjectEvent } from './features/object/object.events';
-import { SolidService } from './common/solid/solid.service';
-import { CollectionSolidStore } from './common/solid/collection-solid-store';
+import { collectionMachine } from './features/collection/collection.machine';
 
 /**
  * The root context of the application.
@@ -322,7 +318,7 @@ export const appMachine = (
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
           entry: [
-            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/about`),
+            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile?.uri)}/about`),
           ],
           on: {
             /**

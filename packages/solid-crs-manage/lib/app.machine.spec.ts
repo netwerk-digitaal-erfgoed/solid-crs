@@ -1,10 +1,8 @@
-import { doesNotMatch } from 'assert';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AddAlertEvent, AppEvents, ClickedAdministratorTypeEvent, DismissAlertEvent, ErrorEvent, LoggedInEvent, SetProfileEvent } from './app.events';
+import { AddAlertEvent, AppEvents, ClickedAdministratorTypeEvent, DismissAlertEvent, LoggedInEvent, SetProfileEvent } from './app.events';
 import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { SolidMockService } from './common/solid/solid-mock.service';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 

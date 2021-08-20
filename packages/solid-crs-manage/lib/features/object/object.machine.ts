@@ -1,12 +1,8 @@
-import { formMachine,
-  FormActors,
-  FormValidatorResult,
-  FormContext,
-  State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, sendParent } from 'xstate';
+import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { assign, createMachine, send, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
 /**
@@ -241,6 +237,10 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.IDLE]: {
         on: {
+          [ObjectEvents.CLICKED_SAVE]: {
+            target: ObjectStates.SAVING,
+            actions: assign({ object: (context, event) => event.object }),
+          },
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_RESET]: {
             target: ObjectStates.IDLE,
@@ -248,61 +248,6 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           },
           [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
-        invoke: [
-          {
-            id: FormActors.FORM_MACHINE,
-            src: formMachine<CollectionObject>(
-              (formContext) => validateObjectForm(formContext),
-            ),
-            data: (context) => {
-
-              // replace Terms with lists of uri
-              // form machine can only handle (lists of) strings, not objects (Terms)
-              const parseObject = (object: CollectionObject) => ({
-                ...object,
-                additionalType: object?.additionalType
-                  ? object.additionalType.map((term) => term.uri) : undefined,
-                creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
-                locationCreated: object?.locationCreated
-                  ? object.locationCreated.map((term) => term.uri) : undefined,
-                material: object?.material ? object.material.map((term) => term.uri) : undefined,
-                subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
-                location: object?.location ? object.location.map((term) => term.uri) : undefined,
-                person: object?.person ? object.person.map((term) => term.uri) : undefined,
-                organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
-                event: object?.event ? object.event.map((term) => term.uri) : undefined,
-              });
-
-              return {
-                data: { ... parseObject(context.object) },
-                original: { ... parseObject(context.original) },
-              };
-
-            },
-            onDone: {
-              target: ObjectStates.SAVING,
-              actions: [
-                assign((context, event) => ({
-                  object: {
-                    ...event.data.data,
-                    // don't use form values for Terms
-                    // as form machine will only return URIs for these fields, not full Terms
-                    // See also: ObjectStates.IDLE's invoked machine's initial data
-                    additionalType: context.object.additionalType,
-                    creator: context.object.creator,
-                    locationCreated: context.object.locationCreated,
-                    material: context.object.material,
-                    subject: context.object.subject,
-                    location: context.object.location,
-                    person: context.object.person,
-                    organization: context.object.organization,
-                    event: context.object.event,
-                  },
-                })),
-              ],
-            },
-          },
-        ],
       },
       [ObjectStates.EDITING_FIELD]: {
         on: {
@@ -321,6 +266,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             onDone: {
               target: ObjectStates.IDLE,
               actions: [
+                send((context, event) => new SelectedTermsEvent(event.data.field, event.data.selectedTerms)),
                 assign((context, event) => ({
                   object: {
                     ...context.object,
