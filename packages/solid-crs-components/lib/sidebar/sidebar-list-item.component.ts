@@ -62,6 +62,7 @@ export class SidebarListItemComponent extends RxLitElement {
         cursor: pointer;
         justify-content: space-between;
         padding: var(--gap-small) var(--gap-large);
+        height: var(--font-size-header-normal);
       }
 
       .item.selected, .item:hover:not(.title) {
@@ -85,7 +86,7 @@ export class SidebarListItemComponent extends RxLitElement {
 
       .item.title {
         cursor: default;
-        padding: var(--gap-normal) var(--gap-large);
+        padding: var(--gap-normal) var(--gap-large) 0;
       }
 
       .actions {
