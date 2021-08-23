@@ -125,6 +125,21 @@
         "value": "Collectie aangemaakt"
     },
     {
+        "key": "nde.features.collections.root.delete.confirm",
+        "locale": "nl-NL",
+        "value": "Verwijderen"
+    },
+    {
+        "key": "nde.features.collections.root.delete.cancel",
+        "locale": "nl-NL",
+        "value": "Annuleren"
+    },
+    {
+        "key": "nde.features.collections.root.delete.title",
+        "locale": "nl-NL",
+        "value": "Ben je zeker dat je deze collectie wil verwijderen?"
+    },
+    {
         "key": "nde.features.collections.root.title",
         "locale": "nl-NL",
         "value": "Collecties"
@@ -183,6 +198,21 @@
         "key": "nde.features.search.root.collections",
         "locale": "nl-NL",
         "value": "Collecties"
+    },
+    {
+        "key": "nde.features.object.root.delete.confirm",
+        "locale": "nl-NL",
+        "value": "Verwijderen"
+    },
+    {
+        "key": "nde.features.object.root.delete.cancel",
+        "locale": "nl-NL",
+        "value": "Annuleren"
+    },
+    {
+        "key": "nde.features.object.root.delete.title",
+        "locale": "nl-NL",
+        "value": "Ben je zeker dat je dit object wil verwijderen?"
     },
     {
         "key": "nde.features.object.new-object-name",
