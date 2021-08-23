@@ -1,7 +1,5 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, getStringWithLocaleAll, getStringNoLocaleAll, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Term, CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { SubjectSubscriber } from 'rxjs/internal/Subject';
-
 import { v4, v5 } from 'uuid';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
@@ -179,8 +177,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         .map((thingUri) => getThing(oldDataset, thingUri))
         .filter((thing) => !!thing);
 
-      oldRepresentationThings.forEach((oldRepresentationThing) =>
-        updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldRepresentationThing));
+      updatedOldObjectsDataset = oldRepresentationThings.reduce((dataset, thing) =>
+        setThing(dataset, thing), updatedOldObjectsDataset);
 
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
@@ -219,11 +217,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       ... eventThings?.length > 0 ? eventThings : [],
     ];
 
-    representationThings.forEach((thing) => {
-
-      updatedObjectsDataset = setThing(updatedObjectsDataset, thing);
-
-    });
+    updatedObjectsDataset = representationThings.reduce((dataset, thing) =>
+      setThing(dataset, thing), updatedObjectsDataset);
 
     // save all other Terms seperately
     [ 'additionalType',
@@ -295,10 +290,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // representation
     const subjects = object.subject?.map((subject) => {
 
-      const subjectThing = createThing({ url: `${object.uri}-subject-${v5(subject.uri + subject.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
-      addUrl(subjectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DefinedTerm');
-      addUrl(subjectThing, 'http://schema.org/sameAs', subject.uri);
-      addStringNoLocale(subjectThing, 'http://schema.org/name', subject.name);
+      let subjectThing = createThing({ url: `${object.uri}-subject-${v5(subject.uri + subject.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      subjectThing = addUrl(subjectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DefinedTerm');
+      subjectThing = addUrl(subjectThing, 'http://schema.org/sameAs', subject.uri);
+      subjectThing = addStringNoLocale(subjectThing, 'http://schema.org/name', subject.name);
       objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(subjectThing));
 
       return subjectThing;
@@ -307,10 +302,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     const locations = object.location?.map((location) => {
 
-      const locationThing = createThing({ url: `${object.uri}-location-${v5(location.uri + location.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
-      addUrl(locationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Place');
-      addUrl(locationThing, 'http://schema.org/sameAs', location.uri);
-      addStringNoLocale(locationThing, 'http://schema.org/name', location.name);
+      let locationThing = createThing({ url: `${object.uri}-location-${v5(location.uri + location.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      locationThing = addUrl(locationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Place');
+      locationThing = addUrl(locationThing, 'http://schema.org/sameAs', location.uri);
+      locationThing = addStringNoLocale(locationThing, 'http://schema.org/name', location.name);
       objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(locationThing));
 
       return locationThing;
@@ -319,10 +314,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     const persons = object.person?.map((person) => {
 
-      const personThing = createThing({ url: `${object.uri}-person-${v5(person.uri + person.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
-      addUrl(personThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Person');
-      addUrl(personThing, 'http://schema.org/sameAs', person.uri);
-      addStringNoLocale(personThing, 'http://schema.org/name', person.name);
+      let personThing = createThing({ url: `${object.uri}-person-${v5(person.uri + person.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      personThing = addUrl(personThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Person');
+      personThing = addUrl(personThing, 'http://schema.org/sameAs', person.uri);
+      personThing = addStringNoLocale(personThing, 'http://schema.org/name', person.name);
       objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(personThing));
 
       return personThing;
@@ -331,10 +326,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     const organizations = object.organization?.map((organization) => {
 
-      const organizationThing = createThing({ url: `${object.uri}-organization-${v5(organization.uri + organization.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
-      addUrl(organizationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization');
-      addUrl(organizationThing, 'http://schema.org/sameAs', organization.uri);
-      addStringNoLocale(organizationThing, 'http://schema.org/name', organization.name);
+      let organizationThing = createThing({ url: `${object.uri}-organization-${v5(organization.uri + organization.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      organizationThing = addUrl(organizationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization');
+      organizationThing = addUrl(organizationThing, 'http://schema.org/sameAs', organization.uri);
+      organizationThing = addStringNoLocale(organizationThing, 'http://schema.org/name', organization.name);
       objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(organizationThing));
 
       return organizationThing;
@@ -343,10 +338,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     const events = object.event?.map((event) => {
 
-      const eventThing = createThing({ url: `${object.uri}-event-${v5(event.uri + event.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
-      addUrl(eventThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Event');
-      addUrl(eventThing, 'http://schema.org/sameAs', event.uri);
-      addStringNoLocale(eventThing, 'http://schema.org/name', event.name);
+      let eventThing = createThing({ url: `${object.uri}-event-${v5(event.uri + event.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      eventThing = addUrl(eventThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Event');
+      eventThing = addUrl(eventThing, 'http://schema.org/sameAs', event.uri);
+      eventThing = addStringNoLocale(eventThing, 'http://schema.org/name', event.name);
       objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(eventThing));
 
       return eventThing;

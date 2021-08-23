@@ -25,11 +25,10 @@
     # REPRESENTATION
 
 
-    schema:about 
-        <#object-1-subject-03261450-3a78-5427-adf4-026c1285e113>,
-        <#object-1-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86>,
-        <#object-1-person-20b74da3-2a23-543a-a44b-867c2e81ae09>,
-        <#object-1-event-99c2df58-1688-5795-9455-6148bee7c8fc> ;
+    schema:about <#object-1-subject-03261450-3a78-5427-adf4-026c1285e113>;
+    schema:about <#object-1-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86>;
+    schema:about <#object-1-person-20b74da3-2a23-543a-a44b-867c2e81ae09>;
+    schema:about <#object-1-event-99c2df58-1688-5795-9455-6148bee7c8fc> ;
 
 
     # DIMENSIONS
