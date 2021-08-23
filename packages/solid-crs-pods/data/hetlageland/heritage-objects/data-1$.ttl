@@ -24,10 +24,11 @@
 
     # REPRESENTATION
 
-    schema:DefinedTerm <http://vocab.getty.edu/aat/300185692> ;
-    schema:Place <http://www.wikidata.org/entity/Q31579578> ;
-    schema:Person <http://data.bibliotheken.nl/id/thes/p067531180> ;
-    schema:Event <http://www.wikidata.org/entity/Q48314> ;
+
+    schema:about <#object-1-subject-03261450-3a78-5427-adf4-026c1285e113>;
+    schema:about <#object-1-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86>;
+    schema:about <#object-1-person-20b74da3-2a23-543a-a44b-867c2e81ae09>;
+    schema:about <#object-1-event-99c2df58-1688-5795-9455-6148bee7c8fc> ;
 
 
     # DIMENSIONS
@@ -41,6 +42,26 @@
     # OTHER
 
     schema:mainEntityOfPage <#object-1-digital> .
+
+<#object-1-subject-03261450-3a78-5427-adf4-026c1285e113>
+    rdf:type schema:DefinedTerm ;
+    schema:name "veldslagen" ;
+    schema:sameAs <http://vocab.getty.edu/aat/300185692> .
+
+<#object-1-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86>
+    rdf:type schema:Place ;
+    schema:name "Delft" ;
+    schema:sameAs <http://www.wikidata.org/entity/Q31579578> .
+
+<#object-1-person-20b74da3-2a23-543a-a44b-867c2e81ae09>
+    rdf:type schema:Person ;
+    schema:name "Arthur Wellesley of Wellington" ;
+    schema:sameAs <http://data.bibliotheken.nl/id/thes/p067531180> .
+
+<#object-1-event-99c2df58-1688-5795-9455-6148bee7c8fc>
+    rdf:type schema:Event ;
+    schema:name "Slag bij Waterloo" ;
+    schema:sameAs <http://www.wikidata.org/entity/Q48314> .
 
 <#object-1-height>
     rdf:type schema:QuantitativeValue ;
@@ -68,8 +89,6 @@
     schema:license <https://creativecommons.org/publicdomain/zero/1.0/deed.nl> ;
     schema:mainEntity <#object-1> .
 
-
-
 <#object-2>
 
     # IDENTIFICATION
@@ -93,10 +112,11 @@
 
     # REPRESENTATION
 
-    schema:DefinedTerm <http://vocab.getty.edu/aat/300185692> ;
-    schema:Place <http://www.wikidata.org/entity/Q31579578> ;
-    schema:Person <http://data.bibliotheken.nl/id/thes/p067531180> ;
-    schema:Event <http://www.wikidata.org/entity/Q48314> ;
+
+    schema:about <#object-2-subject-03261450-3a78-5427-adf4-026c1285e113> ;
+    schema:about <#object-2-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86> ;
+    schema:about <#object-2-person-20b74da3-2a23-543a-a44b-867c2e81ae09> ;
+    schema:about <#object-2-event-99c2df58-1688-5795-9455-6148bee7c8fc> ;
 
 
     # DIMENSIONS
@@ -110,6 +130,26 @@
     # OTHER
 
     schema:mainEntityOfPage <#object-2-digital> .
+
+<#object-2-subject-03261450-3a78-5427-adf4-026c1285e113>
+    rdf:type schema:DefinedTerm ;
+    schema:name "veldslagen" ;
+    schema:sameAs <http://vocab.getty.edu/aat/300185692> .
+
+<#object-2-location-e249bb2f-33e0-5b64-a8d0-47144bcf1a86>
+    rdf:type schema:Place ;
+    schema:name "Delft" ;
+    schema:sameAs <http://www.wikidata.org/entity/Q31579578> .
+
+<#object-2-person-20b74da3-2a23-543a-a44b-867c2e81ae09>
+    rdf:type schema:Person ;
+    schema:name "Arthur Wellesley of Wellington" ;
+    schema:sameAs <http://data.bibliotheken.nl/id/thes/p067531180> .
+
+<#object-2-event-99c2df58-1688-5795-9455-6148bee7c8fc>
+    rdf:type schema:Event ;
+    schema:name "Slag bij Waterloo" ;
+    schema:sameAs <http://www.wikidata.org/entity/Q48314> .
 
 <#object-2-height>
     rdf:type schema:QuantitativeValue ;
