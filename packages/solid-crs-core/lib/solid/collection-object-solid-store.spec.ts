@@ -45,6 +45,11 @@ describe('CollectionObjectSolidStore', () => {
       heightUnit: 'CMT',
       depthUnit: 'CMT',
       widthUnit: 'CMT',
+      subject: [ { name: 'subject', uri: 'https://uri/' } ],
+      location: [ { name: 'location', uri: 'https://uri/' } ],
+      person: [ { name: 'person', uri: 'https://uri/' } ],
+      organization: [ { name: 'organization', uri: 'https://uri/' } ],
+      event: [ { name: 'event', uri: 'https://uri/' } ],
     };
 
   });
@@ -86,6 +91,7 @@ describe('CollectionObjectSolidStore', () => {
       objectThing = client.addUrl(objectThing, 'http://schema.org/isPartOf', mockCollection.uri);
 
       client.getUrl = jest.fn(() => mockCollection.uri);
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThingAll = jest.fn(() => [ objectThing ]);
       client.getThing = jest.fn(() => objectThing);
@@ -110,6 +116,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getThing = jest.fn(() => client.createThing({ url: mockObject.uri }));
       client.getThingAll = jest.fn(() => [ objectThing ]);
       client.getUrl = jest.fn((thing, uri) => uri === 'http://schema.org/isPartOf' ? 'http://test.uri/' : null);
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
 
       const url = mockObject.uri;
       const result = await service.getObjectsForCollection(mockCollection);
@@ -122,6 +129,12 @@ describe('CollectionObjectSolidStore', () => {
         [ 'test-dataset', `${url}-width` ],
         [ 'test-dataset', `${url}-depth` ],
         [ 'test-dataset', `${url}-weight` ],
+        // representation items
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
       ]);
 
     });
@@ -141,6 +154,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => 'test-url');
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
       client.getStringWithLocale = jest.fn(() => 'test-string');
       client.getStringNoLocale = jest.fn(() => 'test-string');
       client.getInteger = jest.fn(() => 1);
@@ -162,6 +176,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => null);
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
 
       const url = 'test-url';
       const result = await service.get('test-url');
@@ -175,6 +190,12 @@ describe('CollectionObjectSolidStore', () => {
         [ 'test-dataset', `${url}-width` ],
         [ 'test-dataset', `${url}-depth` ],
         [ 'test-dataset', `${url}-weight` ],
+        // representation items
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
+        [ 'test-dataset', `test-url` ],
       ]);
 
     });
@@ -207,6 +228,7 @@ describe('CollectionObjectSolidStore', () => {
       client.setThing = jest.fn(() => 'test-dataset');
       client.removeThing = jest.fn(() => 'test-thing');
       client.getUrl = jest.fn(() => 'test-url');
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
       client.deleteFile = jest.fn(async () => 'test-file');
 
@@ -237,6 +259,7 @@ describe('CollectionObjectSolidStore', () => {
       client.getSolidDataset = jest.fn(async () => 'test-dataset');
       client.getThing = jest.fn(() => client.createThing());
       client.getUrl = jest.fn(() => 'http://test-uri/');
+      client.getUrlAll = jest.fn(() => [ 'http://test-uri/' ]);
       client.setThing = jest.fn(() => 'test-thing');
       client.removeThing = jest.fn(() => 'test-thing');
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
@@ -254,6 +277,7 @@ describe('CollectionObjectSolidStore', () => {
         image: mockObject.image,
         name: mockObject.name,
         type: mockObject.type,
+        subject: [ { name: 'subject', uri: 'https://uri/' } ],
       }));
 
       expect(result.uri).toMatch(/http:\/\/test-uri\/#.*/i);
@@ -275,6 +299,47 @@ describe('CollectionObjectSolidStore', () => {
 
       expect(result).toEqual(expect.objectContaining({ ...mockObject }));
       expect(result.uri).toBeTruthy();
+
+    });
+
+    it('should not set undefined properties', async() => {
+
+      client.getSolidDataset = jest.fn(async () => 'test-dataset');
+      client.getThing = jest.fn(() => client.createThing());
+      client.getUrl = jest.fn(() => 'http://test-uri/');
+      client.getUrlAll = jest.fn(() => [  ]);
+      client.setThing = jest.fn(() => 'test-thing');
+      client.removeThing = jest.fn(() => 'test-thing');
+      client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
+      client.addUrl = jest.fn(() => 'test-url');
+      client.addStringNoLocale = jest.fn(() => 'test-url');
+      client.addStringWithLocale = jest.fn(() => 'test-url');
+      client.addInteger = jest.fn(() => 'test-url');
+      client.addDecimal = jest.fn(() => 'test-url');
+
+      const objectWithoutSubject = {
+        ...mockObject,
+        subject: undefined,
+        location: undefined,
+        person: undefined,
+        organization: undefined,
+        event: undefined,
+      };
+
+      const result = await service.save(objectWithoutSubject)
+;
+
+      expect(result).toEqual(expect.objectContaining({
+        description: objectWithoutSubject.description,
+        image: objectWithoutSubject.image,
+        name: objectWithoutSubject.name,
+        type: objectWithoutSubject.type,
+        subject: undefined,
+        location: undefined,
+        person: undefined,
+        organization: undefined,
+        event: undefined,
+      }));
 
     });
 
@@ -375,8 +440,9 @@ describe('CollectionObjectSolidStore', () => {
       'width',
       'depth',
       'weight',
+      'representations',
       'dataset',
-    ])('should error when object is %s', (value) => {
+    ])('should error when object.%s is not set', (value) => {
 
       const thing = client.createThing({ url: mockObject.uri });
 
@@ -387,6 +453,7 @@ describe('CollectionObjectSolidStore', () => {
         width: thing,
         depth: thing,
         weight: thing,
+        representations: [ thing ],
         dataset: thing,
       };
 
@@ -399,6 +466,7 @@ describe('CollectionObjectSolidStore', () => {
         params.width,
         params.depth,
         params.weight,
+        params.representations,
         params.dataset
       )).toThrow();
 
@@ -422,6 +490,7 @@ describe('CollectionObjectSolidStore', () => {
         objectThing,
         objectThing,
         objectThing,
+        [ objectThing ],
         objectThing
       );
 
@@ -453,7 +522,50 @@ describe('CollectionObjectSolidStore', () => {
 
     it('should set Terms correctly', () => {
 
-      client.getUrl = jest.fn(() => 'https://test.url/');
+      const subjectThing = client.createThing({ url: `${mockObject.uri}subject` });
+      const locationThing = client.createThing({ url: `${mockObject.uri}location` });
+      const personThing = client.createThing({ url: `${mockObject.uri}person` });
+      const organizationThing = client.createThing({ url: `${mockObject.uri}organization` });
+      const eventThing = client.createThing({ url: `${mockObject.uri}event` });
+
+      client.getUrl = jest.fn((thing, uri) => {
+
+        if (uri.includes('#type')) {
+
+          if (thing === subjectThing) {
+
+            return 'http://schema.org/DefinedTerm';
+
+          } else if (thing === locationThing) {
+
+            return 'http://schema.org/Place';
+
+          } else if (thing === personThing) {
+
+            return 'http://schema.org/Person';
+
+          } else if (thing === organizationThing) {
+
+            return 'http://schema.org/Organization';
+
+          } else if (thing === eventThing) {
+
+            return 'http://schema.org/Event';
+
+          } else {
+
+            return 'https://test.url/';
+
+          }
+
+        } else {
+
+          return 'https://test.url/';
+
+        }
+
+      });
+
       client.getStringNoLocale = jest.fn(() => 'test-string');
       client.getUrlAll = jest.fn(() => [ 'https://test.url/' ]);
       client.getStringWithLocale = jest.fn(() => 'test-string');
@@ -469,6 +581,13 @@ describe('CollectionObjectSolidStore', () => {
         objectThing,
         objectThing,
         objectThing,
+        [
+          subjectThing,
+          locationThing,
+          personThing,
+          organizationThing,
+          eventThing,
+        ],
         objectThing
       );
 
