@@ -1,4 +1,4 @@
-import { Alert, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
@@ -266,33 +266,6 @@ describe('ObjectRootComponent', () => {
 
         expect(machine.send).toHaveBeenCalledTimes(1);
         expect(component.formActor.send).toHaveBeenCalledTimes(1);
-
-      }
-
-    });
-
-  });
-
-  it('should emit event sidebar item is clicked', async () => {
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const div = document.createElement('div');
-    div.id = 'nde.features.object.sidebar.item';
-
-    component.formCards = [ div ];
-    component.components = [];
-    await component.updateComplete;
-
-    const item = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('nde-sidebar-list-item') as HTMLElement;
-    item.click();
-
-    machine.onEvent((event) => {
-
-      if(event.type === ObjectEvents.CLICKED_SIDEBAR_ITEM) {
-
-        expect(event.type).toBe(ObjectEvents.CLICKED_SIDEBAR_ITEM);
 
       }
 
