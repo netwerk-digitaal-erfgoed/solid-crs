@@ -314,7 +314,6 @@ export class ObjectRootComponent extends RxLitElement {
       // needed for validation when coming back from the term machine
       // otherwise, form machine state is not_validated and the user can't save
       this.formActor.send(new FormUpdatedEvent('name', object.name));
-      // this.formActor.send(new FormUpdatedEvent('additionalType', object.additionalType?.map((term) => term.uri)));
 
     }
 
