@@ -1,6 +1,5 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, getStringWithLocaleAll, getStringNoLocaleAll, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-
-import { v4 } from 'uuid';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
 import { CollectionObjectStore } from '../collections/collection-object-store';
@@ -48,6 +47,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`),
         getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`),
         getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`),
+        getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => !!thing),
         dataset
       ));
 
@@ -77,6 +77,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${uri}-width`),
       getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${uri}-depth`),
       getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${uri}-weight`),
+      getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => !!thing),
       dataset
     );
 
@@ -114,6 +115,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     updatedDataset = removeThing(updatedDataset, `${object.uri}-width`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-depth`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-weight`);
+
+    const oldRepresentationThings = getUrlAll(getThing(objectDataset, object.uri), 'http://schema.org/about')
+      .map((thingUri) => getThing(updatedDataset, thingUri))
+      .filter((thing) => !!thing);
+
+    updatedDataset = oldRepresentationThings.reduce((dataset, thing) =>
+      removeThing(dataset, thing), updatedDataset);
+
     // save the dataset
     await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
 
@@ -176,6 +185,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWidthThing);
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDepthThing);
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWeightThing);
+
+      const oldRepresentationThings = getUrlAll(oldObjectThing, 'http://schema.org/about')
+        .map((thingUri) => getThing(oldDataset, thingUri))
+        .filter((thing) => !!thing);
+
+      updatedOldObjectsDataset = oldRepresentationThings.reduce((dataset, thing) =>
+        removeThing(dataset, thing), updatedOldObjectsDataset);
+
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
     }
@@ -190,6 +207,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       width: widthThing,
       depth: depthThing,
       weight: weightThing,
+      subjects: subjectThings,
+      locations: locationThings,
+      persons: personThings,
+      organizations: organizationThings,
+      events: eventThings,
     } = CollectionObjectSolidStore.toThing({ ...object, uri: objectUri });
 
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
@@ -199,16 +221,23 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     updatedObjectsDataset = setThing(updatedObjectsDataset, depthThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, weightThing);
 
-    // save all Terms seperately
+    // save representation Things seperately
+    const representationThings = [
+      ... subjectThings?.length > 0 ? subjectThings : [],
+      ... locationThings?.length > 0 ? locationThings : [],
+      ... personThings?.length > 0 ? personThings : [],
+      ... organizationThings?.length > 0 ? organizationThings : [],
+      ... eventThings?.length > 0 ? eventThings : [],
+    ];
+
+    updatedObjectsDataset = representationThings.reduce((dataset, thing) =>
+      setThing(dataset, thing), updatedObjectsDataset);
+
+    // save all other Terms seperately
     [ 'additionalType',
       'creator',
       'locationCreated',
-      'material',
-      'subject',
-      'location',
-      'person',
-      'organization',
-      'event' ].forEach((termProperty) => {
+      'material' ].forEach((termProperty) => {
 
       const propertyValue: Term[] = (object as any)[termProperty];
 
@@ -239,6 +268,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     width: ThingPersisted;
     depth: ThingPersisted;
     weight: ThingPersisted;
+    subjects: ThingPersisted[];
+    locations: ThingPersisted[];
+    persons: ThingPersisted[];
+    organizations: ThingPersisted[];
+    events: ThingPersisted[];
   } {
 
     if (!object) {
@@ -267,11 +301,65 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.dateCreated ? addStringNoLocale(objectThing, 'http://schema.org/dateCreated', object.dateCreated) : objectThing;
 
     // representation
-    objectThing = object.subject?.length > 0 ? object.subject.reduce((thing, value) => addUrl(thing, 'http://schema.org/DefinedTerm', value.uri), objectThing) : objectThing;
-    objectThing = object.location?.length > 0 ? object.location.reduce((thing, value) => addUrl(thing, 'http://schema.org/Place', value.uri), objectThing) : objectThing;
-    objectThing = object.person?.length > 0 ? object.person.reduce((thing, value) => addUrl(thing, 'http://schema.org/Person', value.uri), objectThing) : objectThing;
-    objectThing = object.organization?.length > 0 ? object.organization.reduce((thing, value) => addUrl(thing, 'http://schema.org/Organization', value.uri), objectThing) : objectThing;
-    objectThing = object.event?.length > 0 ? object.event.reduce((thing, value) => addUrl(thing, 'http://schema.org/Event', value.uri), objectThing) : objectThing;
+    const subjects = object.subject?.map((subject) => {
+
+      let subjectThing = createThing({ url: `${object.uri}-subject-${v5(subject.uri + subject.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      subjectThing = addUrl(subjectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DefinedTerm');
+      subjectThing = addUrl(subjectThing, 'http://schema.org/sameAs', subject.uri);
+      subjectThing = addStringNoLocale(subjectThing, 'http://schema.org/name', subject.name);
+      objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(subjectThing));
+
+      return subjectThing;
+
+    });
+
+    const locations = object.location?.map((location) => {
+
+      let locationThing = createThing({ url: `${object.uri}-location-${v5(location.uri + location.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      locationThing = addUrl(locationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Place');
+      locationThing = addUrl(locationThing, 'http://schema.org/sameAs', location.uri);
+      locationThing = addStringNoLocale(locationThing, 'http://schema.org/name', location.name);
+      objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(locationThing));
+
+      return locationThing;
+
+    });
+
+    const persons = object.person?.map((person) => {
+
+      let personThing = createThing({ url: `${object.uri}-person-${v5(person.uri + person.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      personThing = addUrl(personThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Person');
+      personThing = addUrl(personThing, 'http://schema.org/sameAs', person.uri);
+      personThing = addStringNoLocale(personThing, 'http://schema.org/name', person.name);
+      objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(personThing));
+
+      return personThing;
+
+    });
+
+    const organizations = object.organization?.map((organization) => {
+
+      let organizationThing = createThing({ url: `${object.uri}-organization-${v5(organization.uri + organization.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      organizationThing = addUrl(organizationThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Organization');
+      organizationThing = addUrl(organizationThing, 'http://schema.org/sameAs', organization.uri);
+      organizationThing = addStringNoLocale(organizationThing, 'http://schema.org/name', organization.name);
+      objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(organizationThing));
+
+      return organizationThing;
+
+    });
+
+    const events = object.event?.map((event) => {
+
+      let eventThing = createThing({ url: `${object.uri}-event-${v5(event.uri + event.name, '85af7d4d-ff92-4859-b878-949eef55ce87')}` });
+      eventThing = addUrl(eventThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Event');
+      eventThing = addUrl(eventThing, 'http://schema.org/sameAs', event.uri);
+      eventThing = addStringNoLocale(eventThing, 'http://schema.org/name', event.name);
+      objectThing = addUrl(objectThing, 'http://schema.org/about', asUrl(eventThing));
+
+      return eventThing;
+
+    });
 
     // dimensions
     let heightThing = createThing({ url: `${object.uri}-height` });
@@ -317,6 +405,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       width: widthThing,
       depth: depthThing,
       weight: weightThing,
+      subjects,
+      locations,
+      persons,
+      organizations,
+      events,
     };
 
   }
@@ -334,6 +427,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     width: ThingPersisted,
     depth: ThingPersisted,
     weight: ThingPersisted,
+    representations: ThingPersisted[],
     dataset: SolidDataset
   ): CollectionObject {
 
@@ -373,6 +467,12 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
+    if (!representations) {
+
+      throw new ArgumentError('Argument representations should be set', representations);
+
+    }
+
     if (!dataset) {
 
       throw new ArgumentError('Argument dataset should be set', dataset);
@@ -398,11 +498,31 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       dateCreated: getStringNoLocale(object, 'http://schema.org/dateCreated') || undefined,
 
       // representation
-      subject: getUrlAll(object, 'http://schema.org/DefinedTerm')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
-      location: getUrlAll(object, 'http://schema.org/Place')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
-      person: getUrlAll(object, 'http://schema.org/Person')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
-      organization: getUrlAll(object, 'http://schema.org/Organization')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
-      event: getUrlAll(object, 'http://schema.org/Event')?.map((uri) => CollectionObjectSolidStore.getTerm(uri, dataset)),
+      subject: representations.filter((thing) => getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') === 'http://schema.org/DefinedTerm')
+        .map((thing) => ({
+          name: getStringNoLocale(thing, 'http://schema.org/name'),
+          uri: getUrl(thing, 'http://schema.org/sameAs'),
+        })),
+      location: representations.filter((thing) => getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') === 'http://schema.org/Place')
+        .map((thing) => ({
+          name: getStringNoLocale(thing, 'http://schema.org/name'),
+          uri: getUrl(thing, 'http://schema.org/sameAs'),
+        })),
+      person: representations.filter((thing) => getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') === 'http://schema.org/Person')
+        .map((thing) => ({
+          name: getStringNoLocale(thing, 'http://schema.org/name'),
+          uri: getUrl(thing, 'http://schema.org/sameAs'),
+        })),
+      organization: representations.filter((thing) => getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') === 'http://schema.org/Organization')
+        .map((thing) => ({
+          name: getStringNoLocale(thing, 'http://schema.org/name'),
+          uri: getUrl(thing, 'http://schema.org/sameAs'),
+        })),
+      event: representations.filter((thing) => getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') === 'http://schema.org/Event')
+        .map((thing) => ({
+          name: getStringNoLocale(thing, 'http://schema.org/name'),
+          uri: getUrl(thing, 'http://schema.org/sameAs'),
+        })),
 
       // dimensions
       height: getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,

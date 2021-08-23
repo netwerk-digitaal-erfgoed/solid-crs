@@ -56,13 +56,13 @@ export class SidebarListItemComponent extends RxLitElement {
         background-color: var( --colors-background-light);
         color: var(--colors-foreground-normal);
         fill: var(--colors-foreground-normal);
-        height: 45px;
         display: flex;
         flex-direction: row;
         align-items: center;
         cursor: pointer;
         justify-content: space-between;
-        padding: 0 var(--gap-large);
+        padding: var(--gap-small) var(--gap-large);
+        height: var(--font-size-header-normal);
       }
 
       .item.selected, .item:hover:not(.title) {
@@ -86,6 +86,7 @@ export class SidebarListItemComponent extends RxLitElement {
 
       .item.title {
         cursor: default;
+        padding: var(--gap-normal) var(--gap-large) 0;
       }
 
       .actions {
