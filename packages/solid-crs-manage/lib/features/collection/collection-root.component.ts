@@ -372,9 +372,9 @@ export class CollectionRootComponent extends RxLitElement {
           margin-top: var(--gap-tiny);
         }
         #delete-popup div[slot="content"] {
-          background-color: white;
+          background-color: var(--colors-foreground-inverse);
           align-items: center;
-          padding: 40px;
+          padding: var(--gap-large);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -382,10 +382,10 @@ export class CollectionRootComponent extends RxLitElement {
         #delete-popup div[slot="content"] div button{
           width: 233px;
           height: 45px;
-          margin: 40px 5px 0;
+          margin: var(--gap-large) var(--gap-tiny) 0;
         }
         button.accent {
-          color: white;
+          color: var(--colors-foreground-inverse);
         }
         button.light {
           color:var(--colors-primary-dark);

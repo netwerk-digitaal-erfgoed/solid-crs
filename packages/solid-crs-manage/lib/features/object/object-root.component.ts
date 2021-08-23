@@ -608,7 +608,7 @@ export class ObjectRootComponent extends RxLitElement {
         #delete-popup div[slot="content"] {
           background-color: white;
           align-items: center;
-          padding: 40px;
+          padding: var(--gap-large);
           display: flex;
           flex-direction: column;
           justify-content: center;
@@ -616,7 +616,7 @@ export class ObjectRootComponent extends RxLitElement {
         #delete-popup div[slot="content"] div button{
           width: 233px;
           height: 45px;
-          margin: 40px 5px 0;
+          margin: var(--gap-large) var(--gap-tiny) 0;
         }
         button.accent {
           color: white;
