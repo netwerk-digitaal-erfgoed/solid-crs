@@ -151,7 +151,7 @@ describe('ObjectRootComponent', () => {
 
       if(state.matches(ObjectStates.IDLE) && state.context?.object) {
 
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.confirm-delete') as HTMLElement;
 
         if(button) {
 
@@ -164,6 +164,30 @@ describe('ObjectRootComponent', () => {
       }
 
     });
+
+  });
+
+  it('should call toggleDelete and show popup when cancel button is clicked', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.deletePopup.hidden = false;
+
+    const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel-delete') as HTMLElement;
+    button.click();
+    expect(component.deletePopup.hidden).toEqual(true);
+
+  });
+
+  it('should call toggleDelete and show popup when delete icon is clicked', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.deletePopup.hidden = false;
+
+    const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+    button.click();
+    expect(component.deletePopup.hidden).toEqual(true);
 
   });
 
@@ -197,7 +221,7 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should only show save and cancel buttons when form is dirty', async () => {
+  it('should not show save and cancel buttons when form is not dirty', async () => {
 
     machine.start();
 
@@ -205,10 +229,47 @@ describe('ObjectRootComponent', () => {
     await component.updateComplete;
 
     const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-    const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
+    const reset = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.reset') as HTMLElement;
 
     expect(save).toBeFalsy();
-    expect(cancel).toBeFalsy();
+    expect(reset).toBeFalsy();
+
+  });
+
+  it('should show save and cancel buttons when form is dirty', async () => {
+
+    machine.start();
+    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    machine.onTransition(async(state) => {
+
+      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
+
+        component.isDirty = true;
+        component.isValid = true;
+        await component.updateComplete;
+
+        const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
+        const reset = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.reset') as HTMLElement;
+
+        expect(save).toBeTruthy();
+        expect(reset).toBeTruthy();
+
+        machine.send = jest.fn();
+        component.formActor.send = jest.fn();
+
+        save.click();
+        reset.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+        expect(component.formActor.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
 
   });
 

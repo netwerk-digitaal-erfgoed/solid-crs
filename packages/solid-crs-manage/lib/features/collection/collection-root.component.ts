@@ -1,6 +1,6 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -90,6 +90,12 @@ export class CollectionRootComponent extends RxLitElement {
   isDirty? = false;
 
   /**
+   * The popup component shown when the delete icon is clicked
+   */
+  @query('nde-popup#delete-popup')
+  deletePopup: PopupComponent;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -175,6 +181,8 @@ export class CollectionRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const toggleDelete =  () => { this.deletePopup.toggle(); };
+
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
@@ -208,7 +216,7 @@ export class CollectionRootComponent extends RxLitElement {
       ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state?.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
-      ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(CollectionEvents.CLICKED_DELETE, { collection: this.collection })}">${unsafeSVG(Trash)}</button></div>` : '' }
+      ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
 
     <div class="content">
@@ -238,8 +246,33 @@ export class CollectionRootComponent extends RxLitElement {
 }
         `
 }
+      <nde-popup dark id="delete-popup">
+        <div slot="content">
+          <p>${this.translator?.translate('nde.features.collections.root.delete.title')}</p>
+          <div>
+            <button class='primary confirm-delete' @click="${() => { this.actor.send(CollectionEvents.CLICKED_DELETE); toggleDelete(); }}">
+                <span>${this.translator?.translate('nde.features.collections.root.delete.confirm')}</span>
+            </button>
+            <button class='light cancel-delete' @click="${() => toggleDelete()}">
+                <span>${this.translator?.translate('nde.features.collections.root.delete.cancel')}</span>
+            </button>
+          </div>
+        </div>
+      </nde-popup>
     </div>
   ` : html``;
+
+  }
+
+  constructor() {
+
+    super();
+
+    if(!customElements.get('nde-popup')) {
+
+      customElements.define('nde-popup', PopupComponent);
+
+    }
 
   }
 
@@ -337,6 +370,23 @@ export class CollectionRootComponent extends RxLitElement {
         }
         .description {
           margin-top: var(--gap-tiny);
+        }
+        #delete-popup div[slot="content"] {
+          background-color: var(--colors-foreground-inverse);
+          align-items: center;
+          padding: var(--gap-large);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #delete-popup div[slot="content"] div button{
+          margin: var(--gap-large) var(--gap-tiny) 0;
+        }
+        button.accent {
+          color: var(--colors-foreground-inverse);
+        }
+        button.light {
+          color:var(--colors-primary-dark);
         }
       `,
     ];
