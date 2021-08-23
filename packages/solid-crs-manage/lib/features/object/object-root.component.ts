@@ -288,11 +288,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       });
 
-      // this validates the form when form machine is started
-      // needed for validation when coming back from the term machine
-      // otherwise, form machine state is not_validated and the user can't save
-      this.formActor.send(new FormUpdatedEvent('name', object.name));
-
       this.subscribe('isSubmitting', from(this.formActor).pipe(
         map((actor) => actor.matches(FormSubmissionStates.SUBMITTING)),
       ));
@@ -314,6 +309,11 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.formActor.start();
+
+      // this validates the form when form machine is started
+      // needed for validation when coming back from the term machine
+      // otherwise, form machine state is not_validated and the user can't save
+      this.formActor.send(new FormUpdatedEvent('name', object.name));
 
     }
 
