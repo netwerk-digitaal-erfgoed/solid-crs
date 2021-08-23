@@ -115,6 +115,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     updatedDataset = removeThing(updatedDataset, `${object.uri}-width`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-depth`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-weight`);
+
+    const oldRepresentationThings = getUrlAll(getThing(objectDataset, object.uri), 'http://schema.org/about')
+      .map((thingUri) => getThing(updatedDataset, thingUri))
+      .filter((thing) => !!thing);
+
+    updatedDataset = oldRepresentationThings.reduce((dataset, thing) =>
+      removeThing(dataset, thing), updatedDataset);
+
     // save the dataset
     await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
 
@@ -183,7 +191,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         .filter((thing) => !!thing);
 
       updatedOldObjectsDataset = oldRepresentationThings.reduce((dataset, thing) =>
-        setThing(dataset, thing), updatedOldObjectsDataset);
+        removeThing(dataset, thing), updatedOldObjectsDataset);
 
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
