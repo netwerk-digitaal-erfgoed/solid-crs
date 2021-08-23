@@ -228,6 +228,7 @@ describe('CollectionObjectSolidStore', () => {
       client.setThing = jest.fn(() => 'test-dataset');
       client.removeThing = jest.fn(() => 'test-thing');
       client.getUrl = jest.fn(() => 'test-url');
+      client.getUrlAll = jest.fn(() => [ 'test-url' ]);
       client.saveSolidDatasetAt = jest.fn(async () => 'test-dataset');
       client.deleteFile = jest.fn(async () => 'test-file');
 
