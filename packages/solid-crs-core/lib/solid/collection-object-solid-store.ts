@@ -1,6 +1,11 @@
 import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { Term, CollectionObject, CollectionObjectStore, Collection, ArgumentError, fulltextMatch } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4, v5 } from 'uuid';
+import { Collection } from '../collections/collection';
+import { CollectionObject } from '../collections/collection-object';
+import { CollectionObjectStore } from '../collections/collection-object-store';
+import { ArgumentError } from '../errors/argument-error';
+import { Term } from '../terms/term';
+import { fulltextMatch } from '../utils/fulltext-match';
 
 export class CollectionObjectSolidStore implements CollectionObjectStore {
 

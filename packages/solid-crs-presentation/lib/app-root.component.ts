@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -11,11 +11,7 @@ import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, App
 import nlNL from './i8n/nl-NL.json';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
-import { SolidProfile } from './common/solid/solid-profile';
-import { CollectionSolidStore } from './common/solid/collection-solid-store';
-import { CollectionObjectSolidStore } from './common/solid/collection-object-solid-store';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
-import { SolidSDKService } from './common/solid/solid-sdk.service';
 
 /**
  * The root page of the application.

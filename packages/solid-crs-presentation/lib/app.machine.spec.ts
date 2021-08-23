@@ -1,10 +1,9 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AddAlertEvent, AppEvents, DismissAlertEvent } from './app.events';
 import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
-import { SolidMockService } from './common/solid/solid-mock.service';
 
 global.window = Object.create(window);
 const url = 'http://test.presentation.solid-crs/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fprofile%2Fcard%23me/collection/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fheritage-collections%2Fcatalog%23collection-1';

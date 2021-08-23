@@ -1,8 +1,7 @@
 import { formMachine, State, FormActors, FormValidatorResult } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { SolidService, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { send } from 'xstate/lib/actions';
-import { SolidSession } from '../../common/solid/solid-session';
-import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateEvent, AuthenticateEvents, handleSessionUpdate } from './authenticate.events';
 
 /**

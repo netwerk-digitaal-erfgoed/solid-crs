@@ -4,9 +4,10 @@
     "baseUrl": "lib",
     "outDir": "dist",
     "sourceMap": true,
+    "resolveJsonModule": true,
     "strict": false
   },
-  "files": [ "test/setup.ts" ],
+  "files": [ "tests/setup.ts" ],
   "include": [ "lib" ],
   "exclude": [
     "dist",
