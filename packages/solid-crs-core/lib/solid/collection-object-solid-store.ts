@@ -172,10 +172,19 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       const oldWeightThing = getThing(oldDataset, `${object.uri}-weight`);
       let updatedOldObjectsDataset = removeThing(oldDataset, oldObjectThing);
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDigitalObjectThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldHeightThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWidthThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDepthThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWeightThing);
+
+      updatedOldObjectsDataset = oldHeightThing ?
+        removeThing(updatedOldObjectsDataset, oldHeightThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldWidthThing ?
+        removeThing(updatedOldObjectsDataset, oldWidthThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldDepthThing ?
+        removeThing(updatedOldObjectsDataset, oldDepthThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldWeightThing ?
+        removeThing(updatedOldObjectsDataset, oldWeightThing) : updatedOldObjectsDataset;
+
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
     }
@@ -280,7 +289,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
       heightThing = createThing({ url: `${object.uri}-height` });
       heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-      heightThing = object.height > 0 ? addDecimal(heightThing, 'http://schema.org/value', object.height) : heightThing;
+      heightThing = addDecimal(heightThing, 'http://schema.org/value', object.height);
       heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
       objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
 
@@ -292,7 +301,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
       widthThing = createThing({ url: `${object.uri}-width` });
       widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-      widthThing = object.width > 0 ? addDecimal(widthThing, 'http://schema.org/value', object.width) : widthThing;
+      widthThing = addDecimal(widthThing, 'http://schema.org/value', object.width);
       widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
       objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
 
@@ -304,7 +313,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
       depthThing = createThing({ url: `${object.uri}-depth` });
       depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-      depthThing = object.depth > 0 ? addDecimal(depthThing, 'http://schema.org/value', object.depth) : depthThing;
+      depthThing = addDecimal(depthThing, 'http://schema.org/value', object.depth);
       depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
       objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
 
@@ -316,7 +325,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
       weightThing = createThing({ url: `${object.uri}-weight` });
       weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-      weightThing = object.weight > 0 ? addDecimal(weightThing, 'http://schema.org/value', object.weight) : weightThing;
+      weightThing = addDecimal(weightThing, 'http://schema.org/value', object.weight);
       weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
       objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
