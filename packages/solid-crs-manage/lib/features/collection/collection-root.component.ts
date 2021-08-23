@@ -380,8 +380,6 @@ export class CollectionRootComponent extends RxLitElement {
           justify-content: center;
         }
         #delete-popup div[slot="content"] div button{
-          width: 233px;
-          height: 45px;
           margin: var(--gap-large) var(--gap-tiny) 0;
         }
         button.accent {
