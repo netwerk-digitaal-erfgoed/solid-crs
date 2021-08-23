@@ -20,6 +20,10 @@ button.accent {
   background-color: var(--colors-accent-primary);
 }
 
+button.light {
+  background-color: var(--colors-background-normal);
+}
+
 button svg {
   fill: var(--colors-foreground-inverse);
   height: 20px;

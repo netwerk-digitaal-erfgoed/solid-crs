@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent, doneInvoke } from 'xstate';
@@ -136,6 +136,12 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   components: ComponentMetadata[];
+
+  /**
+   * The popup component shown when the delete icon is clicked
+   */
+  @query('nde-popup#delete-popup')
+  deletePopup: PopupComponent;
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -444,6 +450,8 @@ export class ObjectRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const toggleDelete =  () => { this.deletePopup.toggle(); };
+
     const idle = this.state?.matches(ObjectStates.IDLE);
 
     // Create an alert components for each alert.
@@ -469,7 +477,7 @@ export class ObjectRootComponent extends RxLitElement {
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(new ClickedDeleteObjectEvent(this.object))}">${unsafeSVG(Trash)}</button></div>
+      <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 
     <div class="content-and-sidebar">
@@ -504,8 +512,33 @@ export class ObjectRootComponent extends RxLitElement {
     ` : html`no formcards`}
     `
     : html``}
+      <nde-popup dark id="delete-popup">
+        <div slot="content">
+          <p>${this.translator?.translate('nde.features.object.root.delete.title')}</p>
+          <div>
+            <button class='primary confirm-delete' @click="${() => { this.actor.send(new ClickedDeleteObjectEvent(this.object)); toggleDelete(); }}">
+                <span>${this.translator?.translate('nde.features.object.root.delete.confirm')}</span>
+            </button>
+            <button class='light cancel-delete' @click="${() => toggleDelete()}">
+                <span>${this.translator?.translate('nde.features.object.root.delete.cancel')}</span>
+            </button>
+          </div>
+        </div>
+      </nde-popup>
     </div>`
       : html``;
+
+  }
+
+  constructor() {
+
+    super();
+
+    if(!customElements.get('nde-popup')) {
+
+      customElements.define('nde-popup', PopupComponent);
+
+    }
 
   }
 
@@ -571,6 +604,23 @@ export class ObjectRootComponent extends RxLitElement {
         button svg {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
+        }
+        #delete-popup div[slot="content"] {
+          background-color: var(--colors-foreground-inverse);
+          align-items: center;
+          padding: var(--gap-large);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #delete-popup div[slot="content"] div button{
+          margin: var(--gap-large) var(--gap-tiny) 0;
+        }
+        button.accent {
+          color: var(--colors-foreground-inverse);
+        }
+        button.light {
+          color:var(--colors-primary-dark);
         }
       `,
     ];
