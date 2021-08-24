@@ -181,10 +181,18 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       const oldWeightThing = getThing(oldDataset, `${object.uri}-weight`);
       let updatedOldObjectsDataset = removeThing(oldDataset, oldObjectThing);
       updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDigitalObjectThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldHeightThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWidthThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldDepthThing);
-      updatedOldObjectsDataset = removeThing(updatedOldObjectsDataset, oldWeightThing);
+
+      updatedOldObjectsDataset = oldHeightThing ?
+        removeThing(updatedOldObjectsDataset, oldHeightThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldWidthThing ?
+        removeThing(updatedOldObjectsDataset, oldWidthThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldDepthThing ?
+        removeThing(updatedOldObjectsDataset, oldDepthThing) : updatedOldObjectsDataset;
+
+      updatedOldObjectsDataset = oldWeightThing ?
+        removeThing(updatedOldObjectsDataset, oldWeightThing) : updatedOldObjectsDataset;
 
       const oldRepresentationThings = getUrlAll(oldObjectThing, 'http://schema.org/about')
         .map((thingUri) => getThing(oldDataset, thingUri))
@@ -216,10 +224,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, digitalObjectThing);
-    updatedObjectsDataset = setThing(updatedObjectsDataset, heightThing);
-    updatedObjectsDataset = setThing(updatedObjectsDataset, widthThing);
-    updatedObjectsDataset = setThing(updatedObjectsDataset, depthThing);
-    updatedObjectsDataset = setThing(updatedObjectsDataset, weightThing);
+    updatedObjectsDataset = heightThing ? setThing(updatedObjectsDataset, heightThing) : removeThing(updatedObjectsDataset, `${object.uri}-height`);
+    updatedObjectsDataset = widthThing ? setThing(updatedObjectsDataset, widthThing) : removeThing(updatedObjectsDataset, `${object.uri}-width`);
+    updatedObjectsDataset = depthThing ? setThing(updatedObjectsDataset, depthThing) : removeThing(updatedObjectsDataset, `${object.uri}-depth`);
+    updatedObjectsDataset = weightThing ? setThing(updatedObjectsDataset, weightThing) : removeThing(updatedObjectsDataset, `${object.uri}-weight`);
 
     // save representation Things seperately
     const representationThings = [
@@ -362,30 +370,53 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     });
 
     // dimensions
-    let heightThing = createThing({ url: `${object.uri}-height` });
-    heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-    heightThing = object.height !== undefined && object.height !== null ? addDecimal(heightThing, 'http://schema.org/value', object.height) : heightThing;
-    heightThing = object.heightUnit !== undefined && object.heightUnit !== null ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
+    let heightThing: ThingPersisted;
 
-    let widthThing = createThing({ url: `${object.uri}-width` });
-    widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-    widthThing = object.width !== undefined && object.width !== null ? addDecimal(widthThing, 'http://schema.org/value', object.width) : widthThing;
-    widthThing = object.widthUnit !== undefined && object.widthUnit !== null ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
+    if (object.height > 0) {
 
-    let depthThing = createThing({ url: `${object.uri}-depth` });
-    depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-    depthThing = object.depth !== undefined && object.depth !== null ? addDecimal(depthThing, 'http://schema.org/value', object.depth) : depthThing;
-    depthThing = object.depthUnit !== undefined && object.depthUnit !== null ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
+      heightThing = createThing({ url: `${object.uri}-height` });
+      heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+      heightThing = addDecimal(heightThing, 'http://schema.org/value', object.height);
+      heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
+      objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
 
-    let weightThing = createThing({ url: `${object.uri}-weight` });
-    weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
-    weightThing = object.weight !== undefined && object.weight !== null ? addDecimal(weightThing, 'http://schema.org/value', object.weight) : weightThing;
-    weightThing = object.weightUnit !== undefined && object.weightUnit !== null ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
+    }
 
-    objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
-    objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
-    objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
-    objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
+    let widthThing: ThingPersisted;
+
+    if (object.width > 0) {
+
+      widthThing = createThing({ url: `${object.uri}-width` });
+      widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+      widthThing = addDecimal(widthThing, 'http://schema.org/value', object.width);
+      widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
+      objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
+
+    }
+
+    let depthThing: ThingPersisted;
+
+    if (object.depth > 0) {
+
+      depthThing = createThing({ url: `${object.uri}-depth` });
+      depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+      depthThing = addDecimal(depthThing, 'http://schema.org/value', object.depth);
+      depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
+      objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
+
+    }
+
+    let weightThing: ThingPersisted;
+
+    if (object.weight > 0) {
+
+      weightThing = createThing({ url: `${object.uri}-weight` });
+      weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
+      weightThing = addDecimal(weightThing, 'http://schema.org/value', object.weight);
+      weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
+      objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
+
+    }
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);

@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-semcom-components",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Semcom components for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/index.js",
@@ -23,10 +23,10 @@
     "directory": "packages/solid-crs-semcom-node"
   },
   "dependencies": {
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.8.0",
-    "@netwerk-digitaal-erfgoed/solid-crs-components": "0.8.0",
-    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.8.0",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.8.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.8.1",
+    "@netwerk-digitaal-erfgoed/solid-crs-components": "0.8.1",
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.8.1",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.8.1",
     "@xstate/inspect": "^0.4.1",
     "edtf": "^3.1.0",
     "lit-element": "2.4.0",
