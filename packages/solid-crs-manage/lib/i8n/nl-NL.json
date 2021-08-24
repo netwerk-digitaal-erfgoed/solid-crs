@@ -297,77 +297,77 @@
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD"
+        "value": "Rightsstatements.org: Auteursrechtelijk beschermd"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-OW-EU/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - EU VERWEESD WERK"
+        "value": "Rightsstatements.org: Auteursrechtelijk beschermd - EU verweesd werk"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-EDU/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - EDUCATIEF GEBRUIK TOEGESTAAN"
+        "value": "Rightsstatements.org: Auteursrechtelijk beschermd - educatief gebruik toegestaan"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-NC/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+        "value": "Rightsstatements.org: Auteursrechtelijk beschermd - niet-commercieel gebruik toegestaan"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-RUU/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - RECHTHEBBENDE(N) NIET-LOKALISEERBAAR OF NIET-IDENTIFICEERBAAR"
+        "value": "Rightsstatements.org: Auteursrechtelijk beschermd - rechthebbende(n) niet-lokaliseerbaar of niet-identificeerbaar"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-US/1.0/",
         "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN"
+        "value": "Rightsstatements.org: Niet auteursrechtelijk beschermd - Verenigde Staten"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
         "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN"
+        "value": "Rightsstatements.org: Niet auteursrechtelijk beschermd - andere juridische beperkingen"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-CR/1.0/",
         "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN"
+        "value": "Rightsstatements.org: Niet auteursrechtelijk beschermd - contractuele beperkingen"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-NC/1.0/",
         "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
+        "value": "Rightsstatements.org: Niet auteursrechtelijk beschermd - uitsluitend niet-commercieel gebruik toegestaan"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/UND/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD"
+        "value": "Rightsstatements.org: Auteursrechtelijke bescherming niet bepaald"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/CNE/1.0/",
         "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD"
+        "value": "Rightsstatements.org: Auteursrechtelijke status niet geëvalueerd"
     },
     {
         "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NKC/1.0/",
         "locale": "nl-NL",
-        "value": "GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND"
+        "value": "Rightsstatements.org: Geen auteursrechtelijke beperkingen bekend"
     },
     {
         "key": "nde.features.object.card.image.field.license.https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
         "locale": "nl-NL",
-        "value": "CC0 1.0 UNIVERSEEL"
+        "value": "Creativecommons.org: CC0 1.0 universeel"
     },
     {
         "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by/4.0/deed.nl",
         "locale": "nl-NL",
-        "value": "NAAMSVERMELDING 4.0 INTERNATIONAAL"
+        "value": "Creativecommons.org: Naamsvermelding 4.0 internationaal"
     },
     {
         "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl",
         "locale": "nl-NL",
-        "value": "NAAMSVERMELDING-GELIJKDELEN 2.0"
+        "value": "Creativecommons.org: Naamsvermelding-gelijkdelen 2.0"
     },
     {
         "key": "nde.features.object.card.identification.title",
