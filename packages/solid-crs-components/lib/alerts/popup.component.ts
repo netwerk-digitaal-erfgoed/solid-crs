@@ -1,5 +1,5 @@
 
-import { css, CSSResult, html, property, query, TemplateResult, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { RxLitElement } from 'rx-lit';
 
@@ -66,6 +66,21 @@ export class PopupComponent extends RxLitElement {
 
   }
 
+  constructor() {
+
+    super();
+
+    document.addEventListener('keydown', (event) => {
+
+      if (event.key === 'Escape') {
+
+        this.hide();
+
+      }
+
+    });
+
+  }
   /**
    * The styles associated with the component.
    */
