@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Bug Fixes**
+
+* incorrect saving of object representation terms ([#434](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/434)) ([2472265](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/247226582122feaa670534e6cbc8bdc41f7adb8b))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

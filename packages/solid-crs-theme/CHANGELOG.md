@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* add confirmation when deleting collections and objects ([#433](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/433)) ([bf46632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/bf46632f14a9e097213fb54c31457b44594a861d))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

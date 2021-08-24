@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* add confirmation when deleting collections and objects ([#433](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/433)) ([bf46632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/bf46632f14a9e097213fb54c31457b44594a861d))
+* incorrect margin on alerts ([#431](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/431)) ([241e08e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/241e08e98888e5e9259f2570bb379255148dcfac))
+
+
+### **Bug Fixes**
+
+* additionaltype validation on new object ([#436](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/436)) ([6f224ee](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6f224eef77438df62490e7817b332ebc267f9bdb))
+* incorrect saving of object representation terms ([#434](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/434)) ([2472265](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/247226582122feaa670534e6cbc8bdc41f7adb8b))
+* retain object form changes when choosing terms ([#421](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/421)) ([2603632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/2603632c59d67bb535db090491ff540cc542ca70))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

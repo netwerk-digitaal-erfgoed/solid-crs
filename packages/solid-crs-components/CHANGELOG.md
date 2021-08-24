@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* incorrect margin on alerts ([#431](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/431)) ([241e08e](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/241e08e98888e5e9259f2570bb379255148dcfac))
+* view full size image ([#430](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/430)) ([be9d425](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/be9d425e4853ccc557f9a6ae55cc46e4dce748ea))
+
+
+### **Bug Fixes**
+
+* incorrect margin in primary navigation ([#437](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/437)) ([54c46b0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/54c46b01999ad4b32e515f7687b7bd62f82f046b))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

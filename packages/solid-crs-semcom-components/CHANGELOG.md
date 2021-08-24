@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* view full size image ([#430](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/430)) ([be9d425](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/be9d425e4853ccc557f9a6ae55cc46e4dce748ea))
+
+
+### **Bug Fixes**
+
+* retain object form changes when choosing terms ([#421](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/421)) ([2603632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/2603632c59d67bb535db090491ff540cc542ca70))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

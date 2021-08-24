@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* add confirmation when deleting collections and objects ([#433](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/433)) ([bf46632](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/bf46632f14a9e097213fb54c31457b44594a861d))
+* incorrect margin on alerts ([#431](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/431)) ([241e08e](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/241e08e98888e5e9259f2570bb379255148dcfac))
+* view full size image ([#430](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/430)) ([be9d425](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/be9d425e4853ccc557f9a6ae55cc46e4dce748ea))
+
+
+### **Bug Fixes**
+
+* additionaltype validation on new object ([#436](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/436)) ([6f224ee](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/6f224eef77438df62490e7817b332ebc267f9bdb))
+* empty dimension field saves zero value ([#438](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/438)) ([7b6c435](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/7b6c43557b7ca81625c07955b886f288a0edf993))
+* incorrect margin in primary navigation ([#437](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/437)) ([54c46b0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/54c46b01999ad4b32e515f7687b7bd62f82f046b))
+* incorrect saving of object representation terms ([#434](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/434)) ([2472265](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/247226582122feaa670534e6cbc8bdc41f7adb8b))
+* retain object form changes when choosing terms ([#421](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/421)) ([2603632](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/2603632c59d67bb535db090491ff540cc542ca70))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 

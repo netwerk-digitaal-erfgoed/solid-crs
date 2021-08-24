@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Bug Fixes**
+
+* empty dimension field saves zero value ([#438](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/438)) ([7b6c435](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/7b6c43557b7ca81625c07955b886f288a0edf993))
+* incorrect saving of object representation terms ([#434](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/434)) ([2472265](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/247226582122feaa670534e6cbc8bdc41f7adb8b))
+* retain object form changes when choosing terms ([#421](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/421)) ([2603632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/2603632c59d67bb535db090491ff540cc542ca70))
+
+
+
 ## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
 
 
