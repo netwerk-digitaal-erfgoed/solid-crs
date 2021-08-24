@@ -10,7 +10,7 @@ describe('ObjectCardComponent', () => {
     uri: 'test uri',
     name: 'test name',
     description: 'test description',
-    subject: [ { uri: '', name: 'test subject' } ],
+    additionalType: [ { uri: '', name: 'test additionalType' } ],
     image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
     updated: new Date().getTime().toString(),
     type: '',
@@ -28,8 +28,8 @@ describe('ObjectCardComponent', () => {
         locale:'en-GB',
       },
       {
-        key: 'nde.features.collections.card.subject-unavailable',
-        value:'Subject unavailable',
+        key: 'nde.features.collections.card.additionalType-unavailable',
+        value:'Type unavailable',
         locale:'en-GB',
       },
       {
@@ -53,7 +53,7 @@ describe('ObjectCardComponent', () => {
 
   });
 
-  it('should display name, subject and time ago of the object', async () => {
+  it('should display name, additionalType and time ago of the object', async () => {
 
     component.object = testObject;
     window.document.body.appendChild(component);
@@ -62,9 +62,9 @@ describe('ObjectCardComponent', () => {
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
 
     expect(html).toContain(testObject.name);
-    expect(html).toContain(testObject.subject[0].name);
+    expect(html).toContain(testObject.additionalType[0].name);
     expect(html).not.toContain('Name unavailable');
-    expect(html).not.toContain('Subject unavailable');
+    expect(html).not.toContain('Type unavailable');
     expect(html).toContain('- Just Now');
 
   });
@@ -79,23 +79,23 @@ describe('ObjectCardComponent', () => {
 
     expect(html).not.toContain(testObject.name);
     expect(html).toContain('Name unavailable');
-    expect(html).toContain(testObject.subject[0].name);
-    expect(html).not.toContain('Subject unavailable');
+    expect(html).toContain(testObject.additionalType[0].name);
+    expect(html).not.toContain('Type unavailable');
     expect(html).toContain('- Just Now');
 
   });
 
-  it('should display message when subject of the object is empty list', async () => {
+  it('should display message when additionalType of the object is empty list', async () => {
 
-    component.object = { ...testObject, subject: [] };
+    component.object = { ...testObject, additionalType: [] };
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
     expect(html).toContain(testObject.name);
     expect(html).not.toContain('Name unavailable');
-    expect(html).not.toContain(testObject.subject[0].name);
-    expect(html).toContain('Subject unavailable');
+    expect(html).not.toContain(testObject.additionalType[0].name);
+    expect(html).toContain('Type unavailable');
     expect(html).toContain('- Just Now');
 
   });
@@ -110,8 +110,8 @@ describe('ObjectCardComponent', () => {
 
     expect(html).toContain(testObject.name);
     expect(html).not.toContain('Name unavailable');
-    expect(html).toContain(testObject.subject[0].name);
-    expect(html).not.toContain('Subject unavailable');
+    expect(html).toContain(testObject.additionalType[0].name);
+    expect(html).not.toContain('Type unavailable');
     expect(html).not.toContain('- Just Now');
 
   });
