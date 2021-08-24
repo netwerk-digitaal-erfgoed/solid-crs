@@ -66,6 +66,21 @@ export class PopupComponent extends RxLitElement {
 
   }
 
+  constructor() {
+
+    super();
+
+    document.addEventListener('keydown', (event) => {
+
+      if (event.key === 'Escape') {
+
+        this.hide();
+
+      }
+
+    });
+
+  }
   /**
    * The styles associated with the component.
    */

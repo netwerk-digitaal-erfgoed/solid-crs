@@ -66,6 +66,36 @@ describe('PopupComponent', () => {
 
   });
 
+  it('should hide the component when the escape key is pressed', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.show();
+    expect(component.hidden).toBeFalsy();
+
+    const event = new KeyboardEvent('keydown', { 'key': 'Escape' });
+    document.dispatchEvent(event);
+
+    await component.updateComplete;
+    expect(component.hidden).toBeTruthy();
+
+  });
+
+  it('should not hide the component when other keys are pressed', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.show();
+    expect(component.hidden).toBeFalsy();
+
+    const event = new KeyboardEvent('keydown', { 'key': 'q' });
+    document.dispatchEvent(event);
+
+    await component.updateComplete;
+    expect(component.hidden).toBeFalsy();
+
+  });
+
   describe('toggle', () => {
 
     it('should toggle this.hidden', async () => {
