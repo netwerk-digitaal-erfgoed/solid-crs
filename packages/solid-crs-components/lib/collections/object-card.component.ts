@@ -55,8 +55,8 @@ export class ObjectCardComponent extends LitElement {
           ${this.object.name ?? this.translator?.translate('nde.features.collections.card.name-unavailable')}
         </span>
         <span slot='subtitle'>
-          <span class='subject'>
-            ${this.object.subject && this.object.subject[0]?.name ? this.object.subject[0].name :  this.translator?.translate('nde.features.collections.card.subject-unavailable')}
+          <span class='additionalType'>
+            ${this.object.additionalType && this.object.additionalType[0]?.name ? this.object.additionalType[0].name :  this.translator?.translate('nde.features.collections.card.additionalType-unavailable')}
           </span>
           <span class='time-ago'>
              ${this.object.updated ? ` - ${timeAgo}` : ''}
