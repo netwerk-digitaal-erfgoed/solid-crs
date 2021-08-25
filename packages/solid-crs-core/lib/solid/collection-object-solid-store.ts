@@ -224,10 +224,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     let updatedObjectsDataset = setThing(objectsDataset, objectThing);
     updatedObjectsDataset = setThing(updatedObjectsDataset, digitalObjectThing);
-    updatedObjectsDataset = heightThing ? setThing(updatedObjectsDataset, heightThing) : removeThing(updatedObjectsDataset, `${object.uri}-height`);
-    updatedObjectsDataset = widthThing ? setThing(updatedObjectsDataset, widthThing) : removeThing(updatedObjectsDataset, `${object.uri}-width`);
-    updatedObjectsDataset = depthThing ? setThing(updatedObjectsDataset, depthThing) : removeThing(updatedObjectsDataset, `${object.uri}-depth`);
-    updatedObjectsDataset = weightThing ? setThing(updatedObjectsDataset, weightThing) : removeThing(updatedObjectsDataset, `${object.uri}-weight`);
+    updatedObjectsDataset = heightThing ? setThing(updatedObjectsDataset, heightThing) : removeThing(updatedObjectsDataset, `${objectUri}-height`);
+    updatedObjectsDataset = widthThing ? setThing(updatedObjectsDataset, widthThing) : removeThing(updatedObjectsDataset, `${objectUri}-width`);
+    updatedObjectsDataset = depthThing ? setThing(updatedObjectsDataset, depthThing) : removeThing(updatedObjectsDataset, `${objectUri}-depth`);
+    updatedObjectsDataset = weightThing ? setThing(updatedObjectsDataset, weightThing) : removeThing(updatedObjectsDataset, `${objectUri}-weight`);
 
     // save representation Things seperately
     const representationThings = [
@@ -474,30 +474,6 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    if (!height) {
-
-      throw new ArgumentError('Argument height should be set', height);
-
-    }
-
-    if (!width) {
-
-      throw new ArgumentError('Argument width should be set', width);
-
-    }
-
-    if (!depth) {
-
-      throw new ArgumentError('Argument depth should be set', depth);
-
-    }
-
-    if (!weight) {
-
-      throw new ArgumentError('Argument weight should be set', weight);
-
-    }
-
     if (!representations) {
 
       throw new ArgumentError('Argument representations should be set', representations);
@@ -556,14 +532,14 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         })),
 
       // dimensions
-      height: getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,
-      width: getDecimal(width, 'http://schema.org/value') !== null ? getDecimal(width, 'http://schema.org/value') : undefined,
-      depth: getDecimal(depth, 'http://schema.org/value') !== null ? getDecimal(depth, 'http://schema.org/value') : undefined,
-      weight: getDecimal(weight, 'http://schema.org/value') !== null ? getDecimal(weight, 'http://schema.org/value') : undefined,
-      heightUnit: getStringNoLocale(height, 'http://schema.org/unitCode') !== null ? getStringNoLocale(height, 'http://schema.org/unitCode') : undefined,
-      widthUnit: getStringNoLocale(width, 'http://schema.org/unitCode') !== null ? getStringNoLocale(width, 'http://schema.org/unitCode') : undefined,
-      depthUnit: getStringNoLocale(depth, 'http://schema.org/unitCode') !== null ? getStringNoLocale(depth, 'http://schema.org/unitCode') : undefined,
-      weightUnit: getStringNoLocale(weight, 'http://schema.org/unitCode') !== null ? getStringNoLocale(weight, 'http://schema.org/unitCode') : undefined,
+      height: height && getDecimal(height, 'http://schema.org/value') !== null ? getDecimal(height, 'http://schema.org/value') : undefined,
+      width: width && getDecimal(width, 'http://schema.org/value') !== null ? getDecimal(width, 'http://schema.org/value') : undefined,
+      depth: depth && getDecimal(depth, 'http://schema.org/value') !== null ? getDecimal(depth, 'http://schema.org/value') : undefined,
+      weight: weight && getDecimal(weight, 'http://schema.org/value') !== null ? getDecimal(weight, 'http://schema.org/value') : undefined,
+      heightUnit: height && getStringNoLocale(height, 'http://schema.org/unitCode') !== null ? getStringNoLocale(height, 'http://schema.org/unitCode') : undefined,
+      widthUnit: width && getStringNoLocale(width, 'http://schema.org/unitCode') !== null ? getStringNoLocale(width, 'http://schema.org/unitCode') : undefined,
+      depthUnit: depth && getStringNoLocale(depth, 'http://schema.org/unitCode') !== null ? getStringNoLocale(depth, 'http://schema.org/unitCode') : undefined,
+      weightUnit: weight && getStringNoLocale(weight, 'http://schema.org/unitCode') !== null ? getStringNoLocale(weight, 'http://schema.org/unitCode') : undefined,
 
       // other
       mainEntityOfPage: asUrl(digitalObject) || undefined,

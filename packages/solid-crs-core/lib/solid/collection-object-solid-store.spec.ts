@@ -436,10 +436,6 @@ describe('CollectionObjectSolidStore', () => {
     it.each([
       'object',
       'digitalObject',
-      'height',
-      'width',
-      'depth',
-      'weight',
       'representations',
       'dataset',
     ])('should error when object.%s is not set', (value) => {
