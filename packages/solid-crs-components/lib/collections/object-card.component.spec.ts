@@ -23,12 +23,12 @@ describe('ObjectCardComponent', () => {
 
     component.translator = new MemoryTranslator([
       {
-        key: 'nde.features.collections.card.name-unavailable',
+        key: 'nde.collections.card.name-unavailable',
         value:'Name unavailable',
         locale:'en-GB',
       },
       {
-        key: 'nde.features.collections.card.additionalType-unavailable',
+        key: 'nde.collections.card.additionalType-unavailable',
         value:'Type unavailable',
         locale:'en-GB',
       },

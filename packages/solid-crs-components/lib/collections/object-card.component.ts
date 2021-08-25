@@ -52,11 +52,11 @@ export class ObjectCardComponent extends LitElement {
       <nde-card>
         ${this.object.image && this.object.image !== 'undefined' ? html`<img slot="image" src="${this.object.image}" alt="card image"/>` : html`<div slot="image">${unsafeSVG(Picture)}</div>`}
         <span slot='title'>
-          ${this.object.name ?? this.translator?.translate('nde.features.collections.card.name-unavailable')}
+          ${this.object.name ?? this.translator?.translate('nde.collections.card.name-unavailable')}
         </span>
         <span slot='subtitle'>
           <span class='additionalType'>
-            ${this.object.additionalType && this.object.additionalType[0]?.name ? this.object.additionalType[0].name :  this.translator?.translate('nde.features.collections.card.additionalType-unavailable')}
+            ${this.object.additionalType && this.object.additionalType[0]?.name ? this.object.additionalType[0].name :  this.translator?.translate('nde.collections.card.additionalType-unavailable')}
           </span>
           <span class='time-ago'>
              ${this.object.updated ? ` - ${timeAgo}` : ''}

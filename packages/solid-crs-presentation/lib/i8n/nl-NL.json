@@ -35,9 +35,9 @@
         "value": "Naam onbekend"
     },
     {
-        "key": "nde.collections.card.subject-unavailable",
+        "key": "nde.collections.card.additionalType-unavailable",
         "locale": "nl-NL",
-        "value": "Onderwerp onbekend"
+        "value": "Type onbekend"
     },
     {
         "key": "nde.features.collections.root.empty.create-object-title",
