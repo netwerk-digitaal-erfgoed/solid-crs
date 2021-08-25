@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { CollectionObject, Logger, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, Logger, sort, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -58,7 +58,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           >
           <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.field.subject')}</label>
           <ul slot="input" name="subject" id="subject" type="dismiss" class="dismiss">
-            ${this.object.subject?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.subject ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
             @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'subject', terms: this.object.subject } }))}"

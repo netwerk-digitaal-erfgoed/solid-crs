@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { CollectionObject, Logger, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, Logger, sort, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -58,7 +58,7 @@ export class ObjectCreationComponent extends RxLitElement {
           >
           <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
           <ul slot="input" name="creator" id="creator" type="dismiss" class="dismiss">
-            ${this.object.creator?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.creator ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
             @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'creator', terms: this.object.creator } }))}"
@@ -73,7 +73,7 @@ export class ObjectCreationComponent extends RxLitElement {
           >
           <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
           <ul slot="input" name="locationCreated" id="locationCreated" type="dismiss" class="dismiss">
-            ${this.object.locationCreated?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.locationCreated ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
             @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'locationCreated', terms: this.object.locationCreated } }))}"
@@ -88,7 +88,7 @@ export class ObjectCreationComponent extends RxLitElement {
           >
           <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
           <ul slot="input" name="material" id="material" type="dismiss" class="dismiss">
-            ${this.object.material?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.material ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
             @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'material', terms: this.object.material } }))}"
