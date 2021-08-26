@@ -1,3 +1,17 @@
+// Polyfill for encoding which isn't present globally in jsdom
+// eslint-disable-next-line import/order, @typescript-eslint/no-var-requires
+const crypto = require('crypto');
+import { TextEncoder, TextDecoder } from 'util';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as any;
+// Polyfill for crypto which isn't present globally in jsdom
+
+Object.defineProperty(window.self, 'crypto', {
+  value: {
+    getRandomValues: (arr: any) => crypto.randomBytes(arr.length),
+  },
+});
+
 import { AlertComponent } from '../lib/alerts/alert.component';
 import { FormElementComponent } from '../lib/forms/form-element.component';
 import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.component';
