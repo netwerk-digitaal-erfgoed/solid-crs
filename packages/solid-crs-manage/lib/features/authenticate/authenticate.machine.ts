@@ -50,7 +50,7 @@ export const authenticateMachine = (solid: SolidService) =>
         invoke: {
           src: () => solid.getSession(),
           onDone: { actions: handleSessionUpdate },
-          onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
+          // onError: { actions: send(AuthenticateEvents.LOGIN_ERROR) },
         },
         on: {
         /**
@@ -89,7 +89,7 @@ export const authenticateMachine = (solid: SolidService) =>
                */
               async (context) => {
 
-                await solid.login(context.data.webId);
+                solid.login(context.data.webId);
 
                 return context.data;
 
