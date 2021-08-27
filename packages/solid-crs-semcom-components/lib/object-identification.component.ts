@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
-import { Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObject, Logger, Translator, Term, sort } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -74,7 +74,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         >
           <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.field.additionalType')}</label>
           <ul slot="input" name="additionalType" id="additionalType" type="dismiss" class="dismiss">
-            ${this.object.additionalType?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.additionalType ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'additionalType', terms: this.object.additionalType } }))}" type="button" slot="action">
             ${ unsafeSVG(Connect) }
