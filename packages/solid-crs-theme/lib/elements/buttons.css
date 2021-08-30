@@ -24,6 +24,10 @@ button.light {
   background-color: var(--colors-background-normal);
 }
 
+button.gray {
+  background-color: var(--colors-foreground-light);
+}
+
 button svg {
   fill: var(--colors-foreground-inverse);
   height: 20px;
