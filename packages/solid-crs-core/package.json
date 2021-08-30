@@ -40,6 +40,7 @@
     "lint-staged": "^10.5.4",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "shx": "^0.3.3",
+    "@types/node-gettext": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "util": "^0.12.4",
@@ -58,6 +59,7 @@
   },
   "dependencies": {
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.8.1",
+    "i18next": "^20.4.0",
     "moment": "^2.29.1",
     "rxjs": "^6.6.7",
     "uuid": "8.3.2"
