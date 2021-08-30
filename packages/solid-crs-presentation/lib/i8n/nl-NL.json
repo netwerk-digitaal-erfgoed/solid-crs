@@ -98,7 +98,12 @@
                 "field": {
                     "identifier": "Objectnummer",
                     "additionalType": "Type",
-                    "name": "Titel",
+                    "name": {
+                        "title": "Titel",
+                        "validation:": {
+                            "max-characters": "De beschrijving mag maximum 100 karakters lang zijn!"
+                        }
+                    },
                     "collection": "Collectie",
                     "description": {
                         "title": "Korte beschrijving",
