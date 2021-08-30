@@ -221,7 +221,7 @@ export class TermSearchComponent extends RxLitElement {
             <div slot="icon">${ unsafeSVG(Search) }</div>
           </nde-form-element>
 
-          <nde-form-element class="sources" .actor="${this.formActor}" .translator="${this.translator}" field="sources">
+          <nde-form-element class="sources" .actor="${this.formActor}" .translator="${this.translator}" field="sources" .showLabel="${false}">
             <div slot="icon">${ unsafeSVG(Dropdown) }</div>
             <ul slot="input" type="multiselect" class="multiselect">
               <li>
@@ -241,8 +241,8 @@ export class TermSearchComponent extends RxLitElement {
           </nde-form-element>
         </div>
         <div class="buttons">
-          <button type="button" class="cancel gray" @click="${() => this.actor.parent.send(new ClickedCancelTermEvent())}">${this.translator.translate('nde.features.term.search.cancel')}</button>
           <button type="button" class="confirm primary" @click="${() => this.actor.send(new ClickedSubmitEvent())}">${this.translator.translate('nde.features.term.search.confirm')}</button>
+          <button type="button" class="cancel gray" @click="${() => this.actor.parent.send(new ClickedCancelTermEvent())}">${this.translator.translate('nde.features.term.search.cancel')}</button>
         </div>
       </form> 
 
@@ -347,22 +347,27 @@ export class TermSearchComponent extends RxLitElement {
         }
         .search-form {
           display: flex;
-          flex-direction: column;
+          flex-direction: row;
           gap: var(--gap-normal);
         }
-        .search-form div{
+        .search-form div {
           display: flex;
-          flex-direction: row;
-          align-items: flex-end;
-          justify-content: space-between;
-          gap: var(--gap-large);
+          flex-direction: column;
+          justify-content: flex-end;
+          gap: var(--gap-normal);
         }
-        .inputs nde-form-element, .buttons button {
-          flex-grow: 1;
-          width: 100%;
+
+        .inputs {
+          width: 75%;
         }
+
+        .buttons {
+          width: 25%;
+        }
+
         .search-form div button {
-          height: 46px;
+          height: 45px;
+          min-width: 150px;
         }
         .title {
           margin: 0;
