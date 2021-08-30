@@ -1,7 +1,8 @@
 import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../../app.events';
+import { AppEvents } from '../../../app.events';
+import { ClickedCancelTermEvent, ObjectEvents } from '../object.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
@@ -132,11 +133,36 @@ describe('TermSearchComponent', () => {
 
       component.sources = [ termSource ];
       await component.updateComplete;
-      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('form button') as HTMLButtonElement;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.confirm') as HTMLButtonElement;
       expect(button).toBeTruthy();
       button.click();
 
     }
+
+  });
+
+  it('should send ClickedCancelTermEvent when "Annuleren" button is clicked', async (done) => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    if (machine.state.matches(TermStates.IDLE)) {
+
+      component.sources = [ termSource ];
+      await component.updateComplete;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.cancel') as HTMLButtonElement;
+      expect(button).toBeTruthy();
+      button.click();
+
+    }
+
+    expect(machine.parent.send).toHaveBeenCalledWith(new ClickedCancelTermEvent());
+    done();
 
   });
 

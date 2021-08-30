@@ -253,6 +253,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         on: {
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_CANCEL_TERM]: ObjectStates.IDLE,
         },
         invoke: [
           {

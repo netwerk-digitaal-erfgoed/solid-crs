@@ -237,6 +237,10 @@
         },
         "error": {
             "term-network-error": "Er kon geen verbinding gemaakt worden met het termennetwerk."
+        },
+        "search": {
+            "confirm": "Bevestig",
+            "cancel": "Annuleren"
         }
     }
 }
