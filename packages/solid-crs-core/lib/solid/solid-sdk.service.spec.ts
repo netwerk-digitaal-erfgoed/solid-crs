@@ -89,9 +89,9 @@ describe('SolidService', () => {
     const validProfileThing = {};
 
     it.each([
-      [ null, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
-      [ undefined, validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.no-webid' ],
-      [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'nde.features.authenticate.error.invalid-webid.invalid-url' ],
+      [ null, validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.no-webid' ],
+      [ undefined, validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.no-webid' ],
+      [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.invalid-url' ],
     ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
 
       client.getSolidDataset = jest.fn(async () => profile);
@@ -113,7 +113,7 @@ describe('SolidService', () => {
         .once('') // pass https:// URL check
         .once(validOpenIdConfig);
 
-      await expect(service.getIssuer('https://nde.nl/')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.no-profile');
+      await expect(service.getIssuer('https://nde.nl/')).rejects.toThrowError('authenticate.error.invalid-webid.no-profile');
 
     });
 
@@ -158,7 +158,7 @@ describe('SolidService', () => {
 
       fetchMock.mockRejectOnce();
 
-      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('authenticate.error.invalid-webid.invalid-oidc-registration');
 
     });
 
@@ -172,7 +172,7 @@ describe('SolidService', () => {
         .once('') // pass https:// URL check
         .mockResponseOnce('{}', { status: 200, headers: { 'X-Powered-By': '' } });
 
-      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration');
+      await expect(service.getIssuer('https://pod.inrupt.com/digitatestpod/profile/card#me')).rejects.toThrowError('authenticate.error.invalid-webid.invalid-oidc-registration');
 
     });
 

@@ -18,7 +18,7 @@ describe('AlertComponent', () => {
 
     component.translator = new MemoryTranslator([
       {
-        key: 'nde.features.collections.card.name-unavailable',
+        key: 'collections.card.name-unavailable',
         value:'Name unavailable',
         locale:'en-GB',
       },

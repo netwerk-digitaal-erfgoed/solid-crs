@@ -62,19 +62,19 @@ export class ObjectDimensionsComponent extends RxLitElement {
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.dimensions.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.dimensions.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.dimensions.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.dimensions.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(Connect)}
       </div>
       <div slot="content">
         <div class="dimension-field">
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="height">
-            <label slot="label" for="height">${this.translator?.translate('nde.features.object.card.field.height')}</label>
+            <label slot="label" for="height">${this.translator?.translate('object.card.field.height')}</label>
             <input type="text" slot="input" name="height" id="height"/>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="heightUnit">
-            <label slot="label" for="height-unit" class="invisible">${this.translator?.translate('nde.features.object.card.field.unit')}</label>
+            <label slot="label" for="height-unit" class="invisible">${this.translator?.translate('object.card.field.unit')}</label>
             <select slot="input" name="height-unit" id="height-unit">
               ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.heightUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
@@ -82,11 +82,11 @@ export class ObjectDimensionsComponent extends RxLitElement {
         </div>
         <div class="dimension-field">
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="width">
-            <label slot="label" for="width">${this.translator?.translate('nde.features.object.card.field.width')}</label>
+            <label slot="label" for="width">${this.translator?.translate('object.card.field.width')}</label>
             <input type="text" slot="input" name="width" id="width"/>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="widthUnit">
-            <label slot="label" for="width-unit" class="invisible">${this.translator?.translate('nde.features.object.card.field.unit')}</label>
+            <label slot="label" for="width-unit" class="invisible">${this.translator?.translate('object.card.field.unit')}</label>
             <select slot="input" name="width-unit" id="width-unit">
               ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.widthUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
@@ -94,11 +94,11 @@ export class ObjectDimensionsComponent extends RxLitElement {
         </div>
         <div class="dimension-field">
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depth">
-            <label slot="label" for="depth">${this.translator?.translate('nde.features.object.card.field.depth')}</label>
+            <label slot="label" for="depth">${this.translator?.translate('object.card.field.depth')}</label>
             <input type="text" slot="input" name="depth" id="depth"/>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depthUnit">
-            <label slot="label" for="depth-unit" class="invisible">${this.translator?.translate('nde.features.object.card.field.unit')}</label>
+            <label slot="label" for="depth-unit" class="invisible">${this.translator?.translate('object.card.field.unit')}</label>
             <select slot="input" name="depth-unit" id="depth-unit">
               ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.depthUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
@@ -106,11 +106,11 @@ export class ObjectDimensionsComponent extends RxLitElement {
         </div>
         <div class="dimension-field">
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weight">
-            <label slot="label" for="weight">${this.translator?.translate('nde.features.object.card.field.weight')}</label>
+            <label slot="label" for="weight">${this.translator?.translate('object.card.field.weight')}</label>
             <input type="text" slot="input" name="weight" id="weight"/>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weightUnit">
-            <label slot="label" for="weight-unit" class="invisible">${this.translator?.translate('nde.features.object.card.field.unit')}</label>
+            <label slot="label" for="weight-unit" class="invisible">${this.translator?.translate('object.card.field.unit')}</label>
             <select slot="input" name="weight-unit" id="weight-unit">
               ${Array.from(this.weightUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.weightUnit}">${this.weightUnits.get(unit)}</option>`)}
             </select>

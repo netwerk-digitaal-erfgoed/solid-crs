@@ -161,7 +161,7 @@ export class AuthenticateRootComponent extends RxLitElement {
     return html`
       <div class="title-container">
         ${ unsafeSVG(Logo) }
-        <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
+        <h1>${this.translator?.translate('authenticate.pages.login.title')}</h1>
       </div>
       ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`
         <div class="form-container">
@@ -169,15 +169,15 @@ export class AuthenticateRootComponent extends RxLitElement {
           
           <form onsubmit="return false">
             <nde-form-element class="inverse" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
-              <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
+              <label slot="label" for="webid">${this.translator?.translate('authenticate.pages.login.webid-label')}</label>
+              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
               <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(new FormSubmittedEvent())}">${ unsafeSVG(Login) }</button>
             </nde-form-element>
           </form>
         
         </div>
         <div class="webid-container">
-          <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+          <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
         </div>
       `}
       `;

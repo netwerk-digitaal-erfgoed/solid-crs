@@ -57,14 +57,14 @@ export class ObjectIdentificationComponent extends RxLitElement {
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.identification.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.identification.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.identification.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.identification.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(Identity)}
       </div>
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="identifier">
-          <label slot="label" for="identifier">${this.translator?.translate('nde.features.object.card.field.identifier')}</label>
+          <label slot="label" for="identifier">${this.translator?.translate('object.card.field.identifier')}</label>
           <input type="text" slot="input" name="identifier" id="identifier"/>
         </nde-form-element>
         <nde-form-element
@@ -72,7 +72,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="additionalType"
         >
-          <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.field.additionalType')}</label>
+          <label slot="label" for="additionalType">${this.translator?.translate('object.card.field.additionalType')}</label>
           <ul slot="input" name="additionalType" id="additionalType" type="dismiss" class="dismiss">
             ${sort(this.object.additionalType ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -81,15 +81,15 @@ export class ObjectIdentificationComponent extends RxLitElement {
           </button>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
-          <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.field.name')}</label>
+          <label slot="label" for="name">${this.translator?.translate('object.card.field.name')}</label>
           <input type="text" slot="input" name="name" id="name"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
-          <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.field.description')}</label>
+          <label slot="label" for="description">${this.translator?.translate('object.card.field.description')}</label>
           <textarea type="text" slot="input" name="description" id="description"/></textarea>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
-          <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.field.collection')}</label>
+          <label slot="label" for="collection">${this.translator?.translate('object.card.field.collection')}</label>
           <select slot="input" name="collection" id="collection">
             ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object.collection}">${collection.name}</option>`)}
           </select>

@@ -235,10 +235,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('collections.root.empty.create-object-title')}</div>
               <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
                 ${unsafeSVG(ObjectIcon)}
-                <span>${this.translator?.translate('nde.features.collections.root.empty.create-object-button')}</span>
+                <span>${this.translator?.translate('collections.root.empty.create-object-button')}</span>
               </button>
             </div>
           </div>
@@ -248,13 +248,13 @@ export class CollectionRootComponent extends RxLitElement {
 }
       <nde-popup dark id="delete-popup">
         <div slot="content">
-          <p>${this.translator?.translate('nde.features.collections.root.delete.title')}</p>
+          <p>${this.translator?.translate('collections.root.delete.title')}</p>
           <div>
             <button class='primary confirm-delete' @click="${() => { this.actor.send(CollectionEvents.CLICKED_DELETE); toggleDelete(); }}">
-                <span>${this.translator?.translate('nde.features.collections.root.delete.confirm')}</span>
+                <span>${this.translator?.translate('collections.root.delete.confirm')}</span>
             </button>
             <button class='light cancel-delete' @click="${() => toggleDelete()}">
-                <span>${this.translator?.translate('nde.features.collections.root.delete.cancel')}</span>
+                <span>${this.translator?.translate('collections.root.delete.cancel')}</span>
             </button>
           </div>
         </div>

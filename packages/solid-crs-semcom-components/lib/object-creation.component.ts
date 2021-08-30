@@ -45,8 +45,8 @@ export class ObjectCreationComponent extends RxLitElement {
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.creation.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.creation.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.creation.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.creation.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(ObjectIcon)}
       </div>
@@ -56,7 +56,7 @@ export class ObjectCreationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="creator"
           >
-          <label slot="label" for="creator">${this.translator?.translate('nde.features.object.card.field.creator')}</label>
+          <label slot="label" for="creator">${this.translator?.translate('object.card.field.creator')}</label>
           <ul slot="input" name="creator" id="creator" type="dismiss" class="dismiss">
             ${sort(this.object.creator ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -71,7 +71,7 @@ export class ObjectCreationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="locationCreated"
           >
-          <label slot="label" for="locationCreated">${this.translator?.translate('nde.features.object.card.field.locationCreated')}</label>
+          <label slot="label" for="locationCreated">${this.translator?.translate('object.card.field.locationCreated')}</label>
           <ul slot="input" name="locationCreated" id="locationCreated" type="dismiss" class="dismiss">
             ${sort(this.object.locationCreated ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -86,7 +86,7 @@ export class ObjectCreationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="material"
           >
-          <label slot="label" for="material">${this.translator?.translate('nde.features.object.card.field.material')}</label>
+          <label slot="label" for="material">${this.translator?.translate('object.card.field.material')}</label>
           <ul slot="input" name="material" id="material" type="dismiss" class="dismiss">
             ${sort(this.object.material ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -101,7 +101,7 @@ export class ObjectCreationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="dateCreated"
         >
-          <label slot="label" for="dateCreated">${this.translator?.translate('nde.features.object.card.field.dateCreated')}</label>
+          <label slot="label" for="dateCreated">${this.translator?.translate('object.card.field.dateCreated')}</label>
           <input type="text" slot="input" name="dateCreated" id="dateCreated" placeholder="YYYY-MM-DD"/>
         </nde-form-element>
       </div>

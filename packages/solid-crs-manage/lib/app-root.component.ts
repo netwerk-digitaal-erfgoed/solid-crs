@@ -54,18 +54,18 @@ export class AppRootComponent extends RxLitElement {
       new CollectionObjectSolidStore(),
       {
         uri: undefined,
-        name: this.translator.translate('nde.features.collections.new-collection-name'),
-        description: this.translator.translate('nde.features.collections.new-collection-description'),
+        name: this.translator.translate('features.collections.new-collection-name'),
+        description: this.translator.translate('features.collections.new-collection-description'),
         objectsUri: undefined,
         distribution: undefined,
       },
       {
         uri: undefined,
-        name: this.translator.translate('nde.features.object.new-object-name'),
-        description: this.translator.translate('nde.features.object.new-object-description'),
+        name: this.translator.translate('features.object.new-object-name'),
+        description: this.translator.translate('features.object.new-object-description'),
         collection: undefined,
         type: 'http://schema.org/CreativeWork',
-        identifier: this.translator.translate('nde.features.object.new-object-name').toLowerCase().replace(' ', '-'),
+        identifier: this.translator.translate('features.object.new-object-name').toLowerCase().replace(' ', '-'),
         additionalType: [],
         image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
         license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
@@ -254,7 +254,7 @@ export class AppRootComponent extends RxLitElement {
       </nde-content-header>
       <nde-sidebar-item>
         <div slot="content">
-          <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
+          <div class="search-title"> ${this.translator?.translate('navigation.search.title')} </div>
           <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm">
             <input type="text"
               slot="input"
@@ -272,7 +272,7 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item .padding="${false}" .showBorder="${false}">
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
-            <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
+            <div slot="title">${this.translator?.translate('navigation.collections.title')}</div>
             <div slot="actions" @click="${() => this.actor.send(new ClickedCreateCollectionEvent())}">${ unsafeSVG(Plus) }</div>
           </nde-sidebar-list-item>
           ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
