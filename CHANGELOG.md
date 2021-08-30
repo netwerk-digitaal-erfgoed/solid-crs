@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Bug Fixes**
+
+* display order of terms in object description form ([#449](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/449)) ([b459946](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/b459946f95f78c254e4d45f20f99ff8e763b2373))
+* errors when creating new objects ([#446](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/446)) ([02421a6](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/02421a64bad773bf425b94506428c03342f11e47))
+* unauthenticated requests after x minutes ([#450](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/450)) ([9d7e163](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/9d7e163c2187ee9512dd350eabd0a8bdae8cf00d))
+
+
+### **Features**
+
+* added cancel button on term form page ([#448](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/448)) ([0f2e2f8](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/0f2e2f89f8062a73a73bbe5e59e9f4e15731c635))
+* display additionalType as objectCard subtitle ([#445](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/445)) ([6779e9a](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/6779e9a173cc9a6a101e85cbf90306321a96f6db))
+* pressing escape closes popup component ([#442](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/442)) ([fae6a81](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fae6a81656f99a9d31141ecf57fa4b2866a756ec))
+* show sources of licenses ([#439](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/439)) ([590a331](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/590a3312c5b32edc087281f3380896bf85238f5c))
+* support local terms ([#452](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/452)) ([98a896c](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/98a896cd829ee481b4d830388c7fe8bc13de2e54))
+
+
+
 ### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.8.0...v0.8.1) (2021-08-24)
 
 

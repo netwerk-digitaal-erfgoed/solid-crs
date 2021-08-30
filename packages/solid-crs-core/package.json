@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-core",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-core.umd.js",
@@ -30,6 +30,7 @@
     "@digita-ai/typescript-config": "^0.3.3",
     "@types/jest": "^26.0.23",
     "@types/node": "^14.14.44",
+    "@types/node-gettext": "^3.0.2",
     "@types/uuid": "8.3.0",
     "crypto": "^1.0.1",
     "eslint": "^7.16.0",
@@ -40,7 +41,6 @@
     "lint-staged": "^10.5.4",
     "rollup-plugin-node-polyfills": "^0.2.1",
     "shx": "^0.3.3",
-    "@types/node-gettext": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "util": "^0.12.4",
@@ -58,7 +58,7 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "dependencies": {
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.8.1",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.9.0",
     "i18next": "^20.4.0",
     "moment": "^2.29.1",
     "rxjs": "^6.6.7",

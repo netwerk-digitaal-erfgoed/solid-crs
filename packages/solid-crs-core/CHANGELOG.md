@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Bug Fixes**
+
+* display order of terms in object description form ([#449](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/449)) ([b459946](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b459946f95f78c254e4d45f20f99ff8e763b2373))
+* errors when creating new objects ([#446](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/446)) ([02421a6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/02421a64bad773bf425b94506428c03342f11e47))
+* unauthenticated requests after x minutes ([#450](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/450)) ([9d7e163](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9d7e163c2187ee9512dd350eabd0a8bdae8cf00d))
+
+
+
 ### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
 
 

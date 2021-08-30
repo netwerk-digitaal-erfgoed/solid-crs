@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Bug Fixes**
+
+* unauthenticated requests after x minutes ([#450](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/450)) ([9d7e163](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9d7e163c2187ee9512dd350eabd0a8bdae8cf00d))
+
+
+### **Features**
+
+* added cancel button on term form page ([#448](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/448)) ([0f2e2f8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0f2e2f89f8062a73a73bbe5e59e9f4e15731c635))
+* display additionalType as objectCard subtitle ([#445](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/445)) ([6779e9a](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6779e9a173cc9a6a101e85cbf90306321a96f6db))
+* show sources of licenses ([#439](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/439)) ([590a331](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/590a3312c5b32edc087281f3380896bf85238f5c))
+* support local terms ([#452](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/452)) ([98a896c](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/98a896cd829ee481b4d830388c7fe8bc13de2e54))
+
+
+
 ### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
 
 

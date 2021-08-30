@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Features**
+
+* display additionalType as objectCard subtitle ([#445](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/445)) ([6779e9a](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6779e9a173cc9a6a101e85cbf90306321a96f6db))
+* pressing escape closes popup component ([#442](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/442)) ([fae6a81](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fae6a81656f99a9d31141ecf57fa4b2866a756ec))
+
+
+### **Bug Fixes**
+
+* errors when creating new objects ([#446](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/446)) ([02421a6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/02421a64bad773bf425b94506428c03342f11e47))
+* unauthenticated requests after x minutes ([#450](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/450)) ([9d7e163](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9d7e163c2187ee9512dd350eabd0a8bdae8cf00d))
+
+
+
 ### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
 
 
