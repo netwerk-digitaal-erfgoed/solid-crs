@@ -30,11 +30,11 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
 
     if (minutes < 2) {
 
-      return translator.translate('nde.common.date.just-now');
+      return translator.translate('common.date.just-now');
 
     } else {
 
-      return `${minutes} ${translator.translate('nde.common.date.minutes-ago')}`;
+      return `${minutes} ${translator.translate('common.date.minutes-ago')}`;
 
     }
 
@@ -49,8 +49,8 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
       // Less than a day ago.
 
       return `${hours} ${hours === 1
-        ? translator.translate('nde.common.date.hour-ago')
-        : translator.translate('nde.common.date.hours-ago')}`;
+        ? translator.translate('common.date.hour-ago')
+        : translator.translate('common.date.hours-ago')}`;
 
     } else {
 
@@ -61,8 +61,8 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
         // Less than a month ago.
 
         return `${days} ${days === 1
-          ? translator.translate('nde.common.date.day-ago')
-          : translator.translate('nde.common.date.days-ago')}`;
+          ? translator.translate('common.date.day-ago')
+          : translator.translate('common.date.days-ago')}`;
 
       } else {
 
@@ -73,8 +73,8 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
           // Less than a year ago.
 
           return `${months} ${months === 1
-            ? translator.translate('nde.common.date.month-ago')
-            : translator.translate('nde.common.date.months-ago')}`;
+            ? translator.translate('common.date.month-ago')
+            : translator.translate('common.date.months-ago')}`;
 
         } else {
 
@@ -83,8 +83,8 @@ export const getFormattedTimeAgo = (timestamp: number, translator: Translator): 
           const years = Math.round(difference.asYears());
 
           return `${years} ${years === 1
-            ? translator.translate('nde.common.date.year-ago')
-            : translator.translate('nde.common.date.years-ago')}`;
+            ? translator.translate('common.date.year-ago')
+            : translator.translate('common.date.years-ago')}`;
 
         }
 

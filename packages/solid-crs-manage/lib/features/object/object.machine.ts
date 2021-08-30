@@ -68,7 +68,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.identification.field.description.validation.max-characters',
+        message: 'object.card.identification.field.description.validation.max-characters',
       });
 
     } else if (field === 'name' && !value) {
@@ -77,7 +77,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
@@ -86,7 +86,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.identification.field.title.validation.max-characters',
+        message: 'object.card.identification.field.title.validation.max-characters',
       });
 
     } else if (field === 'identifier' && !value) {
@@ -95,7 +95,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'type') {
@@ -105,7 +105,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.empty',
+          message: 'object.card.common.empty',
         });
 
       } else {
@@ -119,7 +119,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
           res.push({
             field,
-            message: 'nde.features.object.card.common.invalid-url',
+            message: 'object.card.common.invalid-url',
           });
 
         }
@@ -134,7 +134,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.empty',
+          message: 'object.card.common.empty',
         });
 
       }
@@ -145,7 +145,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'image' && value) {
@@ -160,7 +160,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.invalid-url',
+          message: 'object.card.common.invalid-url',
         });
 
       }
@@ -177,7 +177,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.field.date.validation.invalid',
+          message: 'object.card.creation.field.date.validation.invalid',
         });
 
       }
@@ -190,7 +190,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.invalid-number',
+          message: 'object.card.common.invalid-number',
         });
 
       }
@@ -253,6 +253,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
         on: {
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_CANCEL_TERM]: ObjectStates.IDLE,
         },
         invoke: [
           {

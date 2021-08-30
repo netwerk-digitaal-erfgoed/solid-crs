@@ -278,7 +278,7 @@ describe('ObjectRootComponent', () => {
     it('should set this.visibleCard to the currently visible card', async () => {
 
       const div = document.createElement('div');
-      div.id = 'nde.features.object.sidebar.image';
+      div.id = 'object.sidebar.image';
 
       component.formCards = [ div ];
 
@@ -352,7 +352,7 @@ describe('ObjectRootComponent', () => {
       component.subscribe = jest.fn();
 
       const div = document.createElement('div');
-      div.id = 'nde.features.object.sidebar.image';
+      div.id = 'object.sidebar.image';
 
       component.formCards = [ div ];
 
@@ -503,7 +503,7 @@ describe('ObjectRootComponent', () => {
 
     customElements.define('nde-object-imagery', ObjectImageryComponent);
     const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
+    div.id = 'object.sidebar.image';
 
     component.formCards = [ div ];
     await component.updateComplete;
@@ -523,7 +523,7 @@ describe('ObjectRootComponent', () => {
 
     customElements.define('nde-object-imagery', ObjectImageryComponent);
     const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
+    div.id = 'object.sidebar.image';
 
     component.formCards = [ div ];
     component.isEditingTermField = true;

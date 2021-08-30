@@ -117,8 +117,8 @@ export class AboutRootComponent extends RxLitElement {
     return html`
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
-        <div slot="title">${this.translator?.translate('nde.features.about.header.title')}</div>
-        <div slot="subtitle">${this.translator?.translate('nde.features.about.header.subtitle')}</div>
+        <div slot="title">${this.translator?.translate('about.header.title')}</div>
+        <div slot="subtitle">${this.translator?.translate('about.header.subtitle')}</div>
       </nde-content-header>
 
       <div class="content">
@@ -134,7 +134,7 @@ export class AboutRootComponent extends RxLitElement {
             ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
             <div class="links">
               
-              ${ this.profile?.website ? html`<a target="_blank" href="${this.profile?.website}">${this.translator.translate('nde.features.about.more-information')}</a>` : ''}
+              ${ this.profile?.website ? html`<a target="_blank" href="${this.profile?.website}">${this.translator.translate('about.more-information')}</a>` : ''}
               ${ this.profile?.email ? html`<span>E-mail: <a href="mailto:${this.profile?.email}">${this.profile?.email}</a></span>` : ''}
               ${ this.profile?.telephone ? html`<span>Tel: <a href="tel:${this.profile?.telephone}">${this.profile?.telephone}</a></span>` : ''}
               
@@ -142,7 +142,7 @@ export class AboutRootComponent extends RxLitElement {
           </div>
         </nde-large-card> 
 
-        <span>${this.translator?.translate('nde.features.about.collection-overview')}</span>
+        <span>${this.translator?.translate('about.collection-overview')}</span>
 
         ${this.collections?.map((collection) => html`
         <nde-large-card

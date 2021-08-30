@@ -1,5 +1,5 @@
+import i18next from 'i18next';
 import { ArgumentError } from '../errors/argument-error';
-import { Translation } from './translation';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
@@ -9,10 +9,22 @@ export class MemoryTranslator {
   /**
    * Instantiates a MemoryTranslator.
    *
-   * @param translations The translations to be stored in-memory.
+   * @param translation The translations to be stored in-memory.
    * @param defaultLocale The default locale to use when translating.
    */
-  constructor(public translations: Translation[], public defaultLocale: string) { }
+  constructor(public translation: unknown, public lng: string) {
+
+    i18next.init({
+      lng,
+      resources: {
+        [lng]: {
+          translation,
+        },
+      },
+      nsSeparator: false,
+    });
+
+  }
 
   /**
    * Translates a key to a specific locale.
@@ -32,22 +44,24 @@ export class MemoryTranslator {
 
     }
 
-    if (!locale && ! this.defaultLocale) {
+    if (!locale && ! this.lng) {
 
       throw new ArgumentError('Argument locale should be set.', locale);
 
     }
 
     // Use default locale if no locale was passed to function
-    const usedLocale = locale? locale : this.defaultLocale;
+    const usedLocale = locale? locale : this.lng;
 
     // Find translation based on locale
-    const foundTranslation = this.translations?.find(
-      (translation) => translation.locale === usedLocale && translation.key === key
-    );
+    // const foundTranslation = this.translations?.find(
+    //   (translation) => translation.locale === usedLocale && translation.key === key
+    // );
 
-    // return key when no translation was found
-    return foundTranslation?.value || key;
+    // // return key when no translation was found
+    // return foundTranslation?.value || key;
+
+    return i18next.t(key, { lng: usedLocale });
 
   }
 

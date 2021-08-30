@@ -131,7 +131,7 @@ export class CollectionRootComponent extends RxLitElement {
         ${this.collection.name}
       </div>
       <div slot="subtitle" class="subtitle">
-        ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.common.form.description-placeholder') }
+        ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('common.form.description-placeholder') }
       </div>
     </nde-content-header>
 
@@ -151,7 +151,7 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('collections.root.empty.create-object-title')}</div>
             </div>
           </div>
         `

@@ -231,14 +231,14 @@ export class AppRootComponent extends RxLitElement {
           <nde-sidebar-list-item slot="item" inverse
           @click="${() => this.actor.send(new ClickedHomeEvent())}"
           .selected="${this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT })}">
-            <div slot="title">${this.translator?.translate('nde.navigation.about.title')}</div>
+            <div slot="title">${this.translator?.translate('navigation.about.title')}</div>
             <div slot="actions"> ${unsafeSVG(Info)} </div>
           </nde-sidebar-list-item>
         </nde-sidebar-list>
       </nde-sidebar-item>
       <nde-sidebar-item id="search-item">
         <div slot="content">
-          <div class="search-title"> ${this.translator?.translate('nde.navigation.search.title')} </div>
+          <div class="search-title"> ${this.translator?.translate('navigation.search.title')} </div>
           <nde-form-element class="inverse" .submitOnEnter="${false}" .showLabel="${false}" .actor="${this.formActor}" .translator="${this.translator}" field="searchTerm" .debounceTimeout="${0}">
             <input type="text"
               slot="input"
@@ -262,7 +262,7 @@ export class AppRootComponent extends RxLitElement {
       <nde-sidebar-item .padding="${false}" .showBorder="${false}" id="collections-item">
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
-            <div slot="title">${this.translator?.translate('nde.navigation.collections.title')}</div>
+            <div slot="title">${this.translator?.translate('navigation.collections.title')}</div>
           </nde-sidebar-list-item>
           ${this.collections?.map((collection) => html`<nde-sidebar-list-item slot="item" inverse ?selected="${ collection.uri === this.selected?.uri}" @click="${() => this.actor.send(CollectionEvents.SELECTED_COLLECTION, { collection })}"><div slot="title">${collection.name}</div></nde-sidebar-list-item>`)}
         </nde-sidebar-list>

@@ -86,7 +86,7 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
           },
           onError: {
             target: TermStates.IDLE,
-            actions: sendParent({ type: AppEvents.ERROR, data: { error: 'nde.features.term.error.term-network-error' } } as ErrorEvent),
+            actions: sendParent({ type: AppEvents.ERROR, data: { error: 'term.error.term-network-error' } } as ErrorEvent),
           },
         },
       },

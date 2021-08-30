@@ -7,23 +7,14 @@ describe('MemoryTranslator', () => {
 
   beforeEach(async () => {
 
-    service = new MemoryTranslator([
-      {
-        locale: 'en-GB',
-        key: 'foo',
-        value: 'Foo in English',
+    service = new MemoryTranslator({
+      'foo': {
+        'foo': 'Foo',
+        'bar': 'Bar',
       },
-      {
-        locale: 'nl-NL',
-        key: 'foo',
-        value: 'Foo in Dutch',
-      },
-      {
-        locale: 'en-GB',
-        key: 'foo.bar',
-        value: 'Bar in English',
-      },
-    ], 'en-GB');
+
+    },
+    'en-GB');
 
   });
 
@@ -37,17 +28,17 @@ describe('MemoryTranslator', () => {
 
     it('Should return an existing key in an existing locale.', () => {
 
-      const value = service.translate('foo', 'en-GB');
+      const value = service.translate('foo.foo', 'en-GB');
 
-      expect(value).toEqual('Foo in English');
+      expect(value).toEqual('Foo');
 
     });
 
     it('Should translate by using the default locale when no locale was given.', () => {
 
-      const value = service.translate('foo');
+      const value = service.translate('foo.bar');
 
-      expect(value).toEqual('Foo in English');
+      expect(value).toEqual('Bar');
 
     });
 
@@ -73,9 +64,9 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('Should throw error when locale and defaultLocale is null.', () => {
+    it('Should throw error when locale and lng is null.', () => {
 
-      service.defaultLocale = null;
+      service.lng = null;
 
       expect(()=>service.translate('bla', null)).toThrow(ArgumentError);
 

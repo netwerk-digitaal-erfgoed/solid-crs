@@ -79,7 +79,7 @@ export const authenticateMachine = (solid: SolidService) =>
              */
               async (context): Promise<FormValidatorResult[]> =>
                 solid.getIssuer(context.data?.webId)
-                  .then((result) => result ? [] : [ { field: 'webId', message: 'nde.features.authenticate.error.invalid-webid.invalid-url' } ])
+                  .then((result) => result ? [] : [ { field: 'webId', message: 'authenticate.error.invalid-webid.invalid-url' } ])
                   .catch((err: Error) => [ { field: 'webId', message: err.message } ]),
               /**
                * Redirects the user to the identity provider.

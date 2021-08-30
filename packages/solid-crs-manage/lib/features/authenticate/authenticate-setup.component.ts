@@ -42,7 +42,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
 
     return html`
       <div class="title-container">
-        <h1>${this.translator?.translate('nde.features.authenticate.pages.setup.title')}</h1>
+        <h1>${this.translator?.translate('authenticate.pages.setup.title')}</h1>
       </div>
       
       <div class="form-container">
@@ -52,8 +52,8 @@ export class AuthenticateSetupComponent extends RxLitElement {
         .showImage="${false}"
         .showContent="${false}"
         @click=${() => this.actor.send(new ClickedAdministratorTypeEvent())}>
-            <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.title') }</div>
-            <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-administrator.subtitle') }</div>
+            <div slot="title">${ this.translator?.translate('authenticate.pages.setup.button-administrator.title') }</div>
+            <div slot="subtitle">${ this.translator?.translate('authenticate.pages.setup.button-administrator.subtitle') }</div>
             <div slot="icon">
               ${unsafeSVG(Identity)}
             </div>
@@ -64,8 +64,8 @@ export class AuthenticateSetupComponent extends RxLitElement {
         .showImage="${false}"
         .showContent="${false}"
         @click=${() => this.actor.send(new ClickedInstitutionTypeEvent())}>
-            <div slot="title">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.title') }</div>
-            <div slot="subtitle">${ this.translator?.translate('nde.features.authenticate.pages.setup.button-institution.subtitle') }</div>
+            <div slot="title">${ this.translator?.translate('authenticate.pages.setup.button-institution.title') }</div>
+            <div slot="subtitle">${ this.translator?.translate('authenticate.pages.setup.button-institution.subtitle') }</div>
             <div slot="icon">
               ${unsafeSVG(Identity)}
             </div>
@@ -74,7 +74,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
       </div>
 
       <div class="webid-container">
-        <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+        <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
       </div>
       `;
 

@@ -2,6 +2,7 @@ import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardCompo
 import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../../app.events';
+import { ClickedCancelTermEvent } from '../object.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
@@ -133,11 +134,36 @@ describe('TermSearchComponent', () => {
 
       component.sources = [ termSource ];
       await component.updateComplete;
-      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('form button') as HTMLButtonElement;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.confirm') as HTMLButtonElement;
       expect(button).toBeTruthy();
       button.click();
 
     }
+
+  });
+
+  it('should send ClickedCancelTermEvent when "Annuleren" button is clicked', async (done) => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    if (machine.state.matches(TermStates.IDLE)) {
+
+      component.sources = [ termSource ];
+      await component.updateComplete;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.cancel') as HTMLButtonElement;
+      expect(button).toBeTruthy();
+      button.click();
+
+    }
+
+    expect(machine.parent.send).toHaveBeenCalledWith(new ClickedCancelTermEvent());
+    done();
 
   });
 
@@ -282,8 +308,8 @@ describe('TermSearchComponent', () => {
       const searchResultCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:nth-of-type(1) nde-large-card');
       expect(searchResultCard).toBeTruthy();
       expect(selectedTermCard).toBeTruthy();
-      expect(searchResultCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
-      expect(selectedTermCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
+      expect(searchResultCard.innerHTML).not.toContain(`term.field.${value}`);
+      expect(selectedTermCard.innerHTML).not.toContain(`term.field.${value}`);
 
     }
 
@@ -302,7 +328,7 @@ describe('TermSearchComponent', () => {
       component.searchResultsMap = {};
       await component.updateComplete;
       const componentContent = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.innerHTML;
-      expect(componentContent).toContain('nde.features.term.no-search-results');
+      expect(componentContent).toContain('term.no-search-results');
 
     }
 

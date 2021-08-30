@@ -104,22 +104,22 @@ The following translations are to be written in the 'nl-NL.json' file. No other 
 
 | Key 	| Translation
 
-| `nde.features.authenticate.error.invalid-webid.invalid-url`
+| `authenticate.error.invalid-webid.invalid-url`
 | Gelieve een geldig WebID in te voeren. Een WebID start met https://.
 
-| `nde.features.authenticate.error.invalid-webid.no-profile`
+| `authenticate.error.invalid-webid.no-profile`
 | Er werd geen actieve profielpagina gevonden voor deze WebID.
 
-| `nde.features.authenticate.error.invalid-webid.no-oidc-registration`
+| `authenticate.error.invalid-webid.no-oidc-registration`
 | De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ.
 
-| `nde.features.authenticate.error.invalid-webid.invalid-oidc-registration`
+| `authenticate.error.invalid-webid.invalid-oidc-registration`
 | De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ.
 
-| `nde.features.authenticate.pages.login.title`
+| `authenticate.pages.login.title`
 | Collectiebeheersysteem
 
-| `nde.features.authenticate.pages.login.webid-placeholder`
+| `authenticate.pages.login.webid-placeholder`
 | E.g. https://profile.janjanssens.nl/
 
 |======================================
