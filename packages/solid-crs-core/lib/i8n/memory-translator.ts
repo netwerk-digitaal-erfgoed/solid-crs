@@ -12,16 +12,16 @@ export class MemoryTranslator {
    * @param translation The translations to be stored in-memory.
    * @param defaultLocale The default locale to use when translating.
    */
-  constructor(public translation: { [key: string]: string }, public lng: string) {
+  constructor(public translation: unknown, public lng: string) {
 
     i18next.init({
       lng,
-      debug: true,
       resources: {
         [lng]: {
           translation,
         },
       },
+      nsSeparator: false,
     });
 
   }

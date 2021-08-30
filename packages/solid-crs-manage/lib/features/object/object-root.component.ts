@@ -472,7 +472,7 @@ export class ObjectRootComponent extends RxLitElement {
         <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
       <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
+        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
       </nde-form-element>
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }

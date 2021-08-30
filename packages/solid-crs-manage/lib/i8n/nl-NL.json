@@ -62,8 +62,8 @@
             "image": {
                 "title": "Beeldmateriaal",
                 "subtitle": "Het beeldmateriaal van dit object.",
-                "file": "Bestand",
                 "field": {
+                    "file": "Bestand",
                     "license": {
                         "title": "Licentie",
                         "http://rightsstatements.org/vocab/InC/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd",
@@ -223,7 +223,17 @@
             "alternativeName": "Alternatieve naam",
             "broader": "Ruimer",
             "narrower": "Specifieker",
-            "hiddenName": "Verborgen naam"
+            "hiddenName": "Verborgen naam",
+            "additionalType": "Type",
+            "creator": "Vervaardiger",
+            "locationCreated": "Plaats",
+            "material": "Materiaal",
+            "dateCreated": "Datum",
+            "subject": "Onderwerp",
+            "location": "Locatie",
+            "person": "Persoon",
+            "organization": "Organisatie",
+            "event": "Gebeurtenis"
         },
         "error": {
             "term-network-error": "Er kon geen verbinding gemaakt worden met het termennetwerk."

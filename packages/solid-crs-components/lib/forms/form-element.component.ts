@@ -280,7 +280,7 @@ export class FormElementComponent<T> extends RxLitElement {
           checkboxListItems.forEach((node: HTMLInputElement) =>
             node.checked = fieldData.includes(node.id));
 
-          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'term.n-sources-selected' : 'term.one-source-selected').toLowerCase()}` : this.translator.translate('nde.common.form.click-to-select');
+          titleListItem.textContent = fieldData.length > 0 ? `${fieldData.length} ${this.translator.translate(fieldData.length > 1 ? 'term.n-sources-selected' : 'term.one-source-selected').toLowerCase()}` : this.translator.translate('common.form.click-to-select');
 
           titleListItem.parentElement.addEventListener('click', () => {
 
@@ -303,7 +303,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
               titleListItem.textContent = selectedValues?.length > 0
                 ? `${selectedValues.length} ${this.translator.translate(selectedValues.length > 1 ? 'term.n-sources-selected' : 'term.one-source-selected').toLowerCase()}`
-                : this.translator.translate('nde.common.form.click-to-select');
+                : this.translator.translate('common.form.click-to-select');
 
               actor.send(new FormUpdatedEvent(field.toString(), selectedValues));
 

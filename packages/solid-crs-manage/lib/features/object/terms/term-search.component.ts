@@ -209,7 +209,7 @@ export class TermSearchComponent extends RxLitElement {
       <form class="search-form" onsubmit="return false">
         <nde-form-element
           class="term" .actor="${this.formActor}" field="query" .submitOnEnter="${false}">
-          <label slot="label" for="example">${ this.translator.translate(`object.card.field.${this.field}`) }</label>
+          <label slot="label" for="example">${ this.translator.translate(`term.field.${this.field}`) }</label>
           <input 
             type="text"
             slot="input"
@@ -223,7 +223,7 @@ export class TermSearchComponent extends RxLitElement {
           <div slot="icon">${ unsafeSVG(Dropdown) }</div>
           <ul slot="input" type="multiselect" class="multiselect">
             <li>
-              <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
+              <label for="title">${this.translator.translate('common.form.click-to-select')}</label>
             </li>
             ${ this.sources?.map((source) => html`
               <li>
