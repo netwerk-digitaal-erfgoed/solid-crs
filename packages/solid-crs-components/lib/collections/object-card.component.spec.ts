@@ -21,23 +21,20 @@ describe('ObjectCardComponent', () => {
 
     component = window.document.createElement('nde-object-card') as ObjectCardComponent;
 
-    component.translator = new MemoryTranslator([
-      {
-        key: 'collections.card.name-unavailable',
-        value:'Name unavailable',
-        locale:'en-GB',
+    component.translator = new MemoryTranslator({
+      'collections': {
+        'card': {
+          'name-unavailable': 'Name unavailable',
+          'additionalType-unavailable': 'Type unavailable',
+        },
       },
-      {
-        key: 'collections.card.additionalType-unavailable',
-        value:'Type unavailable',
-        locale:'en-GB',
+      'common': {
+        'date': {
+          'just-now': 'Just Now',
+        },
       },
-      {
-        key: 'common.date.just-now',
-        value:'Just Now',
-        locale:'en-GB',
-      },
-    ], 'en-GB');
+    },
+    'en-GB');
 
   });
 

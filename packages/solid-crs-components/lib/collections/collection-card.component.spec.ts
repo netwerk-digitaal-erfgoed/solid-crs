@@ -16,13 +16,13 @@ describe('AlertComponent', () => {
 
     component = window.document.createElement('nde-collection-card') as CollectionCardComponent;
 
-    component.translator = new MemoryTranslator([
-      {
-        key: 'collections.card.name-unavailable',
-        value:'Name unavailable',
-        locale:'en-GB',
+    component.translator = new MemoryTranslator({
+      'collections': {
+        'card': {
+          'name-unavailable': 'Name unavailable',
+        },
       },
-    ], 'en-GB');
+    }, 'en-GB');
 
   });
 
