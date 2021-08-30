@@ -109,12 +109,6 @@ export class TermSearchComponent extends RxLitElement {
   @query('nde-form-element input')
   public localTermInput: HTMLInputElement;
 
-  constructor() {
-
-    super();
-
-  }
-
   /**
    * Hook called on every update after connection to the DOM.
    */
@@ -123,31 +117,6 @@ export class TermSearchComponent extends RxLitElement {
     super.updated(changed);
 
     if(changed.has('actor') && this.actor) {
-
-      this.actor.onEvent((event) => {
-
-        if (event instanceof ClickedAddEvent){
-
-          const uri = `#${v4()}`;
-
-          this.formMachineLocalTerm = formMachine<Term>().withContext({
-            data: {
-              name: '',
-              uri,
-            },
-            original: {
-              name: '',
-              uri,
-            },
-          });
-
-          this.formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
-          this.formActorLocalTerm.onDone((context) => this.actor.send(new ClickedTermEvent(context.data.data)));
-          this.formActorLocalTerm.start();
-
-        }
-
-      });
 
       this.subscribe('field', from(this.actor).pipe(
         map((state) => state.context?.field),
@@ -183,14 +152,14 @@ export class TermSearchComponent extends RxLitElement {
 
   groupSearchResults(searchResults: Term[]): { [key: string]: Term[] } {
 
-    return searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
+    return searchResults.length > 0 ? searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
 
       const key = 'source';
       (searchResultsMap[term[key]] = searchResultsMap[term[key]] || []).push(term);
 
       return searchResultsMap;
 
-    }, {});
+    }, {}) : {};
 
   }
 
@@ -227,29 +196,50 @@ export class TermSearchComponent extends RxLitElement {
     // Create an alert components for each alert.
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
 
-    if (this.formActor) {
+    this.formActor?.onEvent((event) => {
 
-      this.formActor.onEvent((event) => {
+      if (event.type === FormEvents.FORM_VALIDATED) {
 
-        if (event.type === FormEvents.FORM_VALIDATED) {
+        const selectedSources = Array.from(this.sourceCheckboxes)
+          .filter((checkbox: HTMLInputElement) => checkbox.checked)
+          .map((checkbox: HTMLInputElement) => checkbox.id);
 
-          const selectedSources = Array.from(this.sourceCheckboxes)
-            .filter((checkbox: HTMLInputElement) => checkbox.checked)
-            .map((checkbox: HTMLInputElement) => checkbox.id);
+        this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources));
 
-          this.actor.send(new QueryUpdatedEvent(this.searchInput?.value, selectedSources));
+      }
 
-        }
+    });
 
-      });
+    this.actor?.onEvent((event) => {
 
-    }
+      if (event instanceof ClickedAddEvent){
+
+        const uri = `#${v4()}`;
+
+        this.formMachineLocalTerm = formMachine<Term>().withContext({
+          data: {
+            name: '',
+            uri,
+          },
+          original: {
+            name: '',
+            uri,
+          },
+        });
+
+        this.formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
+        this.formActorLocalTerm.onDone((context) => this.actor.send(new ClickedTermEvent(context.data.data)));
+        this.formActorLocalTerm.start();
+
+      }
+
+    });
 
     const loading = !this.actor?.state.matches(TermStates.IDLE);
 
     return html`
 
-      ${ (loading || !this.sources) && !alerts ? html`<nde-progress-bar></nde-progress-bar>` : html`` }
+      ${ (loading || !this.sources) && !alerts ? html`<nde-progress-bar></nde-progress-bar>` : '' }
 
       ${ alerts }
 
@@ -289,11 +279,12 @@ export class TermSearchComponent extends RxLitElement {
 
       </form> 
       
-      <a @click="${() => this.actor.send(new ClickedAddEvent())}">Voeg een lokale term toe</a>
+      <a id="create-term" @click="${() => this.actor.send(new ClickedAddEvent())}">Voeg een lokale term toe</a>
 
       <!-- show local term input -->
-      ${ this.actor.state.matches(TermStates.CREATING) ? html `
+      ${ this.actor?.state?.matches(TermStates.CREATING) ? html `
       <nde-large-card
+        id="create-term-card"
         class="term-card"
         .showImage="${false}"
         .showContent="${false}"
@@ -328,14 +319,14 @@ export class TermSearchComponent extends RxLitElement {
               ${unsafeSVG(CheckboxChecked)}
             </div>
             <div slot="content">
-              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : html``}
-              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
-              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
-              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
-              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
+              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : ''}
+              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : ''}
+              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : ''}
+              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : ''}
+              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : ''}
             </div>
           </nde-large-card>`)}
-      </div>` : html``}
+      </div>` : ''}
 
       <!-- show search results -->
       ${this.searchResultsMap && Object.keys(this.searchResultsMap).length > 0 ? html`
@@ -356,17 +347,17 @@ export class TermSearchComponent extends RxLitElement {
                 ${ this.selectedTerms?.find((selected) => selected.uri === term.uri) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
               <div slot="content">
-              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : html``}
-              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
-              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
-              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
-              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
+              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : ''}
+              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : ''}
+              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : ''}
+              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : ''}
+              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : ''}
               </div>
             </nde-large-card>
           `)}
         `)}
       </div>
-      ` : html``}
+      ` : ''}
 
         ${(this.searchResultsMap && Object.keys(this.searchResultsMap).length < 1)
     ? html`
@@ -374,7 +365,7 @@ export class TermSearchComponent extends RxLitElement {
           ${unsafeSVG(Empty)}
           <p>${this.translator?.translate('nde.features.term.no-search-results')}</p>
         </div>
-    ` : html``}
+    ` : ''}
 
       `;
 

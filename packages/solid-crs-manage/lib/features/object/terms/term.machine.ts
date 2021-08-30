@@ -2,7 +2,7 @@ import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { assign, createMachine, sendParent, StateMachine } from 'xstate';
 import { AppEvents, ErrorEvent } from '../../../app.events';
-import { TermEvent, TermEvents } from './term.events';
+import { ClickedTermEvent, TermEvent, TermEvents } from './term.events';
 
 /**
  * The context of the term machine.
@@ -57,6 +57,17 @@ export enum TermStates {
 }
 
 /**
+ * Action which adds/removes a Term from the context
+ */
+export const toggleTerm = assign<TermContext, ClickedTermEvent>(
+  (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
+  // add the term if it is not yet selected
+    ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
+  // otherwise, remove it from selected terms
+    : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
+);
+
+/**
  * The term machine.
  */
 export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<TermStates, TermContext>> =>
@@ -100,13 +111,7 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             ),
           },
           [TermEvents.CLICKED_TERM]: {
-            actions: assign(
-              (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
-                // add the term if it is not yet selected
-                ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
-                // otherwise, remove it from selected terms
-                : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
-            ),
+            actions: toggleTerm,
           },
           [TermEvents.CLICKED_SUBMIT]: TermStates.SUBMITTED,
           [TermEvents.CLICKED_ADD]: TermStates.CREATING,
@@ -136,13 +141,7 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
         on: {
           [TermEvents.CLICKED_TERM]: {
             target: TermStates.IDLE,
-            actions: assign(
-              (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
-                // add the term if it is not yet selected
-                ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
-                // otherwise, remove it from selected terms
-                : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
-            ),
+            actions: toggleTerm,
           },
         },
       },

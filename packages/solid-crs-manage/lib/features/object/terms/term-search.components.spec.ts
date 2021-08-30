@@ -1,7 +1,7 @@
 import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../../app.events';
+import { AppEvents } from '../../../app.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
@@ -40,6 +40,7 @@ describe('TermSearchComponent', () => {
       .withContext({
         termService: termService as any,
         selectedTerms: [],
+        searchResults: [],
       }));
 
     component = window.document.createElement('nde-term-search') as TermSearchComponent;
@@ -302,6 +303,30 @@ describe('TermSearchComponent', () => {
       await component.updateComplete;
       const componentContent = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.innerHTML;
       expect(componentContent).toContain('nde.features.term.no-search-results');
+
+    }
+
+  });
+
+  it('should show new term input field when create button is clicked', async () => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    if (machine.state.matches(TermStates.IDLE)) {
+
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector<HTMLAnchorElement>('#create-term');
+      expect(button).toBeTruthy();
+      button.click();
+
+    }
+
+    if (machine.state.matches(TermStates.CREATING)) {
+
+      await component.updateComplete;
+      const card = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector<HTMLAnchorElement>('#create-term-card input');
+      expect(card).toBeTruthy();
 
     }
 
