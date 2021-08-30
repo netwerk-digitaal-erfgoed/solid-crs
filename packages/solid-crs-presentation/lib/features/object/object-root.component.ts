@@ -219,7 +219,7 @@ export class ObjectRootComponent extends RxLitElement {
             <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.name || this.object.name?.length < 1 }">
-            <div> ${ this.translator.translate('object.card.identification.field.name') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.name.title') } </div>
             <div> ${ this.object.name } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.description || this.object.description?.length < 1 }">

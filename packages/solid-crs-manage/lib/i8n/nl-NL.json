@@ -90,7 +90,12 @@
                 "field": {
                     "identifier": "Objectnummer",
                     "additionalType": "Type",
-                    "name": "Titel",
+                    "name": {
+                        "title": "Titel",
+                        "validation:": {
+                            "max-characters": "De titel mag maximum 100 karakters lang zijn!"
+                        }
+                    },
                     "collection": "Collectie",
                     "description": {
                         "title": "Korte beschrijving",
@@ -220,7 +225,7 @@
         "no-search-results": "Geen zoekresultaten voor deze zoekterm!",
         "field": {
             "description": "Beschrijving",
-            "alternativeName": "Alternatieve naam",
+            "alternateName": "Alternatieve naam",
             "broader": "Ruimer",
             "narrower": "Specifieker",
             "hiddenName": "Verborgen naam",
