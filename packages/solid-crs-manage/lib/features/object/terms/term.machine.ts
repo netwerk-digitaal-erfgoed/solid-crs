@@ -52,6 +52,7 @@ export enum TermStates {
   IDLE      = '[TermState: Idle]',
   QUERYING  = '[TermState: Querying]',
   SUBMITTED = '[TermState: Submitted]',
+  CREATING = '[TermState: Creating]',
   LOADING_SOURCES = '[TermState: Loading Sources]',
 }
 
@@ -108,6 +109,7 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             ),
           },
           [TermEvents.CLICKED_SUBMIT]: TermStates.SUBMITTED,
+          [TermEvents.CLICKED_ADD]: TermStates.CREATING,
         },
       },
       /**
@@ -126,6 +128,23 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             onError: TermStates.IDLE,
           },
         ],
+      },
+      /**
+       * The user is adding their own local term
+       */
+      [TermStates.CREATING]: {
+        on: {
+          [TermEvents.CLICKED_TERM]: {
+            target: TermStates.IDLE,
+            actions: assign(
+              (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
+                // add the term if it is not yet selected
+                ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
+                // otherwise, remove it from selected terms
+                : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
+            ),
+          },
+        },
       },
       /**
        * The user has clicked submit and the machine terminates

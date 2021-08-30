@@ -1,14 +1,15 @@
-import { CheckboxChecked, CheckboxUnchecked, Dropdown, Empty, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { CheckboxChecked, CheckboxUnchecked, Dropdown, Empty, Plus, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { html, unsafeCSS, css, TemplateResult, CSSResult, property, query, internalProperty, PropertyValues, queryAll } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Interpreter } from 'xstate';
+import { interpret, Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Alert, FormActors, FormContext, FormEvents } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormActors, FormContext, FormEvents, formMachine, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Logger, Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
+import { v4 } from 'uuid';
 import { AppEvents } from '../../../app.events';
-import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
+import { ClickedAddEvent, ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, TermStates } from './term.machine';
 
 /**
@@ -45,6 +46,18 @@ export class TermSearchComponent extends RxLitElement {
    */
   @internalProperty()
   public formActor: Interpreter<FormContext<{ query: string; sources: TermSource[] }>>;
+
+  /**
+   * The form machine used by the form actor
+   */
+  @internalProperty()
+  formMachineLocalTerm = formMachine<Term>();
+
+  /**
+   * The actor responsible for form validation in this component.
+   */
+  @internalProperty()
+  formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
 
   /**
    * The field that for which Terms are being edited
@@ -93,6 +106,15 @@ export class TermSearchComponent extends RxLitElement {
   @query('nde-form-element.term input')
   public searchInput: HTMLInputElement;
 
+  @query('nde-form-element input')
+  public localTermInput: HTMLInputElement;
+
+  constructor() {
+
+    super();
+
+  }
+
   /**
    * Hook called on every update after connection to the DOM.
    */
@@ -101,6 +123,31 @@ export class TermSearchComponent extends RxLitElement {
     super.updated(changed);
 
     if(changed.has('actor') && this.actor) {
+
+      this.actor.onEvent((event) => {
+
+        if (event instanceof ClickedAddEvent){
+
+          const uri = `#${v4()}`;
+
+          this.formMachineLocalTerm = formMachine<Term>().withContext({
+            data: {
+              name: '',
+              uri,
+            },
+            original: {
+              name: '',
+              uri,
+            },
+          });
+
+          this.formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
+          this.formActorLocalTerm.onDone((context) => this.actor.send(new ClickedTermEvent(context.data.data)));
+          this.formActorLocalTerm.start();
+
+        }
+
+      });
 
       this.subscribe('field', from(this.actor).pipe(
         map((state) => state.context?.field),
@@ -239,7 +286,29 @@ export class TermSearchComponent extends RxLitElement {
         </nde-form-element>
 
         <button type="button" @click="${() => this.actor.send(new ClickedSubmitEvent())}">Bevestig</button>
+
       </form> 
+      
+      <a @click="${() => this.actor.send(new ClickedAddEvent())}">Voeg een lokale term toe</a>
+
+      <!-- show local term input -->
+      ${ this.actor.state.matches(TermStates.CREATING) ? html `
+      <nde-large-card
+        class="term-card"
+        .showImage="${false}"
+        .showContent="${false}"
+      >
+        <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActorLocalTerm}" .translator="${this.translator}" field="name">
+          <input type="text" slot="input"  class="name" value="${this.query||''}" placeholder="Klik om een naam toe te voegen"/>
+        </nde-form-element>
+
+        <div slot="subtitle"> Nieuwe lokale term </div>
+
+        <div slot="icon" @click=${() => this.formActorLocalTerm.send(new FormSubmittedEvent())}>
+          ${unsafeSVG(Plus)}
+        </div>
+      </nde-large-card>
+      `: ''}
 
       <!-- show selected terms -->
       ${this.selectedTerms?.length > 0 ? html`
@@ -334,6 +403,11 @@ export class TermSearchComponent extends RxLitElement {
         :host > * {
           margin-bottom: var(--gap-large);
         }
+        a {
+          cursor: pointer;
+          text-decoration: underline;
+          color: var(--colors-primary-light);
+        }
         nde-progress-bar {
           position: absolute;
           width: 100%;
@@ -379,6 +453,14 @@ export class TermSearchComponent extends RxLitElement {
         }
         nde-form-element {
           margin: 0;
+        }
+        nde-large-card nde-form-element input {
+          height: var(--gap-normal);
+          padding: 0;
+          line-height: var(--gap-normal);
+          overflow: hidden;
+          font-weight: var(--font-weight-bold);
+          font-size: var(--font-size-normal);
         }
         .empty {
           width: 100%;
