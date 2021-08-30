@@ -223,6 +223,9 @@
         "terms-selected": "Termen geselecteerd",
         "enter-query": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten",
         "no-search-results": "Geen zoekresultaten voor deze zoekterm!",
+        "add-local-term": "Voeg een lokale term toe",
+        "title-placeholder": "Klik om een waarde in te vullen",
+        "description-placeholder": "Nieuwe locale term",
         "field": {
             "description": "Beschrijving",
             "alternateName": "Alternatieve naam",

@@ -85,12 +85,6 @@ export class TermSearchComponent extends RxLitElement {
   selectedTerms: Term[];
 
   /**
-   * A the user's query input
-   */
-  @internalProperty()
-  query: string;
-
-  /**
    * The user's selected sources
    */
   @queryAll('nde-form-element ul li input[type="checkbox"]')
@@ -283,7 +277,7 @@ export class TermSearchComponent extends RxLitElement {
         </div>
       </form> 
       
-      <a id="create-term" @click="${() => this.actor.send(new ClickedAddEvent())}">Voeg een lokale term toe</a>
+      <a id="create-term" @click="${() => this.actor.send(new ClickedAddEvent())}">${this.translator.translate('term.add-local-term')}</a>
 
       <!-- show local term input -->
       ${ this.actor?.state?.matches(TermStates.CREATING) ? html `
@@ -294,10 +288,10 @@ export class TermSearchComponent extends RxLitElement {
         .showContent="${false}"
       >
         <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActorLocalTerm}" .translator="${this.translator}" field="name">
-          <input type="text" slot="input"  class="name" value="${this.query||''}" placeholder="Klik om een naam toe te voegen"/>
+          <input type="text" slot="input"  class="name" placeholder="${this.translator.translate('term.title-placeholder')}"/>
         </nde-form-element>
 
-        <div slot="subtitle"> Nieuwe lokale term </div>
+        <div slot="subtitle">${this.translator.translate('term.description-placeholder')}</div>
 
         <div slot="icon" @click=${() => this.formActorLocalTerm.send(new FormSubmittedEvent())}>
           ${unsafeSVG(Plus)}
