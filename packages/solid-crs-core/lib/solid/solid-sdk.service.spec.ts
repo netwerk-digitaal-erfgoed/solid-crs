@@ -11,13 +11,6 @@ describe('SolidService', () => {
 
   beforeEach(async () => {
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const nodeCrypto = require('crypto');
-
-    window.crypto = {
-      getRandomValues: (buffer) => nodeCrypto.randomFillSync(buffer),
-    };
-
     const logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
     service = new SolidSDKService(logger);
 
