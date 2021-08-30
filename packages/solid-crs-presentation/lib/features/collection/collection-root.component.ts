@@ -131,7 +131,7 @@ export class CollectionRootComponent extends RxLitElement {
         ${this.collection.name}
       </div>
       <div slot="subtitle" class="subtitle">
-        ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.common.form.description-placeholder') }
+        ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('common.form.description-placeholder') }
       </div>
     </nde-content-header>
 
