@@ -1,538 +1,203 @@
-[
-    {
-        "key": "nde.app.root.title",
-        "locale": "nl-NL",
-        "value": "App"
-    },
-    {
-        "key": "nde.root.alerts.error",
-        "locale": "nl-NL",
-        "value": "Er ging iets fout"
-    },
-    {
-        "key": "nde.collections.alerts.created-collection",
-        "locale": "nl-NL",
-        "value": "Collectie aangemaakt"
-    },
-    {
-        "key": "nde.navigation.search.title",
-        "locale": "nl-NL",
-        "value": "Zoeken"
-    },
-    {
-        "key": "nde.navigation.about.title",
-        "locale": "nl-NL",
-        "value": "Over"
-    },
-    {
-        "key": "nde.navigation.collections.title",
-        "locale": "nl-NL",
-        "value": "Collecties"
-    },
-    {
-        "key": "nde.collections.card.name-unavailable",
-        "locale": "nl-NL",
-        "value": "Naam onbekend"
-    },
-    {
-        "key": "nde.collections.card.additionalType-unavailable",
-        "locale": "nl-NL",
-        "value": "Type onbekend"
-    },
-    {
-        "key": "nde.features.collections.root.empty.create-object-title",
-        "locale": "nl-NL",
-        "value": "Maak je eerste object aan"
-    },
-    {
-        "key": "nde.features.collections.root.empty.create-object-button",
-        "locale": "nl-NL",
-        "value": "Object aanmaken"
-    },
-    {
-        "key": "nde.features.collections.alerts.created-collection",
-        "locale": "nl-NL",
-        "value": "Collectie aangemaakt"
-    },
-    {
-        "key": "nde.features.collections.root.title",
-        "locale": "nl-NL",
-        "value": "Collecties"
-    },
-    {
-        "key": "nde.features.collections.card.name-unavailable",
-        "locale": "nl-NL",
-        "value": "Naam onbekend"
-    },
-    {
-        "key": "nde.features.collections.card.subject-unavailable",
-        "locale": "nl-NL",
-        "value": "Onderwerp onbekend"
-    },
-    {
-        "key": "nde.features.collections.new-collection-name",
-        "locale": "nl-NL",
-        "value": "Nieuwe collectie"
-    },
-    {
-        "key": "nde.features.collections.new-collection-description",
-        "locale": "nl-NL",
-        "value": "Beschrijving van deze collectie"
-    },
-    {
-        "key": "nde.common.form.description-placeholder",
-        "locale": "nl-NL",
-        "value": "Klik om een beschrijving toe te voegen."
-    },
-    {
-        "key": "nde.features.search.header.search-results-for",
-        "locale": "nl-NL",
-        "value": "Zoekresultaten voor"
-    },
-    {
-        "key": "nde.features.search.header.subtitle",
-        "locale": "nl-NL",
-        "value": "We hebben dit gevonden"
-    },
-    {
-        "key": "nde.features.search.root.empty.no-search-results",
-        "locale": "nl-NL",
-        "value": "Geen zoekresultaten voor deze zoekterm!"
-    },
-    {
-        "key": "nde.features.search.root.empty.go-back",
-        "locale": "nl-NL",
-        "value": "Ga terug"
-    },
-    {
-        "key": "nde.features.search.root.objects",
-        "locale": "nl-NL",
-        "value": "Objecten"
-    },
-    {
-        "key": "nde.features.search.root.collections",
-        "locale": "nl-NL",
-        "value": "Collecties"
-    },
-    {
-        "key": "nde.features.object.new-object-name",
-        "locale": "nl-NL",
-        "value": "Nieuw object"
-    },
-    {
-        "key": "nde.features.object.new-object-description",
-        "locale": "nl-NL",
-        "value": "Beschrijving van dit object"
-    },
-    {
-        "key": "nde.features.object.sidebar.title",
-        "locale": "nl-NL",
-        "value": "Onderdelen"
-    },
-    {
-        "key": "nde.features.object.sidebar.image",
-        "locale": "nl-NL",
-        "value": "Beeldmateriaal"
-    },
-    {
-        "key": "nde.features.object.sidebar.identification",
-        "locale": "nl-NL",
-        "value": "Identificatie"
-    },
-    {
-        "key": "nde.features.object.sidebar.representation",
-        "locale": "nl-NL",
-        "value": "Voorstelling"
-    },
-    {
-        "key": "nde.features.object.sidebar.creation",
-        "locale": "nl-NL",
-        "value": "Vervaardiging"
-    },
-    {
-        "key": "nde.features.object.sidebar.dimensions",
-        "locale": "nl-NL",
-        "value": "Afmetingen"
-    },
-    {
-        "key": "nde.features.object.sidebar.other",
-        "locale": "nl-NL",
-        "value": "Overige"
-    },
-    {
-        "key": "nde.features.object.card.common.empty",
-        "locale": "nl-NL",
-        "value": "Dit veld is verplicht."
-    },
-    {
-        "key": "nde.features.object.card.common.invalid-url",
-        "locale": "nl-NL",
-        "value": "De ingegeven URL is niet geldig."
-    },
-    {
-        "key": "nde.features.object.card.common.invalid-number",
-        "locale": "nl-NL",
-        "value": "Het ingegeven getal is niet geldig."
-    },
-    {
-        "key": "nde.features.object.card.image.title",
-        "locale": "nl-NL",
-        "value": "Beeldmateriaal"
-    },
-    {
-        "key": "nde.features.object.card.image.subtitle",
-        "locale": "nl-NL",
-        "value": "Het beeldmateriaal van dit object."
-    },
-    {
-        "key": "nde.features.object.card.field.file",
-        "locale": "nl-NL",
-        "value": "Bestand"
-    },
-    {
-        "key": "nde.features.object.card.field.license",
-        "locale": "nl-NL",
-        "value": "Licentie"
-    },
-    {
-        "key": "nde.features.object.card.field.image-source",
-        "locale": "nl-NL",
-        "value": "Afbeeldingslocatie"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-OW-EU/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - EU VERWEESD WERK"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-EDU/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - EDUCATIEF GEBRUIK TOEGESTAAN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-NC/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/InC-RUU/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJK BESCHERMD - RECHTHEBBENDE(N) NIET-LOKALISEERBAAR OF NIET-IDENTIFICEERBAAR"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-US/1.0/",
-        "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - VERENIGDE STATEN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-OKLR/1.0/",
-        "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - ANDERE JURIDISCHE BEPERKINGEN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-CR/1.0/",
-        "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - CONTRACTUELE BEPERKINGEN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NoC-NC/1.0/",
-        "locale": "nl-NL",
-        "value": "NIET AUTEURSRECHTELIJK BESCHERMD - UITSLUITEND NIET-COMMERCIEEL GEBRUIK TOEGESTAAN"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/UND/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJKE BESCHERMING NIET BEPAALD"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/CNE/1.0/",
-        "locale": "nl-NL",
-        "value": "AUTEURSRECHTELIJKE STATUS NIET GEËVALUEERD"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.http://rightsstatements.org/vocab/NKC/1.0/",
-        "locale": "nl-NL",
-        "value": "GEEN AUTEURSRECHTELIJKE BEPERKINGEN BEKEND"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/publicdomain/zero/1.0/deed.nl",
-        "locale": "nl-NL",
-        "value": "CC0 1.0 UNIVERSEEL"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by/4.0/deed.nl",
-        "locale": "nl-NL",
-        "value": "NAAMSVERMELDING 4.0 INTERNATIONAAL"
-    },
-    {
-        "key": "nde.features.object.card.image.field.license.https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl",
-        "locale": "nl-NL",
-        "value": "NAAMSVERMELDING-GELIJKDELEN 2.0"
-    },
-    {
-        "key": "nde.features.object.card.identification.title",
-        "locale": "nl-NL",
-        "value": "Identificatie"
-    },
-    {
-        "key": "nde.features.object.card.identification.subtitle",
-        "locale": "nl-NL",
-        "value": "De identificatie van dit object."
-    },
-    {
-        "key": "nde.features.object.card.field.identifier",
-        "locale": "nl-NL",
-        "value": "Objectnummer"
-    },
-    {
-        "key": "nde.features.object.card.field.additionalType",
-        "locale": "nl-NL",
-        "value": "Type"
-    },
-    {
-        "key": "nde.features.object.card.field.name",
-        "locale": "nl-NL",
-        "value": "Titel"
-    },
-    {
-        "key": "nde.features.object.card.field.description",
-        "locale": "nl-NL",
-        "value": "Korte beschrijving"
-    },
-    {
-        "key": "nde.features.object.card.field.description.validation.max-characters",
-        "locale": "nl-NL",
-        "value": "De beschrijving mag maximum 10000 karakters lang zijn!"
-    },
-    {
-        "key": "nde.features.object.card.field.collection",
-        "locale": "nl-NL",
-        "value": "Collectie"
-    },
-    {
-        "key": "nde.features.object.card.creation.title",
-        "locale": "nl-NL",
-        "value": "Vervaardiging"
-    },
-    {
-        "key": "nde.features.object.card.creation.subtitle",
-        "locale": "nl-NL",
-        "value": "De vervaardiging van dit object."
-    },
-    {
-        "key": "nde.features.object.card.field.creator",
-        "locale": "nl-NL",
-        "value": "Vervaardiger"
-    },
-    {
-        "key": "nde.features.object.card.field.locationCreated",
-        "locale": "nl-NL",
-        "value": "Plaats"
-    },
-    {
-        "key": "nde.features.object.card.field.material",
-        "locale": "nl-NL",
-        "value": "Materiaal"
-    },
-    {
-        "key": "nde.features.object.card.field.dateCreated",
-        "locale": "nl-NL",
-        "value": "Datum"
-    },
-    {
-        "key": "nde.features.object.card.field.date.validation.invalid",
-        "locale": "nl-NL",
-        "value": "De ingegeven datum is niet geldig."
-    },
-    {
-        "key": "nde.features.object.card.representation.title",
-        "locale": "nl-NL",
-        "value": "Voorstelling"
-    },
-    {
-        "key": "nde.features.object.card.representation.subtitle",
-        "locale": "nl-NL",
-        "value": "De voorstelling van dit object."
-    },
-    {
-        "key": "nde.features.object.card.field.subject",
-        "locale": "nl-NL",
-        "value": "Onderwerp"
-    },
-    {
-        "key": "nde.features.object.card.field.location",
-        "locale": "nl-NL",
-        "value": "Locatie"
-    },
-    {
-        "key": "nde.features.object.card.field.person",
-        "locale": "nl-NL",
-        "value": "Persoon"
-    },
-    {
-        "key": "nde.features.object.card.field.organization",
-        "locale": "nl-NL",
-        "value": "Organisatie"
-    },
-    {
-        "key": "nde.features.object.card.field.event",
-        "locale": "nl-NL",
-        "value": "Gebeurtenis"
-    },
-    {
-        "key": "nde.features.object.card.dimensions.title",
-        "locale": "nl-NL",
-        "value": "Afmetingen"
-    },
-    {
-        "key": "nde.features.object.card.dimensions.subtitle",
-        "locale": "nl-NL",
-        "value": "De afmetingen van dit object."
-    },
-    {
-        "key": "nde.features.object.card.field.depth",
-        "locale": "nl-NL",
-        "value": "Diepte"
-    },
-    {
-        "key": "nde.features.object.card.field.width",
-        "locale": "nl-NL",
-        "value": "Breedte"
-    },
-    {
-        "key": "nde.features.object.card.field.height",
-        "locale": "nl-NL",
-        "value": "Hoogte"
-    },
-    {
-        "key": "nde.features.object.card.field.weight",
-        "locale": "nl-NL",
-        "value": "Gewicht"
-    },
-    {
-        "key": "nde.features.object.card.dimensions.field.unit",
-        "locale": "nl-NL",
-        "value": "Eenheid"
-    },
-    {
-        "key": "nde.features.object.options.view-rdf",
-        "locale": "nl-NL",
-        "value": "RDF bekijken"
-    },
-    {
-        "key": "nde.features.object.options.share",
-        "locale": "nl-NL",
-        "value": "URL kopiëren"
-    },
-    {
-        "key": "nde.features.about.header.title",
-        "locale": "nl-NL",
-        "value": "Collecties"
-    },
-    {
-        "key": "nde.features.about.header.subtitle",
-        "locale": "nl-NL",
-        "value": "Een overzicht van alle collecties"
-    },
-    {
-        "key": "nde.features.about.more-information",
-        "locale": "nl-NL",
-        "value": "Meer over de instelling"
-    },
-    {
-        "key": "nde.features.about.collection-overview",
-        "locale": "nl-NL",
-        "value": "Overzicht van de collecties"
-    },
-    {
-        "key": "nde.common.form.click-to-select",
-        "locale": "nl-NL",
-        "value": "Klik om te selecteren"
-    },
-    {
-        "key": "nde.common.date.just-now",
-        "locale": "nl-NL",
-        "value": "enkele ogenblikken geleden"
-    },
-    {
-        "key": "nde.common.date.minutes-ago",
-        "locale": "nl-NL",
-        "value": "minuten geleden"
-    },
-    {
-        "key": "nde.common.date.hour-ago",
-        "locale": "nl-NL",
-        "value": "uur geleden"
-    },
-    {
-        "key": "nde.common.date.hours-ago",
-        "locale": "nl-NL",
-        "value": "uur geleden"
-    },
-    {
-        "key": "nde.common.date.day-ago",
-        "locale": "nl-NL",
-        "value": "dag geleden"
-    },
-    {
-        "key": "nde.common.date.days-ago",
-        "locale": "nl-NL",
-        "value": "dagen geleden"
-    },
-    {
-        "key": "nde.common.date.month-ago",
-        "locale": "nl-NL",
-        "value": "maand geleden"
-    },
-    {
-        "key": "nde.common.date.months-ago",
-        "locale": "nl-NL",
-        "value": "maanden geleden"
-    },
-    {
-        "key": "nde.common.date.year-ago",
-        "locale": "nl-NL",
-        "value": "jaar geleden"
-    },
-    {
-        "key": "nde.common.date.years-ago",
-        "locale": "nl-NL",
-        "value": "jaar geleden"
-    },
-    {
-        "key": "nde.common.unit.MMT",
-        "locale": "nl-NL",
-        "value": "mm"
-    },
-    {
-        "key": "nde.common.unit.CMT",
-        "locale": "nl-NL",
-        "value": "cm"
-    },
-    {
-        "key": "nde.common.unit.MTR",
-        "locale": "nl-NL",
-        "value": "m"
-    },
-    {
-        "key": "nde.common.unit.GRM",
-        "locale": "nl-NL",
-        "value": "g"
-    },
-    {
-        "key": "nde.common.unit.KGM",
-        "locale": "nl-NL",
-        "value": "kg"
-    },
-    {
-        "key": "nde.common.copied-image-url",
-        "locale": "nl-NL",
-        "value": "De URL van de afbeelding werd gekopieerd."
-    }
+{
+    "app": {
+        "root": {
+            "title": "App",
+            "alerts": {
+                "error": "Er ging iets fout"
+            }
+        }
+    },
+    "navigation": {
+        "search": {
+            "title": "Zoeken"
+        },
+        "collections":{
+            "title": "Collecties"
+        },
+        "about":{
+            "title": "Over"
+        }
+    },
+    "collections": {
+        "new-collection-name": "Nieuwe collectie",
+        "new-collection-description": "Beschrijving van deze collectie",
+        "alerts": {
+            "created-collection": "Collectie aangemaakt"
+        },
+        "card": {
+            "name-unavailable": "Naam onbekend",
+            "additionalType-unavailable": "Type onbekend",
+            "subject-unavailable": "Onderwerp onbekend"
+        },
+        "root": {
+            "title": "Collecties",
+            "empty": {
+                "create-object-title": "Maak je eerste object aan",
+                "create-object-button": "Object aanmaken"
+            },
+            "delete":{
+                "title": "Ben je zeker dat je deze collectie wil verwijderen?",
+                "confirm": "Verwijderen",
+                "cancel": "Annuleren"
+            }
+        }
+    },
+    "object": {
+        "new-object-name": "Nieuw object",
+        "new-object-description": "Beschrijving van dit object",
+        "root": {
+            "delete": {
+                "title": "Ben je zeker dat je dit object wil verwijderen?",
+                "confirm": "Verwijderen",
+                "cancel": "Annuleren"
+            },
+            "menu": {
+                "view-rdf": "RDF bekijken",
+                "copy-url": "URL kopiëren"
+            }
+        },
+        "sidebar": {
+            "title": "Onderdelen",
+            "image": "Beeldmateriaal",
+            "identification": "Identificatie",
+            "representation": "Voorstelling",
+            "creation": "Vervaardiging",
+            "dimensions": "Afmetingen",
+            "other": "Overige"
+        },
+        "card": {
+            "image": {
+                "title": "Beeldmateriaal",
+                "subtitle": "Het beeldmateriaal van dit object.",
+                "field": {
+                    "image-source": "Afbeeldingslocatie",
+                    "file": "Bestand",
+                    "license": {
+                        "title": "Licentie",
+                        "http://rightsstatements.org/vocab/InC/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd",
+                        "http://rightsstatements.org/vocab/InC-OW-EU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - EU verweesd werk",
+                        "http://rightsstatements.org/vocab/InC-EDU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - educatief gebruik toegestaan",
+                        "http://rightsstatements.org/vocab/InC-NC/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements.org/vocab/InC-RUU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - rechthebbende(n) niet-lokaliseerbaar of niet-identificeerbaar",
+                        "http://rightsstatements.org/vocab/NoC-US/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - Verenigde Staten",
+                        "http://rightsstatements.org/vocab/NoC-OKLR/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - andere juridische beperkingen",
+                        "http://rightsstatements.org/vocab/NoC-CR/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - contractuele beperkingen",
+                        "http://rightsstatements.org/vocab/NoC-NC/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - uitsluitend niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements.org/vocab/UND/1.0/": "Rightsstatements.org: Auteursrechtelijke bescherming niet bepaald",
+                        "http://rightsstatements.org/vocab/CNE/1.0/": "Rightsstatements.org: Auteursrechtelijke status niet geëvalueerd",
+                        "http://rightsstatements.org/vocab/NKC/1.0/": "Rightsstatements.org: Geen auteursrechtelijke beperkingen bekend",
+                        "https://creativecommons.org/publicdomain/zero/1.0/deed.nl": "Creativecommons.org: CC0 1.0 universeel",
+                        "https://creativecommons.org/licenses/by/4.0/deed.nl": "Creativecommons.org: Naamsvermelding 4.0 internationaal",
+                        "https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl": "Creativecommons.org: Naamsvermelding-gelijkdelen 2.0"    
+                    }
+                }
+            },
+            "identification": { 
+                "title": "Identificatie",
+                "subtitle": "De identificatie van dit object.",
+                "field": {
+                    "identifier": "Objectnummer",
+                    "additionalType": "Type",
+                    "name": "Titel",
+                    "collection": "Collectie",
+                    "description": {
+                        "title": "Korte beschrijving",
+                        "validation:": {
+                            "max-characters": "De beschrijving mag maximum 10000 karakters lang zijn!"
+                        }
+                    }
     
-]
+                }
+            },
+            "common": {
+                "empty": "Dit veld is verplicht.",
+                "invalid-url": "De ingegeven URL is niet geldig.",
+                "invalid-number": "Het ingegeven getal is niet geldig."
+            },
+            "creation": {
+                "title": "Vervaardiging",
+                "subtitle": "De vervaardiging van dit object.",
+                "field": {
+                    "creator": "Vervaardiger",
+                    "locationCreated": "Plaats",
+                    "material": "Materiaal",
+                    "dateCreated": "Datum",
+                    "date": {
+                        "validation": {
+                            "invalid": "De ingegeven datum is niet geldig."
+                        }
+                    }
+                }
+            },
+            "representation": {
+                "title": "Voorstelling",
+                "subtitle": "De voorstelling van dit object.",
+                "field": {
+                    "subject": "Onderwerp",
+                    "location": "Locatie",
+                    "person": "Persoon",
+                    "organization": "Organisatie",
+                    "event": "Gebeurtenis"
+                }
+            },
+            "dimensions": {
+                "title": "Afmetingen",
+                "subtitle": "De afmetingen van dit object.",
+                "field": {
+                    "width": "Breedte",
+                    "height": "Hoogte",
+                    "depth": "Diepte",
+                    "weight": "Gewicht",
+                    "unit": "Eenheid"
+                }
+            }
+        }
+    },
+    "common": {
+        "form": {
+            "description-placeholder": "Klik om een beschrijving toe te voegen.",
+            "click-to-select": "Klik om te selecteren"
+        },
+        "date": {
+            "just-now": "enkele ogenblikken geleden",
+            "minutes-ago": "minuten geleden",
+            "hour-ago": "uur geleden",
+            "hours-ago": "uur geleden",
+            "day-ago": "dag geleden",
+            "days-ago": "dagen geleden",
+            "month-ago": "maand geleden",
+            "months-ago": "maanden geleden",
+            "year-ago": "jaar geleden",
+            "years-ago": "jaar geleden"
+        },
+        "unit": {
+            "MMT": "mm",
+            "CMT": "cm",
+            "MTR": "m",
+            "KGM": "kg",
+            "GRM": "g"
+        }
+    },
+    "search": {
+        "root": {
+            "objects": "Objecten",
+            "collections": "Collecties",
+            "empty": { 
+                "no-search-results": "Geen zoekresultaten voor deze zoekterm!",
+                "go-back": "Ga terug" 
+            }
+        },
+        "header": {
+            "search-results-for": "Zoekresultaten voor",
+            "subtitle": "We hebben dit gevonden"
+        }
+    },
+    "about": {
+        "header": {
+            "title": "Collecties",
+            "subtitle": "Een overzicht van alle collecties"
+        },
+        "more-information": "Meer over de instelling",
+        "collection-overview": "Overzicht van de collecties"
+    }
+}

@@ -307,8 +307,8 @@ describe('TermSearchComponent', () => {
       const searchResultCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:nth-of-type(1) nde-large-card');
       expect(searchResultCard).toBeTruthy();
       expect(selectedTermCard).toBeTruthy();
-      expect(searchResultCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
-      expect(selectedTermCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
+      expect(searchResultCard.innerHTML).not.toContain(`term.field.${value}`);
+      expect(selectedTermCard.innerHTML).not.toContain(`term.field.${value}`);
 
     }
 
@@ -327,7 +327,7 @@ describe('TermSearchComponent', () => {
       component.searchResultsMap = {};
       await component.updateComplete;
       const componentContent = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.innerHTML;
-      expect(componentContent).toContain('nde.features.term.no-search-results');
+      expect(componentContent).toContain('term.no-search-results');
 
     }
 

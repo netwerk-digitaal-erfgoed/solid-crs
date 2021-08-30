@@ -45,23 +45,22 @@ export class DemoFormComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator([
-    {
-      key: 'demo-form.name.required',
-      locale: 'nl-NL',
-      value: 'Name is required.',
+  public translator: Translator = new MemoryTranslator({
+    'demo-form': {
+      'name': {
+        'required': 'Name is required.',
+      },
+      'uri': {
+        'required': 'URI is required.',
+      },
     },
-    {
-      key: 'demo-form.uri.required',
-      locale: 'nl-NL',
-      value: 'URI is required.',
+    'common': {
+      'form': {
+        'click-to-select': 'Klik om te selecteren',
+      },
     },
-    {
-      key: 'nde.common.form.click-to-select',
-      locale: 'nl-NL',
-      value: 'Klik om te selecteren',
-    },
-  ], 'nl-NL');
+  },
+  'nl-NL');
 
   /**
    * The actor controlling this component.

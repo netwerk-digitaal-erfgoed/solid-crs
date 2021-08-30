@@ -378,28 +378,28 @@ export class ObjectRootComponent extends RxLitElement {
       if (component.tag.includes('imagery')) {
 
         element = document.createElement(component.tag) as ObjectImageryComponent;
-        element.id = 'nde.features.object.sidebar.image';
+        element.id = 'object.sidebar.image';
 
       } else if (component.tag.includes('creation')) {
 
         element = document.createElement(component.tag) as ObjectCreationComponent;
-        element.id = 'nde.features.object.sidebar.creation';
+        element.id = 'object.sidebar.creation';
 
       } else if (component.tag.includes('identification')) {
 
         element = document.createElement(component.tag) as ObjectIdentificationComponent;
         element.collections = this.collections;
-        element.id = 'nde.features.object.sidebar.identification';
+        element.id = 'object.sidebar.identification';
 
       } else if (component.tag.includes('representation')) {
 
         element = document.createElement(component.tag) as ObjectRepresentationComponent;
-        element.id = 'nde.features.object.sidebar.representation';
+        element.id = 'object.sidebar.representation';
 
       } else if (component.tag.includes('dimensions')) {
 
         element = document.createElement(component.tag) as ObjectDimensionsComponent;
-        element.id = 'nde.features.object.sidebar.dimensions';
+        element.id = 'object.sidebar.dimensions';
 
       }
 
@@ -472,7 +472,7 @@ export class ObjectRootComponent extends RxLitElement {
         <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
       <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
+        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
       </nde-form-element>
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
@@ -514,13 +514,13 @@ export class ObjectRootComponent extends RxLitElement {
     : html``}
       <nde-popup dark id="delete-popup">
         <div slot="content">
-          <p>${this.translator?.translate('nde.features.object.root.delete.title')}</p>
+          <p>${this.translator?.translate('object.root.delete.title')}</p>
           <div>
             <button class='primary confirm-delete' @click="${() => { this.actor.send(new ClickedDeleteObjectEvent(this.object)); toggleDelete(); }}">
-                <span>${this.translator?.translate('nde.features.object.root.delete.confirm')}</span>
+                <span>${this.translator?.translate('object.root.delete.confirm')}</span>
             </button>
             <button class='light cancel-delete' @click="${() => toggleDelete()}">
-                <span>${this.translator?.translate('nde.features.object.root.delete.cancel')}</span>
+                <span>${this.translator?.translate('object.root.delete.cancel')}</span>
             </button>
           </div>
         </div>

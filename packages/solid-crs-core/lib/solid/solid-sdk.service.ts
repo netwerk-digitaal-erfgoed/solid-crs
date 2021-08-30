@@ -36,7 +36,7 @@ export class SolidSDKService extends SolidService {
 
     if (!webId) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
 
     }
 
@@ -54,7 +54,7 @@ export class SolidSDKService extends SolidService {
 
     } catch {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
 
     }
 
@@ -67,13 +67,13 @@ export class SolidSDKService extends SolidService {
 
     } catch(e) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
     if(!profileDataset) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
@@ -82,7 +82,7 @@ export class SolidSDKService extends SolidService {
 
     if(!profile) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webIdUrl);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
 
     }
 
@@ -92,7 +92,7 @@ export class SolidSDKService extends SolidService {
     // Throw an error if there's no OIDC Issuer registered in the user's profile.
     if(!issuer) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-oidc-registration', issuer);
 
     }
 
@@ -109,7 +109,7 @@ export class SolidSDKService extends SolidService {
 
     } catch(e) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', issuer);
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-oidc-registration', issuer);
 
     }
 
@@ -119,7 +119,7 @@ export class SolidSDKService extends SolidService {
       (openidConfig && openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc') && !poweredByHeader?.includes('solid')
     ) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
 
     }
 
@@ -190,7 +190,7 @@ export class SolidSDKService extends SolidService {
 
     if (!webId) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
 
     }
 
@@ -201,7 +201,7 @@ export class SolidSDKService extends SolidService {
 
     } catch {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
 
     }
 
@@ -214,13 +214,13 @@ export class SolidSDKService extends SolidService {
 
     } catch(e) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
 
     }
 
     if(!profileDataset) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
 
     }
 
@@ -229,7 +229,7 @@ export class SolidSDKService extends SolidService {
 
     if(!profile) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-profile', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
 
     }
 

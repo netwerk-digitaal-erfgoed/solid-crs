@@ -47,7 +47,7 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator([ { key: 'foo', value:'bar', locale:'en-GB' } ], 'en-GB');
+    component.translator = new MemoryTranslator({ 'foo':'bar' }, 'en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -65,7 +65,7 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator([ { key: 'lorem', value:'bar', locale:'en-GB' } ], 'en-GB');
+    component.translator = new MemoryTranslator({ 'lorem':'bar' }, 'en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;

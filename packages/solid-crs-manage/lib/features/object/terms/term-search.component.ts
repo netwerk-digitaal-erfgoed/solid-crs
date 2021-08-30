@@ -211,7 +211,7 @@ export class TermSearchComponent extends RxLitElement {
         <div class="inputs">
           <nde-form-element
             class="term" .actor="${this.formActor}" field="query" .submitOnEnter="${false}">
-            <label slot="label" for="example">${ this.translator.translate(`nde.features.object.card.field.${this.field}`) }</label>
+            <label slot="label" for="example">${ this.translator.translate(`term.field.${this.field}`) }</label>
             <input 
               type="text"
               slot="input"
@@ -225,7 +225,7 @@ export class TermSearchComponent extends RxLitElement {
             <div slot="icon">${ unsafeSVG(Dropdown) }</div>
             <ul slot="input" type="multiselect" class="multiselect">
               <li>
-                <label for="title">${this.translator.translate('nde.common.form.click-to-select')}</label>
+                <label for="title">${this.translator.translate('common.form.click-to-select')}</label>
               </li>
               ${ this.sources?.map((source) => html`
                 <li>
@@ -241,8 +241,8 @@ export class TermSearchComponent extends RxLitElement {
           </nde-form-element>
         </div>
         <div class="buttons">
-          <button type="button" class="confirm primary" @click="${() => this.actor.send(new ClickedSubmitEvent())}">${this.translator.translate('nde.features.term.search.confirm')}</button>
-          <button type="button" class="cancel gray" @click="${() => this.actor.parent.send(new ClickedCancelTermEvent())}">${this.translator.translate('nde.features.term.search.cancel')}</button>
+          <button type="button" class="confirm primary" @click="${() => this.actor.send(new ClickedSubmitEvent())}">${this.translator.translate('term.search.confirm')}</button>
+          <button type="button" class="cancel gray" @click="${() => this.actor.parent.send(new ClickedCancelTermEvent())}">${this.translator.translate('term.search.cancel')}</button>
         </div>
       </form> 
 
@@ -250,7 +250,7 @@ export class TermSearchComponent extends RxLitElement {
       ${this.selectedTerms?.length > 0 ? html`
       <div class="term-list">
         <p class="title">
-          ${this.selectedTerms.length} ${ this.translator.translate(this.selectedTerms.length === 1 ? 'nde.features.term.term-selected' : 'nde.features.term.terms-selected').toLowerCase()}
+          ${this.selectedTerms.length} ${ this.translator.translate(this.selectedTerms.length === 1 ? 'term.term-selected' : 'term.terms-selected').toLowerCase()}
         </p>
         ${ this.selectedTerms?.map((term) => html`
           <nde-large-card
@@ -264,11 +264,11 @@ export class TermSearchComponent extends RxLitElement {
               ${unsafeSVG(CheckboxChecked)}
             </div>
             <div slot="content">
-              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : html``}
-              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
-              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
-              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
-              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
+              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('term.field.description')}: ${ term.description }</p>` : html``}
+              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
+              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
+              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
+              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
             </div>
           </nde-large-card>`)}
       </div>` : html``}
@@ -278,7 +278,7 @@ export class TermSearchComponent extends RxLitElement {
       <div class="term-list">
         ${Object.keys(this.searchResultsMap).map((key) => html`
           <p class="title">
-            ${this.sources?.find((source) => source.uri === key)?.name ?? key} (${this.searchResultsMap[key]?.length} ${this.translator.translate(this.searchResultsMap[key]?.length === 1 ? 'nde.features.term.term' : 'nde.features.term.terms').toLowerCase()})
+            ${this.sources?.find((source) => source.uri === key)?.name ?? key} (${this.searchResultsMap[key]?.length} ${this.translator.translate(this.searchResultsMap[key]?.length === 1 ? 'term.term' : 'term.terms').toLowerCase()})
           </p>
           ${this.searchResultsMap[key]?.map((term) => html`
             <nde-large-card
@@ -292,11 +292,11 @@ export class TermSearchComponent extends RxLitElement {
                 ${ this.selectedTerms?.find((selected) => selected.uri === term.uri) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
               <div slot="content">
-              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.description')}: ${ term.description }</p>` : html``}
-              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
-              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
-              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
-              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('nde.features.term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
+              ${ term.description?.length > 0 ? html`<p>${this.translator.translate('term.field.description')}: ${ term.description }</p>` : html``}
+              ${ term.alternateName?.length > 0 ? html`<p>${this.translator.translate('term.field.alternateName')}: ${ term.alternateName.join(', ') }</p>` : html``}
+              ${ term.broader?.length > 0 ? html`<p>${this.translator.translate('term.field.broader')}: ${ term.broader.map((broader) => broader.name).join(', ') }</p>` : html``}
+              ${ term.narrower?.length > 0 ? html`<p>${this.translator.translate('term.field.narrower')}: ${ term.narrower.map((narrower) => narrower.name).join(', ') }</p>` : html``}
+              ${ term.hiddenName?.length > 0 ? html`<p>${this.translator.translate('term.field.hiddenName')}: ${ term.hiddenName  }</p>` : html``}
               </div>
             </nde-large-card>
           `)}
@@ -308,7 +308,7 @@ export class TermSearchComponent extends RxLitElement {
     ? html`
         <div class='empty'>
           ${unsafeSVG(Empty)}
-          <p>${this.translator?.translate('nde.features.term.no-search-results')}</p>
+          <p>${this.translator?.translate('term.no-search-results')}</p>
         </div>
     ` : html``}
 

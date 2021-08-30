@@ -46,7 +46,7 @@ export class SolidMockService extends SolidService {
 
     if (!webId) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
 
     }
 
@@ -62,7 +62,7 @@ export class SolidMockService extends SolidService {
 
     } catch {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.invalid-url', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
 
     }
 
@@ -70,7 +70,7 @@ export class SolidMockService extends SolidService {
 
     if (!issuer) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-oidc-registration', issuer);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-oidc-registration', issuer);
 
     }
 
@@ -105,7 +105,7 @@ export class SolidMockService extends SolidService {
 
     if (!webId) {
 
-      throw new ArgumentError('nde.features.authenticate.error.invalid-webid.no-webid', webId);
+      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
 
     }
 

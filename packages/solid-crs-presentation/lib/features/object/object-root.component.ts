@@ -152,7 +152,7 @@ export class ObjectRootComponent extends RxLitElement {
           <nde-popup id="info-popup">
             <div slot="content">
               <a target="_blank" href="${this.object.uri}">
-                ${this.translator.translate('nde.features.object.options.view-rdf')}
+                ${this.translator.translate('object.root.menu.view-rdf')}
               </a>
             </div>
           </nde-popup>
@@ -167,10 +167,10 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Image) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.card.image.title') }
+          ${ this.translator.translate('object.card.image.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          ${ this.translator.translate('nde.features.object.card.image.subtitle') }
+          ${ this.translator.translate('object.card.image.subtitle') }
         </div>
         <div slot="content">
           <div class="overlay" @click="${ () => toggleImage() }">
@@ -178,15 +178,15 @@ export class ObjectRootComponent extends RxLitElement {
             <img src="${this.object.image}"/>
           </div>
           <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.license') } </div>
-            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`nde.features.object.card.image.field.license.${this.object.license}`) }</a> </div>
+            <div> ${ this.translator.translate('object.card.image.field.license.title') } </div>
+            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`object.card.image.field.license.${this.object.license}`) }</a> </div>
           </div>
           <div class="object-property">
-            <div> ${ this.translator.translate('nde.features.object.card.field.image-source') } </div>
+            <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
             <div>
               <a target="_blank" @click="${ () => navigator.clipboard.writeText(this.object?.image)
-    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('nde.common.copied-image-url') })))}">
-              ${ this.translator.translate('nde.features.object.options.share') }
+    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('common.copied-image-url') })))}">
+              ${ this.translator.translate('object.root.menu.copy-url') }
               </a>
             </div>
           </div>
@@ -204,30 +204,30 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Identity) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.card.identification.title') }
+          ${ this.translator.translate('object.card.identification.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          ${ this.translator.translate('nde.features.object.card.identification.subtitle') }
+          ${ this.translator.translate('object.card.identification.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.identifier || this.object.identifier?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.identifier') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.identifier') } </div>
             <div> ${ this.object.identifier } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.additionalType || this.object.additionalType?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.additionalType') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.additionalType') } </div>
             <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.name || this.object.name?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.name') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.name.title') } </div>
             <div> ${ this.object.name } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.description || this.object.description?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.description') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.description.title') } </div>
             <div> ${ this.object.description } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.collection || this.object.collection?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.collection') } </div>
+            <div> ${ this.translator.translate('object.card.identification.field.collection') } </div>
             <div> <a id="collection-link" @click="${ () => this.actor.parent.send(new SelectedCollectionEvent(collection)) }">${ collection?.name }</a>  </div>
           </div>
         </div>
@@ -237,26 +237,26 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.card.creation.title') }
+          ${ this.translator.translate('object.card.creation.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          ${ this.translator.translate('nde.features.object.card.creation.subtitle') }
+          ${ this.translator.translate('object.card.creation.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.creator || this.object.creator?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.creator') } </div>
+            <div> ${ this.translator.translate('object.card.creation.field.creator') } </div>
             <div> ${ this.object.creator?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.locationCreated || this.object.locationCreated?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.locationCreated') } </div>
+            <div> ${ this.translator.translate('object.card.creation.field.locationCreated') } </div>
             <div> ${ this.object.locationCreated?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.material || this.object.material?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.material') } </div>
+            <div> ${ this.translator.translate('object.card.creation.field.material') } </div>
             <div> ${ this.object.material?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.dateCreated || this.object.dateCreated?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.dateCreated') } </div>
+            <div> ${ this.translator.translate('object.card.creation.field.dateCreated') } </div>
             <div> ${ this.object.dateCreated } </div>
           </div>
         </div>
@@ -266,30 +266,30 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.card.representation.title') }
+          ${ this.translator.translate('object.card.representation.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          ${ this.translator.translate('nde.features.object.card.representation.subtitle') }
+          ${ this.translator.translate('object.card.representation.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.subject || this.object.subject?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.subject') } </div>
+            <div> ${ this.translator.translate('object.card.representation.field.subject') } </div>
             <div> ${ this.object.subject?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.location || this.object.location?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.location') } </div>
+            <div> ${ this.translator.translate('object.card.representation.field.location') } </div>
             <div> ${ this.object.location?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.person || this.object.person?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.person') } </div>
+            <div> ${ this.translator.translate('object.card.representation.field.person') } </div>
             <div> ${ this.object.person?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.organization || this.object.organization?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.organization') } </div>
+            <div> ${ this.translator.translate('object.card.representation.field.organization') } </div>
             <div> ${ this.object.organization?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.event || this.object.event?.length < 1 }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.event') } </div>
+            <div> ${ this.translator.translate('object.card.representation.field.event') } </div>
             <div> ${ this.object.event?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
         </div>
@@ -299,27 +299,27 @@ export class ObjectRootComponent extends RxLitElement {
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Connect) }</div>
         <div slot="title" class="title">
-          ${ this.translator.translate('nde.features.object.card.dimensions.title') }
+          ${ this.translator.translate('object.card.dimensions.title') }
         </div>
         <div slot="subtitle" class="subtitle">
-          ${ this.translator.translate('nde.features.object.card.dimensions.subtitle') }
+          ${ this.translator.translate('object.card.dimensions.subtitle') }
         </div>
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.height }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.height') } </div>
-            <div> ${ this.object.height } ${ this.translator.translate(`nde.common.unit.${this.object.heightUnit}`) } </div>
+            <div> ${ this.translator.translate('object.card.dimensions.field.height') } </div>
+            <div> ${ this.object.height } ${ this.translator.translate(`common.unit.${this.object.heightUnit}`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.width }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.width') } </div>
-            <div> ${ this.object.width } ${ this.translator.translate(`nde.common.unit.${this.object.widthUnit}`) } </div>
+            <div> ${ this.translator.translate('object.card.dimensions.field.width') } </div>
+            <div> ${ this.object.width } ${ this.translator.translate(`common.unit.${this.object.widthUnit}`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.depth }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.depth') } </div>
-            <div> ${ this.object.depth } ${ this.translator.translate(`nde.common.unit.${this.object.depthUnit}`) } </div>
+            <div> ${ this.translator.translate('object.card.dimensions.field.depth') } </div>
+            <div> ${ this.object.depth } ${ this.translator.translate(`common.unit.${this.object.depthUnit}`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.weight }">
-            <div> ${ this.translator.translate('nde.features.object.card.field.weight') } </div>
-            <div> ${ this.object.weight } ${ this.translator.translate(`nde.common.unit.${this.object.weightUnit}`) } </div>
+            <div> ${ this.translator.translate('object.card.dimensions.field.weight') } </div>
+            <div> ${ this.object.weight } ${ this.translator.translate(`common.unit.${this.object.weightUnit}`) } </div>
           </div>
         </div>
       </nde-large-card>

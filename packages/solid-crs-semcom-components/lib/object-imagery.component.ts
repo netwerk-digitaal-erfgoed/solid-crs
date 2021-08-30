@@ -75,8 +75,8 @@ export class ObjectImageryComponent extends RxLitElement {
     return this.object ? html`
         
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.image.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.image.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.image.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.image.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(Image)}
       </div>
@@ -86,13 +86,13 @@ export class ObjectImageryComponent extends RxLitElement {
             <img slot="image" src="${this.object.image}"/>
         </div>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="image">
-          <label slot="label" for="image">${this.translator?.translate('nde.features.object.card.field.file')}</label>
+          <label slot="label" for="image">${this.translator?.translate('object.card.image.field.file')}</label>
           <input type="text" slot="input" name="image" id="image"/>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="license">
-          <label slot="label" for="license">${this.translator?.translate('nde.features.object.card.field.license')}</label>
+          <label slot="label" for="license">${this.translator?.translate('object.card.image.field.license.title')}</label>
           <select slot="input" name="license" id="license">
-            ${this.licenses.map((license: string) => html`<option id="${license}" ?selected="${license === this.object.license}">${this.translator?.translate(`nde.features.object.card.image.field.license.${license}`)}</option>`)}
+            ${this.licenses.map((license: string) => html`<option id="${license}" ?selected="${license === this.object.license}">${this.translator?.translate(`object.card.image.field.license.${license}`)}</option>`)}
           </select>
         </nde-form-element>
         <nde-popup dark id="image-popup">

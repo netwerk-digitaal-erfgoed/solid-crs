@@ -201,7 +201,7 @@ export class CollectionRootComponent extends RxLitElement {
             <input autofocus type="text" slot="input"  class="name" value="${this.collection.name}" ?disabled="${this.isSubmitting}"/>
           </nde-form-element>
           <nde-form-element slot="subtitle" class="subtitle inverse"  .showLabel="${false}" .showValidation="${false}" debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
+            <input type="text" slot="input" class="description" value="${this.collection.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
           </nde-form-element>
         `
     : html`
@@ -209,7 +209,7 @@ export class CollectionRootComponent extends RxLitElement {
             ${this.collection.name}
           </div>
           <div slot="subtitle" class="subtitle" @click="${() => this.actor.send(CollectionEvents.CLICKED_EDIT)}">
-            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('nde.common.form.description-placeholder') }
+            ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('common.form.description-placeholder') }
           </div>
         `
 }
@@ -235,10 +235,10 @@ export class CollectionRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator?.translate('nde.features.collections.root.empty.create-object-title')}</div>
+              <div class='text'>${this.translator?.translate('collections.root.empty.create-object-title')}</div>
               <button class='accent' @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">
                 ${unsafeSVG(ObjectIcon)}
-                <span>${this.translator?.translate('nde.features.collections.root.empty.create-object-button')}</span>
+                <span>${this.translator?.translate('collections.root.empty.create-object-button')}</span>
               </button>
             </div>
           </div>
@@ -248,13 +248,13 @@ export class CollectionRootComponent extends RxLitElement {
 }
       <nde-popup dark id="delete-popup">
         <div slot="content">
-          <p>${this.translator?.translate('nde.features.collections.root.delete.title')}</p>
+          <p>${this.translator?.translate('collections.root.delete.title')}</p>
           <div>
             <button class='primary confirm-delete' @click="${() => { this.actor.send(CollectionEvents.CLICKED_DELETE); toggleDelete(); }}">
-                <span>${this.translator?.translate('nde.features.collections.root.delete.confirm')}</span>
+                <span>${this.translator?.translate('collections.root.delete.confirm')}</span>
             </button>
             <button class='light cancel-delete' @click="${() => toggleDelete()}">
-                <span>${this.translator?.translate('nde.features.collections.root.delete.cancel')}</span>
+                <span>${this.translator?.translate('collections.root.delete.cancel')}</span>
             </button>
           </div>
         </div>

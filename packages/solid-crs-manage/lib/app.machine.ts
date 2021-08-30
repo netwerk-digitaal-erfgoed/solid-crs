@@ -136,7 +136,7 @@ export const appMachine = (
           [AppEvents.ERROR]: {
             actions: [
               log(() => 'An error occurred'),
-              send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'nde.root.alerts.error' })),
+              send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'root.alerts.error' })),
             ],
           },
         },
@@ -374,7 +374,7 @@ export const appMachine = (
               ],
               onError: {
                 actions:  [
-                  send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                  send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                   send(new LoggingOutEvent()),
                 ],
               },
@@ -392,7 +392,7 @@ export const appMachine = (
                   // The user is an admin, but no (valid) type registration was found
                   target: AppDataStates.IDLE,
                   actions: [
-                    send(new AddAlertEvent({ message: 'nde.features.authenticate.error.no-valid-type-registration', type: 'warning' })),
+                    send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                     send(new LoggingOutEvent()),
                   ],
                 },

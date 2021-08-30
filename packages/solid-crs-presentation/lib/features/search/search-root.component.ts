@@ -130,8 +130,8 @@ export class SearchRootComponent extends RxLitElement {
     return html`
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(Search) }</div>
-        <div slot="title">${this.translator?.translate('nde.features.search.header.search-results-for')} "${this.searchTerm}"</div>
-        <div slot="subtitle">${this.translator?.translate('nde.features.search.header.subtitle')}</div>
+        <div slot="title">${this.translator?.translate('search.header.search-results-for')} "${this.searchTerm}"</div>
+        <div slot="subtitle">${this.translator?.translate('search.header.subtitle')}</div>
         <div slot="actions" @click="${() => this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' })}">${ unsafeSVG(Cross) }</div>
       </nde-content-header>
 
@@ -147,7 +147,7 @@ export class SearchRootComponent extends RxLitElement {
       ${this.collections?.length
     ? html`
               <div class="title">
-                ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('nde.features.search.root.collections')}</span>
+                ${unsafeSVG(CollectionIcon)} <span>${this.translator?.translate('search.root.collections')}</span>
               </div>
               <div class='three-column-content-grid'>
                 ${this.collections.map((collection) => html`<nde-collection-card @click="${() => this.actor.parent?.send(CollectionEvents.SELECTED_COLLECTION, { collection })}" .translator=${this.translator} .collection=${collection}></nde-collection-card>`)}
@@ -158,7 +158,7 @@ export class SearchRootComponent extends RxLitElement {
           ${this.objects?.length
     ? html`
               <!-- <div class="title">
-                ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('nde.features.search.root.objects')}</span>
+                ${unsafeSVG(ObjectIcon)} <span>${this.translator?.translate('search.root.objects')}</span>
               </div> -->
               <div class='three-column-content-grid'>
                 ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.parent?.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
@@ -171,7 +171,7 @@ export class SearchRootComponent extends RxLitElement {
           <div class="empty-container">
             <div class='empty'>
               ${unsafeSVG(Empty)}
-              <div class='text'>${this.translator?.translate('nde.features.search.root.empty.no-search-results')}</div>
+              <div class='text'>${this.translator?.translate('search.root.empty.no-search-results')}</div>
             </div>
           </div>
         `
