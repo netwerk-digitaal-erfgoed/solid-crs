@@ -89,7 +89,7 @@ export const authenticateMachine = (solid: SolidService) =>
                */
               async (context) => {
 
-                await solid.login(context.data.webId);
+                solid.login(context.data.webId);
 
                 return context.data;
 
