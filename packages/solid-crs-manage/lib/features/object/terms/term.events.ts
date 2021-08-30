@@ -7,6 +7,7 @@ import { EventObject } from 'xstate';
 export enum TermEvents {
   CLICKED_SUBMIT  = '[TermEvent: Clicked Submit]',
   CLICKED_TERM    = '[TermEvent: Clicked Term]',
+  CLICKED_ADD    = '[TermEvent: Clicked Add]',
   QUERY_UPDATED   = '[TermEvent: Query Updated]',
 }
 
@@ -30,6 +31,15 @@ export class ClickedTermEvent implements EventObject {
 }
 
 /**
+ * Fired when the user clicks a Term search result.
+ */
+export class ClickedAddEvent implements EventObject {
+
+  public type: TermEvents.CLICKED_ADD = TermEvents.CLICKED_ADD;
+
+}
+
+/**
  * Fired when the user changes the input of the Term search inputs.
  */
 export class QueryUpdatedEvent implements EventObject {
@@ -44,4 +54,5 @@ export class QueryUpdatedEvent implements EventObject {
  */
 export type TermEvent = ClickedSubmitEvent
 | ClickedTermEvent
-| QueryUpdatedEvent;
+| QueryUpdatedEvent
+| ClickedAddEvent;
