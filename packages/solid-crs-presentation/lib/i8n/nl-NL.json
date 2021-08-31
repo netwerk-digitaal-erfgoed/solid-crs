@@ -181,7 +181,8 @@
             "MTR": "m",
             "KGM": "kg",
             "GRM": "g"
-        }
+        },
+        "copied-image-url": "De URL van de afbeelding werd gekopieerd."
     },
     "search": {
         "root": {
