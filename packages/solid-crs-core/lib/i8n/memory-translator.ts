@@ -14,15 +14,8 @@ export class MemoryTranslator {
    */
   constructor(public translation: unknown, public lng: string) {
 
-    i18next.init({
-      lng,
-      resources: {
-        [lng]: {
-          translation,
-        },
-      },
-      nsSeparator: false,
-    });
+    i18next.init({ nsSeparator: false, defaultNS: lng, resources: {} });
+    this.addTranslation(this.translation, this.lng);
 
   }
 
@@ -53,18 +46,18 @@ export class MemoryTranslator {
     // Use default locale if no locale was passed to function
     const usedLocale = locale? locale : this.lng;
 
-    return i18next.t(key, { lng: usedLocale });
+    return i18next.t(key, { lng: usedLocale, ns: usedLocale });
 
   }
   /**
-   * Instantiates a MemoryTranslator.
+   * Adds an extra translation.
    *
    * @param translation The translations to be stored in-memory.
    * @param lng The locale to use when translating.
    */
   addTranslation(translation: unknown, lng: string): void {
 
-    i18next.addResources(lng, lng, translation);
+    i18next.addResourceBundle(lng, lng, translation);
 
   }
 
