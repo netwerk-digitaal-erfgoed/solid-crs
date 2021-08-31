@@ -248,9 +248,8 @@ export class AppRootComponent extends RxLitElement {
 
     <nde-sidebar inverse>
       <nde-content-header>
-        <div slot="icon">${ unsafeSVG(Logo) }</div>
         <div slot="title">${this.profile?.name}</div>
-        <div slot="actions"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
+        <div slot="icon"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-item>
         <div slot="content">
@@ -307,7 +306,6 @@ export class AppRootComponent extends RxLitElement {
           overflow: hidden;
           max-height: 100%;
         }
-
         :host > *:not(nde-sidebar) {
           flex: 1 1;
         }
@@ -321,8 +319,31 @@ export class AppRootComponent extends RxLitElement {
           width: var(--size-sidebar);
         }
 
+        nde-sidebar nde-content-header {
+          cursor: pointer;
+        }
+
+        nde-sidebar-item#collections-item {
+          margin: var(--gap-normal) 0;
+        }
+
+        nde-sidebar-item#search-item {
+          margin-top: var(--gap-small);
+        }
+
+        nde-sidebar-item div[slot="content"] {
+          display: flex;
+          flex-direction: column;
+        }
+
         nde-content-header div[slot="icon"] svg {
           fill: var(--colors-foreground-inverse);
+        }
+
+        nde-content-header div[slot="title"] {
+          height: 100%;
+          width: 95%;
+          text-overflow: ellipsis;
         }
 
         div[slot="actions"] svg {
@@ -331,7 +352,26 @@ export class AppRootComponent extends RxLitElement {
         }
 
         .search-title {
-          padding-bottom: var(--gap-normal);
+          margin-bottom: var(--gap-normal);
+        }
+
+        .search-subtitle {
+          margin-top: var(--gap-normal);
+          font-size: var(--font-size-small);
+          cursor: pointer;
+        }
+
+        .search-subtitle a {
+          text-decoration: underline;
+        }
+
+        .search-subtitle svg {
+          width: var(--font-size-small);
+          height: var(--font-size-small);
+          fill: var(--colors-foreground-inverse);
+          transform: rotate(90deg);
+          position: relative;
+          top: 2px;
         }
 
         div[slot="icon"] svg {
