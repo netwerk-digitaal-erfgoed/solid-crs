@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Cross, Search, Dropdown, Info } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
@@ -223,7 +223,7 @@ export class AppRootComponent extends RxLitElement {
 
     <nde-sidebar inverse>
       <nde-content-header @click="${() => this.actor.send(new ClickedHomeEvent())}">
-        <img slot="icon" src="${this.profile?.logo}"/>
+        ${ this.profile?.logo ? html`<img slot="icon" src="${this.profile?.logo}"/>` : html`<div slot="icon">${ unsafeSVG(Logo) }</div>` }
         <div slot="title">${this.profile?.name}</div>
       </nde-content-header>
       <nde-sidebar-item .padding="${false}" id="about-item">
@@ -328,6 +328,8 @@ export class AppRootComponent extends RxLitElement {
 
         nde-content-header div[slot="title"] {
           height: 100%;
+          text-overflow: ellipsis;
+          width: 95%;
         }
 
         div[slot="actions"] svg {
