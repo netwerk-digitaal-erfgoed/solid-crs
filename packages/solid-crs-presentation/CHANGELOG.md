@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.0...v0.9.1) (2021-08-31)
+
+
+### **Bug Fixes**
+
+* fixed incorrect translations ([#458](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/458)) ([b0bb080](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b0bb080bc4ff623116706a8815897c2d53d0c1c4))
+* styling issues in navigation header ([#457](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/457)) ([0a266d0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0a266d02ce18877469b3c30098412ae16209e93f))
+
+
+
 ## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
 
 

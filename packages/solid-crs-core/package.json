@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-core",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-core.umd.js",
@@ -58,7 +58,7 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "dependencies": {
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.9.0",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.9.1",
     "i18next": "^20.4.0",
     "moment": "^2.29.1",
     "rxjs": "^6.6.7",

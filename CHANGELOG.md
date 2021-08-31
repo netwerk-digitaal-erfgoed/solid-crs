@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.9.0...v0.9.1) (2021-08-31)
+
+
+### **Bug Fixes**
+
+* fixed incorrect translations ([#458](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/458)) ([b0bb080](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/b0bb080bc4ff623116706a8815897c2d53d0c1c4))
+* missing translation options ([#456](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/456)) ([b49eb0c](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/b49eb0cf7af3589711f59152ff0ab610028e2f5d))
+* rename local terms to own terms ([#459](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/459)) ([6ea6dc9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/6ea6dc94fa4ba9dfcb7f51a46eedc675ce92900b))
+* styling issues in navigation header ([#457](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/457)) ([0a266d0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/0a266d02ce18877469b3c30098412ae16209e93f))
+
+
+
 ## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.8.1...v0.9.0) (2021-08-30)
 
 
