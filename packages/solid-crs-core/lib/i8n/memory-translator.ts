@@ -53,15 +53,18 @@ export class MemoryTranslator {
     // Use default locale if no locale was passed to function
     const usedLocale = locale? locale : this.lng;
 
-    // Find translation based on locale
-    // const foundTranslation = this.translations?.find(
-    //   (translation) => translation.locale === usedLocale && translation.key === key
-    // );
-
-    // // return key when no translation was found
-    // return foundTranslation?.value || key;
-
     return i18next.t(key, { lng: usedLocale });
+
+  }
+  /**
+   * Instantiates a MemoryTranslator.
+   *
+   * @param translation The translations to be stored in-memory.
+   * @param lng The locale to use when translating.
+   */
+  addTranslation(translation: unknown, lng: string): void {
+
+    i18next.addResources(lng, lng, translation);
 
   }
 
