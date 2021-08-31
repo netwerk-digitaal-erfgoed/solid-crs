@@ -4,7 +4,7 @@ import { RxLitElement } from 'rx-lit';
 import { interpret, Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Alert, FormActors, FormContext, FormEvents, formMachine, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Logger, Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObject, Logger, Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { v4 } from 'uuid';
@@ -41,6 +41,12 @@ export class TermSearchComponent extends RxLitElement {
    */
   @property({ type: Object })
   public translator: Translator;
+
+  /**
+   * The CollectionObject for which terms are edited
+   */
+  @property({ type: Object })
+  public object: CollectionObject;
 
   /**
    * The actor responsible for form validation in this component.
@@ -312,7 +318,7 @@ export class TermSearchComponent extends RxLitElement {
           .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
           @click=${() => this.actor.send(new ClickedTermEvent(term))}>
             <div slot="title">${ term.name }</div>
-            <div slot="subtitle">${ term.uri }</div>
+            <div slot="subtitle">${ term.uri.startsWith('#') || term.uri.includes(this.object?.uri.split('#')[0]) ? this.translator.translate('term.description-placeholder') : term.uri  }</div>
             <div slot="icon">
               ${unsafeSVG(CheckboxChecked)}
             </div>

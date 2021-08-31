@@ -499,7 +499,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     ${ this.isEditingTermField
     ? html`
-      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
+      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}" .object="${this.object}"></nde-term-search>
     `
     : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
