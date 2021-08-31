@@ -74,4 +74,26 @@ describe('MemoryTranslator', () => {
 
   });
 
+  describe('addTranslation', () => {
+
+    beforeEach(async () => {
+
+      service.addTranslation({
+        'foo': {
+          'foo': 'Foo in dutch',
+          'bar': 'Bar in dutch',
+        },
+      }, 'nl-NL');
+
+    });
+
+    it('Should find newly added translations', () => {
+
+      const value = service.translate('foo.foo', 'nl-NL');
+      expect(value).toEqual('Foo in dutch');
+
+    });
+
+  });
+
 });

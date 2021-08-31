@@ -92,14 +92,14 @@
                     "additionalType": "Type",
                     "name": {
                         "title": "Titel",
-                        "validation:": {
+                        "validation": {
                             "max-characters": "De titel mag maximum 100 karakters lang zijn!"
                         }
                     },
                     "collection": "Collectie",
                     "description": {
                         "title": "Korte beschrijving",
-                        "validation:": {
+                        "validation": {
                             "max-characters": "De beschrijving mag maximum 10000 karakters lang zijn!"
                         }
                     }

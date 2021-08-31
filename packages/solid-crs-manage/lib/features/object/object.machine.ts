@@ -86,7 +86,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'object.card.identification.field.title.validation.max-characters',
+        message: 'object.card.identification.field.name.validation.max-characters',
       });
 
     } else if (field === 'identifier' && !value) {
