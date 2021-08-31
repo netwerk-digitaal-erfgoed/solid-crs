@@ -147,7 +147,7 @@ export class TermSearchComponent extends RxLitElement {
 
   groupSearchResults(searchResults: Term[]): { [key: string]: Term[] } {
 
-    return searchResults.length > 0 ? searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
+    return searchResults?.length > 0 ? searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
 
       const key = 'source';
       (searchResultsMap[term[key]] = searchResultsMap[term[key]] || []).push(term);
