@@ -131,7 +131,7 @@ export class AppRootComponent extends RxLitElement {
 
   firstUpdated(changed: PropertyValues): void {
 
-    window.onpopstate = (event) => {
+    window.onpopstate = () => {
 
       this.actor.send(new NavigateEvent());
 
