@@ -56,7 +56,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="subject"
           >
-          <label slot="label" for="subject">${this.translator?.translate('object.card.representation.field.subject')}</label>
+          <label slot="label" for="subject">${this.translator?.translate('object.card.representation.field.subject.title')}</label>
           <ul slot="input" name="subject" id="subject" type="dismiss" class="dismiss">
             ${sort(this.object.subject ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -65,13 +65,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.subject.description')}</label>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="location"
           >
-          <label slot="label" for="location">${this.translator?.translate('object.card.representation.field.location')}</label>
+          <label slot="label" for="location">${this.translator?.translate('object.card.representation.field.location.title')}</label>
           <ul slot="input" name="location" id="location" type="dismiss" class="dismiss">
             ${this.object.location?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -80,13 +81,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.location.description')}</label>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="person"
           >
-          <label slot="label" for="person">${this.translator?.translate('object.card.representation.field.person')}</label>
+          <label slot="label" for="person">${this.translator?.translate('object.card.representation.field.person.title')}</label>
           <ul slot="input" name="person" id="person" type="dismiss" class="dismiss">
             ${this.object.person?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -95,13 +97,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.person.description')}</label>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="organization"
           >
-          <label slot="label" for="organization">${this.translator?.translate('object.card.representation.field.organization')}</label>
+          <label slot="label" for="organization">${this.translator?.translate('object.card.representation.field.organization.title')}</label>
           <ul slot="input" name="organization" id="organization" type="dismiss" class="dismiss">
             ${this.object.organization?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -110,13 +113,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.organization.description')}</label>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="event"
           >
-          <label slot="label" for="event">${this.translator?.translate('object.card.representation.field.event')}</label>
+          <label slot="label" for="event">${this.translator?.translate('object.card.representation.field.event.title')}</label>
           <ul slot="input" name="event" id="event" type="dismiss" class="dismiss">
             ${this.object.event?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -125,6 +129,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.event.description')}</label>
         </nde-form-element>
       </div>
     </nde-large-card>
