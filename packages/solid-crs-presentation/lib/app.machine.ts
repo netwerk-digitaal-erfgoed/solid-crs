@@ -1,6 +1,6 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { createMachine } from 'xstate';
+import { AssignAction, createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
@@ -112,6 +112,27 @@ export enum AppDataStates {
 export type AppStates = AppRootStates | AppFeatureStates | AppRouterStates | AppDataStates;
 
 /**
+ * Updates the document's title
+ *
+ * @param title The new page title
+ * @returns The new page title
+ */
+export const updateTitle = (title: string): string => document.title = title;
+
+/**
+ * Updates the path in the URL bar
+ *
+ * @param context The App Context
+ * @param path The new value for the path
+ */
+export const updatePath = (context: AppContext, path: string, title?: string): void => {
+
+  context.path === window.location.pathname ? window.history.replaceState({}, '', path) : window.history.pushState({}, '', path);
+  if (title) updateTitle(title);
+
+};
+
+/**
  * The application root machine and its configuration.
  */
 export const appMachine = (
@@ -127,8 +148,8 @@ export const appMachine = (
   on: {
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
+        (context, event: SelectedObjectEvent) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`, 'Overzicht object | Solid CRS'),
         forwardTo(AppActors.OBJECT_MACHINE),
-        (context, event: SelectedObjectEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`),
       ],
     },
     [AppEvents.NAVIGATE]: {
@@ -156,23 +177,27 @@ export const appMachine = (
           always: [
             {
               cond: (context) => !!context.path?.match(/^\/.+\/collection\/.+\/?$/),
+              actions: updateTitle('Collectie | Solid CRS'),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
             },
             {
               cond: (context) => !!context.path?.match(/^\/.+\/object\/.+\/?$/),
+              actions: updateTitle('Object overzicht | Solid CRS'),
               target: [ AppRouterStates.LOADING_DATA, `#${AppFeatureStates.OBJECT}` ],
             },
             {
               cond: (context) => !!context.path?.match(/^\/.+\/search\/.*\/?$/),
+              actions: updateTitle('Zoeken | Solid CRS'),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
             },
             {
               cond: (context) => !!context.path?.match(/^\/.+\/about\/?$/),
+              actions: updateTitle('Over | Solid CRS'),
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
             },
             {
               actions: [
-                (context) => window.history.pushState({ page: '' }, '', `404`),
+                (context) => updatePath(context, '404'),
                 log((context) => `no path found for ${context.path}, 404`),
               ],
               target: [ AppRouterStates.IDLE, `#${AppFeatureStates.NOT_FOUND}` ],
@@ -235,8 +260,9 @@ export const appMachine = (
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm?.length > 0,
             target: `#${AppFeatureStates.SEARCH}`,
             actions: [
-              assign((context, event) => ({ selected: undefined })),
-              (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`),
+              assign((context) => ({ selected: undefined })),
+              (context, event) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS'),
+              assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}` }),
             ],
           },
           {
@@ -318,7 +344,8 @@ export const appMachine = (
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
           entry: [
-            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile?.uri)}/about`),
+            (context) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/about`, 'Over | Solid CRS'),
+            assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/about` }),
           ],
           on: {
             /**
@@ -338,12 +365,13 @@ export const appMachine = (
         [AppFeatureStates.COLLECTION]: {
           id: AppFeatureStates.COLLECTION,
           entry: [
+            (context) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected?.uri)}`, 'Collectie | Solid CRS'),
+            assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected?.uri)}` }),
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
                   collection.uri === decodeURIComponent(window.location.pathname.split('/collection/')[1]))
                 || context.collections[0] }),
-            (context) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected.uri)}`),
           ],
           on: {
             [ObjectEvents.SELECTED_OBJECT]: {
@@ -394,7 +422,8 @@ export const appMachine = (
               actions: [
                 assign({ lastSearchTerm: (context, event) => event.searchTerm }),
                 send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
-                (context, event: SearchUpdatedEvent) => window.history.pushState({ page: '' }, '', `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`),
+                (context, event: SearchUpdatedEvent) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS'),
+                assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}` }),
               ],
             },
             /**

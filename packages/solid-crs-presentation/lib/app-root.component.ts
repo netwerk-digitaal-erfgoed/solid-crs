@@ -9,7 +9,7 @@ import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-er
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import nlNL from './i8n/nl-NL.json';
-import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
+import { ClickedHomeEvent, DismissAlertEvent, NavigateEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 
@@ -130,6 +130,12 @@ export class AppRootComponent extends RxLitElement {
   }
 
   firstUpdated(changed: PropertyValues): void {
+
+    window.onpopstate = (event) => {
+
+      this.actor.send(new NavigateEvent());
+
+    };
 
     super.firstUpdated(changed);
 
