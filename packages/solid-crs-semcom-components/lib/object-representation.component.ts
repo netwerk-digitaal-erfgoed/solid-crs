@@ -65,7 +65,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.subject.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.subject.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -81,7 +81,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.location.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.location.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -97,7 +97,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.person.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.person.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -113,7 +113,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.organization.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.organization.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -129,7 +129,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.representation.field.event.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.event.description')}</div>
         </nde-form-element>
       </div>
     </nde-large-card>

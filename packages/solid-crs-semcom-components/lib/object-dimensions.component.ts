@@ -72,7 +72,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="height">
             <label slot="label" for="height">${this.translator?.translate('object.card.dimensions.field.height.title')}</label>
             <input type="text" slot="input" name="height" id="height"/>
-            <label slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.height.description')}</label>
+            <div slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.height.description')}</div>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="heightUnit">
             <label slot="label" for="height-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
@@ -85,7 +85,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="width">
             <label slot="label" for="width">${this.translator?.translate('object.card.dimensions.field.width.title')}</label>
             <input type="text" slot="input" name="width" id="width"/>
-            <label slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.width.description')}</label>
+            <div slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.width.description')}</div>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="widthUnit">
             <label slot="label" for="width-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
@@ -98,7 +98,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depth">
             <label slot="label" for="depth">${this.translator?.translate('object.card.dimensions.field.depth.title')}</label>
             <input type="text" slot="input" name="depth" id="depth"/>
-            <label slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.depth.description')}</label>
+            <div slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.depth.description')}</div>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depthUnit">
             <label slot="label" for="depth-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
@@ -111,7 +111,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weight">
             <label slot="label" for="weight">${this.translator?.translate('object.card.dimensions.field.weight.title')}</label>
             <input type="text" slot="input" name="weight" id="weight"/>
-            <label slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.weight.description')}</label>
+            <div slot="help" for="event">${this.translator?.translate('object.card.dimensions.field.weight.description')}</div>
           </nde-form-element>
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weightUnit">
             <label slot="label" for="weight-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>

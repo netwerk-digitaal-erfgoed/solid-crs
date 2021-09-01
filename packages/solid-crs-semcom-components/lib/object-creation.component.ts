@@ -65,7 +65,7 @@ export class ObjectCreationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.creation.field.creator.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.creation.field.creator.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -81,7 +81,7 @@ export class ObjectCreationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.creation.field.locationCreated.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.creation.field.locationCreated.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -97,7 +97,7 @@ export class ObjectCreationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
-          <label slot="help" for="event">${this.translator?.translate('object.card.creation.field.material.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.creation.field.material.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
@@ -106,7 +106,7 @@ export class ObjectCreationComponent extends RxLitElement {
         >
           <label slot="label" for="dateCreated">${this.translator?.translate('object.card.creation.field.date.title')}</label>
           <input type="text" slot="input" name="dateCreated" id="dateCreated" placeholder="YYYY-MM-DD"/>
-          <label slot="help" for="event">${this.translator?.translate('object.card.creation.field.date.description')}</label>
+          <div slot="help" for="event">${this.translator?.translate('object.card.creation.field.date.description')}</div>
         </nde-form-element>
       </div>
     </nde-large-card>
