@@ -362,7 +362,7 @@ describe('ObjectRootComponent', () => {
 
       await component.updated(map);
 
-      expect(component.subscribe).toHaveBeenCalledTimes(6);
+      expect(component.subscribe).toHaveBeenCalledTimes(7);
 
     });
 
