@@ -1,4 +1,4 @@
-import i18next from 'i18next';
+import { registerTranslateConfig, use, get } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -12,10 +12,13 @@ export class MemoryTranslator {
    * @param translation The translations to be stored in-memory.
    * @param defaultLocale The default locale to use when translating.
    */
-  constructor(public translation: unknown, public lng: string) {
+  constructor(public translation?: unknown, public lng?: string) {
 
-    i18next.init({ nsSeparator: false, defaultNS: lng, resources: {} });
-    this.addTranslation(this.translation, this.lng);
+    registerTranslateConfig({
+      loader: () => fetch(`/${this.lng}.json`).then((res) => res.json()),
+    });
+
+    use(this.lng);
 
   }
 
@@ -29,7 +32,8 @@ export class MemoryTranslator {
    * @throws {@link ArgumentError}
    * This error is thrown when either no locale or key have been given.
    */
-  translate(key: string, locale?: string): string {
+
+  translate(key: string): string {
 
     if (!key) {
 
@@ -37,27 +41,14 @@ export class MemoryTranslator {
 
     }
 
-    if (!locale && ! this.lng) {
-
-      throw new ArgumentError('Argument locale should be set.', locale);
-
-    }
-
-    // Use default locale if no locale was passed to function
-    const usedLocale = locale? locale : this.lng;
-
-    return i18next.t(key, { lng: usedLocale, ns: usedLocale });
+    return get(key);
 
   }
-  /**
-   * Adds an extra translation.
-   *
-   * @param translation The translations to be stored in-memory.
-   * @param lng The locale to use when translating.
-   */
-  addTranslation(translation: unknown, lng: string): void {
 
-    i18next.addResourceBundle(lng, lng, translation);
+  async setLng(lng: string): Promise<void>{
+
+    this.lng = lng;
+    await use(lng);
 
   }
 

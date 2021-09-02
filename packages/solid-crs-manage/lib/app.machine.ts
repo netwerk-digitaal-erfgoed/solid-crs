@@ -71,7 +71,6 @@ export enum AppRootStates {
  * State references for the application's features, with readable log format.
  */
 export enum AppFeatureStates {
-  AUTHENTICATE = '[AppFeatureState: Authenticate]',
   COLLECTION  = '[AppFeatureState: Collection]',
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',

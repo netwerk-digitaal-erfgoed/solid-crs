@@ -8,7 +8,6 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import nlNL from './i8n/nl-NL.json';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
@@ -28,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator(nlNL, 'nl-NL');
+  public translator: MemoryTranslator = new MemoryTranslator([], 'nl-NL');
 
   /**
    * The constructor of the application root component,
@@ -54,18 +53,18 @@ export class AppRootComponent extends RxLitElement {
       new CollectionObjectSolidStore(),
       {
         uri: undefined,
-        name: this.translator.translate('collections.new-collection-name'),
-        description: this.translator.translate('collections.new-collection-description'),
+        name: undefined,
+        description: undefined,
         objectsUri: undefined,
         distribution: undefined,
       },
       {
         uri: undefined,
-        name: this.translator.translate('object.new-object-name'),
-        description: this.translator.translate('object.new-object-description'),
+        name: undefined,
+        description: undefined,
         collection: undefined,
         type: 'http://schema.org/CreativeWork',
-        identifier: this.translator.translate('object.new-object-name').toLowerCase().replace(' ', '-'),
+        identifier: undefined,
         additionalType: [],
         image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
         license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
@@ -124,6 +123,23 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   searchActor: ActorRef<SearchEvent>;
+
+  // Defer the first update of the component until the strings has been loaded to avoid empty strings being shown
+  private hasLoadedStrings = false;
+  protected shouldUpdate (changedProperties: PropertyValues) {
+
+    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
+
+  }
+
+  // Load the initial language and mark that the strings has been loaded.
+  async connectedCallback () {
+
+    await this.translator.setLng('nl-NL');
+    this.hasLoadedStrings = true;
+    super.connectedCallback();
+
+  }
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
