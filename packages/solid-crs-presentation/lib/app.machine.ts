@@ -1,7 +1,7 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { createMachine } from 'xstate';
-import { assign, forwardTo, log, send } from 'xstate/lib/actions';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, matchPath } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { AssignAction, createMachine } from 'xstate';
+import { assign, forwardTo, log, pure, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
@@ -117,7 +117,13 @@ export type AppStates = AppRootStates | AppFeatureStates | AppRouterStates | App
  * @param title The new page title
  * @returns The new page title
  */
-export const updateTitle = (title: string): string => document.title = title;
+export const updateTitle = (title: string): string => {
+
+  document.title = title;
+
+  return undefined;
+
+};
 
 /**
  * Updates the path in the URL bar
@@ -125,12 +131,21 @@ export const updateTitle = (title: string): string => document.title = title;
  * @param context The App Context
  * @param path The new value for the path
  */
-export const updatePath = (context: AppContext, path: string, title?: string): void => {
+export const updatePath = (context: AppContext, path: string, title?: string): AssignAction<AppContext, AppEvent> => {
 
-  context.path === window.location.pathname ? window.history.replaceState({}, '', path) : window.history.pushState({}, '', path);
+  if (context.path === window.location.pathname) {
+
+    history.replaceState({}, title||'', path);
+
+  } else {
+
+    history.pushState({}, title||'', path);
+
+  }
+
   if (title) updateTitle(title);
 
-  return undefined;
+  return assign({ path: (c) => path.startsWith('/') ? path : `/${path}` });
 
 };
 
@@ -173,8 +188,9 @@ export const appMachine = (
   on: {
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
-        (context, event: SelectedObjectEvent) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`, 'Overzicht object | Solid CRS'),
         forwardTo(AppActors.OBJECT_MACHINE),
+        pure((context, event: SelectedObjectEvent) =>
+          updatePath(context, `${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`, 'Overzicht object | Solid CRS'),),
       ],
     },
     [AppEvents.NAVIGATE]: {
@@ -200,7 +216,7 @@ export const appMachine = (
         [AppRouterStates.NAVIGATING]: {
           id: AppRouterStates.NAVIGATING,
           invoke: {
-            src: async () => 'success',
+            src: async () => Promise.resolve(),
             onDone: {
               target: activeRoute(routes).targets,
               actions: updateTitle(activeRoute(routes).title),
@@ -262,8 +278,9 @@ export const appMachine = (
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm?.length > 0,
             target: `#${AppFeatureStates.SEARCH}`,
             actions: [
-              assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}` }),
-              (context, event) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS'),
+
+              pure((context, event) =>
+                updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS')),
               assign((context) => ({ selected: undefined })),
             ],
           },
@@ -346,8 +363,8 @@ export const appMachine = (
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
           entry: [
-            assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/about` }),
-            (context) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/about`, 'Over | Solid CRS'),
+            pure((context) =>
+              updatePath(context, `${encodeURIComponent(context.profile.uri)}/about`, 'Over | Solid CRS')),
           ],
           on: {
             /**
@@ -367,8 +384,8 @@ export const appMachine = (
         [AppFeatureStates.COLLECTION]: {
           id: AppFeatureStates.COLLECTION,
           entry: [
-            assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected?.uri)}` }),
-            (context) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected?.uri)}`, 'Collectie | Solid CRS'),
+            pure((context) =>
+              updatePath(context, `${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected?.uri)}`, 'Collectie | Solid CRS')),
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
@@ -422,8 +439,8 @@ export const appMachine = (
              */
             [SearchEvents.SEARCH_UPDATED]: {
               actions: [
-                assign({ path: (context, event) => `/${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}` }),
-                (context, event: SearchUpdatedEvent) => updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS'),
+                pure((context, event: SearchUpdatedEvent) =>
+                  updatePath(context, `${encodeURIComponent(context.profile.uri)}/search/${encodeURIComponent(event.searchTerm)}`, 'Zoeken | Solid CRS')),
                 assign({ lastSearchTerm: (context, event) => event.searchTerm }),
                 send((context, event) => event, { to: AppActors.SEARCH_MACHINE }),
               ],

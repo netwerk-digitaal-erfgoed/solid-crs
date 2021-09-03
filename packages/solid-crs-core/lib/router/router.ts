@@ -22,7 +22,7 @@ export interface Route {
 }
 
 /**
- * Checks the window.location.href against a given path
+ * Checks the window.location.pathname against a given path
  * Path should be a full match
  *
  * @param path The path of the route to match
@@ -44,7 +44,7 @@ export const matchPath = (path: string): boolean => {
 };
 
 /**
- * Returns the currently active route
+ * Returns the currently active route base on window.location.pathname
  *
  * @param routes A list of all routes
  * @returns The currently active route
@@ -75,9 +75,9 @@ export const urlVariables = (path: string): Map<string, string> => {
 
   const matches = (window.location.pathname.match(regex)||[]).splice(1);
 
+  // this check might not be necessary
   if (matches.length !== parts.length) {
 
-    // this check might not be necessary
     throw new ArgumentError('No match for every variable', { parts, matches });
 
   }

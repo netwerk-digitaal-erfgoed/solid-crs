@@ -16,7 +16,7 @@ export enum AppEvents {
   ERROR = 'xstate.error',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
   SET_PROFILE = '[AppEvent: Set Profile]',
-  NAVIGATE = '[AppEvent: Navigated]',
+  NAVIGATE = '[AppEvent: Navigate]',
   RESOLVED_ROUTE = '[AppEvent: Resolved Route]',
   NAVIGATED = '[AppEvent: Navigated]',
   CLICKED_HOME = '[AppEvent: Clicked Home]',
