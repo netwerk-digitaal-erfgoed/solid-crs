@@ -5,7 +5,7 @@ import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { ObjectRootComponent } from './object-root.component';
-import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
+import { ClickedResetEvent, ClickedTermFieldEvent, ObjectEvents } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
 
 describe('ObjectRootComponent', () => {
@@ -341,6 +341,28 @@ describe('ObjectRootComponent', () => {
   });
 
   describe('updated()', () => {
+
+    it('should restart formMachine when clicked reset', async() => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      component.initFormMachine = jest.fn();
+      component.createComponents = jest.fn();
+
+      await component.updateComplete;
+
+      const map = new Map<string, string>();
+      map.set('actor', 'test');
+      map.set('formActor', 'test');
+
+      await component.updated(map);
+
+      machine.send(new ClickedResetEvent());
+
+      expect(component.initFormMachine).toHaveBeenCalledTimes(5);
+      expect(component.createComponents).toHaveBeenCalledTimes(2);
+
+    });
 
     it('should update subscription when formActor is updated', async () => {
 
