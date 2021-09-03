@@ -1,4 +1,4 @@
-import { matchPath, activeRoute, Route } from './router';
+import { matchPath, activeRoute, Route, urlVariables } from './router';
 
 describe('Router', () => {
 
@@ -9,8 +9,8 @@ describe('Router', () => {
 
     it('should error when path is falsey', () => {
 
-      expect(() => matchPath(undefined)).toThrow();
-      expect(() => matchPath(null)).toThrow();
+      expect(() => matchPath(undefined)).toThrow('Argument path should be set.');
+      expect(() => matchPath(null)).toThrow('Argument path should be set.');
 
     });
 
@@ -27,6 +27,7 @@ describe('Router', () => {
 
       expect(matchPath('/test')).toBeFalsy();
       expect(matchPath('/test/testing')).toBeFalsy();
+      expect(matchPath('/test/12345//testing')).toBeFalsy();
       expect(matchPath('')).toBeFalsy();
 
     });
@@ -37,9 +38,9 @@ describe('Router', () => {
 
     it('should error when routes is undefined or empty', () => {
 
-      expect(() => activeRoute(undefined)).toThrow();
-      expect(() => activeRoute(null)).toThrow();
-      expect(() => activeRoute([])).toThrow();
+      expect(() => activeRoute(undefined)).toThrow('Argument routes should be set.');
+      expect(() => activeRoute(null)).toThrow('Argument routes should be set.');
+      expect(() => activeRoute([])).toThrow('Argument routes should be set.');
 
     });
 
@@ -62,6 +63,29 @@ describe('Router', () => {
       ];
 
       expect(activeRoute(routes)).toEqual(undefined);
+
+    });
+
+  });
+
+  describe('urlVariables', () => {
+
+    it('should return a correct map of URL variables', () => {
+
+      // window.location.pathname = '/test/12345/testing'
+      const resultMap = urlVariables('/{{partOne}}/{{numbers}}/{{partTwo}}');
+
+      expect(resultMap.get('partOne')).toEqual('test');
+      expect(resultMap.get('numbers')).toEqual('12345');
+      expect(resultMap.get('partTwo')).toEqual('testing');
+
+    });
+
+    it('should error when no match was found for every variable', () => {
+
+      // usually happens when an invalid path was provided (here: double slashes)
+      // or when the regex is made incorrect matches (should not happen)
+      expect(() => urlVariables('/{{partOne}}//{{numbers}}/{{partTwo}}')).toThrow('No match for every variable');
 
     });
 

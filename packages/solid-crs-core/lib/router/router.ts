@@ -37,7 +37,7 @@ export const matchPath = (path: string): boolean => {
 
   }
 
-  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.*)')}$`, 'i');
+  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
   return window.location.pathname.match(regex)?.length > 0;
 
@@ -58,5 +58,39 @@ export const activeRoute = (routes: Route[]): Route => {
   }
 
   return routes.find((route) => matchPath(route.path));
+
+};
+
+/**
+ * For a given path, returns the URL variables as a Map
+ *
+ * @param path The path structure with variable names
+ */
+export const urlVariables = (path: string): Map<string, string> => {
+
+  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
+
+  const parts = path.split('/')
+    .filter((part) => part.startsWith('{{') && part.endsWith('}}'));
+
+  const matches = (window.location.pathname.match(regex)||[]).splice(1);
+
+  if (matches.length !== parts.length) {
+
+    // this check might not be necessary
+    throw new ArgumentError('No match for every variable', { parts, matches });
+
+  }
+
+  const variables = new Map();
+  const variableNames = parts.map((part) => part.substring(2, part.length - 2));
+
+  variableNames.forEach((variable, i) => {
+
+    variables.set(variable, matches[i]);
+
+  });
+
+  return variables;
 
 };

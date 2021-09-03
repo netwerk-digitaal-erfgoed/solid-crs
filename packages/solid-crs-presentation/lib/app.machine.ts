@@ -1,8 +1,8 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, ResolvedRouteEvent, setCollections, setProfile } from './app.events';
+import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigateEvent, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
@@ -214,7 +214,7 @@ export const appMachine = (
 
               if (context.path?.match(/^\/.+\/object\/.+\/?$/)) {
 
-                return objectStore.get(decodeURIComponent(window.location.pathname.split('/object/')[1]));
+                return objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes).path).get('objectUri')));
 
               } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
 
@@ -300,7 +300,7 @@ export const appMachine = (
                   /**
                    * Get all collections from store.
                    */
-                  src: () => solidService.getProfile(decodeURIComponent(window.location.pathname.split('/')[1])),
+                  src: () => solidService.getProfile(decodeURIComponent(urlVariables(activeRoute(routes).path).get('webId'))),
                   onDone: [
                     {
                       target: AppDataStates.REFRESHING,
@@ -372,7 +372,7 @@ export const appMachine = (
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
-                  collection.uri === decodeURIComponent(window.location.pathname.split('/collection/')[1]))
+                  collection.uri === decodeURIComponent(urlVariables(activeRoute(routes).path).get('collectionUri')))
                 || context.collections[0] }),
           ],
           on: {
@@ -446,7 +446,7 @@ export const appMachine = (
               id: AppActors.SEARCH_MACHINE,
               src: searchMachine(collectionStore, objectStore),
               data: (context, event: SearchUpdatedEvent) => ({
-                searchTerm: event.searchTerm||(window.location.pathname.split('/search/')[1]||''),
+                searchTerm: event.searchTerm||(urlVariables(activeRoute(routes).path).get('searchTerm')||''),
               }),
               onDone: {
                 actions: send((context, event) => ({
