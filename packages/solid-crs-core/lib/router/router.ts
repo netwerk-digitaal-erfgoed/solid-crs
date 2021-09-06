@@ -25,21 +25,21 @@ export interface Route {
  * Checks the window.location.pathname against a given path
  * Path should be a full match
  *
- * @param path The path of the route to match
+ * @param match The path of the route to match
  * @returns true when path matches, otherwise false
  */
-export const matchPath = (path: string): boolean => {
+export const matchPath = (match: string, currentPath: string): boolean => {
 
   // !path also checks empty strings, which are allowed here
-  if (path === undefined || path === null) {
+  if (match === undefined || match === null) {
 
-    throw new ArgumentError('Argument path should be set.', path);
+    throw new ArgumentError('Argument path should be set.', match);
 
   }
 
-  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
+  const regex = new RegExp(`^${match.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
-  return window.location.pathname.match(regex)?.length > 0;
+  return currentPath.match(regex)?.length > 0;
 
 };
 
@@ -49,7 +49,7 @@ export const matchPath = (path: string): boolean => {
  * @param routes A list of all routes
  * @returns The currently active route
  */
-export const activeRoute = (routes: Route[]): Route => {
+export const activeRoute = (routes: Route[], currentPath: string): Route => {
 
   if (!routes || routes.length < 1) {
 
@@ -57,7 +57,7 @@ export const activeRoute = (routes: Route[]): Route => {
 
   }
 
-  return routes.find((route) => matchPath(route.path));
+  return routes.find((route) => matchPath(route.path, currentPath));
 
 };
 

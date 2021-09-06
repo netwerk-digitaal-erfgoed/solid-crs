@@ -20,6 +20,7 @@ export enum AppEvents {
   RESOLVED_ROUTE = '[AppEvent: Resolved Route]',
   NAVIGATED = '[AppEvent: Navigated]',
   CLICKED_HOME = '[AppEvent: Clicked Home]',
+  POP_STATE = '[AppEvent: PopState]',
 }
 
 /**
@@ -86,12 +87,12 @@ export class ResolvedRouteEvent implements EventObject {
 }
 
 /**
- * An event which is dispatched when the user navigates
+ * An event which is dispatched when the user has finished navigation
  */
 export class NavigatedEvent implements EventObject {
 
   public type: AppEvents.NAVIGATED = AppEvents.NAVIGATED;
-  constructor(public path?: string) { }
+  constructor(public path: string, public title?: string) { }
 
 }
 
@@ -101,6 +102,16 @@ export class NavigatedEvent implements EventObject {
 export class ClickedHomeEvent implements EventObject {
 
   public type: AppEvents.CLICKED_HOME = AppEvents.CLICKED_HOME;
+
+}
+
+/**
+ * An event which is dispatched when this pod should be set up as an instition pod
+ */
+export class PopStateEvent implements EventObject {
+
+  public type: AppEvents.POP_STATE = AppEvents.POP_STATE;
+  constructor(public event: PopStateEvent) { }
 
 }
 
@@ -118,7 +129,8 @@ export type AppEvent =
   | NavigateEvent
   | NavigatedEvent
   | ResolvedRouteEvent
-  | ClickedHomeEvent;
+  | ClickedHomeEvent
+  | PopStateEvent;
 
 /**
  * Actions for the alerts component.
