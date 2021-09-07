@@ -131,7 +131,7 @@ export class AppRootComponent extends RxLitElement {
 
   firstUpdated(changed: PropertyValues): void {
 
-    window.onpopstate = (event: any) => {
+    window.onpopstate = () => {
 
       window.location.reload();
 
