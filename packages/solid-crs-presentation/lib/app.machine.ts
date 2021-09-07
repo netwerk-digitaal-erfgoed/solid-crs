@@ -140,7 +140,7 @@ export const appMachine = (
   on: {
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
-        send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile.uri)}/object/${encodeURIComponent(event.object.uri)}`, 'object')),
+        send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/object/${encodeURIComponent(event.object.uri)}`)),
         forwardTo(AppActors.OBJECT_MACHINE),
       ],
     },
@@ -186,7 +186,7 @@ export const appMachine = (
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm?.length > 0,
             target: `#${AppFeatureStates.SEARCH}`,
             actions: [
-              send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile.uri)}/search/${event.searchTerm}`)),
+              send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/search/${event.searchTerm}`)),
               assign((context) => ({ selected: undefined })),
             ],
           },
@@ -299,7 +299,7 @@ export const appMachine = (
         [AppFeatureStates.ABOUT]: {
           id: AppFeatureStates.ABOUT,
           entry: [
-            send((context) => new NavigatedEvent(`/${encodeURIComponent(context.profile.uri)}/about`)),
+            send((context) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/about`)),
           ],
           on: {
             /**
@@ -319,7 +319,7 @@ export const appMachine = (
         [AppFeatureStates.COLLECTION]: {
           id: AppFeatureStates.COLLECTION,
           entry: [
-            send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(context.selected.uri)}`)),
+            send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/collection/${encodeURIComponent(context.selected.uri)}`)),
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
@@ -336,7 +336,7 @@ export const appMachine = (
             },
             [CollectionEvents.SELECTED_COLLECTION]: {
               actions: [
-                send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile.uri)}/collection/${encodeURIComponent(event.collection.uri)}`)),
+                send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/collection/${encodeURIComponent(event.collection.uri)}`)),
                 forwardTo(AppActors.COLLECTION_MACHINE),
                 assign({ selected: (context, event) => event.collection }),
               ],

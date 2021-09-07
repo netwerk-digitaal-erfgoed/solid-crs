@@ -12,13 +12,44 @@ Object.defineProperty(window.self, 'crypto', {
   },
 });
 
+import * as core from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ROUTER, RouterStates } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent, LargeCardComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
-import { AppRootComponent } from '../lib/app-root.component';
-import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
-import { SearchRootComponent } from '../lib/features/search/search-root.component';
-import { ObjectRootComponent } from '../lib/features/object/object-root.component';
 import { AboutRootComponent } from '../lib/features/about/about-root.component';
+import { ObjectRootComponent } from '../lib/features/object/object-root.component';
+import { SearchRootComponent } from '../lib/features/search/search-root.component';
+import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
+import { AppRootComponent } from '../lib/app-root.component';
+
+// mock router function and state config
+// essentially disables the router in tests
+core.activeRoute = () => ({ path: undefined, targets: [] });
+
+core.urlVariables = () => ({
+  get: jest.fn(() => ''),
+});
+
+core.routerStateConfig = () => ({
+  [ROUTER]: {
+    initial: RouterStates.IDLE,
+    states: {
+      [RouterStates.IDLE]: {
+        id: RouterStates.IDLE,
+      },
+      [RouterStates.NAVIGATING]: {
+        id: RouterStates.NAVIGATING,
+        invoke: {
+          src: async () => Promise.resolve(),
+          onDone: {
+            target: [],
+            actions: [],
+          },
+        },
+      },
+    },
+  },
+});
 
 /**
  * Enable mocks for fetch.

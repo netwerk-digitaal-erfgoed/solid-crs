@@ -183,11 +183,11 @@ describe('AppMachine', () => {
 
   });
 
-  it('should start in collection feature', async (done) => {
+  it('should start in initializing state', async (done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION })) {
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.INIT })) {
 
         done();
 
@@ -203,7 +203,7 @@ describe('AppMachine', () => {
 
     machine.onTransition((state) => {
 
-      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION })) {
+      if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.INIT })) {
 
         machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: 'test' } as SearchUpdatedEvent);
 
