@@ -65,15 +65,18 @@
     "uuid": "8.3.2"
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@appnest/lit-translate|lit-html)/)"
+    ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 93.75,
-        "statements": 97.76,
-        "lines": 97.68,
-        "functions": 97.73
+        "branches": 93.67,
+        "statements": 97.47,
+        "lines": 97.38,
+        "functions": 97.01
       }
     },
     "automock": false,

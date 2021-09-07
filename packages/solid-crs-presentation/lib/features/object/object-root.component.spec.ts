@@ -92,7 +92,7 @@ describe('ObjectRootComponent', () => {
 
     component.actor = machine;
 
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
     component.object = object1;
 

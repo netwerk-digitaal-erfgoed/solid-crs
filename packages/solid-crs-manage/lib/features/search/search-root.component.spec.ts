@@ -59,7 +59,7 @@ describe('SearchRootComponent', () => {
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
     component.actor = machine;
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 
@@ -188,7 +188,7 @@ describe('SearchRootComponent', () => {
 
     const textDiv = emptyContainer.querySelector('.text');
     expect(textDiv).toBeTruthy();
-    expect(textDiv.textContent).toBe('search.root.empty.no-search-results');
+    expect(textDiv.textContent).toBe('[search.root.empty.no-search-results]');
 
   });
 

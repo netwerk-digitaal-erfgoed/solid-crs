@@ -9,7 +9,7 @@ describe('ObjectRepresentationComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement(tag) as ObjectRepresentationComponent;
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 

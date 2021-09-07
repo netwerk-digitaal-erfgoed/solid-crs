@@ -1,4 +1,5 @@
 import { registerTranslateConfig, use, get } from '@appnest/lit-translate';
+import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -9,10 +10,9 @@ export class MemoryTranslator {
   /**
    * Instantiates a MemoryTranslator.
    *
-   * @param translation The translations to be stored in-memory.
-   * @param defaultLocale The default locale to use when translating.
+   * @param lng The default locale to use when translating.
    */
-  constructor(public translation?: unknown, public lng?: string) {
+  constructor(public lng?: string) {
 
     registerTranslateConfig({
       loader: () => fetch(`/${this.lng}.json`).then((res) => res.json()),

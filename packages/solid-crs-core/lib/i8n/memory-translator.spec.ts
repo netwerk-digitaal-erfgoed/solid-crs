@@ -7,14 +7,16 @@ describe('MemoryTranslator', () => {
 
   beforeEach(async () => {
 
-    service = new MemoryTranslator({
-      'foo': {
-        'foo': 'Foo',
-        'bar': 'Bar',
-      },
+    service = new MemoryTranslator('en-GB');
+    fetchMock.resetMocks();
 
-    },
-    'en-GB');
+    fetchMock
+      .mockResponseOnce(JSON.stringify({
+        'foo': {
+          'foo': 'Foo',
+          'bar': 'Bar',
+        },
+      }));
 
   });
 
@@ -28,7 +30,7 @@ describe('MemoryTranslator', () => {
 
     it('Should return an existing key in an existing locale.', () => {
 
-      const value = service.translate('foo.foo', 'en-GB');
+      const value = service.translate('foo.foo');
 
       expect(value).toEqual('Foo');
 
@@ -42,55 +44,17 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('Should return the input key with an existing key in an non-existing locale.', () => {
-
-      const value = service.translate('foo.bar', 'nl-NL');
-
-      expect(value).toEqual('foo.bar');
-
-    });
-
     it('Should return the input key with an non-existing key in an existing locale.', () => {
 
-      const value = service.translate('lorem', 'nl-NL');
+      const value = service.translate('lorem');
 
-      expect(value).toEqual('lorem');
+      expect(value).toEqual('[lorem]');
 
     });
 
     it('Should throw error when key is null.', () => {
 
-      expect(()=>service.translate(null, 'bla')).toThrow(ArgumentError);
-
-    });
-
-    it('Should throw error when locale and lng is null.', () => {
-
-      service.lng = null;
-
-      expect(()=>service.translate('bla', null)).toThrow(ArgumentError);
-
-    });
-
-  });
-
-  describe('addTranslation', () => {
-
-    beforeEach(async () => {
-
-      service.addTranslation({
-        'foo': {
-          'foo': 'Foo in dutch',
-          'bar': 'Bar in dutch',
-        },
-      }, 'nl-NL');
-
-    });
-
-    it('Should find newly added translations', () => {
-
-      const value = service.translate('foo.foo', 'nl-NL');
-      expect(value).toEqual('Foo in dutch');
+      expect(()=>service.translate(null)).toThrow(ArgumentError);
 
     });
 

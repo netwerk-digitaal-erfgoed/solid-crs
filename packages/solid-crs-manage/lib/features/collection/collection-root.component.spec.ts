@@ -70,7 +70,7 @@ describe('CollectionRootComponent', () => {
 
     component.formActor = machine.children.get(FormActors.FORM_MACHINE);
 
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 

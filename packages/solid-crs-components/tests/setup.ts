@@ -12,20 +12,26 @@ Object.defineProperty(window.self, 'crypto', {
   },
 });
 
-import { AlertComponent } from '../lib/alerts/alert.component';
-import { FormElementComponent } from '../lib/forms/form-element.component';
-import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.component';
-import { SidebarListComponent } from '../lib/sidebar/sidebar-list.component';
-import { DemoSidebarListComponent } from '../lib/demo/demo-sidebar-list.component';
-import { ContentHeaderComponent } from '../lib/header/content-header.component';
-import { CardComponent } from '../lib/collections/card.component';
-import { CollectionCardComponent } from '../lib/collections/collection-card.component';
-import { ObjectCardComponent } from '../lib/collections/object-card.component';
-import { SidebarComponent } from '../lib/sidebar/sidebar.component';
-import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
-import { LargeCardComponent } from '../lib/collections/large-card.component';
-import { ProgressBarComponent } from '../lib/loading/progress-bar-component';
+import fetchMock from 'jest-fetch-mock';
 import { PopupComponent } from '../lib/alerts/popup.component';
+import { ProgressBarComponent } from '../lib/loading/progress-bar-component';
+import { LargeCardComponent } from '../lib/collections/large-card.component';
+import { SidebarItemComponent } from '../lib/sidebar/sidebar-item.component';
+import { SidebarComponent } from '../lib/sidebar/sidebar.component';
+import { ObjectCardComponent } from '../lib/collections/object-card.component';
+import { CollectionCardComponent } from '../lib/collections/collection-card.component';
+import { CardComponent } from '../lib/collections/card.component';
+import { ContentHeaderComponent } from '../lib/header/content-header.component';
+import { DemoSidebarListComponent } from '../lib/demo/demo-sidebar-list.component';
+import { SidebarListComponent } from '../lib/sidebar/sidebar-list.component';
+import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.component';
+import { FormElementComponent } from '../lib/forms/form-element.component';
+import { AlertComponent } from '../lib/alerts/alert.component';
+
+/**
+ * Enable mocks for fetch.
+ */
+fetchMock.enableMocks();
 
 /**
  * Register tags for components.

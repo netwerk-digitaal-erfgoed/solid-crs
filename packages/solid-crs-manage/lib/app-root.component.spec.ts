@@ -68,6 +68,9 @@ describe('AppRootComponent', () => {
 
     component.actor = machine;
 
+    fetchMock.resetMocks();
+    fetchMock.mockResponseOnce('{}');
+
   });
 
   afterEach(() => {
