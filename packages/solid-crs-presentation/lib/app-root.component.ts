@@ -221,7 +221,7 @@ export class AppRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.REFRESHING });
+    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.LOADING_COLLECTIONS });
 
     return html`
 

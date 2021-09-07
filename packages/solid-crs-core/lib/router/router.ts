@@ -1,7 +1,7 @@
 import { ArgumentError } from '../errors/argument-error';
 
 /**
- * A Route defitinition for use in the xstate Router
+ * Route definition for use in the router
  */
 export interface Route {
 
@@ -11,12 +11,13 @@ export interface Route {
   path: string;
 
   /**
-   * The target state(s) of this route
+   * The target state(s) of this route (likely some feature state)
    */
   targets: string[];
 
   /**
    * The document.title of this route
+   * When set, router will update document.title to this value
    */
   title?: string;
 }
@@ -28,7 +29,7 @@ export interface Route {
  * @param match The path of the route to match
  * @returns true when path matches, otherwise false
  */
-export const matchPath = (match: string, currentPath: string): boolean => {
+export const matchPath = (match: string): boolean => {
 
   // !path also checks empty strings, which are allowed here
   if (match === undefined || match === null) {
@@ -39,7 +40,7 @@ export const matchPath = (match: string, currentPath: string): boolean => {
 
   const regex = new RegExp(`^${match.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
-  return currentPath.match(regex)?.length > 0;
+  return window.location.pathname.match(regex)?.length > 0;
 
 };
 
@@ -49,7 +50,7 @@ export const matchPath = (match: string, currentPath: string): boolean => {
  * @param routes A list of all routes
  * @returns The currently active route
  */
-export const activeRoute = (routes: Route[], currentPath: string): Route => {
+export const activeRoute = (routes: Route[]): Route => {
 
   if (!routes || routes.length < 1) {
 
@@ -57,7 +58,7 @@ export const activeRoute = (routes: Route[], currentPath: string): Route => {
 
   }
 
-  return routes.find((route) => matchPath(route.path, currentPath));
+  return routes.find((route) => matchPath(route.path));
 
 };
 
@@ -94,3 +95,76 @@ export const urlVariables = (path: string): Map<string, string> => {
   return variables;
 
 };
+
+/**
+ * Updates the document's title
+ *
+ * @param title The new page title
+ */
+export const updateTitle = (title: string): string => {
+
+  document.title = title;
+
+  return undefined;
+
+};
+
+/**
+ * Updates the path in the URL bar
+ *
+ * @param path The new value for the path
+ * @param title Optional, the new document title
+ */
+export const updateHistory = (path: string, title?: string): void => {
+
+  if (path === window.location.pathname) {
+
+    history.replaceState({}, title||'', path);
+
+  } else {
+
+    history.pushState({}, title||'', path);
+
+  }
+
+  if (title) updateTitle(title);
+
+};
+
+/**
+ * State references for the application's features, with readable log format.
+ */
+export enum RouterStates {
+  IDLE = '[RouterStates: Idle]',
+  NAVIGATING = '[RouterStates: Navigating]',
+}
+
+/**
+ * State key for the router
+ */
+export const ROUTER = '[AppState: Router]';
+
+/**
+ * StateNodeConfig for the router
+ * Resolves URL path to a state
+ */
+export const routerStateConfig = (routes: Route[]) => ({
+  [ROUTER]: {
+    initial: RouterStates.IDLE,
+    states: {
+      [RouterStates.IDLE]: {
+        id: RouterStates.IDLE,
+      },
+      [RouterStates.NAVIGATING]: {
+        id: RouterStates.NAVIGATING,
+        invoke: {
+          src: async () => Promise.resolve(),
+          onDone: {
+            target: activeRoute(routes).targets,
+            actions: [ () => updateTitle(activeRoute(routes).title) ],
+          },
+        },
+      },
+    },
+  },
+});

@@ -1,5 +1,5 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigatedEvent, NavigateEvent, setCollections, setProfile } from './app.events';
@@ -72,7 +72,6 @@ export enum AppRootStates {
   FEATURE  = '[AppState: Features]',
   DATA  = '[AppState: Data]',
   SEARCH  = '[AppState: Search]',
-  ROUTER  = '[AppState: Router]',
 }
 
 /**
@@ -88,85 +87,40 @@ export enum AppFeatureStates {
 }
 
 /**
- * State references for the application's features, with readable log format.
- */
-export enum AppRouterStates {
-  IDLE = '[AppRouterStates: Idle]',
-  NAVIGATING = '[AppRouterStates: Navigating]',
-  RESOLVING_ROUTE  = '[AppRouterStates: Resolving Route]',
-  LOADING_DATA  = '[AppRouterStates: Loading Data]',
-}
-
-/**
  * State indicates if a collection is being created.
  */
 export enum AppDataStates {
-  LOADING_PROFILE  = '[AppDataStates: Loading Profile]',
-  REFRESHING  = '[AppDataStates: Refreshing]',
+  LOADING_PROFILE  = '[AppDataStates: Loading profile]',
+  LOADING_COLLECTIONS  = '[AppDataStates: Loading collections]',
+  LOADING_OBJECT  = '[AppDataStates: Loading object]',
   LOADED_DATA  = '[AppDataStates: Loaded data]',
 }
 
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppRouterStates | AppDataStates;
-
-/**
- * Updates the document's title
- *
- * @param title The new page title
- * @returns The new page title
- */
-export const updateTitle = (title: string): string => {
-
-  document.title = title;
-
-  return undefined;
-
-};
-
-/**
- * Updates the path in the URL bar
- *
- * @param context The App Context
- * @param path The new value for the path
- */
-export const updateHistory = (path: string, title?: string): void => {
-
-  if (path === window.location.pathname) {
-
-    history.replaceState({}, title||'', path);
-
-  } else {
-
-    history.pushState({}, title||'', path);
-
-  }
-
-  if (title) updateTitle(title);
-
-};
+export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates;
 
 const routes: Route[] = [
   {
     title: 'Collectie | Solid CRS',
     path: '/{{webId}}/collection/{{collectionUri}}',
-    targets: [ AppRouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+    targets: [ RouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
   },
   {
     title: 'Object overzicht | Solid CRS',
     path: '/{{webId}}/object/{{objectUri}}',
-    targets: [ AppRouterStates.LOADING_DATA, `#${AppFeatureStates.OBJECT}` ],
+    targets: [ RouterStates.IDLE, `#${AppDataStates.LOADING_OBJECT}` ],
   },
   {
     title: 'Zoeken | Solid CRS',
     path: '/{{webId}}/search/{{searchTerm}}',
-    targets: [ AppRouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
+    targets: [ RouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
   },
   {
     title: 'Over | Solid CRS',
     path: '/{{webId}}/about',
-    targets: [ AppRouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
+    targets: [ RouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
   },
 ];
 
@@ -191,7 +145,7 @@ export const appMachine = (
       ],
     },
     [AppEvents.NAVIGATE]: {
-      target: [ `#${AppRouterStates.NAVIGATING}` ],
+      target: [ `#${RouterStates.NAVIGATING}` ],
       actions: [
         assign({ path: (context, event) => event.path||window.location.pathname }),
       ],
@@ -206,55 +160,9 @@ export const appMachine = (
   },
   states: {
     /**
-     * Resolves URL path to a state
+     * Router
      */
-    [AppRootStates.ROUTER]: {
-      initial: AppRouterStates.IDLE,
-      states: {
-        [AppRouterStates.IDLE]: {
-          id: AppRouterStates.IDLE,
-        },
-        [AppRouterStates.NAVIGATING]: {
-          id: AppRouterStates.NAVIGATING,
-          entry: log(() => activeRoute(routes, window.location.pathname)),
-          invoke: {
-            src: async () => Promise.resolve(),
-            onDone: {
-              target: activeRoute(routes, window.location.pathname).targets,
-              actions: [ () => updateTitle(activeRoute(routes, window.location.pathname).title) ],
-            },
-          },
-        },
-        [AppRouterStates.LOADING_DATA]: {
-          entry: log('loading data'),
-          invoke: {
-            src: async (context) => {
-
-              if (context.path?.match(/^\/.+\/object\/.+\/?$/)) {
-
-                return objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes, window.location.pathname).path).get('objectUri')));
-
-              } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
-
-            },
-            onDone: [
-              {
-                cond: (context, event) => !!event.data,
-                target: AppRouterStates.IDLE,
-                actions: send((context, event) => new SelectedObjectEvent(event.data)),
-              },
-              {
-                cond: (context, event) => !event.data,
-                target: AppRouterStates.IDLE,
-              },
-            ],
-            onError: {
-              target: AppRouterStates.IDLE,
-            },
-          },
-        },
-      },
-    },
+    ...routerStateConfig(routes),
     /**
      * Determines which feature is currently active.
      */
@@ -307,7 +215,6 @@ export const appMachine = (
              * Not refreshing or creating collections.
              */
             [AppDataStates.LOADED_DATA]: {
-              entry: send(new NavigateEvent()),
               type: 'final',
             },
             [AppDataStates.LOADING_PROFILE]: {
@@ -316,10 +223,10 @@ export const appMachine = (
                   /**
                    * Get all collections from store.
                    */
-                  src: () => solidService.getProfile(decodeURIComponent(urlVariables(activeRoute(routes, window.location.pathname).path).get('webId'))),
+                  src: () => solidService.getProfile(decodeURIComponent(urlVariables(activeRoute(routes).path).get('webId'))),
                   onDone: [
                     {
-                      target: [ AppDataStates.REFRESHING ],
+                      target: [ AppDataStates.LOADING_COLLECTIONS ],
                       actions: [
                         setProfile,
                         (context, event) => (collectionStore as CollectionSolidStore).webId = event.data.uri,
@@ -335,7 +242,7 @@ export const appMachine = (
             /**
              * Refresh collections, set current collection and assign to state.
              */
-            [AppDataStates.REFRESHING]: {
+            [AppDataStates.LOADING_COLLECTIONS]: {
               invoke: [
                 {
                   /**
@@ -347,6 +254,7 @@ export const appMachine = (
                       target: AppDataStates.LOADED_DATA,
                       actions: [
                         setCollections,
+                        send(new NavigateEvent()),
                       ],
                     },
                   ],
@@ -355,6 +263,36 @@ export const appMachine = (
                   },
                 },
               ],
+            },
+            [AppDataStates.LOADING_OBJECT]: {
+              entry: log('loading data'),
+              id: AppDataStates.LOADING_OBJECT,
+              invoke: {
+                src: async () => {
+
+                  if (window.location.pathname?.match(/^\/.+\/object\/.+\/?$/)) {
+
+                    return objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes).path).get('objectUri')));
+
+                  } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
+
+                },
+                onDone: [
+                  {
+                    cond: (c, event) => !event.data,
+                    target: [ AppDataStates.LOADED_DATA, `#${AppFeatureStates.OBJECT}` ],
+                    actions: [ log('error data') ],
+                  },
+                  {
+                    cond: (c, event) => !!event.data,
+                    target: [ AppDataStates.LOADED_DATA, `#${AppFeatureStates.OBJECT}` ],
+                    actions: [ log('loaded data'), send((c, event) => new SelectedObjectEvent(event.data)) ],
+                  },
+                ],
+                onError: {
+                  actions: send((c, event) => event),
+                },
+              },
             },
           },
         },
@@ -385,7 +323,7 @@ export const appMachine = (
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
-                  collection.uri === decodeURIComponent(urlVariables(activeRoute(routes, window.location.pathname).path).get('collectionUri')))
+                  collection.uri === decodeURIComponent(urlVariables(activeRoute(routes).path).get('collectionUri')))
                 || context.collections[0] }),
           ],
           on: {
@@ -458,7 +396,7 @@ export const appMachine = (
               id: AppActors.SEARCH_MACHINE,
               src: searchMachine(collectionStore, objectStore),
               data: (context, event: SearchUpdatedEvent) => ({
-                searchTerm: event.searchTerm||(urlVariables(activeRoute(routes, window.location.pathname).path).get('searchTerm')||''),
+                searchTerm: event.searchTerm||(urlVariables(activeRoute(routes).path).get('searchTerm')||''),
               }),
               onDone: {
                 actions: send((context, event) => ({
