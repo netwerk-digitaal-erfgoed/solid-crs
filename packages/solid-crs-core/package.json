@@ -62,7 +62,8 @@
     "i18next": "^20.4.0",
     "moment": "^2.29.1",
     "rxjs": "^6.6.7",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "xstate": "^4.23.4"
   },
   "jest": {
     "setupFiles": [
@@ -70,10 +71,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 94.07,
-        "statements": 97.89,
-        "lines": 97.8,
-        "functions": 97.93
+        "branches": 94.09,
+        "statements": 97.92,
+        "lines": 97.82,
+        "functions": 97.97
       }
     },
     "automock": false,

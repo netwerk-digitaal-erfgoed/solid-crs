@@ -1,4 +1,4 @@
-import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates } from './router';
+import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates, NavigateEvent, NavigatedEvent } from './router';
 
 describe('Router', () => {
 
@@ -189,6 +189,31 @@ describe('Router', () => {
 
       expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.target)
         .toContain(RouterStates.IDLE);
+
+    });
+
+  });
+
+  describe('NavigateEvent', () => {
+
+    it('should create', () => {
+
+      const event = new NavigateEvent(path);
+      expect(event).toBeTruthy();
+      expect(event.path).toEqual(path);
+
+    });
+
+  });
+
+  describe('NavigatedEvent', () => {
+
+    it('should create', () => {
+
+      const event = new NavigatedEvent(path, title);
+      expect(event).toBeTruthy();
+      expect(event.path).toEqual(path);
+      expect(event.title).toEqual(title);
 
     });
 

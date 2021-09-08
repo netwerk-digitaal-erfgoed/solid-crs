@@ -1,3 +1,4 @@
+import { EventObject } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -168,3 +169,38 @@ export const routerStateConfig = (routes: Route[]) => ({
     },
   },
 });
+
+/**
+ * Event references for the router, with readable log format.
+ */
+export enum RouterEvents {
+  NAVIGATE = '[AppEvent: Navigate]',
+  NAVIGATED = '[AppEvent: Navigated]',
+}
+
+/**
+ * An event which is dispatched when routing should start
+ */
+export class NavigateEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATE = RouterEvents.NAVIGATE;
+  constructor(public path?: string) { }
+
+}
+
+/**
+ * An event which is dispatched at the end of routing
+ */
+export class NavigatedEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATED = RouterEvents.NAVIGATED;
+  constructor(public path: string, public title?: string) { }
+
+}
+
+/**
+ * Union type of router events.
+ */
+export type RouterEvent =
+  NavigateEvent |
+  NavigatedEvent;

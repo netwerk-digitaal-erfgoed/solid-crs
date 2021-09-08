@@ -1,8 +1,8 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, NavigatedEvent, NavigateEvent, setCollections, setProfile } from './app.events';
+import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
@@ -144,13 +144,13 @@ export const appMachine = (
         forwardTo(AppActors.OBJECT_MACHINE),
       ],
     },
-    [AppEvents.NAVIGATE]: {
+    [RouterEvents.NAVIGATE]: {
       target: [ `#${RouterStates.NAVIGATING}` ],
       actions: [
         assign({ path: (context, event) => event.path||window.location.pathname }),
       ],
     },
-    [AppEvents.NAVIGATED]: {
+    [RouterEvents.NAVIGATED]: {
       actions: (context, event) => updateHistory(event.path, event.title),
     },
     [AppEvents.CLICKED_HOME]: {
