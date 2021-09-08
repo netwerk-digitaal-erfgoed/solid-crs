@@ -1,4 +1,4 @@
-import { EventObject } from 'xstate';
+import { EventObject, StateNodeConfig } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -149,7 +149,7 @@ export const ROUTER = '[AppState: Router]';
  * StateNodeConfig for the router
  * Resolves URL path to a state
  */
-export const routerStateConfig = (routes: Route[]) => ({
+export const routerStateConfig = (routes: Route[]): { [ROUTER]: StateNodeConfig<any, any, any> } => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {

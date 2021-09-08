@@ -1,5 +1,5 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent, ROUTER } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
@@ -99,7 +99,7 @@ export enum AppDataStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates;
+export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates | RouterStates;
 
 const routes: Route[] = [
   {
