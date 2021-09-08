@@ -131,6 +131,12 @@ export class AppRootComponent extends RxLitElement {
 
   firstUpdated(changed: PropertyValues): void {
 
+    window.onpopstate = () => {
+
+      window.location.reload();
+
+    };
+
     super.firstUpdated(changed);
 
     this.subscribe('state', from(this.actor));
@@ -215,7 +221,7 @@ export class AppRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.REFRESHING });
+    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.LOADING_COLLECTIONS });
 
     return html`
 
