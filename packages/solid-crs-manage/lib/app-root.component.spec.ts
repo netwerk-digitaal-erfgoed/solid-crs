@@ -4,6 +4,7 @@ import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
+import nlNL from './public/nl-NL.json';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
@@ -68,8 +69,7 @@ describe('AppRootComponent', () => {
 
     component.actor = machine;
 
-    fetchMock.resetMocks();
-    fetchMock.mockResponseOnce('{}');
+    fetchMock.mockResponseOnce(JSON.stringify({}));
 
   });
 
@@ -95,7 +95,6 @@ describe('AppRootComponent', () => {
         const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-sidebar');
 
         expect(sidebar).toBeTruthy();
-        expect(sidebar.length).toBe(1);
 
         done();
 
@@ -136,29 +135,15 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should send event when dismissing', async (done) => {
+  it('should send event when dismissing', () => {
 
     const alert: Alert = { message: 'foo', type: 'success' };
 
-    machine.onEvent(async (event) => {
-
-      if(event.type === AppEvents.DISMISS_ALERT && event){
-
-        const casted = event as DismissAlertEvent;
-
-        expect(casted.alert).toEqual(alert);
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    machine.send = jest.fn();
 
     component.dismiss({ detail: alert } as CustomEvent<Alert>);
+
+    expect(machine.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
   });
 

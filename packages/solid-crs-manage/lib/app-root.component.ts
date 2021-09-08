@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { ActorRef, interpret, State } from 'xstate';
+import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile } from '@netwerk-digitaal-erfgoed/solid-crs-core';
@@ -30,57 +30,12 @@ export class AppRootComponent extends RxLitElement {
   public translator: MemoryTranslator = new MemoryTranslator('nl-NL');
 
   /**
-   * The constructor of the application root component,
-   * which starts the root machine actor.
-   */
-  constructor() {
-
-    super();
-    this.actor.start();
-
-  }
-
-  /**
    * The actor controlling this component.
    * Since this is the application root component,
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor = interpret(
-    (appMachine(
-      new SolidSDKService(this.logger),
-      new CollectionSolidStore(),
-      new CollectionObjectSolidStore(),
-      {
-        uri: undefined,
-        name: undefined,
-        description: undefined,
-        objectsUri: undefined,
-        distribution: undefined,
-      },
-      {
-        uri: undefined,
-        name: undefined,
-        description: undefined,
-        collection: undefined,
-        type: 'http://schema.org/CreativeWork',
-        identifier: undefined,
-        additionalType: [],
-        image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
-        license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
-        height: 0,
-        width: 0,
-        depth: 0,
-        weight: 0,
-        heightUnit: 'CMT',
-        widthUnit: 'CMT',
-        depthUnit: 'CMT',
-        weightUnit: 'KGM',
-      }
-    )).withContext({
-      alerts: [],
-    }), { devTools: process.env.MODE === 'DEV' },
-  );
+  actor: Interpreter<AppContext, unknown, EventObject>;
 
   /**
    * The state of this component.
@@ -125,19 +80,59 @@ export class AppRootComponent extends RxLitElement {
   searchActor: ActorRef<SearchEvent>;
 
   // Defer the first update of the component until the strings has been loaded to avoid empty strings being shown
-  private hasLoadedStrings = false;
-  protected shouldUpdate (changedProperties: PropertyValues) {
+  @internalProperty()
+  hasLoadedStrings = false;
+
+  protected shouldUpdate (changedProperties: PropertyValues): boolean {
 
     return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
 
   }
 
   // Load the initial language and mark that the strings has been loaded.
-  async connectedCallback () {
+  async connectedCallback(): Promise<void> {
 
     await this.translator.setLng('nl-NL');
+
+    this.actor = interpret(
+      (appMachine(
+        new SolidSDKService(this.logger),
+        new CollectionSolidStore(),
+        new CollectionObjectSolidStore(),
+        {
+          uri: undefined,
+          name: this.translator.translate('collections.new-collection-name'),
+          description: this.translator.translate('collections.new-collection-description'),
+          objectsUri: undefined,
+          distribution: undefined,
+        },
+        {
+          uri: undefined,
+          name: '',
+          description: '',
+          collection: undefined,
+          type: 'http://schema.org/CreativeWork',
+          identifier: '',
+          additionalType: [],
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
+          license: 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl',
+          height: 0,
+          width: 0,
+          depth: 0,
+          weight: 0,
+          heightUnit: 'CMT',
+          widthUnit: 'CMT',
+          depthUnit: 'CMT',
+          weightUnit: 'KGM',
+        }
+      )).withContext({
+        alerts: [],
+      }), { devTools: process.env.MODE === 'DEV' },
+    );
+
     this.hasLoadedStrings = true;
     super.connectedCallback();
+    this.actor.start();
 
   }
 

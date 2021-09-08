@@ -55,11 +55,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
   const res: FormValidatorResult[]  = [];
 
-  // only validate dirty fields
-  const dirtyFields = Object.keys(context.data).filter((field) =>
-    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
-
-  for (const field of dirtyFields) {
+  for (const field of Object.keys(context.data)) {
 
     const value = context.data[field as keyof CollectionObject];
 
@@ -185,8 +181,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     } else if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
 
       // validate numbers
-
-      if (value.toString() === 'NaN') {
+      if (value && isNaN(+value)) {
 
         res.push({
           field,
