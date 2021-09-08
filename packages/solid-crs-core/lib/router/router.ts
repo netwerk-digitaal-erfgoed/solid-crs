@@ -201,6 +201,4 @@ export class NavigatedEvent implements EventObject {
 /**
  * Union type of router events.
  */
-export type RouterEvent =
-  NavigateEvent |
-  NavigatedEvent;
+export type RouterEvent = NavigateEvent | NavigatedEvent;
