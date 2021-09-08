@@ -149,7 +149,7 @@ export const ROUTER = '[AppState: Router]';
  * StateNodeConfig for the router
  * Resolves URL path to a state
  */
-export const routerStateConfig = (routes: Route[]): { [ROUTER]: StateNodeConfig<any, any, any> } => ({
+export const routerStateConfig = (routes: Route[]) => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {
