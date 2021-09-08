@@ -105,22 +105,22 @@ const routes: Route[] = [
   {
     title: 'Collectie | Solid CRS',
     path: '/{{webId}}/collection/{{collectionUri}}',
-    targets: [ RouterStates.IDLE, `#${AppFeatureStates.COLLECTION}` ],
+    targets: [ `#${AppFeatureStates.COLLECTION}` ],
   },
   {
     title: 'Object overzicht | Solid CRS',
     path: '/{{webId}}/object/{{objectUri}}',
-    targets: [ RouterStates.IDLE, `#${AppDataStates.LOADING_OBJECT}` ],
+    targets: [ `#${AppDataStates.LOADING_OBJECT}` ],
   },
   {
     title: 'Zoeken | Solid CRS',
     path: '/{{webId}}/search/{{searchTerm}}',
-    targets: [ RouterStates.IDLE, `#${AppFeatureStates.SEARCH}` ],
+    targets: [ `#${AppFeatureStates.SEARCH}` ],
   },
   {
     title: 'Over | Solid CRS',
     path: '/{{webId}}/about',
-    targets: [ RouterStates.IDLE, `#${AppFeatureStates.ABOUT}` ],
+    targets: [ `#${AppFeatureStates.ABOUT}` ],
   },
 ];
 

@@ -174,10 +174,21 @@ describe('Router', () => {
       const config = routerStateConfig(routes);
 
       expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.target)
-        .toEqual(activeRoute(routes).targets);
+        .toContain(activeRoute(routes).targets[0]);
 
       expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.actions[0]())
         .toEqual(updateTitle(activeRoute(routes).title));
+
+    });
+
+    it('invoke.onDone.target should always contain RouterStates.IDLE', () => {
+
+      delete window.location;
+      (window.location as any) = new URL(`http://localhost${path}`);
+      const config = routerStateConfig(routes);
+
+      expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.target)
+        .toContain(RouterStates.IDLE);
 
     });
 
