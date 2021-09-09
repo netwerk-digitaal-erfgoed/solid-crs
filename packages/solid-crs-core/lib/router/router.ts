@@ -118,13 +118,16 @@ export const updateTitle = (title: string): string => {
  */
 export const updateHistory = (path: string, title?: string): void => {
 
+  // keep hash and query parameters
+  const completePath = path + window.location.hash + window.location.search;
+
   if (path === window.location.pathname) {
 
-    history.replaceState({}, title||'', path);
+    history.replaceState({}, title||'', completePath);
 
   } else {
 
-    history.pushState({}, title||'', path);
+    history.pushState({}, title||'', completePath);
 
   }
 
