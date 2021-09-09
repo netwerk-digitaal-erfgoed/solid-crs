@@ -27,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator('nl-NL');
+  public translator: Translator = new MemoryTranslator('nl-NL', new URL(window.location.href).searchParams.get('lang'));
 
   /**
    * The constructor of the application root component,

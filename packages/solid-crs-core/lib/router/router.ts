@@ -1,4 +1,4 @@
-import { EventObject, StateNodeConfig } from 'xstate';
+import { EventObject } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
