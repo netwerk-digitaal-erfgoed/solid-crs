@@ -119,7 +119,7 @@ export const updateTitle = (title: string): string => {
 export const updateHistory = (path: string, title?: string): void => {
 
   // keep hash and query parameters
-  const completePath = path + window.location.hash + window.location.search;
+  const completePath = path + window.location.search + window.location.hash;
 
   if (path === window.location.pathname) {
 

@@ -1,4 +1,4 @@
-import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig } from '@appnest/lit-translate';
+import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -46,7 +46,7 @@ export class MemoryTranslator {
    *
    * @returns The language currently used by translator
    */
-  getLang(): string {
+  getLng(): string {
 
     return this.lng;
 
@@ -60,55 +60,25 @@ export class MemoryTranslator {
    */
   async setLng(lng: string): Promise<void>{
 
-    const oldLang = this.lng;
-    const fallback = fetch(`${window.location.origin}/${oldLang}.json`).then((r) => r.json());
+    const lang = this.lng;
+    let translations: Promise<Strings>;
 
     try {
 
-      const translations = await fetch(`${window.location.origin}/${lng}.json`)
-        .then(async (res) => {
-
-          if (res.ok) {
-
-            return await res.json();
-
-          } else {
-
-            throw new ArgumentError('Bad response code for:', lng);
-
-          }
-
-        }).catch(() => null);
-
-      if (translations) {
-
-        registerTranslateConfig({
-          loader: () => translations,
-        });
-
-        await use(this.lng).then(() => {
-
-          this.lng = lng;
-
-        });
-
-      } else {
-
-        throw new ArgumentError('Could not retrieve translations', lng);
-
-      }
+      translations = await (await fetch(`${window.location.origin}/${lng}.json`)).json();
+      this.lng = lng;
 
     } catch(e) {
 
-      this.lng = oldLang;
-
-      registerTranslateConfig({
-        loader: () => fallback,
-      });
-
-      await use(this.lng);
+      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
 
     }
+
+    registerTranslateConfig({
+      loader: async () => translations,
+    });
+
+    await use(this.lng);
 
   }
 

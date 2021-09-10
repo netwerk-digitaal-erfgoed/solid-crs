@@ -21,8 +21,6 @@ describe('MemoryTranslator', () => {
 
     service = new MemoryTranslator('en-GB');
 
-    // await service.setLng('en-GB');
-
   });
 
   afterEach(() => {
@@ -85,23 +83,41 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('should not set new language when fetch status is not OK', async () => {
+    it('should not set new language when fetch throws error', async () => {
 
-      fetchMock.mockResponseOnce(mockResponse);
-      fetchMock.mockRejectOnce(new Error());
+      fetchMock.mockResponse(async (req) => {
+
+        if (req.url.includes('en-US')) {
+
+          throw new Error();
+
+        } else {
+
+          return mockResponse;
+
+        }
+
+      });
 
       await service.setLng(newLang);
       expect(service.lng).not.toEqual(newLang);
 
     });
 
-    it('should not set new language when fetch throws error', async () => {
+    it('should set new language correctly', async () => {
 
-      fetchMock.mockResponseOnce(mockResponse);
-      fetchMock.mockRejectOnce(new Error());
+      await service.setLng('nl-BE');
+      expect(service.getLng()).toEqual('nl-BE');
 
-      await service.setLng(newLang);
-      expect(service.lng).not.toEqual(newLang);
+    });
+
+  });
+
+  describe('getLng', () => {
+
+    it('should return the current language', async () => {
+
+      expect(service.getLng()).toEqual(service.lng);
 
     });
 
