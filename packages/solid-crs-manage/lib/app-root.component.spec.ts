@@ -4,7 +4,6 @@ import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
-import nlNL from './public/nl-NL.json';
 
 const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 

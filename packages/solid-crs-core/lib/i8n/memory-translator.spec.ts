@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryTranslator } from './memory-translator';
 
@@ -5,18 +6,28 @@ describe('MemoryTranslator', () => {
 
   let service: MemoryTranslator;
 
+  const mockResponse = JSON.stringify({
+    'foo': {
+      'foo': 'Foo',
+      'bar': 'Bar',
+    },
+  });
+
   beforeEach(async () => {
 
-    service = new MemoryTranslator('en-GB');
     fetchMock.resetMocks();
 
-    fetchMock
-      .mockResponseOnce(JSON.stringify({
-        'foo': {
-          'foo': 'Foo',
-          'bar': 'Bar',
-        },
-      }));
+    fetchMock.mockResponse(mockResponse);
+
+    service = new MemoryTranslator('en-GB');
+
+    // await service.setLng('en-GB');
+
+  });
+
+  afterEach(() => {
+
+    fetchMock.resetMocks();
 
   });
 
@@ -55,6 +66,42 @@ describe('MemoryTranslator', () => {
     it('Should throw error when key is null.', () => {
 
       expect(()=>service.translate(null)).toThrow(ArgumentError);
+
+    });
+
+  });
+
+  describe('setLng', () => {
+
+    const newLang = 'en-US';
+
+    it('should not set new language when invalid JSON', async () => {
+
+      fetchMock.mockIf(/en-US/, '<not-json>');
+      fetchMock.mockIf(/en-GB/, mockResponse);
+
+      await service.setLng(newLang);
+      expect(service.lng).not.toEqual(newLang);
+
+    });
+
+    it('should not set new language when fetch status is not OK', async () => {
+
+      fetchMock.mockResponseOnce(mockResponse);
+      fetchMock.mockRejectOnce(new Error());
+
+      await service.setLng(newLang);
+      expect(service.lng).not.toEqual(newLang);
+
+    });
+
+    it('should not set new language when fetch throws error', async () => {
+
+      fetchMock.mockResponseOnce(mockResponse);
+      fetchMock.mockRejectOnce(new Error());
+
+      await service.setLng(newLang);
+      expect(service.lng).not.toEqual(newLang);
 
     });
 

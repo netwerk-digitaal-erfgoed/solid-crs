@@ -104,6 +104,44 @@ export class AppRootComponent extends RxLitElement {
   lastSearchTerm: string;
 
   /**
+   * Whether the translator has finished loading strings
+   */
+  @internalProperty()
+  hasLoadedStrings = false;
+
+  protected shouldUpdate (changedProperties: PropertyValues): boolean {
+
+    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
+
+  }
+
+  async connectedCallback(): Promise<void> {
+
+    // try to update translator with queryParam value
+    const language = new URL(window.location.href).searchParams.get('l');
+
+    if (language) {
+
+      await this.translator.setLng(language);
+
+    }
+
+    this.actor = interpret(
+      appMachine(
+        new SolidSDKService(this.logger),
+        new CollectionSolidStore(),
+        new CollectionObjectSolidStore()
+      ).withContext({ alerts: [] }),
+      { devTools: process.env.MODE === 'DEV' }
+    );
+
+    this.hasLoadedStrings = true;
+    super.connectedCallback();
+    this.actor.start();
+
+  }
+
+  /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.
    *
    * @param event The event fired when dismissing an alert.

@@ -1,4 +1,4 @@
-import { registerTranslateConfig, use, get } from '@appnest/lit-translate';
+import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -12,15 +12,9 @@ export class MemoryTranslator {
    * @param lng The default locale to use when translating.
    * @param defaultLng The fallback locale to use when translating.
    */
-  constructor(public defaultLng: string, public lng?: string) {
+  constructor(public lng: string) {
 
-    registerTranslateConfig({
-      loader: () => fetch(`/${this.lng}.json`)
-        .then((res) => res.json())
-        .catch(() => fetch(`/${this.defaultLng}.json`).then((res) => res.json())),
-    });
-
-    use(this.lng);
+    this.setLng(lng);
 
   }
 
@@ -35,7 +29,7 @@ export class MemoryTranslator {
    * This error is thrown when either no locale or key have been given.
    */
 
-  translate(key: string): string {
+  translate(key: string, values?: Values | ValuesCallback, config?: ITranslateConfig): string {
 
     if (!key) {
 
@@ -43,14 +37,78 @@ export class MemoryTranslator {
 
     }
 
-    return get(key);
+    return get(key, values, config);
 
   }
 
+  /**
+   * Returns the language currently used by translator
+   *
+   * @returns The language currently used by translator
+   */
+  getLang(): string {
+
+    return this.lng;
+
+  }
+
+  /**
+   * Updates the translator's language if a relevant translation file exists
+   * for this new language. Otherwise, falls back to the previously used language
+   *
+   * @param lng The new language to use
+   */
   async setLng(lng: string): Promise<void>{
 
-    this.lng = lng;
-    await use(lng);
+    const oldLang = this.lng;
+    const fallback = fetch(`${window.location.origin}/${oldLang}.json`).then((r) => r.json());
+
+    try {
+
+      const translations = await fetch(`${window.location.origin}/${lng}.json`)
+        .then(async (res) => {
+
+          if (res.ok) {
+
+            return await res.json();
+
+          } else {
+
+            throw new ArgumentError('Bad response code for:', lng);
+
+          }
+
+        }).catch(() => null);
+
+      if (translations) {
+
+        registerTranslateConfig({
+          loader: () => translations,
+        });
+
+        await use(this.lng).then(() => {
+
+          this.lng = lng;
+
+        });
+
+      } else {
+
+        throw new ArgumentError('Could not retrieve translations', lng);
+
+      }
+
+    } catch(e) {
+
+      this.lng = oldLang;
+
+      registerTranslateConfig({
+        loader: () => fallback,
+      });
+
+      await use(this.lng);
+
+    }
 
   }
 
