@@ -117,8 +117,8 @@ export class AppRootComponent extends RxLitElement {
 
   async connectedCallback(): Promise<void> {
 
-    // try to update translator with queryParam value
-    const language = new URL(window.location.href).searchParams.get('l');
+    // try to update translator with queryParam value, default to nl-NL
+    const language = new URL(window.location.href).searchParams.get('l') || 'nl-NL';
 
     if (language) {
 
