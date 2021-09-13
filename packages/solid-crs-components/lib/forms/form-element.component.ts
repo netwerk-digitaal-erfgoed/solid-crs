@@ -468,6 +468,10 @@ export class FormElementComponent<T> extends RxLitElement {
           padding: var(--gap-tiny) var(--gap-normal);
           font-size: var(--font-size-small);
         }
+
+        .help {
+          margin-top: var(--gap-small);
+        }
       `,
     ];
 
