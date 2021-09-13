@@ -370,10 +370,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     });
 
     // dimensions
-    let heightThing: ThingPersisted;
-    heightThing = createThing({ url: `${object.uri}-height` });
+    let heightThing = createThing({ url: `${object.uri}-height` });
     heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
-    objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
 
     if (object.height > 0) {
 
@@ -382,10 +380,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    let widthThing: ThingPersisted;
-    widthThing = createThing({ url: `${object.uri}-width` });
+    objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
+
+    let widthThing = createThing({ url: `${object.uri}-width` });
     widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
-    objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
 
     if (object.width > 0) {
 
@@ -394,10 +392,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    let depthThing: ThingPersisted;
-    depthThing = createThing({ url: `${object.uri}-depth` });
+    objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
+
+    let depthThing = createThing({ url: `${object.uri}-depth` });
     depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
-    objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
 
     if (object.depth > 0) {
 
@@ -406,10 +404,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    let weightThing: ThingPersisted;
-    weightThing = createThing({ url: `${object.uri}-weight` });
+    objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
+
+    let weightThing = createThing({ url: `${object.uri}-weight` });
     weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
-    objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
     if (object.weight > 0) {
 
@@ -417,6 +415,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       weightThing = addDecimal(weightThing, 'http://schema.org/value', object.weight);
 
     }
+
+    objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
