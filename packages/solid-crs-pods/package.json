@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-pods",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "description": "Pods for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",

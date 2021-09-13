@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.1...v0.10.0) (2021-09-13)
+
+
+### **Bug Fixes**
+
+* improve router ([#462](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/462)) ([0e5ac11](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0e5ac114589126e9384d2a3ec057605cd027fae3))
+* updated document titles ([#468](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/468)) ([560175b](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/560175bd62d2baf038e0b8a6949e4a1b73ed1c4b))
+
+
+
 ### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.0...v0.9.1) (2021-08-31)
 
 

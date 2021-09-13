@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.1...v0.10.0) (2021-09-13)
+
+
+### **Features**
+
+* add help texts to fields ([#461](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/461)) ([ba71288](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/ba71288b83311353faea77f7aa419717568a9230))
+
+
+
 ### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.0...v0.9.1) (2021-08-31)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-components

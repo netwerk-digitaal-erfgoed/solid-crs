@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.9.1...v0.10.0) (2021-09-13)
+
+
+### **Bug Fixes**
+
+* dimension units are not saved ([#467](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/467)) ([abb9ae7](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/abb9ae7ea6f92673c2a03f67a89026cb1abc29d1))
+* improve router ([#462](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/462)) ([0e5ac11](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/0e5ac114589126e9384d2a3ec057605cd027fae3))
+* updated document titles ([#468](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/468)) ([560175b](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/560175bd62d2baf038e0b8a6949e4a1b73ed1c4b))
+
+
+### **Features**
+
+* add help texts to fields ([#461](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/461)) ([ba71288](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ba71288b83311353faea77f7aa419717568a9230))
+
+
+
 ### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.9.0...v0.9.1) (2021-08-31)
 
 
