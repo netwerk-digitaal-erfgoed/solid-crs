@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -57,7 +57,7 @@ describe('SearchRootComponent', () => {
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
     component.actor = machine;
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator();
 
   });
 
@@ -186,7 +186,7 @@ describe('SearchRootComponent', () => {
 
     const textDiv = emptyContainer.querySelector('.text');
     expect(textDiv).toBeTruthy();
-    expect(textDiv.textContent).toBe('[search.root.empty.no-search-results]');
+    expect(textDiv.textContent).toEqual('search.root.empty.no-search-results');
 
   });
 

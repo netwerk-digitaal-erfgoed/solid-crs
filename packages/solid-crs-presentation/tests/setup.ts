@@ -51,6 +51,8 @@ core.routerStateConfig = () => ({
   },
 });
 
+core.MemoryTranslator = core.MockTranslator;
+
 /**
  * Enable mocks for fetch.
  */

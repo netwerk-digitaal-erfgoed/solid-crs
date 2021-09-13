@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
@@ -55,7 +55,7 @@ describe('AppRootComponent', () => {
       }));
 
     component = window.document.createElement('nde-app-root') as AppRootComponent;
-
+    component.translator = new MockTranslator();
     component.actor = machine;
 
   });
@@ -87,29 +87,15 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should send event when dismissing', async (done) => {
+  it('should send event when dismissing', () => {
 
     const alert: Alert = { message: 'foo', type: 'success' };
 
-    machine.onEvent(async (event) => {
-
-      if(event.type === AppEvents.DISMISS_ALERT && event){
-
-        const casted = event as DismissAlertEvent;
-
-        expect(casted.alert).toEqual(alert);
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    machine.send = jest.fn();
 
     component.dismiss({ detail: alert } as CustomEvent<Alert>);
+
+    expect(machine.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
   });
 

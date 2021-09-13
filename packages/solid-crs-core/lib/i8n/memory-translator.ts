@@ -1,10 +1,11 @@
 import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
+import { Translator } from './translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
-export class MemoryTranslator {
+export class MemoryTranslator extends Translator {
 
   /**
    * Instantiates a MemoryTranslator.
@@ -14,6 +15,7 @@ export class MemoryTranslator {
    */
   constructor(public lng: string) {
 
+    super();
     this.setLng(lng);
 
   }

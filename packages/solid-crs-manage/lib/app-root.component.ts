@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Logout, Logo, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
@@ -27,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: MemoryTranslator = new MemoryTranslator('nl-NL');
+  public translator: Translator = new MemoryTranslator('nl-NL');
 
   /**
    * The actor controlling this component.
