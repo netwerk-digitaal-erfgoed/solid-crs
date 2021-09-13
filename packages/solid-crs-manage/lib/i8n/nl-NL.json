@@ -1,7 +1,7 @@
 {
     "app": {
         "root": {
-            "title": "App",
+            "title": "Collectieregistratiesysteem",
             "alerts": {
                 "error": "Er ging iets fout"
             }
