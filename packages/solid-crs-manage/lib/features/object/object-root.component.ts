@@ -78,6 +78,12 @@ export class ObjectRootComponent extends RxLitElement {
   object?: CollectionObject;
 
   /**
+   * The original object to be displayed and/or edited.
+   */
+  @property({ type: Object })
+  original?: CollectionObject;
+
+  /**
    * The form machine used by the form actor
    */
   @internalProperty()
@@ -186,6 +192,13 @@ export class ObjectRootComponent extends RxLitElement {
 
         }
 
+        if(event instanceof ClickedResetEvent){
+
+          this.initFormMachine(this.original, this.original, true);
+          this.createComponents(this.components);
+
+        }
+
         if (event.type === `done.invoke.ObjectMachine.${ObjectStates.SAVING}:invocation[0]`) {
 
           const parsed = event as DoneInvokeEvent<CollectionObject>;
@@ -211,6 +224,10 @@ export class ObjectRootComponent extends RxLitElement {
 
       this.subscribe('collections', from(this.actor).pipe(
         map((state) => state.context.collections),
+      ));
+
+      this.subscribe('original', from(this.actor).pipe(
+        map((state) => state.context.original),
       ));
 
       this.subscribe('object', from(this.actor).pipe(

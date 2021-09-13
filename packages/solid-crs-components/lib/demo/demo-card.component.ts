@@ -1,11 +1,14 @@
 import { Collection, CollectionObject, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { css, html, LitElement } from 'lit-element';
+import fetchMock from 'jest-fetch-mock';
 
 export class DemoNDECardComponent extends LitElement {
 
   render() {
 
-    const translator = new MemoryTranslator({
+    const translator = new MemoryTranslator('nl-NL',);
+
+    fetchMock.mockResponseOnce(JSON.stringify({
       'common': {
         'date': {
           'just-now': 'enkele ogenblikken geleden',
@@ -25,10 +28,8 @@ export class DemoNDECardComponent extends LitElement {
           'name-unavailable': 'Naam onbekend',
           'subject-unavailable': 'Onderwerp onbekend',
         },
-
       },
-    },
-    'nl-NL',);
+    }));
 
     const obj1 = {
       uri: 'nl',

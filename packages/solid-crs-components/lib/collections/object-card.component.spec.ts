@@ -21,7 +21,11 @@ describe('ObjectCardComponent', () => {
 
     component = window.document.createElement('nde-object-card') as ObjectCardComponent;
 
-    component.translator = new MemoryTranslator({
+    component.translator = new MemoryTranslator('en-GB');
+
+    fetchMock.resetMocks();
+
+    fetchMock.mockResponseOnce(JSON.stringify({
       'collections': {
         'card': {
           'name-unavailable': 'Name unavailable',
@@ -33,8 +37,7 @@ describe('ObjectCardComponent', () => {
           'just-now': 'Just Now',
         },
       },
-    },
-    'en-GB');
+    }));
 
   });
 

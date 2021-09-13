@@ -52,7 +52,7 @@ describe('AboutRootComponent', () => {
     component = window.document.createElement('nde-about-root') as AboutRootComponent;
     component.actor = machine;
     component.collections = [ collection1, collection2 ];
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 

@@ -71,7 +71,7 @@ describe('AuthenticateRootComponent', () => {
 
     component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
 
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
     component.actor = machine;
 
   });

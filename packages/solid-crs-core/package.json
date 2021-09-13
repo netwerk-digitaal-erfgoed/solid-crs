@@ -58,22 +58,26 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "dependencies": {
+    "@appnest/lit-translate": "^1.1.18",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.9.1",
-    "i18next": "^20.4.0",
     "moment": "^2.29.1",
     "rxjs": "^6.6.7",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "xstate": "^4.23.4"
   },
   "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@appnest/lit-translate|lit-html)/)"
+    ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 93.75,
-        "statements": 97.76,
-        "lines": 97.68,
-        "functions": 97.73
+        "branches": 93.91,
+        "statements": 97.8,
+        "lines": 97.69,
+        "functions": 97.97
       }
     },
     "automock": false,
