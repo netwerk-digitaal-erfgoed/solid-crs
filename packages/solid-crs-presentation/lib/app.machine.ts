@@ -227,7 +227,7 @@ export const appMachine = (
                         setProfile,
                         (c, event: DoneInvokeEvent<SolidProfile>) => updateTitle(event.data.name),
                         (c, event: DoneInvokeEvent<SolidProfile>) =>
-                          (collectionStore.webId as CollectionSolidStore) = event.data.uri,
+                          (collectionStore as CollectionSolidStore).webId = event.data.uri,
                       ],
                     },
                   ],
