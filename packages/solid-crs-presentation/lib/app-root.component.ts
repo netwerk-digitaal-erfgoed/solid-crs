@@ -8,7 +8,6 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import nlNL from './i8n/nl-NL.json';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
@@ -28,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator(nlNL, 'nl-NL');
+  public translator: Translator = new MemoryTranslator('nl-NL');
 
   /**
    * The constructor of the application root component,
@@ -103,6 +102,44 @@ export class AppRootComponent extends RxLitElement {
    */
   @internalProperty()
   lastSearchTerm: string;
+
+  /**
+   * Whether the translator has finished loading strings
+   */
+  @internalProperty()
+  hasLoadedStrings = false;
+
+  protected shouldUpdate (changedProperties: PropertyValues): boolean {
+
+    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
+
+  }
+
+  async connectedCallback(): Promise<void> {
+
+    // try to update translator with queryParam value, default to nl-NL
+    const language = new URL(window.location.href).searchParams.get('l') || 'nl-NL';
+
+    if (language) {
+
+      await this.translator.setLng(language);
+
+    }
+
+    this.actor = interpret(
+      appMachine(
+        new SolidSDKService(this.logger),
+        new CollectionSolidStore(),
+        new CollectionObjectSolidStore()
+      ).withContext({ alerts: [] }),
+      { devTools: process.env.MODE === 'DEV' }
+    );
+
+    this.hasLoadedStrings = true;
+    super.connectedCallback();
+    this.actor.start();
+
+  }
 
   /**
    * Dismisses an alert when a dismiss event is fired by the AlertComponent.

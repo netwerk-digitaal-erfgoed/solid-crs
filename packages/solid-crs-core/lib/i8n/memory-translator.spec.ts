@@ -1,3 +1,4 @@
+import fetchMock from 'jest-fetch-mock';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryTranslator } from './memory-translator';
 
@@ -5,16 +6,26 @@ describe('MemoryTranslator', () => {
 
   let service: MemoryTranslator;
 
+  const mockResponse = JSON.stringify({
+    'foo': {
+      'foo': 'Foo',
+      'bar': 'Bar',
+    },
+  });
+
   beforeEach(async () => {
 
-    service = new MemoryTranslator({
-      'foo': {
-        'foo': 'Foo',
-        'bar': 'Bar',
-      },
+    fetchMock.resetMocks();
 
-    },
-    'en-GB');
+    fetchMock.mockResponse(mockResponse);
+
+    service = new MemoryTranslator('en-GB');
+
+  });
+
+  afterEach(() => {
+
+    fetchMock.resetMocks();
 
   });
 
@@ -28,7 +39,7 @@ describe('MemoryTranslator', () => {
 
     it('Should return an existing key in an existing locale.', () => {
 
-      const value = service.translate('foo.foo', 'en-GB');
+      const value = service.translate('foo.foo');
 
       expect(value).toEqual('Foo');
 
@@ -42,55 +53,71 @@ describe('MemoryTranslator', () => {
 
     });
 
-    it('Should return the input key with an existing key in an non-existing locale.', () => {
-
-      const value = service.translate('foo.bar', 'nl-NL');
-
-      expect(value).toEqual('foo.bar');
-
-    });
-
     it('Should return the input key with an non-existing key in an existing locale.', () => {
 
-      const value = service.translate('lorem', 'nl-NL');
+      const value = service.translate('lorem');
 
-      expect(value).toEqual('lorem');
+      expect(value).toEqual('[lorem]');
 
     });
 
     it('Should throw error when key is null.', () => {
 
-      expect(()=>service.translate(null, 'bla')).toThrow(ArgumentError);
-
-    });
-
-    it('Should throw error when locale and lng is null.', () => {
-
-      service.lng = null;
-
-      expect(()=>service.translate('bla', null)).toThrow(ArgumentError);
+      expect(()=>service.translate(null)).toThrow(ArgumentError);
 
     });
 
   });
 
-  describe('addTranslation', () => {
+  describe('setLng', () => {
 
-    beforeEach(async () => {
+    const newLang = 'en-US';
 
-      service.addTranslation({
-        'foo': {
-          'foo': 'Foo in dutch',
-          'bar': 'Bar in dutch',
-        },
-      }, 'nl-NL');
+    it('should not set new language when invalid JSON', async () => {
+
+      fetchMock.mockIf(/en-US/, '<not-json>');
+      fetchMock.mockIf(/en-GB/, mockResponse);
+
+      await service.setLng(newLang);
+      expect(service.lng).not.toEqual(newLang);
 
     });
 
-    it('Should find newly added translations', () => {
+    it('should not set new language when fetch throws error', async () => {
 
-      const value = service.translate('foo.foo', 'nl-NL');
-      expect(value).toEqual('Foo in dutch');
+      fetchMock.mockResponse(async (req) => {
+
+        if (req.url.includes('en-US')) {
+
+          throw new Error();
+
+        } else {
+
+          return mockResponse;
+
+        }
+
+      });
+
+      await service.setLng(newLang);
+      expect(service.lng).not.toEqual(newLang);
+
+    });
+
+    it('should set new language correctly', async () => {
+
+      await service.setLng('nl-BE');
+      expect(service.getLng()).toEqual('nl-BE');
+
+    });
+
+  });
+
+  describe('getLng', () => {
+
+    it('should return the current language', async () => {
+
+      expect(service.getLng()).toEqual(service.lng);
 
     });
 

@@ -1,7 +1,7 @@
 {
     "app": {
         "root": {
-            "title": "Collectieregistratiesysteem",
+            "title": "App",
             "alerts": {
                 "error": "Er ging iets fout"
             }
@@ -13,6 +13,9 @@
         },
         "collections":{
             "title": "Collecties"
+        },
+        "about":{
+            "title": "Over"
         }
     },
     "collections": {
@@ -43,10 +46,14 @@
         "new-object-name": "Nieuw object",
         "new-object-description": "Beschrijving van dit object",
         "root": {
-            "delete":{
+            "delete": {
                 "title": "Ben je zeker dat je dit object wil verwijderen?",
                 "confirm": "Verwijderen",
                 "cancel": "Annuleren"
+            },
+            "menu": {
+                "view-rdf": "RDF bekijken",
+                "copy-url": "URL kopiëren"
             }
         },
         "sidebar": {
@@ -63,24 +70,25 @@
                 "title": "Beeldmateriaal",
                 "subtitle": "Het beeldmateriaal van dit object.",
                 "field": {
+                    "image-source": "Afbeeldingslocatie",
                     "file": "Bestand",
                     "license": {
                         "title": "Licentie",
-                        "http://rightsstatements.org/vocab/InC/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd",
-                        "http://rightsstatements.org/vocab/InC-OW-EU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - EU verweesd werk",
-                        "http://rightsstatements.org/vocab/InC-EDU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - educatief gebruik toegestaan",
-                        "http://rightsstatements.org/vocab/InC-NC/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - niet-commercieel gebruik toegestaan",
-                        "http://rightsstatements.org/vocab/InC-RUU/1.0/": "Rightsstatements.org: Auteursrechtelijk beschermd - rechthebbende(n) niet-lokaliseerbaar of niet-identificeerbaar",
-                        "http://rightsstatements.org/vocab/NoC-US/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - Verenigde Staten",
-                        "http://rightsstatements.org/vocab/NoC-OKLR/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - andere juridische beperkingen",
-                        "http://rightsstatements.org/vocab/NoC-CR/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - contractuele beperkingen",
-                        "http://rightsstatements.org/vocab/NoC-NC/1.0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - uitsluitend niet-commercieel gebruik toegestaan",
-                        "http://rightsstatements.org/vocab/UND/1.0/": "Rightsstatements.org: Auteursrechtelijke bescherming niet bepaald",
-                        "http://rightsstatements.org/vocab/CNE/1.0/": "Rightsstatements.org: Auteursrechtelijke status niet geëvalueerd",
-                        "http://rightsstatements.org/vocab/NKC/1.0/": "Rightsstatements.org: Geen auteursrechtelijke beperkingen bekend",
-                        "https://creativecommons.org/publicdomain/zero/1.0/deed.nl": "Creativecommons.org: CC0 1.0 universeel",
-                        "https://creativecommons.org/licenses/by/4.0/deed.nl": "Creativecommons.org: Naamsvermelding 4.0 internationaal",
-                        "https://creativecommons.org/licenses/by-sa/2.0/be/deed.nl": "Creativecommons.org: Naamsvermelding-gelijkdelen 2.0"    
+                        "http://rightsstatements-org/vocab/InC/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd",
+                        "http://rightsstatements-org/vocab/InC-OW-EU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - EU verweesd werk",
+                        "http://rightsstatements-org/vocab/InC-EDU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - educatief gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/InC-NC/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/InC-RUU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - rechthebbende(n) niet-lokaliseerbaar of niet-identificeerbaar",
+                        "http://rightsstatements-org/vocab/NoC-US/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - Verenigde Staten",
+                        "http://rightsstatements-org/vocab/NoC-OKLR/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - andere juridische beperkingen",
+                        "http://rightsstatements-org/vocab/NoC-CR/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - contractuele beperkingen",
+                        "http://rightsstatements-org/vocab/NoC-NC/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - uitsluitend niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/UND/1-0/": "Rightsstatements.org: Auteursrechtelijke bescherming niet bepaald",
+                        "http://rightsstatements-org/vocab/CNE/1-0/": "Rightsstatements.org: Auteursrechtelijke status niet geëvalueerd",
+                        "http://rightsstatements-org/vocab/NKC/1-0/": "Rightsstatements.org: Geen auteursrechtelijke beperkingen bekend",
+                        "https://creativecommons-org/publicdomain/zero/1-0/deed-nl": "Creativecommons.org: CC0 1.0 universeel",
+                        "https://creativecommons-org/licenses/by/4-0/deed-nl": "Creativecommons.org: Naamsvermelding 4.0 internationaal",
+                        "https://creativecommons-org/licenses/by-sa/2-0/be/deed-nl": "Creativecommons.org: Naamsvermelding-gelijkdelen 2.0"    
                     }
                 }
             },
@@ -92,14 +100,14 @@
                     "additionalType": "Type",
                     "name": {
                         "title": "Titel",
-                        "validation": {
-                            "max-characters": "De titel mag maximum 100 karakters lang zijn!"
+                        "validation:": {
+                            "max-characters": "De beschrijving mag maximum 100 karakters lang zijn!"
                         }
                     },
                     "collection": "Collectie",
                     "description": {
                         "title": "Korte beschrijving",
-                        "validation": {
+                        "validation:": {
                             "max-characters": "De beschrijving mag maximum 10000 karakters lang zijn!"
                         }
                     }
@@ -150,38 +158,6 @@
             }
         }
     },
-    "authenticate": {
-        "error": {
-            "invalid-webid": {
-                "no-webid": "Gelieve een WebID in te voeren.",
-                "invalid-url": "Gelieve een geldig WebID in te voeren.",
-                "no-profile": "Er werd geen actieve profielpagina gevonden voor deze WebID.",
-                "no-oidc-registration": "De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ.",
-                "invalid-oidc-registration": "De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ."
-            },
-            "no-valid-type-registration": "Je pod is nog niet gelinkt aan een erfgoedinstelling."
-        },
-        "pages": {
-            "login": {
-                "title": "Collectieregistratiesysteem",
-                "webid-placeholder": "bv. https://profile.janjanssens.nl/",
-                "webid-label": "WebID",
-                "create-webid": "Nog geen WebID? Klik <a href=\"https://signup.pod.inrupt.com\">hier</a>."
-            },
-
-            "setup": {
-                "title": "Hoe wil je deze pod gebruiken?",
-                "button-administrator": {
-                    "title": "Als beheerder",
-                    "subtitle": "De data staat niet op deze pod."
-                },
-                "button-institution": {
-                    "title": "Als erfgoedinstelling",
-                    "subtitle": "De data wordt bijgehouden op deze pod."
-                }
-            }
-        }
-    },
     "common": {
         "form": {
             "description-placeholder": "Klik om een beschrijving toe te voegen.",
@@ -198,7 +174,15 @@
             "months-ago": "maanden geleden",
             "year-ago": "jaar geleden",
             "years-ago": "jaar geleden"
-        }
+        },
+        "unit": {
+            "MMT": "mm",
+            "CMT": "cm",
+            "MTR": "m",
+            "KGM": "kg",
+            "GRM": "g"
+        },
+        "copied-image-url": "De URL van de afbeelding werd gekopieerd."
     },
     "search": {
         "root": {
@@ -214,41 +198,12 @@
             "subtitle": "We hebben dit gevonden"
         }
     },
-    "term": {
-        "n-sources-selected": "Bronnen geselecteerd",
-        "one-source-selected": "Bron geselecteerd",
-        "term": "Term",
-        "terms": "Termen",
-        "term-selected": "Term geselecteerd",
-        "terms-selected": "Termen geselecteerd",
-        "enter-query": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten",
-        "no-search-results": "Geen zoekresultaten voor deze zoekterm!",
-        "add-local-term": "Voeg een eigen term toe",
-        "title-placeholder": "Klik om een waarde in te vullen",
-        "description-placeholder": "Eigen term",
-        "field": {
-            "description": "Beschrijving",
-            "alternateName": "Alternatieve naam",
-            "broader": "Ruimer",
-            "narrower": "Specifieker",
-            "hiddenName": "Verborgen naam",
-            "additionalType": "Type",
-            "creator": "Vervaardiger",
-            "locationCreated": "Plaats",
-            "material": "Materiaal",
-            "dateCreated": "Datum",
-            "subject": "Onderwerp",
-            "location": "Locatie",
-            "person": "Persoon",
-            "organization": "Organisatie",
-            "event": "Gebeurtenis"
+    "about": {
+        "header": {
+            "title": "Collecties",
+            "subtitle": "Een overzicht van alle collecties"
         },
-        "error": {
-            "term-network-error": "Er kon geen verbinding gemaakt worden met het termennetwerk."
-        },
-        "search": {
-            "confirm": "Bevestig",
-            "cancel": "Annuleren"
-        }
+        "more-information": "Meer over de instelling",
+        "collection-overview": "Overzicht van de collecties"
     }
 }

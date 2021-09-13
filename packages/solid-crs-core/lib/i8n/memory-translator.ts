@@ -1,21 +1,22 @@
-import i18next from 'i18next';
+import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
+import { Translator } from './translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
-export class MemoryTranslator {
+export class MemoryTranslator extends Translator {
 
   /**
    * Instantiates a MemoryTranslator.
    *
-   * @param translation The translations to be stored in-memory.
-   * @param defaultLocale The default locale to use when translating.
+   * @param lng The default locale to use when translating.
+   * @param defaultLng The fallback locale to use when translating.
    */
-  constructor(public translation: unknown, public lng: string) {
+  constructor(public lng: string) {
 
-    i18next.init({ nsSeparator: false, defaultNS: lng, resources: {} });
-    this.addTranslation(this.translation, this.lng);
+    super();
+    this.setLng(lng);
 
   }
 
@@ -29,7 +30,8 @@ export class MemoryTranslator {
    * @throws {@link ArgumentError}
    * This error is thrown when either no locale or key have been given.
    */
-  translate(key: string, locale?: string): string {
+
+  translate(key: string, values?: Values | ValuesCallback, config?: ITranslateConfig): string {
 
     if (!key) {
 
@@ -37,27 +39,48 @@ export class MemoryTranslator {
 
     }
 
-    if (!locale && ! this.lng) {
+    return get(key, values, config);
 
-      throw new ArgumentError('Argument locale should be set.', locale);
+  }
+
+  /**
+   * Returns the language currently used by translator
+   *
+   * @returns The language currently used by translator
+   */
+  getLng(): string {
+
+    return this.lng;
+
+  }
+
+  /**
+   * Updates the translator's language if a relevant translation file exists
+   * for this new language. Otherwise, falls back to the previously used language
+   *
+   * @param lng The new language to use
+   */
+  async setLng(lng: string): Promise<void>{
+
+    const lang = this.lng;
+    let translations: Promise<Strings>;
+
+    try {
+
+      translations = await (await fetch(`${window.location.origin}/${lng}.json`)).json();
+      this.lng = lng;
+
+    } catch(e) {
+
+      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
 
     }
 
-    // Use default locale if no locale was passed to function
-    const usedLocale = locale? locale : this.lng;
+    registerTranslateConfig({
+      loader: async () => translations,
+    });
 
-    return i18next.t(key, { lng: usedLocale, ns: usedLocale });
-
-  }
-  /**
-   * Adds an extra translation.
-   *
-   * @param translation The translations to be stored in-memory.
-   * @param lng The locale to use when translating.
-   */
-  addTranslation(translation: unknown, lng: string): void {
-
-    i18next.addResourceBundle(lng, lng, translation);
+    await use(this.lng);
 
   }
 

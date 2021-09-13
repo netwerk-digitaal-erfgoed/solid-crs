@@ -383,20 +383,20 @@ describe('ObjectMachine', () => {
           name: 'name',
           identifier: 'identifier',
           dateCreated: '2021',
-          type: undefined,
+          type: 'http://schema.org/CreativeWork',
           collection: undefined,
           uri: undefined,
-          image: undefined,
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
         },
         original: {
           description: 'description',
           name: 'name',
           identifier: 'identifier',
           dateCreated: '2021',
-          type: undefined,
+          type: 'http://schema.org/CreativeWork',
           collection: undefined,
           uri: undefined,
-          image: undefined,
+          image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
         },
       };
 
@@ -491,7 +491,7 @@ describe('ObjectMachine', () => {
 
     it.each([ 'depth', 'width', 'height', 'weight' ])('should error when %s is not a number', async (value) => {
 
-      context.data = { ...context.data, [value]: NaN };
+      context.data = { ...context.data, [value]: 'test' };
       const res = validateObjectForm(context);
       await expect(res).resolves.toHaveLength(1);
 

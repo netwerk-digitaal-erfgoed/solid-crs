@@ -134,6 +134,18 @@ describe('Router', () => {
 
     });
 
+    it('should persist query parameters and hashes', () => {
+
+      const queryPath = `${differentPath}?lang=en`;
+      updateHistory(queryPath, '');
+      expect(history.pushState).toHaveBeenCalledWith({}, '', queryPath);
+
+      const hashPath = `${differentPath}#me`;
+      updateHistory(hashPath, '');
+      expect(history.pushState).toHaveBeenCalledWith({}, '', hashPath);
+
+    });
+
   });
 
   describe('updateTitle', () => {

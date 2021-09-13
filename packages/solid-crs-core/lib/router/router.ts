@@ -1,4 +1,4 @@
-import { EventObject, StateNodeConfig } from 'xstate';
+import { EventObject } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -118,13 +118,16 @@ export const updateTitle = (title: string): string => {
  */
 export const updateHistory = (path: string, title?: string): void => {
 
+  // keep hash and query parameters
+  const completePath = path + window.location.search + window.location.hash;
+
   if (path === window.location.pathname) {
 
-    history.replaceState({}, title||'', path);
+    history.replaceState({}, title||'', completePath);
 
   } else {
 
-    history.pushState({}, title||'', path);
+    history.pushState({}, title||'', completePath);
 
   }
 

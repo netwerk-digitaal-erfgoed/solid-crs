@@ -179,7 +179,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
             <div> ${ this.translator.translate('object.card.image.field.license.title') } </div>
-            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`object.card.image.field.license.${this.object.license}`) }</a> </div>
+            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`object.card.image.field.license.${this.object.license.split('.').join('-')}`) }</a> </div>
           </div>
           <div class="object-property">
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>

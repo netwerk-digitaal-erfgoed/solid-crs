@@ -34,7 +34,7 @@ describe.each([
 
     component = window.document.createElement(tag) as RxLitElement;
     (component as any).object = object1;
-    (component as any).translator = new MemoryTranslator([], 'nl-NL');
+    (component as any).translator = new MemoryTranslator('nl-NL');
     (component as any).collections = [ collection1 ];
 
   });

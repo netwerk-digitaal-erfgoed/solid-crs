@@ -16,13 +16,17 @@ describe('AlertComponent', () => {
 
     component = window.document.createElement('nde-collection-card') as CollectionCardComponent;
 
-    component.translator = new MemoryTranslator({
+    component.translator = new MemoryTranslator('en-GB');
+
+    fetchMock.resetMocks();
+
+    fetchMock.mockResponseOnce(JSON.stringify({
       'collections': {
         'card': {
           'name-unavailable': 'Name unavailable',
         },
       },
-    }, 'en-GB');
+    }));
 
   });
 
