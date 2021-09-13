@@ -1,6 +1,6 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent, ROUTER } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { createMachine } from 'xstate';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent, updateTitle } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { createMachine, DoneInvokeEvent } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
@@ -103,22 +103,18 @@ export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDat
 
 const routes: Route[] = [
   {
-    title: 'Collectie | Solid CRS',
     path: '/{{webId}}/collection/{{collectionUri}}',
     targets: [ `#${AppFeatureStates.COLLECTION}` ],
   },
   {
-    title: 'Object overzicht | Solid CRS',
     path: '/{{webId}}/object/{{objectUri}}',
     targets: [ `#${AppDataStates.LOADING_OBJECT}` ],
   },
   {
-    title: 'Zoeken | Solid CRS',
     path: '/{{webId}}/search/{{searchTerm}}',
     targets: [ `#${AppFeatureStates.SEARCH}` ],
   },
   {
-    title: 'Over | Solid CRS',
     path: '/{{webId}}/about',
     targets: [ `#${AppFeatureStates.ABOUT}` ],
   },
@@ -229,7 +225,8 @@ export const appMachine = (
                       target: [ AppDataStates.LOADING_COLLECTIONS ],
                       actions: [
                         setProfile,
-                        (context, event) => (collectionStore as CollectionSolidStore).webId = event.data.uri,
+                        (c, event: DoneInvokeEvent<SolidProfile>) => updateTitle(event.data.name),
+                        (c, event: DoneInvokeEvent<SolidProfile>) => collectionStore.webId = event.data.uri,
                       ],
                     },
                   ],
