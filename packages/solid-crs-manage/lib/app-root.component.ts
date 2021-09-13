@@ -165,6 +165,8 @@ export class AppRootComponent extends RxLitElement {
 
     super.firstUpdated(changed);
 
+    document.title = this.translator.translate('app.root.title');
+
     this.subscribe('state', from(this.actor));
 
     this.subscribe('collections', from(this.actor).pipe(

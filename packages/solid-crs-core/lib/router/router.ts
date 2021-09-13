@@ -165,7 +165,19 @@ export const routerStateConfig = (routes: Route[]) => ({
           src: async () => Promise.resolve(),
           onDone: {
             target: [ RouterStates.IDLE, ...activeRoute(routes).targets ],
-            actions: [ () => updateTitle(activeRoute(routes).title) ],
+            actions: [
+              () => {
+
+                const route = activeRoute(routes);
+
+                if (route.title) {
+
+                  updateTitle(route.title);
+
+                }
+
+              },
+            ],
           },
         },
       },
