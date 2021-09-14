@@ -234,6 +234,10 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-large-card>
 
       <nde-large-card
+      ?hidden="${ this.object.creator?.length < 1 &&
+        this.object.locationCreated?.length < 1 &&
+        this.object.material?.length < 1 &&
+        !this.object.dateCreated }"
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
@@ -263,6 +267,11 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-large-card>
 
       <nde-large-card
+      ?hidden="${ this.object.subject?.length < 1 &&
+        this.object.location?.length < 1 &&
+        this.object.person?.length < 1 &&
+        this.object.organization?.length < 1 &&
+        this.object.event?.length < 1 }"
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
         <div slot="title" class="title">
@@ -296,6 +305,10 @@ export class ObjectRootComponent extends RxLitElement {
       </nde-large-card>
 
       <nde-large-card
+      ?hidden="${ !this.object.height &&
+        !this.object.width &&
+        !this.object.depth &&
+        !this.object.weight }"
       .showImage="${false}">
         <div slot="icon">${ unsafeSVG(Connect) }</div>
         <div slot="title" class="title">
