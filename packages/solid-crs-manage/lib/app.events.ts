@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, RouterEvent, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
@@ -141,7 +141,8 @@ export type AppEvent =
   | ClickedDeleteObjectEvent
   | ClickedInstitutionTypeEvent
   | ClickedAdministratorTypeEvent
-  | SetProfileEvent;
+  | SetProfileEvent
+  | RouterEvent;
 
 /**
  * Actions for the alerts component.

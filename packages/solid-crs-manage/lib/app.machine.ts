@@ -1,11 +1,11 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigateEvent, NavigatedEvent, RouterStates, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
 import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
-import { CollectionEvents } from './features/collection/collection.events';
+import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
@@ -44,6 +44,11 @@ export interface AppContext {
    * The URI of the DataCatalog in which the collections are stored
    */
   catalog?: Collection;
+
+  /**
+   * The path of the router
+   */
+  path?: string;
 }
 
 /**
@@ -99,7 +104,29 @@ export enum AppAuthenticateStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates;
+export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates | RouterStates;
+
+/**
+ * The routing configuration for the app machine
+ */
+const routes: Route[] = [
+  {
+    path: '/collection/{{collectionUri}}',
+    targets: [ `#${AppFeatureStates.COLLECTION}` ],
+  },
+  {
+    path: '/object/{{objectUri}}',
+    targets: [ `#${AppFeatureStates.OBJECT}` ],
+  },
+  {
+    path: '/search/{{searchTerm}}',
+    targets: [ `#${AppFeatureStates.SEARCH}` ],
+  },
+  {
+    path: '.*',
+    targets: [ `#${AppFeatureStates.COLLECTION}` ],
+  },
+];
 
 /**
  * The application root machine and its configuration.
@@ -114,15 +141,14 @@ export const appMachine = (
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
-    on: {
-      [ObjectEvents.SELECTED_OBJECT]: {
-        actions: forwardTo(AppActors.OBJECT_MACHINE),
-      },
-    },
     states: {
-    /**
-     * Determines which feature is currently active.
-     */
+      /**
+       * Router
+       */
+      ...routerStateConfig(routes),
+      /**
+       * Determines which feature is currently active.
+       */
       [AppRootStates.FEATURE]: {
         initial: AppFeatureStates.COLLECTION,
         on: {
@@ -138,13 +164,35 @@ export const appMachine = (
               send((context, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
             ],
           },
+          [ObjectEvents.SELECTED_OBJECT]: {
+            actions: [
+              send((context, event) => new NavigatedEvent(`/object/${encodeURIComponent(event.object.uri)}`)),
+              forwardTo(AppActors.OBJECT_MACHINE),
+            ],
+          },
+          [CollectionEvents.SELECTED_COLLECTION]: {
+            actions: [
+              send((context, event) => new NavigatedEvent(`/collection/${encodeURIComponent(event.collection?.uri)}`)),
+              assign({ selected: (context, event) => event.collection }),
+              forwardTo(AppActors.COLLECTION_MACHINE),
+            ],
+          },
+          [RouterEvents.NAVIGATE]: {
+            target: [ `#${RouterStates.NAVIGATING}` ],
+            actions: [
+              assign({ path: (context, event) => event.path||window.location.pathname }),
+            ],
+          },
+          [RouterEvents.NAVIGATED]: {
+            actions: (context, event) => updateHistory(event.path, event.title),
+          },
         },
         states: {
         /**
          * The collection feature is shown.
          */
-          // [AppFeatureStates.AUTHENTICATE]: {},
           [AppFeatureStates.COLLECTION]: {
+            id: AppFeatureStates.COLLECTION,
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
                 target: AppFeatureStates.OBJECT,
@@ -156,12 +204,6 @@ export const appMachine = (
                 }),
                 target: AppFeatureStates.SEARCH,
                 cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
-              },
-              [CollectionEvents.SELECTED_COLLECTION]: {
-                actions: [
-                  forwardTo(AppActors.COLLECTION_MACHINE),
-                  assign({ selected: (context, event) => event.collection }),
-                ],
               },
             },
             invoke: [
@@ -181,6 +223,7 @@ export const appMachine = (
            * Shows the search feature.
            */
           [AppFeatureStates.SEARCH]: {
+            id: AppFeatureStates.SEARCH,
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
                 target: AppFeatureStates.OBJECT,
@@ -198,6 +241,7 @@ export const appMachine = (
               [CollectionEvents.SELECTED_COLLECTION]: {
                 target: AppFeatureStates.COLLECTION,
                 actions: [
+                  send((c, event) => event),
                   assign({ selected: (context, event) => event.collection ? event.collection : context.selected }),
                 ],
               },
@@ -213,10 +257,7 @@ export const appMachine = (
                   searchTerm: event.searchTerm,
                 }),
                 onDone: {
-                  actions: send((context, event) => ({
-                    type: CollectionEvents.SELECTED_COLLECTION,
-                    collection: context.collections[0],
-                  })),
+                  actions: send((context, event) => new SelectedCollectionEvent(context.collections[0])),
                 },
                 onError: {
                   actions: send((context, event) => event),
@@ -228,10 +269,11 @@ export const appMachine = (
            * The object feature is shown.
            */
           [AppFeatureStates.OBJECT]: {
+            id: AppFeatureStates.OBJECT,
             on: {
               [CollectionEvents.SELECTED_COLLECTION]: {
                 target: AppFeatureStates.COLLECTION,
-                actions: send((context, event) => event),
+                actions: send((c, event) => event),
               },
               [SearchEvents.SEARCH_UPDATED]: {
                 actions: assign({
@@ -271,9 +313,12 @@ export const appMachine = (
                * Get profile and assign to context.
                */
               {
-                src: (context, event) => solid.getProfile(context.session.webId),
+                src: (context) => solid.getProfile(context.session.webId),
                 onDone: {
-                  actions: [ setProfile, send(new SetProfileEvent()) ],
+                  actions: [
+                    setProfile,
+                    send(new SetProfileEvent()),
+                  ],
                 },
               },
               {
@@ -417,14 +462,11 @@ export const appMachine = (
               src: () => collectionStore.all(),
               onDone: [
                 {
-                  target: AppDataStates.IDLE,
+                  target: [ `#${AppFeatureStates.COLLECTION}`, AppDataStates.IDLE ],
                   actions: [
+                    send((context, event) => new SelectedCollectionEvent(event.data.find((collection: Collection) =>
+                      context.selected?.uri === collection.uri) || event.data[0])),
                     setCollections,
-                    send((context, event) => ({
-                      type: CollectionEvents.SELECTED_COLLECTION,
-                      collection: event.data.find((collection: Collection) =>
-                        context.selected?.uri === collection.uri) ?? event.data[0],
-                    })),
                   ],
                   cond: (context, event) => event.data.length > 0,
                 },
@@ -447,7 +489,7 @@ export const appMachine = (
                */
               src: () => collectionStore.save(collectionTemplate),
               onDone: {
-                target: AppDataStates.IDLE,
+                target: [ AppDataStates.IDLE ],
                 actions: [
                   addCollection,
                   send((context, event) => ({ type: CollectionEvents.SELECTED_COLLECTION, collection: event.data })),
