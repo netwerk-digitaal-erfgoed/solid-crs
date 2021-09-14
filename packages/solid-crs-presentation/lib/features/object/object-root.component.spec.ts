@@ -1,4 +1,4 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
@@ -325,6 +325,53 @@ describe('ObjectRootComponent', () => {
     const collectionAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLAnchorElement>('#collection-link');
 
     collectionAnchor.click();
+
+  });
+
+  it('should hide cards when certain properties are undefined', async () => {
+
+    component.object = {
+      ...object1,
+      creator: [],
+      locationCreated: [],
+      material: [],
+      dateCreated: undefined,
+      subject: [],
+      location: [],
+      person: [],
+      organization: [],
+      event: [],
+      height: undefined,
+      width: undefined,
+      depth: undefined,
+      weight: undefined,
+    };
+
+    window.document.body.appendChild(component);
+
+    component.object = {
+      ...object1,
+      creator: [],
+      locationCreated: [],
+      material: [],
+      dateCreated: undefined,
+      subject: [],
+      location: [],
+      person: [],
+      organization: [],
+      event: [],
+      height: undefined,
+      width: undefined,
+      depth: undefined,
+      weight: undefined,
+    };
+
+    await component.updateComplete;
+
+    const cards = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelectorAll<LargeCardComponent>('nde-large-card');
+    // only show the image and identification fields, which always contain values
+    // the other three should be hidden
+    expect([ ...cards ].filter((card) => card.hidden).length).toEqual(3);
 
   });
 

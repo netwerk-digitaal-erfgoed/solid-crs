@@ -469,7 +469,7 @@ export class FormElementComponent<T> extends RxLitElement {
           font-size: var(--font-size-small);
         }
 
-        .help {
+        .help ::slotted(*) {
           margin-top: var(--gap-small);
         }
       `,
