@@ -92,7 +92,7 @@ export class AppRootComponent extends RxLitElement {
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
 
-    await this.translator.setLng('nl-NL');
+    await this.translator.setLang('nl-NL');
 
     this.actor = interpret(
       (appMachine(

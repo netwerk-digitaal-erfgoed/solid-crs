@@ -16,14 +16,14 @@ export abstract class Translator {
    *
    * @returns The language currently used by translator
    */
-  abstract getLng(): string;
+  abstract getLang(): string;
 
   /**
    * Updates the translator's language if a relevant translation file exists
    * for this new language. Otherwise, falls back to the previously used language
    *
-   * @param lng The new language to use
+   * @param lang The new language to use
    */
-  abstract setLng(lng: string): Promise<void>;
+  abstract setLang(lang: string): Promise<void>;
 
 }

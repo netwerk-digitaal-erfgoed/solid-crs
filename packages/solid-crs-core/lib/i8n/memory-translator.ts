@@ -10,13 +10,12 @@ export class MemoryTranslator extends Translator {
   /**
    * Instantiates a MemoryTranslator.
    *
-   * @param lng The default locale to use when translating.
-   * @param defaultLng The fallback locale to use when translating.
+   * @param lang The default locale to use when translating.
    */
-  constructor(public lng: string) {
+  constructor(public lang: string) {
 
     super();
-    this.setLng(lng);
+    this.setLang(lang);
 
   }
 
@@ -48,9 +47,9 @@ export class MemoryTranslator extends Translator {
    *
    * @returns The language currently used by translator
    */
-  getLng(): string {
+  getLang(): string {
 
-    return this.lng;
+    return this.lang;
 
   }
 
@@ -58,21 +57,20 @@ export class MemoryTranslator extends Translator {
    * Updates the translator's language if a relevant translation file exists
    * for this new language. Otherwise, falls back to the previously used language
    *
-   * @param lng The new language to use
+   * @param lang The new language to use
    */
-  async setLng(lng: string): Promise<void>{
+  async setLang(lang: string): Promise<void>{
 
-    const lang = this.lng;
     let translations: Promise<Strings>;
 
     try {
 
-      translations = await (await fetch(`${window.location.origin}/${lng}.json`)).json();
-      this.lng = lng;
+      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
+      this.lang = lang;
 
     } catch(e) {
 
-      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
+      translations = await (await fetch(`${window.location.origin}/${this.lang}.json`)).json();
 
     }
 
@@ -80,7 +78,7 @@ export class MemoryTranslator extends Translator {
       loader: async () => translations,
     });
 
-    await use(this.lng);
+    await use(this.lang);
 
   }
 

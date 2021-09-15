@@ -2,7 +2,7 @@ import { Translator } from './translator';
 
 export class MockTranslator extends Translator {
 
-  constructor(public lng: string = 'nl-NL') {
+  constructor(public lang: string = 'nl-NL') {
 
     super();
 
@@ -14,14 +14,14 @@ export class MockTranslator extends Translator {
 
   }
 
-  getLng(): string {
+  getLang(): string {
 
-    return this.lng;
+    return this.lang;
 
   }
-  setLng(lng: string): Promise<void> {
+  setLang(lang: string): Promise<void> {
 
-    this.lng = lng;
+    this.lang = lang;
 
     return undefined;
 

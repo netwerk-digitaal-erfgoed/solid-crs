@@ -122,7 +122,7 @@ export class AppRootComponent extends RxLitElement {
 
     if (language) {
 
-      await this.translator.setLng(language);
+      await this.translator.setLang(language);
 
     }
 
