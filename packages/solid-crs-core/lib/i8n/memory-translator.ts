@@ -1,11 +1,16 @@
 import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
-import { Translator } from './translator';
+import { TranslationsLoadedEvent, Translator } from './translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
 export class MemoryTranslator extends Translator {
+
+  /**
+   * Whether the translations have loaded
+   */
+  public loaded = false;
 
   /**
    * Instantiates a MemoryTranslator.
@@ -61,6 +66,8 @@ export class MemoryTranslator extends Translator {
    */
   async setLang(lang: string): Promise<void>{
 
+    this.loaded = false;
+
     let translations: Promise<Strings>;
 
     try {
@@ -79,6 +86,9 @@ export class MemoryTranslator extends Translator {
     });
 
     await use(this.lang);
+
+    this.loaded = true;
+    window.dispatchEvent(new TranslationsLoadedEvent());
 
   }
 

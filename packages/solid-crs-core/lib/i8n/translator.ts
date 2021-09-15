@@ -27,3 +27,15 @@ export abstract class Translator {
   abstract setLang(lang: string): Promise<void>;
 
 }
+
+export const TRANSLATIONS_LOADED = 'TRANSLATIONS_LOADED';
+
+export class TranslationsLoadedEvent extends CustomEvent<unknown> {
+
+  constructor() {
+
+    super(TRANSLATIONS_LOADED);
+
+  }
+
+}

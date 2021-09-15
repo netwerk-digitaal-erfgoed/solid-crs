@@ -1,6 +1,7 @@
 import fetchMock from 'jest-fetch-mock';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryTranslator } from './memory-translator';
+import { TRANSLATIONS_LOADED } from './translator';
 
 describe('MemoryTranslator', () => {
 
@@ -108,6 +109,18 @@ describe('MemoryTranslator', () => {
 
       await service.setLang('nl-BE');
       expect(service.getLang()).toEqual('nl-BE');
+
+    });
+
+    it('should fire event when done', async (done) => {
+
+      window.addEventListener(TRANSLATIONS_LOADED, () => {
+
+        done();
+
+      });
+
+      await service.setLang('nl-BE');
 
     });
 

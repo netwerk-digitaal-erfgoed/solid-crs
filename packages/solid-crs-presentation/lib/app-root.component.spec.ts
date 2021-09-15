@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator, TranslationsLoadedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from './app.events';
+import { DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
@@ -72,7 +72,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should show primary navigation when authenticated', async (done) => {
+  it('should show primary navigation', async (done) => {
 
     machine.start();
     window.document.body.appendChild(component);
@@ -108,6 +108,22 @@ describe('AppRootComponent', () => {
 
     expect(() => component.dismiss(null)).toThrow(ArgumentError);
     expect(() => component.dismiss({ detail: null } as CustomEvent<Alert>)).toThrow(ArgumentError);
+
+  });
+
+  it('should wait for translations to be loaded before rendering', async () => {
+
+    component.translator.loaded = false;
+    machine.start();
+    window.document.body.appendChild(component);
+
+    await component.translator.setLang('nl-NL');
+    await component.updateComplete;
+
+    const componentHtml = window.document.body.getElementsByTagName('nde-app-root');
+
+    expect(componentHtml).toBeTruthy();
+    // expect(component.translator.loaded).toBeTruthy();
 
   });
 

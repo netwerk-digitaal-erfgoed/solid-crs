@@ -1,10 +1,13 @@
-import { Translator } from './translator';
+import { TranslationsLoadedEvent, Translator } from './translator';
 
 export class MockTranslator extends Translator {
+
+  public loaded = true;
 
   constructor(public lang: string = 'nl-NL') {
 
     super();
+    this.setLang(this.lang);
 
   }
 
@@ -22,6 +25,8 @@ export class MockTranslator extends Translator {
   setLang(lang: string): Promise<void> {
 
     this.lang = lang;
+    this.loaded = true;
+    window.dispatchEvent(new TranslationsLoadedEvent());
 
     return undefined;
 
