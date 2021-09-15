@@ -233,11 +233,15 @@ export class ObjectRootComponent extends RxLitElement {
       this.subscribe('object', from(this.actor).pipe(
         map((state) => {
 
-          this.formCards?.forEach((card) => card.object = state.context?.object);
+          if (state.context?.object && state.context?.original) {
 
-          this.initFormMachine(state.context?.object, state.context?.original);
+            this.formCards?.forEach((card) => card.object = state.context.object);
 
-          return state.context?.object;
+            this.initFormMachine(state.context.object, state.context.original);
+
+            return state.context?.object;
+
+          }
 
         })
       ));

@@ -1,7 +1,8 @@
 import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, send, sendParent } from 'xstate';
-import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { activeRoute, Collection, CollectionObject, CollectionObjectStore, TermService, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
+import { routes } from '../../app.machine';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
@@ -43,6 +44,7 @@ export enum ObjectStates {
   SAVING    = '[ObjectsState: Saving]',
   EDITING_FIELD   = '[ObjectsState: Editing Field]',
   DELETING  = '[ObjectsState: Deleting]',
+  LOADING_OBJECT  = '[ObjectsState: Loading Object]',
 }
 
 /**
@@ -205,17 +207,45 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
   createMachine<ObjectContext, ObjectEvent, State<ObjectStates, ObjectContext>>({
     id: ObjectActors.OBJECT_MACHINE,
     context: { },
-    initial: ObjectStates.IDLE,
+    initial: ObjectStates.LOADING_OBJECT,
     on: {
       [ObjectEvents.SELECTED_OBJECT]: {
         actions: assign({
-          object: (context, event) => event.object,
-          original: (context, event) => event.object,
+          object: (c, event) => event.object,
+          original: (c, event) => event.object,
         }),
         target: ObjectStates.IDLE,
       },
     },
     states: {
+      [ObjectStates.LOADING_OBJECT]: {
+        invoke: {
+          src: async (context): Promise<CollectionObject> => {
+
+            if (context.object) {
+
+              return context.object;
+
+            } else {
+
+              return await objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes).path).get('objectUri')));
+
+            }
+
+          },
+          onDone: {
+            target: ObjectStates.IDLE,
+            actions: assign({
+              object: (c, event) => event.data,
+              original: (c, event) => event.data,
+            }),
+          },
+          onError: {
+            target: ObjectStates.IDLE,
+            actions: sendParent((c, event) => event),
+          },
+        },
+      },
       [ObjectStates.SAVING]: {
         invoke: {
           src: (context) => objectStore.save(context.object),
