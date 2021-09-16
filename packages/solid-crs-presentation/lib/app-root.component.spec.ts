@@ -111,22 +111,6 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should wait for translations to be loaded before rendering', async () => {
-
-    component.translator.loaded = false;
-    machine.start();
-    window.document.body.appendChild(component);
-
-    await component.translator.setLang('nl-NL');
-    await component.updateComplete;
-
-    const componentHtml = window.document.body.getElementsByTagName('nde-app-root');
-
-    expect(componentHtml).toBeTruthy();
-    // expect(component.translator.loaded).toBeTruthy();
-
-  });
-
   describe('searchUpdated()', () => {
 
     it('should send FormUpdatedEvent when called', () => {

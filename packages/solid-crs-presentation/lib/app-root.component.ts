@@ -27,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator(new URL(window.location.href).searchParams.get('l') || 'nl-NL');
+  public translator: Translator = new MemoryTranslator(new URL(window.location.href).searchParams.get('lang') || 'nl-NL');
 
   /**
    * The constructor of the application root component,
@@ -117,11 +117,7 @@ export class AppRootComponent extends RxLitElement {
 
   async connectedCallback(): Promise<void> {
 
-    if (!this.translator.loaded) {
-
-      await new Promise((resolve) => window.addEventListener('TRANSLATIONS_LOADED', resolve));
-
-    }
+    await new Promise((resolve) => this.translator.addEventListener('TRANSLATIONS_LOADED', resolve));
 
     this.actor = interpret(
       appMachine(

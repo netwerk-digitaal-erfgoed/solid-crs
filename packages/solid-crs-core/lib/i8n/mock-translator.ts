@@ -26,7 +26,7 @@ export class MockTranslator extends Translator {
 
     this.lang = lang;
     this.loaded = true;
-    window.dispatchEvent(new TranslationsLoadedEvent());
+    this.dispatchEvent(new TranslationsLoadedEvent());
 
     return undefined;
 

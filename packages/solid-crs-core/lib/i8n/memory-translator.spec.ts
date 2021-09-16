@@ -114,7 +114,7 @@ describe('MemoryTranslator', () => {
 
     it('should fire event when done', async (done) => {
 
-      window.addEventListener(TRANSLATIONS_LOADED, () => {
+      service.addEventListener(TRANSLATIONS_LOADED, () => {
 
         done();
 

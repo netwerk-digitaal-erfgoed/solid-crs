@@ -8,11 +8,6 @@ import { TranslationsLoadedEvent, Translator } from './translator';
 export class MemoryTranslator extends Translator {
 
   /**
-   * Whether the translations have loaded
-   */
-  public loaded = false;
-
-  /**
    * Instantiates a MemoryTranslator.
    *
    * @param lang The default locale to use when translating.
@@ -88,7 +83,7 @@ export class MemoryTranslator extends Translator {
     await use(this.lang);
 
     this.loaded = true;
-    window.dispatchEvent(new TranslationsLoadedEvent());
+    this.dispatchEvent(new TranslationsLoadedEvent());
 
   }
 
