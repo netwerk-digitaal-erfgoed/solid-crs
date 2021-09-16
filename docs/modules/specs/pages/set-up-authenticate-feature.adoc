@@ -12,7 +12,7 @@
 
 * https://www.wrike.com/open.htm?id=674718417[Wrike task]
 * Branch: `feat/599439372-set-up-authenticate-feature`
-* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage]
+* Project: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-manage]
 
 == Introduction
 
@@ -84,7 +84,7 @@ The initial value of `session` should be `new Session()`.
 
 Create following events in 'lib/features/authenticate/authenticate.events.ts'
 
-Take a look at https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.events.ts[collections.events.ts] and https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/nde-erfgoed-manage/lib/features/collections/collections.actions.ts[collections.actions.ts].
+Take a look at https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/solid-crs-manage/lib/features/collections/collections.events.ts[collections.events.ts] and https://github.com/netwerk-digitaal-erfgoed/solid-crs/blob/develop/packages/solid-crs-manage/lib/features/collections/collections.actions.ts[collections.actions.ts].
 
 [options="header"]
 |======================================

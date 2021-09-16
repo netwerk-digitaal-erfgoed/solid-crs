@@ -1,78 +1,38 @@
 import { Collection, CollectionObject, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { css, html, LitElement } from 'lit-element';
+import fetchMock from 'jest-fetch-mock';
 
 export class DemoNDECardComponent extends LitElement {
 
   render() {
 
-    const translator = new MemoryTranslator(
-      [
-        {
-          key: 'nde.common.date.just-now',
-          locale: 'nl-NL',
-          value: 'enkele ogenblikken geleden',
+    const translator = new MemoryTranslator('nl-NL',);
+
+    fetchMock.mockResponseOnce(JSON.stringify({
+      'common': {
+        'date': {
+          'just-now': 'enkele ogenblikken geleden',
+          'minutes-ago': 'minuten geleden',
+          'hour-ago': 'uur geleden',
+          'hours-ago': 'uur geleden',
+          'day-ago': 'dag geleden',
+          'days-ago': 'dagen geleden',
+          'month-ago': 'maand geleden',
+          'months-ago': 'maanden geleden',
+          'year-ago': 'jaar geleden',
+          'years-ago': 'jaar geleden',
         },
-        {
-          key: 'nde.common.date.minutes-ago',
-          locale: 'nl-NL',
-          value: 'minuten geleden',
+      },
+      'collections': {
+        'card': {
+          'name-unavailable': 'Naam onbekend',
+          'subject-unavailable': 'Onderwerp onbekend',
         },
-        {
-          key: 'nde.common.date.hour-ago',
-          locale: 'nl-NL',
-          value: 'uur geleden',
-        },
-        {
-          key: 'nde.common.date.hours-ago',
-          locale: 'nl-NL',
-          value: 'uur geleden',
-        },
-        {
-          key: 'nde.common.date.day-ago',
-          locale: 'nl-NL',
-          value: 'dag geleden',
-        },
-        {
-          key: 'nde.common.date.days-ago',
-          locale: 'nl-NL',
-          value: 'dagen geleden',
-        },
-        {
-          key: 'nde.common.date.month-ago',
-          locale: 'nl-NL',
-          value: 'maand geleden',
-        },
-        {
-          key: 'nde.common.date.months-ago',
-          locale: 'nl-NL',
-          value: 'maanden geleden',
-        },
-        {
-          key: 'nde.common.date.year-ago',
-          locale: 'nl-NL',
-          value: 'jaar geleden',
-        },
-        {
-          key: 'nde.common.date.years-ago',
-          locale: 'nl-NL',
-          value: 'jaar geleden',
-        },
-        {
-          key: 'nde.features.collections.card.name-unavailable',
-          locale: 'nl-NL',
-          value: 'Naam onbekend',
-        },
-        {
-          key: 'nde.features.collections.card.subject-unavailable',
-          locale: 'nl-NL',
-          value: 'Onderwerp onbekend',
-        },
-      ],
-      'nl-NL',
-    );
+      },
+    }));
 
     const obj1 = {
-      uri: 'nde.nl',
+      uri: 'nl',
       name: 'Object nummertje 1',
       description: 'Een object',
       image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',

@@ -1,9 +1,8 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { SearchRootComponent } from './search-root.component';
 import { SearchEvents, SearchUpdatedEvent } from './search.events';
 import { SearchContext, searchMachine } from './search.machine';
@@ -60,7 +59,7 @@ describe('SearchRootComponent', () => {
 
     component = window.document.createElement('nde-search-root') as SearchRootComponent;
     component.actor = machine;
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 
@@ -189,7 +188,7 @@ describe('SearchRootComponent', () => {
 
     const textDiv = emptyContainer.querySelector('.text');
     expect(textDiv).toBeTruthy();
-    expect(textDiv.textContent).toBe('nde.features.search.root.empty.no-search-results');
+    expect(textDiv.textContent).toBe('[search.root.empty.no-search-results]');
 
   });
 

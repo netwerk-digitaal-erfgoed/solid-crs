@@ -1,9 +1,8 @@
-import { Alert, Event } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { DoneInvokeEvent } from 'xstate';
+import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Collection, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
-import { SolidSession } from './common/solid/solid-session';
 import { ClickedDeleteCollectionEvent, SavedCollectionEvent, SelectedCollectionEvent } from 'features/collection/collection.events';
 import { SearchUpdatedEvent } from 'features/search/search.events';
 import { ClickedDeleteObjectEvent, SelectedObjectEvent } from 'features/object/object.events';
@@ -20,6 +19,9 @@ export enum AppEvents {
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
+  CLICKED_ADMINISTRATOR_TYPE = '[AppEvent: Clicked Admin Pod Type]',
+  CLICKED_INSTITUTION_TYPE = '[AppEvent: Clicked Institution Pod Type]',
+  SET_PROFILE = '[AppEvent: Set Profile]',
 }
 
 /**
@@ -29,55 +31,95 @@ export enum AppEvents {
 /**
  * An event which is dispatched when an alert is added.
  */
-export interface AddAlertEvent extends Event<AppEvents> { type: AppEvents.ADD_ALERT; alert: Alert }
+export class AddAlertEvent implements EventObject {
+
+  public type: AppEvents.ADD_ALERT = AppEvents.ADD_ALERT;
+  constructor(public alert: Alert) { }
+
+}
 
 /**
  * An event which is dispatched when an alert is dismissed.
  */
-export interface DismissAlertEvent extends Event<AppEvents> { type: AppEvents.DISMISS_ALERT; alert: Alert }
+export class DismissAlertEvent implements EventObject {
 
-/**
- * An event which is dispatched when an error occurs.
- */
-export interface ErrorEvent extends Event<AppEvents> {
-  type: AppEvents.ERROR; data?: { error?: Error | string };
+  public type: AppEvents.DISMISS_ALERT = AppEvents.DISMISS_ALERT;
+  constructor(public alert: Alert) { }
+
 }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedOutEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGING_OUT;
+export class ErrorEvent implements EventObject {
+
+  public type: AppEvents.ERROR = AppEvents.ERROR;
+  constructor(public data?: { error?: Error | string }) { }
+
 }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggingOutEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGED_OUT;
+export class LoggedOutEvent implements EventObject {
+
+  public type: AppEvents.LOGGED_OUT = AppEvents.LOGGED_OUT;
+
 }
 
 /**
  * An event which is dispatched when an error occurs.
  */
-export interface LoggedInEvent extends Event<AppEvents> {
-  type: AppEvents.LOGGED_IN;
-  session: SolidSession;
+export class LoggingOutEvent implements EventObject {
+
+  public type: AppEvents.LOGGING_OUT = AppEvents.LOGGING_OUT;
+
+}
+
+/**
+ * An event which is dispatched when an error occurs.
+ */
+export class LoggedInEvent implements EventObject {
+
+  public type: AppEvents.LOGGED_IN = AppEvents.LOGGED_IN;
+  constructor(public session: SolidSession) { }
+
 }
 
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export interface CollectionsLoadedEvent extends Event<AppEvents> {
-  type: AppEvents.COLLECTIONS_LOADED;
-  collections: Collection[];
+export class ClickedCreateCollectionEvent implements EventObject {
+
+  public type: AppEvents.CLICKED_CREATE_COLLECTION = AppEvents.CLICKED_CREATE_COLLECTION;
+
 }
 
 /**
- * An event which is dispatched when the collections were successfully retrieved
+ * An event which is dispatched when this pod should be used as an adminstrator pod
  */
-export interface ClickedCreateCollectionEvent extends Event<AppEvents> {
-  type: AppEvents.CLICKED_CREATE_COLLECTION;
+export class ClickedAdministratorTypeEvent implements EventObject {
+
+  public type: AppEvents.CLICKED_ADMINISTRATOR_TYPE = AppEvents.CLICKED_ADMINISTRATOR_TYPE;
+
+}
+
+/**
+ * An event which is dispatched when this pod should be set up as an instition pod
+ */
+export class ClickedInstitutionTypeEvent implements EventObject {
+
+  public type: AppEvents.CLICKED_INSTITUTION_TYPE = AppEvents.CLICKED_INSTITUTION_TYPE;
+
+}
+
+/**
+ * An event which is dispatched when this pod should be set up as an instition pod
+ */
+export class SetProfileEvent implements EventObject {
+
+  public type: AppEvents.SET_PROFILE = AppEvents.SET_PROFILE;
+
 }
 
 /**
@@ -93,11 +135,13 @@ export type AppEvent =
   | SelectedCollectionEvent
   | ClickedDeleteCollectionEvent
   | ClickedCreateCollectionEvent
-  | CollectionsLoadedEvent
   | SearchUpdatedEvent
   | SavedCollectionEvent
   | SelectedObjectEvent
-  | ClickedDeleteObjectEvent;
+  | ClickedDeleteObjectEvent
+  | ClickedInstitutionTypeEvent
+  | ClickedAdministratorTypeEvent
+  | SetProfileEvent;
 
 /**
  * Actions for the alerts component.

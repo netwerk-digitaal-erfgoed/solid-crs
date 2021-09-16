@@ -9,6 +9,7 @@ describe('AlertComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement('nde-alert') as AlertComponent;
+    fetchMock.resetMocks();
 
   });
 
@@ -47,32 +48,14 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator([ { key: 'foo', value:'bar', locale:'en-GB' } ], 'en-GB');
+    component.translator = new MemoryTranslator('en-GB');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
-    expect(message).toBe('bar');
-
-  });
-
-  it('should not print message when translator is set but translation is not found', async () => {
-
-    component.alert = {
-      type: 'success',
-      message: 'foo',
-    };
-
-    component.translator = new MemoryTranslator([ { key: 'lorem', value:'bar', locale:'en-GB' } ], 'en-GB');
-
-    window.document.body.appendChild(component);
-    await component.updateComplete;
-
-    const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
-
-    expect(message.trim()).toBe(component.alert.message);
+    expect(message).toBe('[foo]');
 
   });
 

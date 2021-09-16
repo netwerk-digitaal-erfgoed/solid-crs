@@ -1,18 +1,24 @@
+import { registerTranslateConfig, use, get, Values, ValuesCallback, ITranslateConfig, Strings } from '@appnest/lit-translate';
 import { ArgumentError } from '../errors/argument-error';
-import { Translation } from './translation';
+import { Translator } from './translator';
 
 /**
  * An implementation of a Translator which stores translations in-memory.
  */
-export class MemoryTranslator {
+export class MemoryTranslator extends Translator {
 
   /**
    * Instantiates a MemoryTranslator.
    *
-   * @param translations The translations to be stored in-memory.
-   * @param defaultLocale The default locale to use when translating.
+   * @param lng The default locale to use when translating.
+   * @param defaultLng The fallback locale to use when translating.
    */
-  constructor(public translations: Translation[], public defaultLocale: string) { }
+  constructor(public lng: string) {
+
+    super();
+    this.setLng(lng);
+
+  }
 
   /**
    * Translates a key to a specific locale.
@@ -24,7 +30,8 @@ export class MemoryTranslator {
    * @throws {@link ArgumentError}
    * This error is thrown when either no locale or key have been given.
    */
-  translate(key: string, locale?: string): string {
+
+  translate(key: string, values?: Values | ValuesCallback, config?: ITranslateConfig): string {
 
     if (!key) {
 
@@ -32,22 +39,48 @@ export class MemoryTranslator {
 
     }
 
-    if (!locale && ! this.defaultLocale) {
+    return get(key, values, config);
 
-      throw new ArgumentError('Argument locale should be set.', locale);
+  }
+
+  /**
+   * Returns the language currently used by translator
+   *
+   * @returns The language currently used by translator
+   */
+  getLng(): string {
+
+    return this.lng;
+
+  }
+
+  /**
+   * Updates the translator's language if a relevant translation file exists
+   * for this new language. Otherwise, falls back to the previously used language
+   *
+   * @param lng The new language to use
+   */
+  async setLng(lng: string): Promise<void>{
+
+    const lang = this.lng;
+    let translations: Promise<Strings>;
+
+    try {
+
+      translations = await (await fetch(`${window.location.origin}/${lng}.json`)).json();
+      this.lng = lng;
+
+    } catch(e) {
+
+      translations = await (await fetch(`${window.location.origin}/${lang}.json`)).json();
 
     }
 
-    // Use default locale if no locale was passed to function
-    const usedLocale = locale? locale : this.defaultLocale;
+    registerTranslateConfig({
+      loader: async () => translations,
+    });
 
-    // Find translation based on locale
-    const foundTranslation = this.translations?.find(
-      (translation) => translation.locale === usedLocale && translation.key === key
-    );
-
-    // return key when no translation was found
-    return foundTranslation?.value || key;
+    await use(this.lng);
 
   }
 

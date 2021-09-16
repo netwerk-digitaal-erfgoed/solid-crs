@@ -6,11 +6,14 @@ import { EventObject } from 'xstate';
  * Event references for the object machine, with readable log format.
  */
 export enum ObjectEvents {
+  CLICKED_SAVE                = '[ObjectsEvent: Clicked Save]',
   CLICKED_DELETE              = '[ObjectsEvent: Clicked Delete]',
   CLICKED_RESET               = '[ObjectsEvent: Clicked Reset]',
-  SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
   CLICKED_TERM_FIELD          = '[ObjectsEvent: Clicked Term Field]',
+  CLICKED_CANCEL_TERM         = '[ObjectsEvent: Clicked Cancel Term]',
   CLICKED_SIDEBAR_ITEM        = '[ObjectsEvent: Clicked Sidebar Item]',
+  SELECTED_OBJECT             = '[ObjectsEvent: Selected Object]',
+  SELECTED_TERMS              = '[ObjectsEvent: Selected Terms]',
 }
 
 /**
@@ -24,12 +27,32 @@ export class ClickedDeleteObjectEvent implements EventObject {
 }
 
 /**
+ * Fired when the form machine completes.
+ */
+export class ClickedSaveEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_SAVE = ObjectEvents.CLICKED_SAVE;
+  constructor(public object: CollectionObject) { }
+
+}
+
+/**
  * Fired when the users selects an object.
  */
 export class SelectedObjectEvent implements EventObject {
 
   public type: ObjectEvents.SELECTED_OBJECT = ObjectEvents.SELECTED_OBJECT;
   constructor(public object: CollectionObject) { }
+
+}
+
+/**
+ * Fired when the users selects an object.
+ */
+export class SelectedTermsEvent implements EventObject {
+
+  public type: ObjectEvents.SELECTED_TERMS = ObjectEvents.SELECTED_TERMS;
+  constructor(public field: string, public terms: Term[]) { }
 
 }
 
@@ -53,6 +76,15 @@ export class ClickedTermFieldEvent implements EventObject {
 }
 
 /**
+ * Fired when the user clicks the cancel button in a Term's form.
+ */
+export class ClickedCancelTermEvent implements EventObject {
+
+  public type: ObjectEvents.CLICKED_CANCEL_TERM = ObjectEvents.CLICKED_CANCEL_TERM;
+
+}
+
+/**
  * Fired when the user clicks a sidebar item.
  */
 export class ClickedObjectSidebarItem implements EventObject {
@@ -71,4 +103,6 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | ClickedDeleteObjectEvent
 | ClickedResetEvent
 | ClickedTermFieldEvent
-| ClickedObjectSidebarItem;
+| ClickedCancelTermEvent
+| ClickedObjectSidebarItem
+| ClickedSaveEvent;

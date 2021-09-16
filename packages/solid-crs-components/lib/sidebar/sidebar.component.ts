@@ -60,7 +60,6 @@ export class SidebarComponent extends RxLitElement {
           max-height: inherit;
           display: flex;
           flex-direction: column;
-          gap: var(--gap-normal);
           background-color: var(--colors-foreground-inverse);
           color: var(--colors-primary-dark);
         }

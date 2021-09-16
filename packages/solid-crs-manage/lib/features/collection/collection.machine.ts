@@ -67,7 +67,7 @@ export const validateCollectionForm = async (context: FormContext<Collection>): 
 
       res.push({
         field: 'name',
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     }

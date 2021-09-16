@@ -1,5 +1,5 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { CollectionObject, Logger, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, Logger, sort, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -45,8 +45,8 @@ export class ObjectRepresentationComponent extends RxLitElement {
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.representation.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.representation.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.representation.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.representation.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(ObjectIcon)}
       </div>
@@ -56,22 +56,23 @@ export class ObjectRepresentationComponent extends RxLitElement {
           .translator="${this.translator}"
           field="subject"
           >
-          <label slot="label" for="subject">${this.translator?.translate('nde.features.object.card.field.subject')}</label>
+          <label slot="label" for="subject">${this.translator?.translate('object.card.representation.field.subject.title')}</label>
           <ul slot="input" name="subject" id="subject" type="dismiss" class="dismiss">
-            ${this.object.subject?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.subject ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
             @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'subject', terms: this.object.subject } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.subject.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="location"
           >
-          <label slot="label" for="location">${this.translator?.translate('nde.features.object.card.field.location')}</label>
+          <label slot="label" for="location">${this.translator?.translate('object.card.representation.field.location.title')}</label>
           <ul slot="input" name="location" id="location" type="dismiss" class="dismiss">
             ${this.object.location?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -80,13 +81,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.location.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="person"
           >
-          <label slot="label" for="person">${this.translator?.translate('nde.features.object.card.field.person')}</label>
+          <label slot="label" for="person">${this.translator?.translate('object.card.representation.field.person.title')}</label>
           <ul slot="input" name="person" id="person" type="dismiss" class="dismiss">
             ${this.object.person?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -95,13 +97,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.person.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="organization"
           >
-          <label slot="label" for="organization">${this.translator?.translate('nde.features.object.card.field.organization')}</label>
+          <label slot="label" for="organization">${this.translator?.translate('object.card.representation.field.organization.title')}</label>
           <ul slot="input" name="organization" id="organization" type="dismiss" class="dismiss">
             ${this.object.organization?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -110,13 +113,14 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.organization.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="event"
           >
-          <label slot="label" for="event">${this.translator?.translate('nde.features.object.card.field.event')}</label>
+          <label slot="label" for="event">${this.translator?.translate('object.card.representation.field.event.title')}</label>
           <ul slot="input" name="event" id="event" type="dismiss" class="dismiss">
             ${this.object.event?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
@@ -125,6 +129,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.representation.field.event.description')}</div>
         </nde-form-element>
       </div>
     </nde-large-card>

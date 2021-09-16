@@ -3,6 +3,90 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
+
+
+### **Bug Fixes**
+
+* styling fixes ([#472](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/472)) ([fd42d06](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fd42d06a48caa8ae27b2d61e2f81b2f88774db97))
+
+
+
+## [0.10.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.1...v0.10.0) (2021-09-13)
+
+
+### **Bug Fixes**
+
+* dimension units are not saved ([#467](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/467)) ([abb9ae7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/abb9ae7ea6f92673c2a03f67a89026cb1abc29d1))
+* improve router ([#462](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/462)) ([0e5ac11](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0e5ac114589126e9384d2a3ec057605cd027fae3))
+* updated document titles ([#468](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/468)) ([560175b](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/560175bd62d2baf038e0b8a6949e4a1b73ed1c4b))
+
+
+
+### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.0...v0.9.1) (2021-08-31)
+
+
+### **Bug Fixes**
+
+* missing translation options ([#456](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/456)) ([b49eb0c](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b49eb0cf7af3589711f59152ff0ab610028e2f5d))
+
+
+
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Bug Fixes**
+
+* display order of terms in object description form ([#449](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/449)) ([b459946](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b459946f95f78c254e4d45f20f99ff8e763b2373))
+* errors when creating new objects ([#446](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/446)) ([02421a6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/02421a64bad773bf425b94506428c03342f11e47))
+* unauthenticated requests after x minutes ([#450](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/450)) ([9d7e163](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9d7e163c2187ee9512dd350eabd0a8bdae8cf00d))
+
+
+
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Bug Fixes**
+
+* empty dimension field saves zero value ([#438](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/438)) ([7b6c435](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/7b6c43557b7ca81625c07955b886f288a0edf993))
+* incorrect saving of object representation terms ([#434](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/434)) ([2472265](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/247226582122feaa670534e6cbc8bdc41f7adb8b))
+* retain object form changes when choosing terms ([#421](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/421)) ([2603632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/2603632c59d67bb535db090491ff540cc542ca70))
+
+
+
+## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
+
+
+### **Bug Fixes**
+
+* fixed search on object properties ([#364](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/364)) ([0177ef5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0177ef5c1eaa9170e04e9da66820cac479dc2bbf))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+### **Features**
+
+* add routing to presentation ([#385](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/385)) ([4e94ae9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/4e94ae92e6290f9e9c9e0e94e43cb94554fc122d)), closes [#381](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/381)
+* administrator access to heritage pod ([#363](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/363)) ([5c51ed1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5c51ed15b45161ecc8e935b064c93e1a2cc5630f))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+
+## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.7.0) (2021-07-29)
+
+
+### **Bug Fixes**
+
+* fixed search on object properties ([#364](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/364)) ([0177ef5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0177ef5c1eaa9170e04e9da66820cac479dc2bbf))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+### **Features**
+
+* administrator access to heritage pod ([#363](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/363)) ([5c51ed1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5c51ed15b45161ecc8e935b064c93e1a2cc5630f))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+
 ## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-core

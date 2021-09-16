@@ -1,11 +1,12 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, LoggedInEvent } from './app.events';
-import { AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { SolidMockService } from './common/solid/solid-mock.service';
+import { AddAlertEvent, AppEvents, ClickedAdministratorTypeEvent, DismissAlertEvent, LoggedInEvent, SetProfileEvent } from './app.events';
+import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
+
+const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
 
 describe('AppMachine', () => {
 
@@ -113,7 +114,7 @@ describe('AppMachine', () => {
 
     }));
 
-    machine.send(AppEvents.ADD_ALERT, {});
+    machine.send(new AddAlertEvent(undefined));
 
   });
 
@@ -136,7 +137,7 @@ describe('AppMachine', () => {
 
     machine.start();
     expect(machine.state.context.alerts.length).toBe(1);
-    machine.send(AppEvents.DISMISS_ALERT, { alert });
+    machine.send(new DismissAlertEvent(alert));
     expect(machine.state.context.alerts.length).toBe(0);
 
   });
@@ -146,7 +147,7 @@ describe('AppMachine', () => {
     const alert: Alert = { type: 'success', message: 'foo' };
     machine.start();
     expect(machine.state.context.alerts.length).toBe(0);
-    machine.send(AppEvents.DISMISS_ALERT, { alert });
+    machine.send(new DismissAlertEvent(alert));
     expect(machine.state.context.alerts.length).toBe(0);
 
   });
@@ -165,7 +166,7 @@ describe('AppMachine', () => {
 
     }));
 
-    machine.send(AppEvents.DISMISS_ALERT, {});
+    machine.send(new DismissAlertEvent(undefined));
 
   });
 
@@ -207,11 +208,11 @@ describe('AppMachine', () => {
 
   it('should remove session when logged out', async (done) => {
 
-    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+    const alert: Alert = { type: 'success', message: 'foo' };
 
     machine = interpret<AppContext>(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        solid,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
@@ -242,7 +243,6 @@ describe('AppMachine', () => {
 
   it('should send logged in when authenticate machine is done', async (done) => {
 
-    const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
     solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
 
     machine = interpret<AppContext>(
@@ -308,6 +308,54 @@ describe('AppMachine', () => {
     machine.start();
 
     machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
+
+  });
+
+  it('should add alert when ClickedAdministratorType is fired', async (done) => {
+
+    machine = interpret<AppContext>(
+      appMachine(solid,
+        {
+          search: jest.fn(),
+          all: jest.fn(),
+          delete: jest.fn(),
+          save: jest.fn(),
+          get: jest.fn(),
+          getInstanceForClass: jest.fn(() => null),
+        },
+        new CollectionObjectMemoryStore([ object1 ]),
+        collection1,
+        object1).withContext({
+        alerts: [],
+      }),
+    );
+
+    let clicked = false;
+
+    machine.onTransition((state) => {
+
+      if(!clicked && state.matches({ [AppRootStates.DATA]: AppDataStates.IDLE })) {
+
+        clicked = true;
+        machine.send(new SetProfileEvent());
+
+      }
+
+      if(state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
+
+        machine.send(new ClickedAdministratorTypeEvent());
+
+      }
+
+      if(clicked && state.matches({ [AppRootStates.DATA]: AppDataStates.IDLE })) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
 
   });
 

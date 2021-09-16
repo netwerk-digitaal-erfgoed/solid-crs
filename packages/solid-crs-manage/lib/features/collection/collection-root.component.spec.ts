@@ -1,9 +1,8 @@
-import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { CollectionRootComponent } from './collection-root.component';
 import { CollectionEvents } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
@@ -71,7 +70,7 @@ describe('CollectionRootComponent', () => {
 
     component.formActor = machine.children.get(FormActors.FORM_MACHINE);
 
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 
@@ -136,7 +135,7 @@ describe('CollectionRootComponent', () => {
 
         await component.updateComplete;
 
-        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+        const button = window.document.body.getElementsByTagName('nde-collection-root')[0].shadowRoot.querySelector('.confirm-delete') as HTMLElement;
         button.click();
 
         expect(machine.send).toHaveBeenCalledTimes(1);
@@ -152,6 +151,30 @@ describe('CollectionRootComponent', () => {
     await component.updateComplete;
 
   });
+
+  // it('should call toggleDelete and show popup when cancel button is clicked', async () => {
+
+  //   window.document.body.appendChild(component);
+  //   await component.updateComplete;
+  //   component.deletePopup.hidden = false;
+
+  //   const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel-delete') as HTMLElement;
+  //   button.click();
+  //   expect(component.deletePopup.hidden).toEqual(true);
+
+  // });
+
+  // it('should call toggleDelete and show popup when delete icon is clicked', async () => {
+
+  //   window.document.body.appendChild(component);
+  //   await component.updateComplete;
+  //   component.deletePopup.hidden = false;
+
+  //   const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+  //   button.click();
+  //   expect(component.deletePopup.hidden).toEqual(true);
+
+  // });
 
   it('should send event when collection title is clicked', async () => {
 

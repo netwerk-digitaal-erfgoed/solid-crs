@@ -1,6 +1,8 @@
-import { FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import { AppEvents } from '../../../app.events';
+import { ClickedCancelTermEvent } from '../object.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
@@ -39,6 +41,7 @@ describe('TermSearchComponent', () => {
       .withContext({
         termService: termService as any,
         selectedTerms: [],
+        searchResults: [],
       }));
 
     component = window.document.createElement('nde-term-search') as TermSearchComponent;
@@ -131,11 +134,36 @@ describe('TermSearchComponent', () => {
 
       component.sources = [ termSource ];
       await component.updateComplete;
-      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('form button') as HTMLButtonElement;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.confirm') as HTMLButtonElement;
       expect(button).toBeTruthy();
       button.click();
 
     }
+
+  });
+
+  it('should send ClickedCancelTermEvent when "Annuleren" button is clicked', async (done) => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    machine.parent = {
+      send: jest.fn(),
+    } as any;
+
+    if (machine.state.matches(TermStates.IDLE)) {
+
+      component.sources = [ termSource ];
+      await component.updateComplete;
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.cancel') as HTMLButtonElement;
+      expect(button).toBeTruthy();
+      button.click();
+
+    }
+
+    expect(machine.parent.send).toHaveBeenCalledWith(new ClickedCancelTermEvent());
+    done();
 
   });
 
@@ -280,8 +308,8 @@ describe('TermSearchComponent', () => {
       const searchResultCard = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.term-list:nth-of-type(1) nde-large-card');
       expect(searchResultCard).toBeTruthy();
       expect(selectedTermCard).toBeTruthy();
-      expect(searchResultCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
-      expect(selectedTermCard.innerHTML).not.toContain(`nde.features.term.field.${value}`);
+      expect(searchResultCard.innerHTML).not.toContain(`term.field.${value}`);
+      expect(selectedTermCard.innerHTML).not.toContain(`term.field.${value}`);
 
     }
 
@@ -300,7 +328,31 @@ describe('TermSearchComponent', () => {
       component.searchResultsMap = {};
       await component.updateComplete;
       const componentContent = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.innerHTML;
-      expect(componentContent).toContain('nde.features.term.no-search-results');
+      expect(componentContent).toContain('term.no-search-results');
+
+    }
+
+  });
+
+  it('should show new term input field when create button is clicked', async () => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    if (machine.state.matches(TermStates.IDLE)) {
+
+      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector<HTMLAnchorElement>('#create-term');
+      expect(button).toBeTruthy();
+      button.click();
+
+    }
+
+    if (machine.state.matches(TermStates.CREATING)) {
+
+      await component.updateComplete;
+      const card = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector<HTMLAnchorElement>('#create-term-card input');
+      expect(card).toBeTruthy();
 
     }
 
@@ -323,6 +375,51 @@ describe('TermSearchComponent', () => {
 
       expect(result[term.source].length).toEqual(source1Terms.length);
       expect(result[altTerm.source].length).toEqual(source2Terms.length);
+
+    });
+
+  });
+
+  describe('handleDismiss', () => {
+
+    const alert: Alert = { message: 'foo', type: 'success' };
+
+    it('should throw error when event is null', async () => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(() => component.handleDismiss(null)).toThrow(ArgumentError);
+
+    });
+
+    it('should throw error when actor is null', async () => {
+
+      component.actor = null;
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(() => component.handleDismiss({ detail: alert } as CustomEvent<Alert>)).toThrow(ArgumentError);
+
+    });
+
+    it('should send dismiss alert event to object machine\'s parent', async () => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      machine.parent = {
+        parent: {
+          send: jest.fn(),
+        } as any,
+      } as any;
+
+      component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+
+      expect(machine.parent.parent.send).toHaveBeenCalledWith(AppEvents.DISMISS_ALERT, { alert });
 
     });
 

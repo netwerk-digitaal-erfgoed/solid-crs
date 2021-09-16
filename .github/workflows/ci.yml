@@ -9,6 +9,7 @@ jobs:
     outputs:
       tag: ${{ steps.vars.outputs.tag }}
       image_manage: ${{ steps.vars.outputs.image_manage }}
+      image_presentation: ${{ steps.vars.outputs.image_presentation }}
       image_semcom_node: ${{ steps.vars.outputs.image_semcom_node }}
       image_semcom_components: ${{ steps.vars.outputs.image_semcom_components }}
     steps:
@@ -17,6 +18,7 @@ jobs:
         run: |
           echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
           echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
+          echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-presentation"
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
 
@@ -147,6 +149,17 @@ jobs:
           build-args: |
             NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
 
+      - name: Build and push presentation
+        uses: docker/build-push-action@v2
+        with:
+          context: packages/solid-crs-presentation/
+          push: true
+          tags: |
+            ${{ needs.variables.outputs.image_presentation }}:latest
+            ${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+
       - name: Build and push semcom-node
         uses: docker/build-push-action@v2
         with:
@@ -180,11 +193,13 @@ jobs:
       - name: Update deployment
         run: |
           kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
 
       - name: Verify deployment
         run: |
           kubectl rollout status deployment/solid-crs-manage
+          kubectl rollout status deployment/solid-crs-presentation
           kubectl rollout status deployment/solid-crs-semcom-node
           kubectl rollout status deployment/solid-crs-semcom-components

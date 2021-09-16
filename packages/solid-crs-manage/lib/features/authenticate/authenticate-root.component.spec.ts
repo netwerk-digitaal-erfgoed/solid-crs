@@ -1,13 +1,11 @@
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors, FormContext, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidService, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
-import { SolidService } from '../../common/solid/solid.service';
 import { AuthenticateRootComponent } from './authenticate-root.component';
 import { AuthenticateEvents } from './authenticate.events';
-import { AuthenticateContext, authenticateMachine } from './authenticate.machine';
+import { AuthenticateContext, authenticateMachine, AuthenticateStates } from './authenticate.machine';
 
 describe('AuthenticateRootComponent', () => {
 
@@ -73,6 +71,7 @@ describe('AuthenticateRootComponent', () => {
 
     component = window.document.createElement('nde-authenticate-root') as AuthenticateRootComponent;
 
+    component.translator = new MemoryTranslator('nl-NL');
     component.actor = machine;
 
   });
@@ -152,6 +151,39 @@ describe('AuthenticateRootComponent', () => {
     const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
 
     expect(button.disabled).toBe(isSubmitting);
+
+  });
+
+  it('should send FormSubmittedEvent when submitted', async (done) => {
+
+    machine.onTransition(async(state) => {
+
+      if (state.matches((AuthenticateStates.UNAUTHENTICATED))) {
+
+        (machine.children.get(FormActors.FORM_MACHINE) as Interpreter<FormContext<unknown>>).onEvent((event) => {
+
+          if (event instanceof FormSubmittedEvent) {
+
+            done();
+
+          }
+
+        });
+
+        window.document.body.appendChild(component);
+        await component.updateComplete;
+
+        const button = window.document.body.getElementsByTagName('nde-authenticate-root')[0].shadowRoot.querySelector<HTMLButtonElement>('button[slot="action"]');
+        button.click();
+
+      }
+
+    });
+
+    machine.start();
+
+    component.canSubmit = true;
+    component.isSubmitting = false;
 
   });
 

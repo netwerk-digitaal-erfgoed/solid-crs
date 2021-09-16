@@ -6,6 +6,7 @@ import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Dropdown, Login, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import fetchMock from 'jest-fetch-mock';
 import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { FormEvents } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
@@ -45,23 +46,7 @@ export class DemoFormComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator([
-    {
-      key: 'demo-form.name.required',
-      locale: 'nl-NL',
-      value: 'Name is required.',
-    },
-    {
-      key: 'demo-form.uri.required',
-      locale: 'nl-NL',
-      value: 'URI is required.',
-    },
-    {
-      key: 'nde.common.form.click-to-select',
-      locale: 'nl-NL',
-      value: 'Klik om te selecteren',
-    },
-  ], 'nl-NL');
+  public translator: Translator = new MemoryTranslator('nl-NL');
 
   /**
    * The actor controlling this component.
@@ -136,6 +121,22 @@ export class DemoFormComponent extends RxLitElement {
    * @returns The rendered HTML of the component.
    */
   render(): TemplateResult {
+
+    fetchMock.mockResponseOnce(JSON.stringify({
+      'demo-form': {
+        'name': {
+          'required': 'Name is required.',
+        },
+        'uri': {
+          'required': 'URI is required.',
+        },
+      },
+      'common': {
+        'form': {
+          'click-to-select': 'Klik om te selecteren',
+        },
+      },
+    }));
 
     return html`
     <form>

@@ -1,12 +1,11 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { ObjectRootComponent } from './object-root.component';
-import { ClickedTermFieldEvent, ObjectEvents } from './object.events';
+import { ClickedResetEvent, ClickedTermFieldEvent, ObjectEvents } from './object.events';
 import { ObjectContext, objectMachine, ObjectStates } from './object.machine';
 
 describe('ObjectRootComponent', () => {
@@ -79,7 +78,7 @@ describe('ObjectRootComponent', () => {
 
     component.actor = machine;
 
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
     component.object = object1;
 
@@ -152,7 +151,7 @@ describe('ObjectRootComponent', () => {
 
       if(state.matches(ObjectStates.IDLE) && state.context?.object) {
 
-        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+        const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.confirm-delete') as HTMLElement;
 
         if(button) {
 
@@ -165,6 +164,30 @@ describe('ObjectRootComponent', () => {
       }
 
     });
+
+  });
+
+  it('should call toggleDelete and show popup when cancel button is clicked', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.deletePopup.hidden = false;
+
+    const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel-delete') as HTMLElement;
+    button.click();
+    expect(component.deletePopup.hidden).toEqual(true);
+
+  });
+
+  it('should call toggleDelete and show popup when delete icon is clicked', async () => {
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.deletePopup.hidden = false;
+
+    const button = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.delete') as HTMLElement;
+    button.click();
+    expect(component.deletePopup.hidden).toEqual(true);
 
   });
 
@@ -198,7 +221,7 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should only show save and cancel buttons when form is dirty', async () => {
+  it('should not show save and cancel buttons when form is not dirty', async () => {
 
     machine.start();
 
@@ -206,29 +229,47 @@ describe('ObjectRootComponent', () => {
     await component.updateComplete;
 
     const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
-    const cancel = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.cancel') as HTMLElement;
+    const reset = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.reset') as HTMLElement;
 
     expect(save).toBeFalsy();
-    expect(cancel).toBeFalsy();
+    expect(reset).toBeFalsy();
 
   });
 
-  it('should select sidebar item when content is scrolled', async () => {
+  it('should show save and cancel buttons when form is dirty', async () => {
+
+    machine.start();
+    machine.send(ObjectEvents.SELECTED_OBJECT, { object: collection1 });
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const div = document.createElement('div');
-    div.id = 'nde.features.object.sidebar.image';
+    machine.onTransition(async(state) => {
 
-    component.formCards = [ div ];
-    component.components = [];
+      if(state.matches(ObjectStates.IDLE) && state.context?.object) {
 
-    const content = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.content') as HTMLElement;
-    content.dispatchEvent(new CustomEvent('scroll'));
-    await component.updateComplete;
+        component.isDirty = true;
+        component.isValid = true;
+        await component.updateComplete;
 
-    expect(component.visibleCard).toBeTruthy();
+        const save = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.save') as HTMLElement;
+        const reset = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector('.reset') as HTMLElement;
+
+        expect(save).toBeTruthy();
+        expect(reset).toBeTruthy();
+
+        machine.send = jest.fn();
+        component.formActor.send = jest.fn();
+
+        save.click();
+        reset.click();
+
+        expect(machine.send).toHaveBeenCalledTimes(1);
+        expect(component.formActor.send).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
 
   });
 
@@ -237,7 +278,7 @@ describe('ObjectRootComponent', () => {
     it('should set this.visibleCard to the currently visible card', async () => {
 
       const div = document.createElement('div');
-      div.id = 'nde.features.object.sidebar.image';
+      div.id = 'object.sidebar.image';
 
       component.formCards = [ div ];
 
@@ -301,6 +342,28 @@ describe('ObjectRootComponent', () => {
 
   describe('updated()', () => {
 
+    it('should restart formMachine when clicked reset', async() => {
+
+      machine.start();
+      window.document.body.appendChild(component);
+      component.initFormMachine = jest.fn();
+      component.createComponents = jest.fn();
+
+      await component.updateComplete;
+
+      const map = new Map<string, string>();
+      map.set('actor', 'test');
+      map.set('formActor', 'test');
+
+      await component.updated(map);
+
+      machine.send(new ClickedResetEvent());
+
+      expect(component.initFormMachine).toHaveBeenCalledTimes(5);
+      expect(component.createComponents).toHaveBeenCalledTimes(2);
+
+    });
+
     it('should update subscription when formActor is updated', async () => {
 
       machine.start();
@@ -311,7 +374,7 @@ describe('ObjectRootComponent', () => {
       component.subscribe = jest.fn();
 
       const div = document.createElement('div');
-      div.id = 'nde.features.object.sidebar.image';
+      div.id = 'object.sidebar.image';
 
       component.formCards = [ div ];
 
@@ -321,7 +384,7 @@ describe('ObjectRootComponent', () => {
 
       await component.updated(map);
 
-      expect(component.subscribe).toHaveBeenCalledTimes(13);
+      expect(component.subscribe).toHaveBeenCalledTimes(7);
 
     });
 
@@ -462,7 +525,7 @@ describe('ObjectRootComponent', () => {
 
     customElements.define('nde-object-imagery', ObjectImageryComponent);
     const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
+    div.id = 'object.sidebar.image';
 
     component.formCards = [ div ];
     await component.updateComplete;
@@ -482,7 +545,7 @@ describe('ObjectRootComponent', () => {
 
     customElements.define('nde-object-imagery', ObjectImageryComponent);
     const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-    div.id = 'nde.features.object.sidebar.image';
+    div.id = 'object.sidebar.image';
 
     component.formCards = [ div ];
     component.isEditingTermField = true;
@@ -539,6 +602,7 @@ describe('ObjectRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
     await component.registerComponents(component.components);
+    await component.createComponents(component.components);
 
     const event = new MouseEvent('contextmenu');
     event.stopPropagation = jest.fn();
@@ -547,22 +611,6 @@ describe('ObjectRootComponent', () => {
 
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(event.preventDefault).toHaveBeenCalled();
-
-  });
-
-  describe('appendComponents()', () => {
-
-    it('should set formCard attributes', async () => {
-
-      const div = document.createElement('nde-object-imagery') as ObjectImageryComponent;
-      div.id = 'nde.features.object.sidebar.image';
-      component.appendComponents([ div as any ]);
-
-      customElements.define('nde-object-imagery', ObjectImageryComponent);
-
-      expect(div.object).toBeTruthy();
-
-    });
 
   });
 

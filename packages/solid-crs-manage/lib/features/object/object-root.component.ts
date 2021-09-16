@@ -1,18 +1,18 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, debounce, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, DoneInvokeEvent, Interpreter, State } from 'xstate';
+import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent, doneInvoke } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { AppEvents } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
-import { ObjectContext, ObjectStates } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedTermFieldEvent } from './object.events';
+import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent, SelectedTermsEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
 
@@ -78,10 +78,22 @@ export class ObjectRootComponent extends RxLitElement {
   object?: CollectionObject;
 
   /**
+   * The original object to be displayed and/or edited.
+   */
+  @property({ type: Object })
+  original?: CollectionObject;
+
+  /**
+   * The form machine used by the form actor
+   */
+  @internalProperty()
+  formMachine = formMachine<any>((context) => validateObjectForm(context));
+
+  /**
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActor: ActorRef<FormEvent>;
+  formActor = interpret(this.formMachine, { devTools: true });
 
   /**
    * The actor responsible for editing term fields.
@@ -132,6 +144,12 @@ export class ObjectRootComponent extends RxLitElement {
   components: ComponentMetadata[];
 
   /**
+   * The popup component shown when the delete icon is clicked
+   */
+  @query('nde-popup#delete-popup')
+  deletePopup: PopupComponent;
+
+  /**
    * Hook called on first update after connection to the DOM.
    */
   async firstUpdated(changed: PropertyValues): Promise<void> {
@@ -162,20 +180,30 @@ export class ObjectRootComponent extends RxLitElement {
 
         if (event instanceof ClickedObjectSidebarItem) {
 
-          this.requestUpdate();
-          await this.updateComplete;
-
           const formCard = Array.from(this.formCards).find((card) => card.id === event.itemId);
           formCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
         }
 
-        if (event.type === `done.invoke.${TermActors.TERM_MACHINE}`) {
+        if (event instanceof SelectedTermsEvent) {
 
-          this.requestUpdate();
-          await this.updateComplete;
+          this.formActor.send(new FormUpdatedEvent(event.field, event.terms.map((term) => term.uri)));
+          this.createComponents(this.components);
 
-          this.updateSelected();
+        }
+
+        if(event instanceof ClickedResetEvent){
+
+          this.initFormMachine(this.original, this.original, true);
+          this.createComponents(this.components);
+
+        }
+
+        if (event.type === `done.invoke.ObjectMachine.${ObjectStates.SAVING}:invocation[0]`) {
+
+          const parsed = event as DoneInvokeEvent<CollectionObject>;
+          this.initFormMachine(parsed.data, parsed.data, true);
+          this.createComponents(this.components);
 
         }
 
@@ -188,16 +216,6 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
-      this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => {
-
-          this.formCards?.forEach((card) => card.formActor = state.children[FormActors.FORM_MACHINE] as any);
-
-          return state.children[FormActors.FORM_MACHINE];
-
-        })
-      ));
-
       this.subscribe('termActor', from(this.actor).pipe(
         map((state) => state.children[TermActors.TERM_MACHINE]),
       ));
@@ -208,10 +226,16 @@ export class ObjectRootComponent extends RxLitElement {
         map((state) => state.context.collections),
       ));
 
+      this.subscribe('original', from(this.actor).pipe(
+        map((state) => state.context.original),
+      ));
+
       this.subscribe('object', from(this.actor).pipe(
         map((state) => {
 
           this.formCards?.forEach((card) => card.object = state.context?.object);
+
+          this.initFormMachine(state.context?.object, state.context?.original);
 
           return state.context?.object;
 
@@ -223,19 +247,70 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    if(changed?.has('formActor') && this.formActor){
+    if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
 
-      // this validates the form when form machine is started
-      // needed for validation when coming back from the term machine
-      // otherwise, form machine state is not_validated and the user can't save
-      this.formActor.send(new FormUpdatedEvent('name', this.object?.name));
+      await this.registerComponents(this.components);
+      await this.createComponents(this.components);
+
+    }
+
+  }
+
+  initFormMachine(object: CollectionObject, original: CollectionObject, restart = false): void {
+
+    // when the object is loaded, prepare and start up the form machine (once)
+    if (restart || this.formActor.status !== InterpreterStatus.Running) {
+
+      // replace Terms with lists of uri
+      // form machine can only handle (lists of) strings, not objects (Terms)
+      const parseObject = (obj: CollectionObject) => ({
+        ...obj,
+        additionalType: obj?.additionalType
+          ? obj.additionalType.map((term) => term.uri) : undefined,
+        creator: obj?.creator ? obj.creator.map((term) => term.uri) : undefined,
+        locationCreated: obj?.locationCreated
+          ? obj.locationCreated.map((term) => term.uri) : undefined,
+        material: obj?.material ? obj.material.map((term) => term.uri) : undefined,
+        subject: obj?.subject ? obj.subject.map((term) => term.uri) : undefined,
+        location: obj?.location ? obj.location.map((term) => term.uri) : undefined,
+        person: obj?.person ? obj.person.map((term) => term.uri) : undefined,
+        organization: obj?.organization ? obj.organization.map((term) => term.uri) : undefined,
+        event: obj?.event ? obj.event.map((term) => term.uri) : undefined,
+      });
+
+      this.formMachine = this.formMachine.withContext({
+        data: { ... parseObject(object) },
+        original: { ... parseObject(original) },
+      });
+
+      this.formActor = interpret(this.formMachine, { devTools: true });
+
+      this.formActor.onDone((event) => {
+
+        this.actor.send(new ClickedSaveEvent({
+          ...event.data.data,
+          // don't use form values for Terms
+          // as form machine will only return URIs for these fields, not full Terms
+          // See above: this.formMachine's initial data
+          additionalType: this.object?.additionalType,
+          creator: this.object?.creator,
+          locationCreated: this.object?.locationCreated,
+          material: this.object?.material,
+          subject: this.object?.subject,
+          location: this.object?.location,
+          person: this.object?.person,
+          organization: this.object?.organization,
+          event: this.object?.event,
+        }));
+
+      });
 
       this.subscribe('isSubmitting', from(this.formActor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
+        map((actor) => actor.matches(FormSubmissionStates.SUBMITTING)),
       ));
 
       this.subscribe('isValid', from(this.formActor).pipe(
-        map((state) => !state.matches({
+        map((actor) => !actor.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.INVALID,
           },
@@ -243,24 +318,19 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('isDirty', from(this.formActor).pipe(
-        map((state) => state.matches({
+        map((actor) => actor.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
           },
         })),
       ));
 
-    }
+      this.formActor.start();
 
-    if (!this.formCards && this.components && this.object && this.formActor && this.translator) {
-
-      await this.registerComponents(this.components);
-
-    }
-
-    if (this.formCards && !this.isEditingTermField && this.components?.length < 1) {
-
-      this.appendComponents(this.formCards);
+      // this validates the form when form machine is started
+      // needed for validation when coming back from the term machine
+      // otherwise, form machine state is not_validated and the user can't save
+      this.formActor.send(new FormUpdatedEvent('name', object.name));
 
     }
 
@@ -285,7 +355,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     }
 
-    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
   /**
@@ -307,33 +377,46 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
+    }
+
+  }
+
+  /**
+   * Appends the formCards to the page content and removes previous children
+   */
+  async createComponents(components: ComponentMetadata[]): Promise<void> {
+
+    this.formCards = undefined;
+
+    for (const component of components) {
+
       let element;
 
       if (component.tag.includes('imagery')) {
 
         element = document.createElement(component.tag) as ObjectImageryComponent;
-        element.id = 'nde.features.object.sidebar.image';
+        element.id = 'object.sidebar.image';
 
       } else if (component.tag.includes('creation')) {
 
         element = document.createElement(component.tag) as ObjectCreationComponent;
-        element.id = 'nde.features.object.sidebar.creation';
+        element.id = 'object.sidebar.creation';
 
       } else if (component.tag.includes('identification')) {
 
         element = document.createElement(component.tag) as ObjectIdentificationComponent;
         element.collections = this.collections;
-        element.id = 'nde.features.object.sidebar.identification';
+        element.id = 'object.sidebar.identification';
 
       } else if (component.tag.includes('representation')) {
 
         element = document.createElement(component.tag) as ObjectRepresentationComponent;
-        element.id = 'nde.features.object.sidebar.representation';
+        element.id = 'object.sidebar.representation';
 
       } else if (component.tag.includes('dimensions')) {
 
         element = document.createElement(component.tag) as ObjectDimensionsComponent;
-        element.id = 'nde.features.object.sidebar.dimensions';
+        element.id = 'object.sidebar.dimensions';
 
       }
 
@@ -348,32 +431,15 @@ export class ObjectRootComponent extends RxLitElement {
 
       }
 
+      element.object = this.object;
+      element.formActor = this.formActor as any;
+      element.translator = this.translator;
+      element.logger = this.logger;
+
       this.formCards = this.formCards?.includes(element)
         ? this.formCards : [ ...this.formCards ? this.formCards : [], element ];
 
     }
-
-    this.appendComponents(this.formCards);
-
-  }
-
-  /**
-   * Appends the formCards to the page content and removes previous children
-   */
-  appendComponents(components: (ObjectImageryComponent
-  | ObjectCreationComponent
-  | ObjectIdentificationComponent
-  | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[]): void {
-
-    components.forEach(async(component) => {
-
-      component.object = this.object;
-      component.formActor = this.formActor as any;
-      component.translator = this.translator;
-      await component?.requestUpdate('object');
-
-    });
 
     this.updateSelected();
 
@@ -401,6 +467,8 @@ export class ObjectRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const toggleDelete =  () => { this.deletePopup.toggle(); };
+
     const idle = this.state?.matches(ObjectStates.IDLE);
 
     // Create an alert components for each alert.
@@ -421,12 +489,12 @@ export class ObjectRootComponent extends RxLitElement {
         <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
       </nde-form-element>
       <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('nde.common.form.description-placeholder')}"/>
+        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
       </nde-form-element>
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => this.actor.send(new ClickedDeleteObjectEvent(this.object))}">${unsafeSVG(Trash)}</button></div>
+      <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 
     <div class="content-and-sidebar">
@@ -448,22 +516,46 @@ export class ObjectRootComponent extends RxLitElement {
 
     ${ this.isEditingTermField
     ? html`
-      ${ this.appendComponents(this.formCards)}
-      <nde-term-search .actor="${this.termActor}" .translator="${this.translator}"></nde-term-search>
+      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}" .object="${this.object}"></nde-term-search>
     `
     : this.formCards ? html`
       <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
 
+        ${ alerts }
         ${ this.formCards }
 
-        ${ alerts }
         
       </div>
     ` : html`no formcards`}
     `
     : html``}
+      <nde-popup dark id="delete-popup">
+        <div slot="content">
+          <p>${this.translator?.translate('object.root.delete.title')}</p>
+          <div>
+            <button class='primary confirm-delete' @click="${() => { this.actor.send(new ClickedDeleteObjectEvent(this.object)); toggleDelete(); }}">
+                <span>${this.translator?.translate('object.root.delete.confirm')}</span>
+            </button>
+            <button class='light cancel-delete' @click="${() => toggleDelete()}">
+                <span>${this.translator?.translate('object.root.delete.cancel')}</span>
+            </button>
+          </div>
+        </div>
+      </nde-popup>
     </div>`
       : html``;
+
+  }
+
+  constructor() {
+
+    super();
+
+    if(!customElements.get('nde-popup')) {
+
+      customElements.define('nde-popup', PopupComponent);
+
+    }
 
   }
 
@@ -489,7 +581,7 @@ export class ObjectRootComponent extends RxLitElement {
           margin-top: 1px;
           display: flex;
           flex-direction: row;
-        height: 1px;
+          height: 1px;
           flex: 1 1;
         }
         .content {
@@ -499,7 +591,11 @@ export class ObjectRootComponent extends RxLitElement {
           overflow-x: clip;
           display: flex;
           flex-direction: column;
-          gap: var(--gap-large);
+          display:flex; 
+          flex-direction: column;
+        }
+        .content > *:not(:last-child) {
+          margin-bottom: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;
@@ -525,6 +621,23 @@ export class ObjectRootComponent extends RxLitElement {
         button svg {
           max-width: var(--gap-normal);
           height: var(--gap-normal);
+        }
+        #delete-popup div[slot="content"] {
+          background-color: var(--colors-foreground-inverse);
+          align-items: center;
+          padding: var(--gap-large);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #delete-popup div[slot="content"] div button{
+          margin: var(--gap-large) var(--gap-tiny) 0;
+        }
+        button.accent {
+          color: var(--colors-foreground-inverse);
+        }
+        button.light {
+          color:var(--colors-primary-dark);
         }
       `,
     ];

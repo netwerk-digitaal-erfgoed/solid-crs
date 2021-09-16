@@ -1,5 +1,5 @@
 import { interpret, Interpreter } from 'xstate';
-import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
+import { ClickedAddEvent, ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
 import { TermContext, termMachine, TermStates } from './term.machine';
 
 describe('TermMachine', () => {
@@ -128,6 +128,33 @@ describe('TermMachine', () => {
         done();
 
       } else if (state.matches(TermStates.IDLE)) {
+
+        machine.send(new ClickedTermEvent(term));
+
+      }
+
+    });
+
+    machine.start();
+
+  });
+
+  it('should transition back to IDLE when ClickedTermEvent is fired when CREATING', async (done) => {
+
+    let clickedOnce = false;
+
+    machine.onTransition((state) => {
+
+      if (clickedOnce && state.matches(TermStates.IDLE)) {
+
+        done();
+
+      } else if (state.matches(TermStates.IDLE)) {
+
+        machine.send(new ClickedAddEvent());
+        clickedOnce = true;
+
+      } else if (state.matches(TermStates.CREATING)) {
 
         machine.send(new ClickedTermEvent(term));
 

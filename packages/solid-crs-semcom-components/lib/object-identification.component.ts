@@ -1,5 +1,5 @@
-import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
-import { Collection, CollectionObject, Logger, Translator, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
+import { Collection, CollectionObject, Logger, Translator, Term, sort } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { SpawnedActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -26,13 +26,13 @@ export class ObjectIdentificationComponent extends RxLitElement {
   /**
    * The object to be displayed and/or edited.
    */
-  @property()
+  @property({ type: Object })
   object?: CollectionObject;
 
   /**
    * The actor responsible for form validation in this component.
    */
-  @property()
+  @property({ type: Object })
   formActor: SpawnedActorRef<FormEvent>;
 
   /**
@@ -40,6 +40,12 @@ export class ObjectIdentificationComponent extends RxLitElement {
    */
   @property()
   collections?: Collection[];
+
+  async updated(changed: PropertyValues): Promise<void> {
+
+    super.updated(changed);
+
+  }
 
   /**
    * Renders the component as HTML.
@@ -51,46 +57,47 @@ export class ObjectIdentificationComponent extends RxLitElement {
     return this.object ? html`
 
     <nde-large-card .showImage="${false}">
-      <div slot="title">${this.translator?.translate('nde.features.object.card.identification.title')}</div>
-      <div slot="subtitle">${this.translator?.translate('nde.features.object.card.identification.subtitle')}</div>
+      <div slot="title">${this.translator?.translate('object.card.identification.title')}</div>
+      <div slot="subtitle">${this.translator?.translate('object.card.identification.subtitle')}</div>
       <div slot="icon">
         ${unsafeSVG(Identity)}
       </div>
       <div slot="content">
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="identifier">
-          <label slot="label" for="identifier">${this.translator?.translate('nde.features.object.card.field.identifier')}</label>
+          <label slot="label" for="identifier">${this.translator?.translate('object.card.identification.field.identifier.title')}</label>
           <input type="text" slot="input" name="identifier" id="identifier"/>
-        </nde-form-element>
-        <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="type">
-          <label slot="label" for="type">${this.translator?.translate('nde.features.object.card.field.type')}</label>
-          <input type="text" slot="input" name="type" id="type"/>
+          <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.identifier.description')}</div>
         </nde-form-element>
         <nde-form-element
           .actor="${this.formActor}"
           .translator="${this.translator}"
           field="additionalType"
         >
-          <label slot="label" for="additionalType">${this.translator?.translate('nde.features.object.card.field.additionalType')}</label>
+          <label slot="label" for="additionalType">${this.translator?.translate('object.card.identification.field.additionalType.title')}</label>
           <ul slot="input" name="additionalType" id="additionalType" type="dismiss" class="dismiss">
-            ${this.object.additionalType?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
+            ${sort(this.object.additionalType ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'additionalType', terms: this.object.additionalType } }))}" type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
+          <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.additionalType.description')}</div>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="name">
-          <label slot="label" for="name">${this.translator?.translate('nde.features.object.card.field.name')}</label>
+          <label slot="label" for="name">${this.translator?.translate('object.card.identification.field.name.title')}</label>
           <input type="text" slot="input" name="name" id="name"/>
+          <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.name.description')}</div>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="description">
-          <label slot="label" for="description">${this.translator?.translate('nde.features.object.card.field.description')}</label>
+          <label slot="label" for="description">${this.translator?.translate('object.card.identification.field.description.title')}</label>
           <textarea type="text" slot="input" name="description" id="description"/></textarea>
+          <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.description.description')}</div>
         </nde-form-element>
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
-          <label slot="label" for="collection">${this.translator?.translate('nde.features.object.card.field.collection')}</label>
+          <label slot="label" for="collection">${this.translator?.translate('object.card.identification.field.collection.title')}</label>
           <select slot="input" name="collection" id="collection">
             ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object.collection}">${collection.name}</option>`)}
           </select>
+          <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.collection.description')}</div>
         </nde-form-element>
       </div>
     </nde-large-card>

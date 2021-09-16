@@ -1,14 +1,14 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { ArgumentError, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, FormEvents, Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ActorRef, Interpreter, State } from 'xstate';
+import { FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, Alert, FormSubmittedEvent, FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, Logo, Theme, Loading } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { AppEvents } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { AuthenticateContext, AuthenticateStates } from './authenticate.machine';
 
 /**
@@ -44,7 +44,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActor: ActorRef<FormEvent>;
+  formActor: Interpreter<FormContext<unknown>>;
 
   /**
    * The state of this component.
@@ -86,7 +86,7 @@ export class AuthenticateRootComponent extends RxLitElement {
     if(changed.has('actor') && this.actor){
 
       this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => state.children[FormActors.FORM_MACHINE]),
+        map((state) => state.children[FormActors.FORM_MACHINE] as Interpreter<FormContext<unknown>>),
       ));
 
       if(this.actor.parent) {
@@ -144,7 +144,7 @@ export class AuthenticateRootComponent extends RxLitElement {
 
     }
 
-    this.actor.parent.send(AppEvents.DISMISS_ALERT, { alert: event.detail });
+    this.actor.parent.send(new DismissAlertEvent(event.detail));
 
   }
 
@@ -161,7 +161,7 @@ export class AuthenticateRootComponent extends RxLitElement {
     return html`
       <div class="title-container">
         ${ unsafeSVG(Logo) }
-        <h1>${this.translator?.translate('nde.features.authenticate.pages.login.title')}</h1>
+        <h1>${this.translator?.translate('authenticate.pages.login.title')}</h1>
       </div>
       ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`
         <div class="form-container">
@@ -169,15 +169,15 @@ export class AuthenticateRootComponent extends RxLitElement {
           
           <form onsubmit="return false">
             <nde-form-element class="inverse" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
-              <label slot="label" for="webid">${this.translator?.translate('nde.features.authenticate.pages.login.webid-label')}</label>
-              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('nde.features.authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
-              <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(FormEvents.FORM_SUBMITTED)}">${ unsafeSVG(Login) }</button>
+              <label slot="label" for="webid">${this.translator?.translate('authenticate.pages.login.webid-label')}</label>
+              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
+              <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(new FormSubmittedEvent())}">${ unsafeSVG(Login) }</button>
             </nde-form-element>
           </form>
         
         </div>
         <div class="webid-container">
-          <p> ${unsafeHTML(this.translator?.translate('nde.features.authenticate.pages.login.create-webid'))}</p>
+          <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
         </div>
       `}
       `;

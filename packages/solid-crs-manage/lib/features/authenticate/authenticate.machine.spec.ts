@@ -1,7 +1,6 @@
 import { FormActors, FormContext, FormEvents, FormRootStates, FormSubmissionStates, FormValidationStates } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ConsoleLogger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { SolidMockService } from '../../common/solid/solid-mock.service';
 import { AuthenticateEvents } from './authenticate.events';
 import { AuthenticateContext, authenticateMachine, AuthenticateStates } from './authenticate.machine';
 

@@ -1,8 +1,8 @@
 import { FormActors, formMachine, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Term, TermService, TermSource } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { assign, createMachine, sendParent, StateMachine } from 'xstate';
-import { AppEvents } from '../../../app.events';
-import { TermEvent, TermEvents } from './term.events';
+import { AppEvents, ErrorEvent } from '../../../app.events';
+import { ClickedTermEvent, TermEvent, TermEvents } from './term.events';
 
 /**
  * The context of the term machine.
@@ -52,8 +52,20 @@ export enum TermStates {
   IDLE      = '[TermState: Idle]',
   QUERYING  = '[TermState: Querying]',
   SUBMITTED = '[TermState: Submitted]',
+  CREATING = '[TermState: Creating]',
   LOADING_SOURCES = '[TermState: Loading Sources]',
 }
+
+/**
+ * Action which adds/removes a Term from the context
+ */
+export const toggleTerm = assign<TermContext, ClickedTermEvent>(
+  (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
+  // add the term if it is not yet selected
+    ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
+  // otherwise, remove it from selected terms
+    : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
+);
 
 /**
  * The term machine.
@@ -73,7 +85,8 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             ],
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: TermStates.IDLE,
+            actions: sendParent({ type: AppEvents.ERROR, data: { error: 'term.error.term-network-error' } } as ErrorEvent),
           },
         },
       },
@@ -89,15 +102,6 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             data: { query: context.query||'', sources: context.selectedSources||[] },
             original: { query: context.query||'', sources: context.selectedSources||[] },
           }),
-          // onDone: {
-          //   target: TermStates.QUERYING,
-          //   actions: [
-          //     assign((context, event) => ({
-          //       query: event.data.data.query,
-          //       selectedSources: event.data.data.sources,
-          //     })),
-          //   ],
-          // },
         },
         on: {
           [TermEvents.QUERY_UPDATED]: {
@@ -107,15 +111,10 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             ),
           },
           [TermEvents.CLICKED_TERM]: {
-            actions: assign(
-              (context, event) => ({ selectedTerms: !context.selectedTerms?.find((term) => term.uri === event.term.uri)
-                // add the term if it is not yet selected
-                ? context.selectedTerms ? [ ...context.selectedTerms, event.term ] : [ event.term ]
-                // otherwise, remove it from selected terms
-                : context.selectedTerms?.filter((term) => term.uri !== event.term.uri) }),
-            ),
+            actions: toggleTerm,
           },
           [TermEvents.CLICKED_SUBMIT]: TermStates.SUBMITTED,
+          [TermEvents.CLICKED_ADD]: TermStates.CREATING,
         },
       },
       /**
@@ -134,6 +133,17 @@ export const termMachine = (): StateMachine<TermContext, any, TermEvent, State<T
             onError: TermStates.IDLE,
           },
         ],
+      },
+      /**
+       * The user is adding their own local term
+       */
+      [TermStates.CREATING]: {
+        on: {
+          [TermEvents.CLICKED_TERM]: {
+            target: TermStates.IDLE,
+            actions: toggleTerm,
+          },
+        },
       },
       /**
        * The user has clicked submit and the machine terminates

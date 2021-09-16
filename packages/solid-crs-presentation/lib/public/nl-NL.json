@@ -1,0 +1,209 @@
+{
+    "app": {
+        "root": {
+            "title": "App",
+            "alerts": {
+                "error": "Er ging iets fout"
+            }
+        }
+    },
+    "navigation": {
+        "search": {
+            "title": "Zoeken"
+        },
+        "collections":{
+            "title": "Collecties"
+        },
+        "about":{
+            "title": "Over"
+        }
+    },
+    "collections": {
+        "new-collection-name": "Nieuwe collectie",
+        "new-collection-description": "Beschrijving van deze collectie",
+        "alerts": {
+            "created-collection": "Collectie aangemaakt"
+        },
+        "card": {
+            "name-unavailable": "Naam onbekend",
+            "additionalType-unavailable": "Type onbekend",
+            "subject-unavailable": "Onderwerp onbekend"
+        },
+        "root": {
+            "title": "Collecties",
+            "empty": {
+                "create-object-title": "Maak je eerste object aan",
+                "create-object-button": "Object aanmaken"
+            },
+            "delete":{
+                "title": "Ben je zeker dat je deze collectie wil verwijderen?",
+                "confirm": "Verwijderen",
+                "cancel": "Annuleren"
+            }
+        }
+    },
+    "object": {
+        "new-object-name": "Nieuw object",
+        "new-object-description": "Beschrijving van dit object",
+        "root": {
+            "delete": {
+                "title": "Ben je zeker dat je dit object wil verwijderen?",
+                "confirm": "Verwijderen",
+                "cancel": "Annuleren"
+            },
+            "menu": {
+                "view-rdf": "RDF bekijken",
+                "copy-url": "URL kopiëren"
+            }
+        },
+        "sidebar": {
+            "title": "Onderdelen",
+            "image": "Beeldmateriaal",
+            "identification": "Identificatie",
+            "representation": "Voorstelling",
+            "creation": "Vervaardiging",
+            "dimensions": "Afmetingen",
+            "other": "Overige"
+        },
+        "card": {
+            "image": {
+                "title": "Beeldmateriaal",
+                "subtitle": "Het beeldmateriaal van dit object.",
+                "field": {
+                    "image-source": "Afbeeldingslocatie",
+                    "file": "Bestand",
+                    "license": {
+                        "title": "Licentie",
+                        "http://rightsstatements-org/vocab/InC/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd",
+                        "http://rightsstatements-org/vocab/InC-OW-EU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - EU verweesd werk",
+                        "http://rightsstatements-org/vocab/InC-EDU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - educatief gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/InC-NC/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/InC-RUU/1-0/": "Rightsstatements.org: Auteursrechtelijk beschermd - rechthebbende(n) niet-lokaliseerbaar of niet-identificeerbaar",
+                        "http://rightsstatements-org/vocab/NoC-US/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - Verenigde Staten",
+                        "http://rightsstatements-org/vocab/NoC-OKLR/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - andere juridische beperkingen",
+                        "http://rightsstatements-org/vocab/NoC-CR/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - contractuele beperkingen",
+                        "http://rightsstatements-org/vocab/NoC-NC/1-0/": "Rightsstatements.org: Niet auteursrechtelijk beschermd - uitsluitend niet-commercieel gebruik toegestaan",
+                        "http://rightsstatements-org/vocab/UND/1-0/": "Rightsstatements.org: Auteursrechtelijke bescherming niet bepaald",
+                        "http://rightsstatements-org/vocab/CNE/1-0/": "Rightsstatements.org: Auteursrechtelijke status niet geëvalueerd",
+                        "http://rightsstatements-org/vocab/NKC/1-0/": "Rightsstatements.org: Geen auteursrechtelijke beperkingen bekend",
+                        "https://creativecommons-org/publicdomain/zero/1-0/deed-nl": "Creativecommons.org: CC0 1.0 universeel",
+                        "https://creativecommons-org/licenses/by/4-0/deed-nl": "Creativecommons.org: Naamsvermelding 4.0 internationaal",
+                        "https://creativecommons-org/licenses/by-sa/2-0/be/deed-nl": "Creativecommons.org: Naamsvermelding-gelijkdelen 2.0"    
+                    }
+                }
+            },
+            "identification": { 
+                "title": "Identificatie",
+                "subtitle": "De identificatie van dit object.",
+                "field": {
+                    "identifier": "Objectnummer",
+                    "additionalType": "Type",
+                    "name": {
+                        "title": "Titel",
+                        "validation:": {
+                            "max-characters": "De beschrijving mag maximum 100 karakters lang zijn!"
+                        }
+                    },
+                    "collection": "Collectie",
+                    "description": {
+                        "title": "Korte beschrijving",
+                        "validation:": {
+                            "max-characters": "De beschrijving mag maximum 10000 karakters lang zijn!"
+                        }
+                    }
+    
+                }
+            },
+            "common": {
+                "empty": "Dit veld is verplicht.",
+                "invalid-url": "De ingegeven URL is niet geldig.",
+                "invalid-number": "Het ingegeven getal is niet geldig."
+            },
+            "creation": {
+                "title": "Vervaardiging",
+                "subtitle": "De vervaardiging van dit object.",
+                "field": {
+                    "creator": "Vervaardiger",
+                    "locationCreated": "Plaats",
+                    "material": "Materiaal",
+                    "dateCreated": "Datum",
+                    "date": {
+                        "validation": {
+                            "invalid": "De ingegeven datum is niet geldig."
+                        }
+                    }
+                }
+            },
+            "representation": {
+                "title": "Voorstelling",
+                "subtitle": "De voorstelling van dit object.",
+                "field": {
+                    "subject": "Onderwerp",
+                    "location": "Locatie",
+                    "person": "Persoon",
+                    "organization": "Organisatie",
+                    "event": "Gebeurtenis"
+                }
+            },
+            "dimensions": {
+                "title": "Afmetingen",
+                "subtitle": "De afmetingen van dit object.",
+                "field": {
+                    "width": "Breedte",
+                    "height": "Hoogte",
+                    "depth": "Diepte",
+                    "weight": "Gewicht",
+                    "unit": "Eenheid"
+                }
+            }
+        }
+    },
+    "common": {
+        "form": {
+            "description-placeholder": "Klik om een beschrijving toe te voegen.",
+            "click-to-select": "Klik om te selecteren"
+        },
+        "date": {
+            "just-now": "enkele ogenblikken geleden",
+            "minutes-ago": "minuten geleden",
+            "hour-ago": "uur geleden",
+            "hours-ago": "uur geleden",
+            "day-ago": "dag geleden",
+            "days-ago": "dagen geleden",
+            "month-ago": "maand geleden",
+            "months-ago": "maanden geleden",
+            "year-ago": "jaar geleden",
+            "years-ago": "jaar geleden"
+        },
+        "unit": {
+            "MMT": "mm",
+            "CMT": "cm",
+            "MTR": "m",
+            "KGM": "kg",
+            "GRM": "g"
+        },
+        "copied-image-url": "De URL van de afbeelding werd gekopieerd."
+    },
+    "search": {
+        "root": {
+            "objects": "Objecten",
+            "collections": "Collecties",
+            "empty": { 
+                "no-search-results": "Geen zoekresultaten voor deze zoekterm!",
+                "go-back": "Ga terug" 
+            }
+        },
+        "header": {
+            "search-results-for": "Zoekresultaten voor",
+            "subtitle": "We hebben dit gevonden"
+        }
+    },
+    "about": {
+        "header": {
+            "title": "Collecties",
+            "subtitle": "Een overzicht van alle collecties"
+        },
+        "more-information": "Meer over de instelling",
+        "collection-overview": "Overzicht van de collecties"
+    }
+}

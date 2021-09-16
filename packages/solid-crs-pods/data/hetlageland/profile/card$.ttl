@@ -1,0 +1,30 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix space: <http://www.w3.org/ns/pim/space#>.
+
+<>
+    a foaf:PersonalProfileDocument;
+    foaf:maker <http://localhost:3000/hetlageland/profile/card#me>;
+    foaf:primaryTopic <http://localhost:3000/hetlageland/profile/card#me>.
+
+<http://localhost:3000/hetlageland/profile/card#me>
+    a foaf:Person;
+    rdf:type schema:Organization ;
+    schema:name "Heemkundevereniging Het Lage Land" ;
+    schema:alternateName "Het Lage Land" ; # Optional
+    schema:description "Het Lage Land specialiseert zich in alles wat te maken heeft met Het Lage Land. Hier kan nog een langer verhaaltje komen."; # Optional
+    schema:logo <https://image.flaticon.com/icons/png/512/3600/3600921.png> ; # Optional
+    schema:contactPoint <http://localhost:3000/hetlageland/profile/card#contactPoint> ; # Optional
+    schema:url <https://www.hetlageland.org> ; # Optional
+
+    solid:oidcIssuer <http://localhost:3000/>;
+    solid:oidcIssuerRegistrationToken "9a112e5c-c520-4d1b-b17b-c63693520b72";
+    solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;
+    space:storage <http://localhost:3000/hetlageland/>.
+
+<http://localhost:3000/hetlageland/profile/card#contactPoint>
+    a schema:ContactPoint;
+    schema:telephone "1234567890";
+    schema:email "collecties@hetlageland.org".

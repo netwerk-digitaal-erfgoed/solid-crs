@@ -9,7 +9,7 @@ describe('ObjectImageryComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement(tag) as ObjectImageryComponent;
-    component.translator = new MemoryTranslator([], 'nl-NL');
+    component.translator = new MemoryTranslator('nl-NL');
 
   });
 

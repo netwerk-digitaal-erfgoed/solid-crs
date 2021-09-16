@@ -13,7 +13,7 @@
 * https://www.wrike.com/open.htm?id=675145293[Wrike task]
 * https://docs.google.com/spreadsheets/d/1onOY60hXmEPQYN_nM6CK0uRYIHq7hPtYsE8pWaVe7es/edit#gid=1865680815[Test plan]
 * Branch: `feat/675145293-create-authentication-login-page`
-* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[nde-erfgoed-manage, nde-erfgoed-components]
+* Projects: https://github.com/netwerk-digitaal-erfgoed/solid-crs[solid-crs-manage, solid-crs-components]
 
 
 == Introduction
@@ -43,7 +43,7 @@ All components and services are to be made in the '@netwerk-digitaal-erfgoed/sol
 
 All new components should be exported in 'lib/index.ts'.
 
-In 'nde-erfgoed-manage', register their HTML tags in app.ts. 
+In 'solid-crs-manage', register their HTML tags in app.ts. 
 
 
 ===== ButtonComponent 
@@ -104,22 +104,22 @@ The following translations are to be written in the 'nl-NL.json' file. No other 
 
 | Key 	| Translation
 
-| `nde.features.authenticate.error.invalid-webid.invalid-url`
+| `authenticate.error.invalid-webid.invalid-url`
 | Gelieve een geldig WebID in te voeren. Een WebID start met https://.
 
-| `nde.features.authenticate.error.invalid-webid.no-profile`
+| `authenticate.error.invalid-webid.no-profile`
 | Er werd geen actieve profielpagina gevonden voor deze WebID.
 
-| `nde.features.authenticate.error.invalid-webid.no-oidc-registration`
+| `authenticate.error.invalid-webid.no-oidc-registration`
 | De opgegeven WebID is nog niet gelinkt aan een OIDC-provider. Meer info hierover vind je bij de FAQ.
 
-| `nde.features.authenticate.error.invalid-webid.invalid-oidc-registration`
+| `authenticate.error.invalid-webid.invalid-oidc-registration`
 | De opgegeven WebID is gelinkt aan een foutieve OIDC-provider. Meer info hierover vind je bij de FAQ.
 
-| `nde.features.authenticate.pages.login.title`
+| `authenticate.pages.login.title`
 | Collectiebeheersysteem
 
-| `nde.features.authenticate.pages.login.webid-placeholder`
+| `authenticate.pages.login.webid-placeholder`
 | E.g. https://profile.janjanssens.nl/
 
 |======================================

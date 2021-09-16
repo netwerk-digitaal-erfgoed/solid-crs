@@ -3,19 +3,19 @@ import { ArgumentError } from '../errors/argument-error';
 /**
  * Case-insensitive fulltext matching.
  *
- * @param obj Object to match.
+ * @param object Object to match.
  * @param term The term to match.
  * @returns If a property matches the term.
  */
-export const fulltextMatch = (obj: unknown, term: string): boolean => {
+export const fulltextMatch = (object: unknown, term: string): boolean => {
 
-  if (!obj) {
+  if (object === null || object === undefined) {
 
-    throw new ArgumentError('Argument obj should be set.', obj);
+    return false;
 
   }
 
-  if (!term) {
+  if (!term && term !== '') {
 
     throw new ArgumentError('Argument term should be set.', term);
 
@@ -23,11 +23,31 @@ export const fulltextMatch = (obj: unknown, term: string): boolean => {
 
   const lowercaseTerm: string = term.toLowerCase();
 
-  const numberOfMatches = Object.values(obj)
-    .map((value) => typeof value === 'string' || value instanceof String ? value.toLowerCase().includes(lowercaseTerm) : false)
-    .filter((value) => value === true)
-    .length;
+  return !!Object.values(object)
+    .map((value) => {
 
-  return numberOfMatches > 0;
+      if (typeof value === 'string' || value instanceof String) {
+
+        return value.toLowerCase().includes(term.toLowerCase());
+
+      } else if (typeof value === 'number' || value instanceof Number) {
+
+        return value.toString().includes(lowercaseTerm);
+
+      } else if (value instanceof Array && value.length > 0) {
+
+        return !!value.find((element) => fulltextMatch({ key: element }, lowercaseTerm));
+
+      } else if (typeof value === 'object' || value instanceof Object) {
+
+        return fulltextMatch(value, lowercaseTerm);
+
+      } else {
+
+        return false;
+
+      }
+
+    }).find((value) => value === true);
 
 };

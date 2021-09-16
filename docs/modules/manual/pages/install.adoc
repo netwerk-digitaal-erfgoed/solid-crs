@@ -10,7 +10,7 @@ When running the app locally for the first time, or after an update, start by in
 
 [source,bash]
 ----
-$ npm run bootstrap:no-ci
+$ npm run bootstrap
 ----
 
 Once the dependencies are installed, you can build the app by executing the following command.
@@ -40,11 +40,11 @@ Alternatively, you can build and run an image locally.
 
 [source,bash]
 ----
-# Build on Mac
-$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/nde-erfgoed-manage/
+# Build on Linux/Mac
+$ docker build --build-arg NPM_TOKEN=$NPM_TOKEN -t crs:local ./packages/solid-crs-manage/
 
 # Build on Windows
-$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/nde-erfgoed-manage/
+$ docker build --build-arg NPM_TOKEN=%NPM_TOKEN% -t crs:local ./packages/solid-crs-manage/
 
 # Run local image
 $ docker run -p 3002:3002 crs:local

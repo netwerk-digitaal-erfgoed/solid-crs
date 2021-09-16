@@ -3,6 +3,79 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+## [0.10.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.1...v0.10.0) (2021-09-13)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+### [0.9.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.9.0...v0.9.1) (2021-08-31)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+## [0.9.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.1...v0.9.0) (2021-08-30)
+
+
+### **Features**
+
+* added cancel button on term form page ([#448](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/448)) ([0f2e2f8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0f2e2f89f8062a73a73bbe5e59e9f4e15731c635))
+
+
+
+### [0.8.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.8.0...v0.8.1) (2021-08-24)
+
+
+### **Features**
+
+* add confirmation when deleting collections and objects ([#433](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/433)) ([bf46632](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/bf46632f14a9e097213fb54c31457b44594a861d))
+
+
+
+## [0.8.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.8.0) (2021-08-17)
+
+
+### **Features**
+
+* create presentation landing page ([#396](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/396)) ([b9f6ea8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b9f6ea8d1de0c6459f1319612b29451141cac39c))
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+* update presentation object page ([#418](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/418)) ([1ee3caa](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/1ee3caa865e75cf3651e3b80bf2bedb105e735c8))
+
+
+### **Bug Fixes**
+
+* added missing enlarge icon to image preview ([#425](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/425)) ([8e9bcd9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/8e9bcd97b77c3503b2661e0923bddfea267ee2a2))
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+
+## [0.7.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.6.0...v0.7.0) (2021-07-29)
+
+
+### **Features**
+
+* integrate terms and support term network [#347](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/347) ([aef3483](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/aef348355752b073f8fae2fb6b578897a535fe44))
+
+
+### **Bug Fixes**
+
+* replace `cpy` and `rimraf` with `shx` commands ([#369](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/369)) ([9350f16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/9350f16961ba879b267c90f402d6c25c0f1bc64d))
+
+
+
 ## [0.6.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.5.10...v0.6.0) (2021-06-24)
 
 

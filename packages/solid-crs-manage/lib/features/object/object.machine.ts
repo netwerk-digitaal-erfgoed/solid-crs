@@ -1,13 +1,8 @@
-import { formMachine,
-  FormActors,
-  FormValidatorResult,
-  FormContext,
-  State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { assign, createMachine, sendParent } from 'xstate';
+import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { assign, createMachine, send, sendParent } from 'xstate';
 import { Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { AppEvents } from '../../app.events';
-import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents } from './object.events';
+import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 
 /**
@@ -60,11 +55,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
   const res: FormValidatorResult[]  = [];
 
-  // only validate dirty fields
-  const dirtyFields = Object.keys(context.data).filter((field) =>
-    context.data[field as keyof CollectionObject] !== context.original[field as keyof CollectionObject]);
-
-  for (const field of dirtyFields) {
+  for (const field of Object.keys(context.data)) {
 
     const value = context.data[field as keyof CollectionObject];
 
@@ -73,7 +64,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.identification.field.description.validation.max-characters',
+        message: 'object.card.identification.field.description.validation.max-characters',
       });
 
     } else if (field === 'name' && !value) {
@@ -82,7 +73,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'name' && value && (value as typeof context.data[typeof field]).length > 100) {
@@ -91,7 +82,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.identification.field.title.validation.max-characters',
+        message: 'object.card.identification.field.name.validation.max-characters',
       });
 
     } else if (field === 'identifier' && !value) {
@@ -100,7 +91,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'type') {
@@ -110,7 +101,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.empty',
+          message: 'object.card.common.empty',
         });
 
       } else {
@@ -124,7 +115,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
           res.push({
             field,
-            message: 'nde.features.object.card.common.invalid-url',
+            message: 'object.card.common.invalid-url',
           });
 
         }
@@ -139,7 +130,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.empty',
+          message: 'object.card.common.empty',
         });
 
       }
@@ -150,7 +141,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
       res.push({
         field,
-        message: 'nde.features.object.card.common.empty',
+        message: 'object.card.common.empty',
       });
 
     } else if (field === 'image' && value) {
@@ -165,7 +156,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.invalid-url',
+          message: 'object.card.common.invalid-url',
         });
 
       }
@@ -182,7 +173,7 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 
         res.push({
           field,
-          message: 'nde.features.object.card.creation.field.date.validation.invalid',
+          message: 'object.card.creation.field.date.validation.invalid',
         });
 
       }
@@ -190,12 +181,11 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
     } else if ([ 'depth', 'width', 'height', 'weight' ].includes(field)) {
 
       // validate numbers
-
-      if (value.toString() === 'NaN') {
+      if (value && isNaN(+value)) {
 
         res.push({
           field,
-          message: 'nde.features.object.card.common.invalid-number',
+          message: 'object.card.common.invalid-number',
         });
 
       }
@@ -235,12 +225,17 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             actions: assign((context) => ({ original: context.object })),
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },
       [ObjectStates.IDLE]: {
         on: {
+          [ObjectEvents.CLICKED_SAVE]: {
+            target: ObjectStates.SAVING,
+            actions: assign({ object: (context, event) => event.object }),
+          },
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_RESET]: {
             target: ObjectStates.IDLE,
@@ -248,66 +243,12 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           },
           [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
         },
-        invoke: [
-          {
-            id: FormActors.FORM_MACHINE,
-            src: formMachine<CollectionObject>(
-              (formContext) => validateObjectForm(formContext),
-            ),
-            data: (context) => {
-
-              // replace Terms with lists of uri
-              // form machine can only handle (lists of) strings, not objects (Terms)
-              const parseObject = (object: CollectionObject) => ({
-                ...object,
-                additionalType: object?.additionalType
-                  ? object.additionalType.map((term) => term.uri) : undefined,
-                creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
-                locationCreated: object?.locationCreated
-                  ? object.locationCreated.map((term) => term.uri) : undefined,
-                material: object?.material ? object.material.map((term) => term.uri) : undefined,
-                subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
-                location: object?.location ? object.location.map((term) => term.uri) : undefined,
-                person: object?.person ? object.person.map((term) => term.uri) : undefined,
-                organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
-                event: object?.event ? object.event.map((term) => term.uri) : undefined,
-              });
-
-              return {
-                data: { ... parseObject(context.object) },
-                original: { ... parseObject(context.original) },
-              };
-
-            },
-            onDone: {
-              target: ObjectStates.SAVING,
-              actions: [
-                assign((context, event) => ({
-                  object: {
-                    ...event.data.data,
-                    // don't use form values for Terms
-                    // as form machine will only return URIs for these fields, not full Terms
-                    // See also: ObjectStates.IDLE's invoked machine's initial data
-                    additionalType: context.object.additionalType,
-                    creator: context.object.creator,
-                    locationCreated: context.object.locationCreated,
-                    material: context.object.material,
-                    subject: context.object.subject,
-                    location: context.object.location,
-                    person: context.object.person,
-                    organization: context.object.organization,
-                    event: context.object.event,
-                  },
-                })),
-              ],
-            },
-          },
-        ],
       },
       [ObjectStates.EDITING_FIELD]: {
         on: {
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_CANCEL_TERM]: ObjectStates.IDLE,
         },
         invoke: [
           {
@@ -321,6 +262,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             onDone: {
               target: ObjectStates.IDLE,
               actions: [
+                send((context, event) => new SelectedTermsEvent(event.data.field, event.data.selectedTerms)),
                 assign((context, event) => ({
                   object: {
                     ...context.object,
@@ -330,7 +272,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
               ],
             },
             onError: {
-              actions: sendParent(AppEvents.ERROR),
+              target: ObjectStates.IDLE,
+              actions: sendParent((context, event) => event),
             },
           },
         ],
@@ -345,7 +288,8 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             ],
           },
           onError: {
-            actions: sendParent(AppEvents.ERROR),
+            target: ObjectStates.IDLE,
+            actions: sendParent((context, event) => event),
           },
         },
       },
