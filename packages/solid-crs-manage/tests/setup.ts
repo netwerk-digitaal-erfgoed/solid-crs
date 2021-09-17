@@ -24,13 +24,23 @@ import { AppRootComponent } from '../lib/app-root.component';
 import { AuthenticateSetupComponent } from '../lib/features/authenticate/authenticate-setup.component';
 import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
 
-core.activeRoute = jest.fn(() => ({ path: undefined, targets: [] }));
+// mock router function and state config
+// essentially disables the router in tests
+core.urlVariables = () => ({
+  searchParams: {
+    get: jest.fn(() => ''),
+  },
+  pathParams: {
+    get: jest.fn(() => ''),
+  },
+});
 
-core.urlVariables = jest.fn(() => ({
-  get: jest.fn(() => ''),
-}));
+core.activeRoute = () => ({
+  path: undefined, targets: [],
+  ...core.urlVariables(undefined),
+});
 
-core.routerStateConfig = jest.fn(() => ({
+core.routerStateConfig = () => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {
@@ -49,7 +59,7 @@ core.routerStateConfig = jest.fn(() => ({
       },
     },
   },
-}));
+});
 
 /**
  * Enable mocks for fetch.

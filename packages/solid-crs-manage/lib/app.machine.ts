@@ -205,7 +205,7 @@ export const appMachine = (
               assign({ selected: (context) =>
                 context.selected
                   || context.collections?.find((collection) =>
-                    collection.uri === decodeURIComponent(urlVariables(activeRoute(routes).path).get('collectionUri')))
+                    collection.uri === decodeURIComponent(activeRoute(routes).pathParams.get('collectionUri')))
                   || context.collections[0] }),
             ],
             on: {

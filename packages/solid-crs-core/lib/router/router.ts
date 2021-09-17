@@ -1,4 +1,4 @@
-import { EventObject } from 'xstate';
+import { assign, AssignAction, EventObject, TransitionConfigOrTarget, TransitionsConfig } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -21,6 +21,24 @@ export interface Route {
    * When set, router will update document.title to this value
    */
   title?: string;
+}
+
+export interface UrlVariables {
+
+  /**
+   * The query parameters of a URL
+   */
+  searchParams: URLSearchParams;
+
+  /**
+   * The path parameters of a URL
+   */
+  pathParams: Map<string, string>;
+
+  /**
+   * The hash of a URL
+   */
+  hash: string;
 }
 
 /**
@@ -46,12 +64,58 @@ export const matchPath = (match: string): boolean => {
 };
 
 /**
+ * For a given route, returns the URL variables as a Map
+ *
+ * @param route The route for which to retrieve variables
+ */
+export const urlVariables = (route: Route): UrlVariables => {
+
+  const searchParams = new URL(window.location.href).searchParams;
+  const hash = new URL(window.location.href).hash;
+
+  const regex = new RegExp(`^${route.path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
+
+  const parts = route.path.split('/')
+    .filter((part) => part.startsWith('{{') && part.endsWith('}}'));
+
+  const pathParams = new Map();
+
+  if (parts.length > 0) {
+
+    const matches = (window.location.pathname.match(regex)||[]).splice(1);
+
+    // this check might not be necessary
+    if (matches.length !== parts.length) {
+
+      throw new ArgumentError('No match for every variable', { parts, matches });
+
+    }
+
+    const variableNames = parts.map((part) => part.substring(2, part.length - 2));
+
+    variableNames.forEach((variable, i) => {
+
+      pathParams.set(variable, matches[i]);
+
+    });
+
+  }
+
+  return {
+    searchParams,
+    pathParams,
+    hash,
+  };
+
+};
+
+/**
  * Returns the currently active route base on window.location.pathname
  *
  * @param routes A list of all routes
  * @returns The currently active route
  */
-export const activeRoute = (routes: Route[]): Route => {
+export const activeRoute = (routes: Route[]): Route & UrlVariables => {
 
   if (!routes || routes.length < 1) {
 
@@ -59,41 +123,18 @@ export const activeRoute = (routes: Route[]): Route => {
 
   }
 
-  return routes.find((route) => matchPath(route.path));
+  const route = routes.find((rte) => matchPath(rte.path));
 
-};
+  if (!route) {
 
-/**
- * For a given path, returns the URL variables as a Map
- *
- * @param path The path structure with variable names
- */
-export const urlVariables = (path: string): Map<string, string> => {
-
-  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
-
-  const parts = path.split('/')
-    .filter((part) => part.startsWith('{{') && part.endsWith('}}'));
-
-  const matches = (window.location.pathname.match(regex)||[]).splice(1);
-
-  // this check might not be necessary
-  if (matches.length !== parts.length) {
-
-    throw new ArgumentError('No match for every variable', { parts, matches });
+    throw new ArgumentError('No route match found for this URL', window.location.href);
 
   }
 
-  const variables = new Map();
-  const variableNames = parts.map((part) => part.substring(2, part.length - 2));
-
-  variableNames.forEach((variable, i) => {
-
-    variables.set(variable, matches[i]);
-
-  });
-
-  return variables;
+  return {
+    ...route,
+    ...urlVariables(route),
+  };
 
 };
 
@@ -164,13 +205,13 @@ export const routerStateConfig = (routes: Route[]) => ({
         invoke: {
           src: async () => Promise.resolve(),
           onDone: {
-            target: [ RouterStates.IDLE, ...activeRoute(routes).targets ],
+            target: [ RouterStates.IDLE, ...activeRoute(routes)?.targets ],
             actions: [
               () => {
 
                 const route = activeRoute(routes);
 
-                if (route.title) {
+                if (route?.title) {
 
                   updateTitle(route.title);
 
@@ -217,3 +258,17 @@ export class NavigatedEvent implements EventObject {
  * Union type of router events.
  */
 export type RouterEvent = NavigateEvent | NavigatedEvent;
+
+export const routerEventsConfig = () => ({
+  [RouterEvents.NAVIGATE]: {
+    target: [ `#${RouterStates.NAVIGATING}` ],
+    actions: [
+      assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }),
+    ],
+  },
+  [RouterEvents.NAVIGATED]: {
+    actions: [
+      (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title),
+    ],
+  },
+});

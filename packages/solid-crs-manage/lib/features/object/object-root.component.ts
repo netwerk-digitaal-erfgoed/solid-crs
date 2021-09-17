@@ -243,6 +243,8 @@ export class ObjectRootComponent extends RxLitElement {
 
           }
 
+          return undefined;
+
         })
       ));
 

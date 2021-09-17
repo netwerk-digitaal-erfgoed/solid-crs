@@ -228,7 +228,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
 
             } else {
 
-              return await objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes).path).get('objectUri')));
+              return await objectStore.get(decodeURIComponent(activeRoute(routes).pathParams.get('objectUri')));
 
             }
 
