@@ -1,5 +1,5 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigateEvent, NavigatedEvent, RouterStates, RouterEvents, updateHistory, urlVariables, activeRoute } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigateEvent, NavigatedEvent, RouterStates, RouterEvents, updateHistory, createRoute, activeRoute } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
@@ -111,18 +111,18 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  * The routing configuration for the app machine
  */
 export const routes: Route[] = [
-  {
-    path: '/collection/{{collectionUri}}',
-    targets: [ `#${AppFeatureStates.COLLECTION}` ],
-  },
-  {
-    path: '/object/{{objectUri}}',
-    targets: [ `#${AppFeatureStates.OBJECT}` ],
-  },
-  {
-    path: '/search/{{searchTerm}}',
-    targets: [ `#${AppFeatureStates.SEARCH}` ],
-  },
+  createRoute(
+    '/collection/{{collectionUri}}',
+    [ `#${AppFeatureStates.COLLECTION}` ],
+  ),
+  createRoute(
+    '/object/{{objectUri}}',
+    [ `#${AppFeatureStates.OBJECT}` ],
+  ),
+  createRoute(
+    '/search/{{searchTerm}}',
+    [ `#${AppFeatureStates.SEARCH}` ],
+  ),
 ];
 
 /**

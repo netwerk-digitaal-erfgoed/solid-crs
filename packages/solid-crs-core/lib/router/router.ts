@@ -1,4 +1,4 @@
-import { assign, AssignAction, EventObject, TransitionConfigOrTarget, TransitionsConfig } from 'xstate';
+import { assign, EventObject, StatesConfig } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -272,3 +272,6 @@ export const routerEventsConfig = () => ({
     ],
   },
 });
+
+export const createRoute = (path: string, targets: string[], title?: string): Route =>
+  ({ path, targets, title });

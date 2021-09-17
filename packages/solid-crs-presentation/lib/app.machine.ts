@@ -1,5 +1,5 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, routerEventsConfig, RouterStates, routerStateConfig, NavigatedEvent, NavigateEvent, updateTitle } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, routerEventsConfig, RouterStates, routerStateConfig, NavigatedEvent, NavigateEvent, updateTitle, createRoute } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine, DoneInvokeEvent } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
@@ -102,22 +102,22 @@ export enum AppDataStates {
 export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates | RouterStates;
 
 const routes: Route[] = [
-  {
-    path: '/{{webId}}/collection/{{collectionUri}}',
-    targets: [ `#${AppFeatureStates.COLLECTION}` ],
-  },
-  {
-    path: '/{{webId}}/object/{{objectUri}}',
-    targets: [ `#${AppDataStates.LOADING_OBJECT}` ],
-  },
-  {
-    path: '/{{webId}}/search/{{searchTerm}}',
-    targets: [ `#${AppFeatureStates.SEARCH}` ],
-  },
-  {
-    path: '/{{webId}}/about',
-    targets: [ `#${AppFeatureStates.ABOUT}` ],
-  },
+  createRoute(
+    '/{{webId}}/collection/{{collectionUri}}',
+    [ `#${AppFeatureStates.COLLECTION}` ],
+  ),
+  createRoute(
+    '/{{webId}}/object/{{objectUri}}',
+    [ `#${AppDataStates.LOADING_OBJECT}` ],
+  ),
+  createRoute(
+    '/{{webId}}/search/{{searchTerm}}',
+    [ `#${AppFeatureStates.SEARCH}` ],
+  ),
+  createRoute(
+    '/{{webId}}/about',
+    [ `#${AppFeatureStates.ABOUT}` ],
+  ),
 ];
 
 /**

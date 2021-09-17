@@ -1,4 +1,4 @@
-import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates, NavigateEvent, NavigatedEvent, routerEventsConfig, RouterEvents } from './router';
+import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates, NavigateEvent, NavigatedEvent, routerEventsConfig, RouterEvents, createRoute } from './router';
 
 describe('Router', () => {
 
@@ -300,6 +300,17 @@ describe('Router', () => {
       const result = routerEventsConfig();
       expect(result).toEqual(expect.objectContaining({ [RouterEvents.NAVIGATED]: expect.objectContaining({}) }));
       expect(result[RouterEvents.NAVIGATED].actions[0](undefined, new NavigatedEvent('test', 'test'))).toEqual(undefined);
+
+    });
+
+  });
+
+  describe('createRoute', () => {
+
+    it('should return correct route object', () => {
+
+      expect(createRoute('path', [])).toEqual({ path: 'path', targets: [], title: undefined });
+      expect(createRoute('path', [], 'title')).toEqual({ path: 'path', targets: [], title: 'title' });
 
     });
 
