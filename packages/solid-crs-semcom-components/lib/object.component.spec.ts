@@ -1,4 +1,4 @@
-import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 
 describe.each([
@@ -33,8 +33,8 @@ describe.each([
   beforeEach(() => {
 
     component = window.document.createElement(tag) as RxLitElement;
+    (component as any).translator = new MockTranslator('nl-NL');
     (component as any).object = object1;
-    (component as any).translator = new MemoryTranslator('nl-NL');
     (component as any).collections = [ collection1 ];
 
   });

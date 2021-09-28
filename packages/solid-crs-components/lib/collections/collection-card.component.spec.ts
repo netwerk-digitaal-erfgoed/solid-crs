@@ -1,4 +1,4 @@
-import { ArgumentError, Collection, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { CollectionCardComponent } from './collection-card.component';
 
 describe('AlertComponent', () => {
@@ -16,14 +16,14 @@ describe('AlertComponent', () => {
 
     component = window.document.createElement('nde-collection-card') as CollectionCardComponent;
 
-    component.translator = new MemoryTranslator('en-GB');
+    component.translator = new MockTranslator('nl-NL');
 
     fetchMock.resetMocks();
 
     fetchMock.mockResponseOnce(JSON.stringify({
       'collections': {
         'card': {
-          'name-unavailable': 'Name unavailable',
+          'name-unavailable': component.translator.translate('collections.card.name-unavailable'),
         },
       },
     }));
@@ -77,7 +77,7 @@ describe('AlertComponent', () => {
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
 
     expect(html).not.toContain(testCollection.name);
-    expect(html).toContain('Name unavailable');
+    expect(html).toContain(component.translator.translate('collections.card.name-unavailable'));
     expect(html).toContain(testCollection.description);
 
   });
@@ -91,7 +91,7 @@ describe('AlertComponent', () => {
 
     expect(html).not.toContain(testCollection.name);
     expect(html).not.toContain(testCollection.description);
-    expect(html).toContain('Name unavailable');
+    expect(html).toContain(component.translator.translate('collections.card.name-unavailable'));
 
   });
 

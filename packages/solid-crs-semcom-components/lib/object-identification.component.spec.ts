@@ -1,4 +1,4 @@
-import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectIdentificationComponent } from './object-identification.component';
 
 describe('ObjectIdentificationComponent', () => {
@@ -9,7 +9,7 @@ describe('ObjectIdentificationComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement(tag) as ObjectIdentificationComponent;
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
   });
 
