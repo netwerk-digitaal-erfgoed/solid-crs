@@ -134,7 +134,7 @@ export class AboutRootComponent extends RxLitElement {
             ${ this.profile?.description ? html`<p>${ this.profile?.description }</p>` : ''}
             <div class="links">
               
-              ${ this.profile?.website ? html`<a target="_blank" href="${this.profile?.website}">${this.translator.translate('about.more-information')}</a>` : ''}
+              ${ this.profile?.website ? html`<a target="_blank" rel="noopener noreferrer" href="${this.profile?.website}">${this.translator.translate('about.more-information')}</a>` : ''}
               ${ this.profile?.email ? html`<span>E-mail: <a href="mailto:${this.profile?.email}">${this.profile?.email}</a></span>` : ''}
               ${ this.profile?.telephone ? html`<span>Tel: <a href="tel:${this.profile?.telephone}">${this.profile?.telephone}</a></span>` : ''}
               

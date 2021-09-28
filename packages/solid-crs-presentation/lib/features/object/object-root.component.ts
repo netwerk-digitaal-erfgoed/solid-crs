@@ -151,7 +151,7 @@ export class ObjectRootComponent extends RxLitElement {
           ${ unsafeSVG(Dots) }
           <nde-popup id="info-popup">
             <div slot="content">
-              <a target="_blank" href="${this.object.uri}">
+              <a target="_blank" rel="noopener noreferrer" href="${this.object.uri}">
                 ${this.translator.translate('object.root.menu.view-rdf')}
               </a>
             </div>
@@ -179,12 +179,12 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
             <div> ${ this.translator.translate('object.card.image.field.license.title') } </div>
-            <div> <a target="_blank" href="${this.object.license}">${ this.translator.translate(`object.card.image.field.license.${this.object.license.split('.').join('-')}`) }</a> </div>
+            <div> <a target="_blank" rel="noopener noreferrer" href="${this.object.license}">${ this.translator.translate(`object.card.image.field.license.${this.object.license.split('.').join('-')}`) }</a> </div>
           </div>
           <div class="object-property">
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
             <div>
-              <a target="_blank" @click="${ () => navigator.clipboard.writeText(this.object?.image)
+              <a target="_blank" rel="noopener noreferrer" @click="${ () => navigator.clipboard.writeText(this.object?.image)
     .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('common.copied-image-url') })))}">
               ${ this.translator.translate('object.root.menu.copy-url') }
               </a>
@@ -216,7 +216,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property" ?hidden="${ !this.object.additionalType || this.object.additionalType?.length < 1 }">
             <div> ${ this.translator.translate('object.card.identification.field.additionalType') } </div>
-            <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.additionalType?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.name || this.object.name?.length < 1 }">
             <div> ${ this.translator.translate('object.card.identification.field.name.title') } </div>
@@ -249,15 +249,15 @@ export class ObjectRootComponent extends RxLitElement {
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.creator || this.object.creator?.length < 1 }">
             <div> ${ this.translator.translate('object.card.creation.field.creator') } </div>
-            <div> ${ this.object.creator?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.creator?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.locationCreated || this.object.locationCreated?.length < 1 }">
             <div> ${ this.translator.translate('object.card.creation.field.locationCreated') } </div>
-            <div> ${ this.object.locationCreated?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.locationCreated?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.material || this.object.material?.length < 1 }">
             <div> ${ this.translator.translate('object.card.creation.field.material') } </div>
-            <div> ${ this.object.material?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.material?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.dateCreated || this.object.dateCreated?.length < 1 }">
             <div> ${ this.translator.translate('object.card.creation.field.dateCreated') } </div>
@@ -283,23 +283,23 @@ export class ObjectRootComponent extends RxLitElement {
         <div slot="content">
           <div class="object-property" ?hidden="${ !this.object.subject || this.object.subject?.length < 1 }">
             <div> ${ this.translator.translate('object.card.representation.field.subject') } </div>
-            <div> ${ this.object.subject?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.subject?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.location || this.object.location?.length < 1 }">
             <div> ${ this.translator.translate('object.card.representation.field.location') } </div>
-            <div> ${ this.object.location?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.location?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.person || this.object.person?.length < 1 }">
             <div> ${ this.translator.translate('object.card.representation.field.person') } </div>
-            <div> ${ this.object.person?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.person?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.organization || this.object.organization?.length < 1 }">
             <div> ${ this.translator.translate('object.card.representation.field.organization') } </div>
-            <div> ${ this.object.organization?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.organization?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
           <div class="object-property" ?hidden="${ !this.object.event || this.object.event?.length < 1 }">
             <div> ${ this.translator.translate('object.card.representation.field.event') } </div>
-            <div> ${ this.object.event?.map((term) => html`<a target="_blank" href="${term.uri}">${term.name}</a>`) } </div>
+            <div> ${ this.object.event?.map((term) => html`<a target="_blank" rel="noopener noreferrer" href="${term.uri}">${term.name}</a>`) } </div>
           </div>
         </div>
       </nde-large-card>
