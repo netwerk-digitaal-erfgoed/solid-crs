@@ -1,5 +1,5 @@
 = Authenticeer
-:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling Solid CRS.
+:description: Een gebruikershandleiding voor de authenticatie van de erfgoedinstelling in Solid CRS.
 :sectanchors:
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
@@ -37,10 +37,10 @@ Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft ee
 === Stap 5: Succesvolle authenticatie
 Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 
 
-:sectnums!:
-==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:collecties.adoc[Collecties]
-* xref:search.adoc[Zoeken]
 * xref:objecten.adoc[Objecten]
+* xref:search.adoc[Zoeken]
 * xref:termennetwerk.adoc[Termennetwerk]
+* xref:presentatiemodule.adoc[Presentatiemodule]

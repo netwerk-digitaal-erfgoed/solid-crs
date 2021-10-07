@@ -19,20 +19,13 @@ Het Netwerk Digitaal Erfgoed beantwoordt de meestgestelde vragen omtrent het ter
 === Hoe zoek ik termen?
 Wanneer je termen wilt zoeken om toe te voegen aan een object, ga je eerst naar de detailpagina van het object. De velden waarbij je een term kan toevoegen, hebben langs de rechterkant een knop die verwijst naar de zoekpagina van het termennetwerk. Op deze pagina kan je termen zoeken. In het linkse veld geef je de zoekterm in. In de keuzelijst rechts klik je de gewenste link:https://termennetwerk.netwerkdigitaalerfgoed.nl/faq[thesaurus] aan. 
 
-
 === Hoe voeg ik termen toe aan een object?
 Wanneer je de zoekterm hebt ingevoerd en de lijst met zoekresultaten krijgt, kan je één of meerdere resultaten aanklikken. Deze komen bovenaan bij de geselecteerde termen te staan. Klik op 'bevestig'. Je wordt nu teruggeleid naar de detailpagina van het object en de term is toegevoegd. 
 
 
-
-
-
-
-
-:sectnums!:
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
-
 * xref:authenticeer.adoc[Authenticatie]
-* xref:search.adoc[Zoeken]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
+* xref:search.adoc[Zoeken]
+* xref:presentatiemodule.adoc[Presentatiemodule]
