@@ -79,20 +79,11 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<SearchEvent>;
 
-  // Defer the first update of the component until the strings has been loaded to avoid empty strings being shown
-  @internalProperty()
-  hasLoadedStrings = false;
-
-  protected shouldUpdate (changedProperties: PropertyValues): boolean {
-
-    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
-
-  }
-
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
 
-    await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
+    const language = new URL(window.location.href).searchParams.get('lang');
+    if (language) await this.translator.setLang(language);
 
     this.actor = interpret(
       (appMachine(
@@ -130,7 +121,6 @@ export class AppRootComponent extends RxLitElement {
       }), { devTools: process.env.MODE === 'DEV' },
     );
 
-    this.hasLoadedStrings = true;
     super.connectedCallback();
     this.actor.start();
 

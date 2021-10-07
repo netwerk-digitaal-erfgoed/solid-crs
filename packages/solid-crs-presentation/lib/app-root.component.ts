@@ -27,7 +27,7 @@ export class AppRootComponent extends RxLitElement {
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator = new MemoryTranslator(new URL(window.location.href).searchParams.get('lang') || 'nl-NL');
+  public translator: Translator = new MemoryTranslator('nl-NL');
 
   /**
    * The constructor of the application root component,
@@ -103,19 +103,10 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   lastSearchTerm: string;
 
-  /**
-   * Whether the translator has finished loading strings
-   */
-  @internalProperty()
-  hasLoadedStrings = false;
-
-  protected shouldUpdate (changedProperties: PropertyValues): boolean {
-
-    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
-
-  }
-
   async connectedCallback(): Promise<void> {
+
+    const language = new URL(window.location.href).searchParams.get('lang');
+    if (language) this.translator.setLang(language);
 
     await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
 
@@ -128,7 +119,6 @@ export class AppRootComponent extends RxLitElement {
       { devTools: process.env.MODE === 'DEV' }
     );
 
-    this.hasLoadedStrings = true;
     super.connectedCallback();
     this.actor.start();
 
