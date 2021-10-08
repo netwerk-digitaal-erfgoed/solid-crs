@@ -11,7 +11,7 @@ Dit document toont je hoe je termen kan zoeken in het Solid Collectieregistratie
 Het termennetwerk wordt gebruikt om xref:objecten.adoc[objecten te beheren]. Om objecten te kunnen beheren, moet je zijn ingelogd op het Collectiebeheersysteem van jouw erfgoedinstelling. Meer uitleg over inloggen vind je op xref:authenticeer.adoc[authenticatie]. 
 
 === Wat is het termennetwerk?
-Het Termennetwerk is een zoekmachine voor termen. Je voert er een zoekvraag in – zoals ‘Rembrandt’ – en het Termennetwerk zoekt vervolgens rechtstreeks, realtime in terminologiebronnen naar overeenkomende termen.
+Het Termennetwerk is een zoekmachine voor termen. Je voert er een zoekvraag in – zoals ‘Rembrandt’ – en het Termennetwerk zoekt vervolgens rechtstreeks in verschillende terminologiebronnen naar overeenkomende termen.
 
 === Veelgestelde vragen over het termennetwerk
 Het Netwerk Digitaal Erfgoed beantwoordt de meestgestelde vragen omtrent het termennetwerk in de link:https://termennetwerk.netwerkdigitaalerfgoed.nl/faq[FAQ] op hun website.
