@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, interpret, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -103,28 +103,12 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   lastSearchTerm: string;
 
-  /**
-   * Whether the translator has finished loading strings
-   */
-  @internalProperty()
-  hasLoadedStrings = false;
-
-  protected shouldUpdate (changedProperties: PropertyValues): boolean {
-
-    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
-
-  }
-
   async connectedCallback(): Promise<void> {
 
-    // try to update translator with queryParam value, default to nl-NL
-    const language = new URL(window.location.href).searchParams.get('l') || 'nl-NL';
+    const language = new URL(window.location.href).searchParams.get('lang');
+    if (language) this.translator.setLang(language);
 
-    if (language) {
-
-      await this.translator.setLng(language);
-
-    }
+    await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
 
     this.actor = interpret(
       appMachine(
@@ -135,7 +119,6 @@ export class AppRootComponent extends RxLitElement {
       { devTools: process.env.MODE === 'DEV' }
     );
 
-    this.hasLoadedStrings = true;
     super.connectedCallback();
     this.actor.start();
 

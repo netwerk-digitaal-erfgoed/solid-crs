@@ -14,11 +14,11 @@ describe('MockTranslator', () => {
 
     service = new MockTranslator();
     expect(service).toBeTruthy();
-    expect(service.lng).toEqual('nl-NL');
+    expect(service.lang).toEqual('nl-NL');
 
     service = new MockTranslator('en-GB');
     expect(service).toBeTruthy();
-    expect(service.lng).toEqual('en-GB');
+    expect(service.lang).toEqual('en-GB');
 
   });
 
@@ -32,22 +32,22 @@ describe('MockTranslator', () => {
 
   });
 
-  describe('getLng', () => {
+  describe('getLang', () => {
 
-    it('should return lng', () => {
+    it('should return lang', () => {
 
-      expect(service.getLng()).toEqual('en-GB');
+      expect(service.getLang()).toEqual('en-GB');
 
     });
 
   });
 
-  describe('setLng', () => {
+  describe('setLang', () => {
 
-    it('should set lng', async () => {
+    it('should set lang', async () => {
 
-      await service.setLng('nl-NL');
-      expect(service.lng).toEqual('nl-NL');
+      await service.setLang('nl-NL');
+      expect(service.lang).toEqual('nl-NL');
 
     });
 
