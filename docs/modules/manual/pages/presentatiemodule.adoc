@@ -1,5 +1,5 @@
-= Hoe gebruik ik Solid CRS als bezoeker?
-:description: Een gebruikershandleiding voor het beheren van objecten in Solid CRS.
+= Hoe gebruik ik de presentatiemodule als bezoeker?
+:description: Een gebruikershandleiding voor het gebruiken van de presentatiemodule als bezoeker.
 :sectanchors:
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
@@ -8,7 +8,7 @@ Dit document toont je hoe je de presentatiemodule van het Solid Collectieregistr
 
 
 === Vereisten
-Er zijn geen vereisten om de Solid CRS applicatie te gebruiken als bezoeker. 
+Er zijn geen vereisten om de presentatiemodule te gebruiken als bezoeker. 
 
 === Bezoek de informatiepagina van een erfgoedinstelling
 Klik op de knop 'Over' in de primaire navigatiebalk of op het logo van de erfgoedinstelling in de linkerbovenhoek. Hier vind je meer info over de erfgoedinstelling zelf zoals contactinformatie, alsook een overzicht van de collecties.
@@ -20,14 +20,10 @@ Klik in de primaire navigatiebalk op de gewenste collectie. Je krijgt nu alle ob
 Ga naar een collectie. Klik op het gewenste object. Je krijgt nu de gedetailleerde informatie van dit object te zien.
 
 === Vergroot de afbeelding van een object
-Ga naar de detailpagina van het object. Klik in de rechterbovenhoek van de afbeelding op het icoontje om de afbeelding te vergroten.
+Ga naar de detailpagina van het object. Klik op de afbeelding om hem te vergroten.
 
 === Kopieer de afbeelding van een object
 Ga naar de detailpagina van het object. Klik bij 'afbeeldingslocatie' op 'URL kopiëren'. 
-
-=== Details van een object aanpassen
-In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
-Hieronder worden de aan te passen velden per onderdeel besproken.
 
 === RDF bestand bekijken van een object
 Ga naar de detailpagina van het object. Klik in de rechterbovenhoek op de drie bolletjes, dan op 'RDF bekijken'.

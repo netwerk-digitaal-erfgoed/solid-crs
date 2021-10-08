@@ -31,8 +31,8 @@ Log in bij jouw OIDC-provider en verleen de applicatie van het collectiebeheersy
 
 Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je worden teruggestuurd naar loginpagina van het collectiebeheersysteem. Er zal een foutmelding op het scherm komen. Probeer opnieuw. Wanneer de fout blijft terugkomen, neem je best contact op met de link:url[beheerders].
 
-=== Stap 4: Kies om in te loggen als beheerder of erfgoedinstelling (enkel de eerste keer!)
-Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. 
+=== Stap 4: Kies om in te loggen als beheerder of erfgoedinstelling
+Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. Dit is enkel van toepassing bij de eerste maal inloggen.
 
 === Stap 5: Succesvolle authenticatie
 Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 

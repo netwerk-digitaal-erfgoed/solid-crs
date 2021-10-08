@@ -8,7 +8,7 @@ Dit document toont je hoe je de objecten van je erfgoedinstelling beheert in het
 
 
 === Vereisten
-Om de zoekfunctie te gebruiken als bezoeker zijn er geen vereisten. Indien je als beheerder de applicatie bezoekt, moet je je xref:authenticeer.adoc[aanmelden]. 
+Om de zoekfunctie te gebruiken in de presentatiemodule zijn er geen vereisten. Indien je de zoekfunctie in Solid CRS bezoekt, moet je je als beheerder xref:authenticeer.adoc[aanmelden]. 
 
 === Zoek een object
 Klik in de primaire navigatie op de zoekbalk. Geef de zoekterm in. Dit kan eender welke informatie van een object zijn: titel, type, vervaardiger, locatie... Klik in de zoekresultaten op het gewenste object om het te bekijken.
