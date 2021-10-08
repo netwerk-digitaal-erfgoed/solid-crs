@@ -23,7 +23,7 @@ Ga naar een collectie. Klik op het gewenste object. Je krijgt nu de gedetailleer
 Ga naar de detailpagina van het object. Klik in de rechterbovenhoek van de afbeelding op het icoontje om de afbeelding te vergroten.
 
 === Kopieer de afbeelding van een object
-Ga naar de detailpagina van het object. Klik bij 'afbeeldingslocatie' op 'URL kopiëren'. 
+Ga naar de detailpagina van het object. Klik bij 'Afbeeldingslocatie' op 'URL kopiëren'. 
 
 === Details van een object aanpassen
 In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
