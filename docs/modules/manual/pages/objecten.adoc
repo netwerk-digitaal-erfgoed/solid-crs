@@ -24,7 +24,7 @@ Klik na het uitvoeren van wijzigingen op het 'opslaan'-icoontje in de rechterbov
 
 === Details van een object aanpassen
 In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
-Hieronder worden de aan te passen velden per onderdeel besproken.
+Hieronder worden de aanpasbare velden per onderdeel besproken.
 
 . Beeldmateriaal
 * Bestand: +
@@ -68,7 +68,7 @@ Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De organ
 Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De gebeurtenis die wordt afgebeeld op of beschreven door het object. Bijvoorbeeld ‘Delftse donderslag’ of ‘Slag bij Waterloo’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere gebeurtenissen bevatten.
 
 . Afmetingen: +
-Vul voor de hoogte, breedte, diepte en het gewicht het cijfer in en duid in de lijst aan in welke maateenheid van toepassing is.
+Vul voor de hoogte, breedte, diepte en het gewicht het getal in en duid in de lijst aan in welke maateenheid van toepassing is.
 
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 

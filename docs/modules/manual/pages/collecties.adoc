@@ -22,7 +22,7 @@ Zorg dat je de gewenste collectie in de primaire naviagtiebalk hebt geselecteerd
 Selecteer de collectie die je wilt verwijderen in de primaire naviagtiebalk. Druk in de rechterbovenhoek op het vuilbak-icoontje om de volledige collectie te verwijderen. 
 
 === Voeg een object toe aan de collectie
-Net zoals je collecties kan toevoegen met het plus-icoontje in de linker navigatiebalk, kan je objecten toevoegen aan een collectie met het plus-icoontje in de rechterbovenhoek van het scherm. Wanneer je op het plus-icoontje rechtsboven drukt, zal er een nieuw object verschijnen in de collectie. Hoe je een object aanpast en beheert lees je in xref:objecten.adoc[objecten].
+Net zoals je collecties kan toevoegen met het plus-icoontje in de linker navigatiebalk, kan je objecten toevoegen aan een collectie met het plus-icoontje in de rechterbovenhoek van de collectiepagina. Wanneer je op het plus-icoontje rechtsboven klikt zal er een nieuw object aangemaakt worden in de collectie, waarna je doorgestuurd wordt naar de objectpagina. Hoe je een object aanpast lees je in xref:objecten.adoc[objecten].
 
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 

@@ -4,7 +4,7 @@
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
-Dit document toont je hoe je termen kan zoeken in het Solid Collectieregistratiesysteem. 
+Dit document beschrijft hoe je termen kan zoeken in het Solid Collectieregistratiesysteem. 
 
 
 === Vereisten
