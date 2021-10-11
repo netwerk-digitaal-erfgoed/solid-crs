@@ -4,7 +4,7 @@
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
-Dit document toont je hoe je de objecten van je erfgoedinstelling beheert in het Solid Collectieregistratiesysteem. 
+Dit document beschrijft hoe je de objecten van je erfgoedinstelling beheert in het Solid Collectieregistratiesysteem. 
 
 
 === Vereisten

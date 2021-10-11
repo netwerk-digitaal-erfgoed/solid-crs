@@ -29,7 +29,7 @@ Je wordt nu doorgestuurd naar de authenticatieomgeving van jouw OIDC-provider.
 === Stap 3: Verleen de Solid CRS-applicatie toegang tot jouw pod
 Log in bij jouw OIDC-provider en verleen de applicatie van het collectiebeheersysteem toegang tot jouw pod. Nadien word je teruggestuurd naar het collectiebeheersysteem.
 
-Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je worden teruggestuurd naar loginpagina van het collectiebeheersysteem. Er zal een foutmelding op het scherm komen. Probeer opnieuw. Wanneer de fout blijft terugkomen, neem je best contact op met de link:url[beheerders].
+Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je teruggestuurd worden naar loginpagina van het collectiebeheersysteem. Een foutmelding verschijnt op het scherm. Ververs de pagina en probeer opnieuw. Indien de fout zich blijft herhalen, neem je best contact op met de link:url[beheerders].
 
 === Stap 4: Kies om in te loggen als beheerder of erfgoedinstelling
 Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. Dit is enkel van toepassing bij de eerste maal inloggen.

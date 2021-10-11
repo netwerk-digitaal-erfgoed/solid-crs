@@ -24,7 +24,7 @@ Klik na het uitvoeren van wijzigingen op het 'opslaan'-icoontje in de rechterbov
 
 === Details van een object aanpassen
 In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
-Hieronder worden de aan te passen velden per onderdeel besproken.
+Hieronder worden de aanpasbare velden per onderdeel besproken.
 
 . Beeldmateriaal
 * Bestand: +

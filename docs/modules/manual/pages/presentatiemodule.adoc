@@ -23,13 +23,13 @@ Ga naar een collectie. Klik op het gewenste object. Je krijgt nu de gedetailleer
 Ga naar de detailpagina van het object. Klik op de afbeelding om hem te vergroten.
 
 === Kopieer de afbeelding van een object
-Ga naar de detailpagina van het object. Klik bij 'afbeeldingslocatie' op 'URL kopiëren'. 
+Ga naar de detailpagina van het object. Klik bij 'Afbeeldingslocatie' op 'URL kopiëren'. 
 
 === RDF bestand bekijken van een object
 Ga naar de detailpagina van het object. Klik in de rechterbovenhoek op de drie bolletjes, dan op 'RDF bekijken'.
 
 === Zoeken
-Het gebruik van de zoekfunctie wordt uitgelegd op de pagina xref:search.adoc[zoeken].
+Meer informatie over het gebruik van de zoekfunctie kan je vinden bij xref:search.adoc[zoeken].
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:authenticeer.adoc[Authenticatie]
