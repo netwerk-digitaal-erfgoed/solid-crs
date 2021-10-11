@@ -20,7 +20,10 @@ Het Netwerk Digitaal Erfgoed beantwoordt de meestgestelde vragen omtrent het ter
 Wanneer je termen wilt zoeken om toe te voegen aan een object, ga je eerst naar de detailpagina van het object. De velden waarbij je een term kan toevoegen, hebben langs de rechterkant een knop die verwijst naar de zoekpagina van het termennetwerk. Op deze pagina kan je termen zoeken. In het linkse veld geef je de zoekterm in. In de keuzelijst rechts klik je de gewenste link:https://termennetwerk.netwerkdigitaalerfgoed.nl/faq[thesaurus] aan. 
 
 === Hoe voeg ik termen toe aan een object?
-Wanneer je de zoekterm hebt ingevoerd en de lijst met zoekresultaten krijgt, kan je één of meerdere resultaten aanklikken. Deze komen bovenaan bij de geselecteerde termen te staan. Klik op 'bevestig'. Je wordt nu teruggeleid naar de detailpagina van het object en de term is toegevoegd. 
+Wanneer je de zoekterm hebt ingevoerd en de lijst met zoekresultaten krijgt, kan je één of meerdere resultaten aanklikken. Deze komen bovenaan bij de geselecteerde termen te staan. Klik op 'bevestig'. Je wordt nu teruggeleid naar de detailpagina van het object en de term is toegevoegd. Klik op 'opslaan' zodat de veranderingen op de objectpagina zijn opgeslagen.
+
+=== Voeg een eigen term toe.
+Indien je de gewenste term niet terugvindt in de thesauri, kan je er zelf één toevoegen. Klik onder de thesauri keuzelijst op 'Voeg een eigen term toe'. Vul vervolgens de waarde in en klik op het plus-symbool. De eigen term is nu geselecteerd. Klik op 'Bevestig' en sla de veranderingen op op de objectpagina.
 
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
