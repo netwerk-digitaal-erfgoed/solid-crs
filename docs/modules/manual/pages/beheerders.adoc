@@ -4,7 +4,7 @@
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
 
-== Hoe log ik in als beheerder op het Collectiebeheersysteem van mijn erfgoedinstelling?
+== Hoe configureer ik een nieuwe beheerder voor mijn erfgoedinstelling?
 
 Dit document toont je hoe je een beheerder kan configureren, zodat deze ook toegang heeft tot de Solid pod van de erfgoedinstelling. 
 
@@ -16,8 +16,10 @@ Om te kunnen inloggen is een WebID vereist. Heb je er nog geen, dan moet je eers
 
 === Verwijzen naar de erfgoedinstelling
 
-De beheerder dient in zijn eigen pod te verwijzen naar de catalogus van de erfgoedinstelling aan de hand van Type Registrations. In de Solid pod van de gebruiker, onder '/settings/publicTypeIndex.ttl' (of dergelijk), plaats je het volgende:
+De beheerder dient in zijn eigen pod te verwijzen naar de catalogus van de erfgoedinstelling aan de hand van Type Registrations. In de Solid pod van de gebruiker, onder '/settings/publicTypeIndex.ttl' (of dergelijk), plaats je een nieuwe Type Registration voor de `schema:DataCatalog` klasse, die verwijst naar de catalogus van de erfgoedinstelling.
 
+
+Voorbeeld 'publicTypeIndex.ttl', waarbij `https://pods.nde.nl/hetlageland/` verwijst naar de pod van de erfgoedinstelling:
 [source]
 ----
 @prefix solid: <http://www.w3.org/ns/solid/terms#>.
@@ -31,7 +33,7 @@ De beheerder dient in zijn eigen pod te verwijzen naar de catalogus van de erfgo
   solid:instance <https://pods.nde.nl/hetlageland/heritage-collections/catalog>.
 ----
 
-Waarbij `https://pods.nde.nl/hetlageland/` verwijst naar de pod van de erfgoedinstelling.
+
 
 Normaal wordt vanuit het WebID profiel verwezen naar de `publicTypeIndex` resource. Indien dit niet het geval is, voeg je het volgende toe:
 
