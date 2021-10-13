@@ -88,13 +88,13 @@ Het is ook mogelijk om de toegangsrechten aan te passen door gebruik te maken va
 
 1. Surf naar https://podbrowser.inrupt.com/
 2. Kies voor 'Sign in with other provider'
-3. Geef de URL in van de identiteitsprovider voor de pod van de erfgoedinstelling (komt overeen met de waarde van de `solid:oidcIssuer` triple in het WebID profiel), klik daarna op 'Go'.
+3. Geef de URL in van de identiteitsprovider voor de pod van de erfgoedinstelling (komt overeen met de waarde van de `solid:oidcIssuer` triple in het WebID profiel), klik daarna op 'Go'
 4. Meld je aan bij de identiteitsprovider
-5. Klik op de 'heritage-objects' container, je ziet nu de inhoud van de container.
+5. Klik op de 'heritage-objects' container, je ziet nu de inhoud van de container
 6. Klik op 'Folder details', rechtsboven
 7. Onder 'Permissions', voeg een de WebID van de beheerder toe met minstens 'View', 'Edit' en 'Append' rechten. 'Control' zorgt er voor dat de beheerder zelf toegang krijgt tot het beheren van rechten op deze container.
 8. Klik op 'Add'
-9. Herhaal stap 5 t.e.m 8 voor de 'heritage-collections' folder.
+9. Herhaal stap 5 t.e.m. 8 voor de 'heritage-collections' folder
 
 
 
