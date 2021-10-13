@@ -1,0 +1,106 @@
+= Authenticeer
+:description: Een gebruikershandleiding voor het configureren van beheerders van de erfgoedinstelling in Solid CRS.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+== Hoe log ik in als beheerder op het Collectiebeheersysteem van mijn erfgoedinstelling?
+
+Dit document toont je hoe je een beheerder kan configureren, zodat deze ook toegang heeft tot de Solid pod van de erfgoedinstelling. 
+
+
+=== Vereisten
+
+Om te kunnen inloggen is een WebID vereist. Heb je er nog geen, dan moet je eerst een link:url[WebID aanmaken]. 
+
+
+=== Verwijzen naar de erfgoedinstelling
+
+De beheerder dient in zijn eigen pod te verwijzen naar de catalogus van de erfgoedinstelling aan de hand van Type Registrations. In de Solid pod van de gebruiker, onder '/settings/publicTypeIndex.ttl' (of dergelijk), plaats je het volgende:
+
+[source]
+----
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix schema: <http://schema.org/> .
+
+...
+
+<#hetlageland-catalog>
+  a solid:TypeRegistration;
+  solid:forClass schema:DataCatalog;
+  solid:instance <https://pods.nde.nl/hetlageland/heritage-collections/catalog>.
+----
+
+Waarbij `https://pods.nde.nl/hetlageland/` verwijst naar de pod van de erfgoedinstelling.
+
+Normaal wordt vanuit het WebID profiel verwezen naar de `publicTypeIndex` resource. Indien dit niet het geval is, voeg je het volgende toe:
+
+[source]
+----
+<https://pods.nde.nl/hetlageland/profile/card#me>
+
+    ...
+
+    solid:publicTypeIndex <https://pods.nde.nl/hetlageland/settings/publicTypeIndex.ttl>;
+----
+
+
+=== De beheerder toegang geven
+
+De beheerder heeft lees- en schrijftoegang nodig voor alles resources binnen volgende containers: `heritage-collections` en `heritage-objects`
+
+Toegang verlenen tot deze resources doe je als volgt:
+
+==== Community Solid Server (CSS)
+
+Wanneer je pod gehost is op je eigen instantie van de CSS (die een file-based configuratie gebruikt), is het mogelijk direct de ACL bestanden aan te passen en zo beheerders toegang te geven tot bepaalde resources. Je dient een nieuwe `acl:agent` toe te voegen in het ACL bestand, met minstens `acl:Read`, `acl:Write`, `acl:Append` en `acl:Delete` rechten op de huidige container (`acl:accessTo <./>`, `acl:default <./>`). Wanneer je de beheerder ook `acl:Control` rechten geeft, kan deze later zelf de access-control rechten aanpassen.
+
+In het volgende voorbeeld werd een beheerder met WebID `https://pods.nde.nl/leapeeters/profile/card#me` toegevoegd aan `heritage-collections/.acl`.
+
+[source]
+----
+@prefix  acl:   <http://www.w3.org/ns/auth/acl#>.
+@prefix  foaf:  <http://xmlns.com/foaf/0.1/>.
+
+<#public>
+  a               acl:Authorization;
+  acl:agentClass  foaf:Agent;
+  acl:accessTo    <./>;
+  acl:default     <./>;
+  acl:mode        acl:Read.
+
+<#owner>
+  a             acl:Authorization;
+  acl:agent     <https://pods.nde.nl/hetlageland/profile/card#me>, <https://pods.nde.nl/leapeeters/profile/card#me>;
+  acl:accessTo  <./>;
+  acl:default	  <./>;
+  acl:mode      acl:Read,
+                acl:Write,
+                acl:Append,
+                acl:Delete,
+                acl:Control.
+----
+
+
+==== Inrupt PodBrowser
+
+Het is ook mogelijk om de toegangsrechten aan te passen door gebruik te maken van Inrupt's PodBrowser:
+
+1. Surf naar https://podbrowser.inrupt.com/
+2. Kies voor 'Sign in with other provider'
+3. Geef de URL in van de identiteitsprovider voor de pod van de erfgoedinstelling (komt overeen met de waarde van de `solid:oidcIssuer` triple in het WebID profiel), klik daarna op 'Go'.
+4. Meld je aan bij de identiteitsprovider
+5. Klik op de 'heritage-objects' container, je ziet nu de inhoud van de container.
+6. Klik op 'Folder details', rechtsboven
+7. Onder 'Permissions', voeg een de WebID van de beheerder toe met minstens 'View', 'Edit' en 'Append' rechten. 'Control' zorgt er voor dat de beheerder zelf toegang krijgt tot het beheren van rechten op deze container.
+8. Klik op 'Add'
+9. Herhaal stap 5 t.e.m 8 voor de 'heritage-collections' folder.
+
+
+
+== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:collecties.adoc[Collecties]
+* xref:objecten.adoc[Objecten]
+* xref:search.adoc[Zoeken]
+* xref:termennetwerk.adoc[Termennetwerk]
+* xref:presentatiemodule.adoc[Presentatiemodule]
