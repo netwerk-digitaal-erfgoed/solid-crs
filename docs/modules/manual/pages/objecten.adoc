@@ -73,6 +73,7 @@ Vul voor de hoogte, breedte, diepte en het gewicht het getal in en duid in de li
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collecties]
 * xref:search.adoc[Zoeken]
 * xref:termennetwerk.adoc[Termennetwerk]

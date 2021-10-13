@@ -28,6 +28,7 @@ Indien je de gewenste term niet terugvindt in de thesauri, kan je er zelf één 
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
 * xref:search.adoc[Zoeken]

@@ -101,6 +101,7 @@ Het is ook mogelijk om de toegangsrechten aan te passen door gebruik te maken va
 
 
 == Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:authenticeer.adoc[Authenticeer]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
 * xref:search.adoc[Zoeken]

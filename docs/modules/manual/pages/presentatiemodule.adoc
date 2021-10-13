@@ -33,6 +33,7 @@ Meer informatie over het gebruik van de zoekfunctie kan je vinden bij xref:searc
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
 * xref:search.adoc[Zoeken]

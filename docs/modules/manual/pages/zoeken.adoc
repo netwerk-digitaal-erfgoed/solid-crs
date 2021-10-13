@@ -22,6 +22,7 @@ Wanneer je in de zoekresultaten op een object hebt geklikt en je wilt terug naar
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
 * xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
 * xref:search.adoc[Zoeken]

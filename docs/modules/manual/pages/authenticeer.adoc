@@ -29,16 +29,17 @@ Je wordt nu doorgestuurd naar de authenticatieomgeving van jouw OIDC-provider.
 === Stap 3: Verleen de Solid CRS-applicatie toegang tot jouw pod
 Log in bij jouw OIDC-provider en verleen de applicatie van het collectiebeheersysteem toegang tot jouw pod. Nadien word je teruggestuurd naar het collectiebeheersysteem.
 
-Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je teruggestuurd worden naar loginpagina van het collectiebeheersysteem. Een foutmelding verschijnt op het scherm. Ververs de pagina en probeer opnieuw. Indien de fout zich blijft herhalen, neem je best contact op met de link:url[beheerders].
+Wanneer er een fout optreedt tussen de OIDC-provider en het collectiebeheersysteem, zal je teruggestuurd worden naar loginpagina van het collectiebeheersysteem. Een foutmelding verschijnt op het scherm. Ververs de pagina en probeer opnieuw. Indien de fout zich blijft herhalen, neem je best contact op met de beheerders.
 
 === Stap 4: Kies om in te loggen als beheerder of erfgoedinstelling
-Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. Dit is enkel van toepassing bij de eerste maal inloggen. 
+Log je in als beheerder of als erfgoedinstelling? Een erfgoedinstelling heeft een eigen pod en WebID die hieraan gelinkt is. Een beheerder heeft een eigen WebID en pod, maar heeft ook toegang tot de pod van de erfgoedinstelling. Dit is enkel van toepassing bij de eerste maal inloggen. Op de pagina xref:beheerders.adoc[beheerders] lees je meer info over hoe je beheerders van een erfgoedinstelling kan configureren in Solid CRS.
 
 === Stap 5: Succesvolle authenticatie
-Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem. Je kan nu aan de slag met de link:url[collecties] en link:url[objecten]. 
+Wanneer je correct bent geauthenticeerd, wordt je teruggestuurd naar de omgeving van het collectiebeheersysteem. Je kan nu aan de slag met de xref:collecties.adoc[collecties] en xref:objecten.adoc[objecten].
 
 
 ==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collecties]
 * xref:objecten.adoc[Objecten]
 * xref:search.adoc[Zoeken]
