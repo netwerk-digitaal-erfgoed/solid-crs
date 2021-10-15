@@ -3,7 +3,10 @@ ifdef::env-github,env-browser[:relfileprefix: pages/]
 
 * xref:install.adoc[Install]
 * xref:scripts.adoc[Scripts]
+
 * xref:authenticeer.adoc[Authenticate]
 * xref:collecties.adoc[Collections]
-* xref:search.adoc[Search]
 * xref:objecten.adoc[Objects]
+* xref:termennetwerk.adoc[Termennetwerk]
+* xref:zoeken.adoc[Zoeken]
+* xref:presentatiemodule.adoc[Presentatiemodule]

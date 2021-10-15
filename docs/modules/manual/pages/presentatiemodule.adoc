@@ -1,0 +1,40 @@
+= Hoe gebruik ik de presentatiemodule als bezoeker?
+:description: Een gebruikershandleiding voor het gebruiken van de presentatiemodule als bezoeker.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+Dit document toont je hoe je de presentatiemodule van het Solid Collectieregistratiesysteem gebruikt als bezoeker. 
+
+
+=== Vereisten
+Er zijn geen vereisten om de presentatiemodule te gebruiken als bezoeker. 
+
+=== Bezoek de informatiepagina van een erfgoedinstelling
+Klik op de knop 'Over' in de primaire navigatiebalk of op het logo van de erfgoedinstelling in de linkerbovenhoek. Hier vind je meer info over de erfgoedinstelling zelf zoals contactinformatie, alsook een overzicht van de collecties.
+
+=== Bekijk een collectie
+Klik in de primaire navigatiebalk op de gewenste collectie. Je krijgt nu alle objecten uit deze collectie te zien.
+
+=== Bekijk een object
+Ga naar een collectie. Klik op het gewenste object. Je krijgt nu de gedetailleerde informatie van dit object te zien.
+
+=== Vergroot de afbeelding van een object
+Ga naar de detailpagina van het object. Klik op de afbeelding om hem te vergroten.
+
+=== Kopieer de afbeelding van een object
+Ga naar de detailpagina van het object. Klik bij 'Afbeeldingslocatie' op 'URL kopiëren'. 
+
+=== RDF bestand bekijken van een object
+Ga naar de detailpagina van het object. Klik in de rechterbovenhoek op de drie bolletjes, dan op 'RDF bekijken'.
+
+=== Zoeken
+Meer informatie over het gebruik van de zoekfunctie kan je vinden bij xref:search.adoc[zoeken].
+
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
+* xref:collecties.adoc[Collecties]
+* xref:objecten.adoc[Objecten]
+* xref:search.adoc[Zoeken]
+* xref:termennetwerk.adoc[Termennetwerk]
