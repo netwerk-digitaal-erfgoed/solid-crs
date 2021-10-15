@@ -5,6 +5,7 @@ ifdef::env-github,env-browser[:relfileprefix: pages/]
 * xref:scripts.adoc[Scripts]
 
 * xref:authenticeer.adoc[Authenticate]
+* xref:beheerders.adoc[Beheerders]
 * xref:collecties.adoc[Collections]
 * xref:objecten.adoc[Objects]
 * xref:termennetwerk.adoc[Termennetwerk]
