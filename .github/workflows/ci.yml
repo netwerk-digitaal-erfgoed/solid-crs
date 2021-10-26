@@ -47,7 +47,7 @@ jobs:
 
       - run: npm run bootstrap
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
       - run: npm run build:all
 
@@ -92,7 +92,7 @@ jobs:
 
       - run: npm run bootstrap
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
       - run: npm run build:all
 
@@ -147,7 +147,7 @@ jobs:
             ${{ needs.variables.outputs.image_manage }}:latest
             ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
       - name: Build and push presentation
         uses: docker/build-push-action@v2
@@ -158,7 +158,7 @@ jobs:
             ${{ needs.variables.outputs.image_presentation }}:latest
             ${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
       - name: Build and push semcom-node
         uses: docker/build-push-action@v2
@@ -169,7 +169,7 @@ jobs:
             ${{ needs.variables.outputs.image_semcom_node }}:latest
             ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
       - name: Build and push semcom-components
         uses: docker/build-push-action@v2
@@ -180,7 +180,7 @@ jobs:
             ${{ needs.variables.outputs.image_semcom_components }}:latest
             ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }}
           build-args: |
-            NPM_TOKEN=${{secrets.GH_PACKAGES_TOKEN}}
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
       - uses: digitalocean/action-doctl@v2
         with:
