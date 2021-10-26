@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator, TranslationsLoadedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from './app.events';
+import { DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
@@ -72,7 +72,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should show primary navigation when authenticated', async (done) => {
+  it('should show primary navigation', async (done) => {
 
     machine.start();
     window.document.body.appendChild(component);

@@ -1,8 +1,41 @@
+
+export const TRANSLATIONS_LOADED = 'TRANSLATIONS_LOADED';
+
+export class TranslationsLoadedEvent extends CustomEvent<unknown> {
+
+  constructor() {
+
+    super(TRANSLATIONS_LOADED);
+
+  }
+
+}
+
 /**
  * An abstract definition of a class which can retrieve translations.
  */
-export abstract class Translator {
+export abstract class Translator extends EventTarget {
 
+  /**
+   * Whether the translations have loaded
+   */
+  protected loaded = false;
+
+  addEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | AddEventListenerOptions
+  ): void {
+
+    super.addEventListener(type, listener, options);
+
+    if(this.loaded) {
+
+      this.dispatchEvent(new TranslationsLoadedEvent());
+
+    }
+
+  }
   /**
    * Translates a key to a specific locale.
    *
@@ -16,14 +49,14 @@ export abstract class Translator {
    *
    * @returns The language currently used by translator
    */
-  abstract getLng(): string;
+  abstract getLang(): string;
 
   /**
    * Updates the translator's language if a relevant translation file exists
    * for this new language. Otherwise, falls back to the previously used language
    *
-   * @param lng The new language to use
+   * @param lang The new language to use
    */
-  abstract setLng(lng: string): Promise<void>;
+  abstract setLang(lang: string): Promise<void>;
 
 }

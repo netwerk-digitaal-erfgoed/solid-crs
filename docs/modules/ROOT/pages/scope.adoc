@@ -34,7 +34,6 @@ Beide front-end applicaties zullen bovendien beroep doen op de verschillende ond
 == Assumpties
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
  * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
- * Een term wordt gekozen uit een reeds bestaande lijst met termen, maar kan niet nieuw worden aangemaakt.
 
 == Functionele vereisten
 === Proof of Concept
@@ -59,7 +58,7 @@ Als onderdeel van de laatste omleiding wordt een toegangstoken naar de demo-appl
 Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier collecties kunnen toevoegen, bekijken en bewerken in het collectiebeheersysteem. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een collectie, noch voor het sorteren of filteren van collecties. Zoeken naar collecties zal wel mogelijk zijn, maar de zoekopdracht zal op de front-end worden uitgevoerd.
 
 ==== Beheer objecten
-Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier digitale objecten kunnen toevoegen, bekijken, bewerken en toewijzen aan een collectie. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een object, noch voor het sorteren en filteren van objecten. Verder wordt er enkel de mogelijkheid voorzien om bestaand beeldmateriaal te hergebruiken door het opgeven van de uri, en niet door het uploaden van nieuw beeldmateriaal.
+Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier digitale objecten kunnen toevoegen, bekijken, bewerken en toewijzen aan een collectie. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een object, noch voor het sorteren en filteren van objecten. Verder wordt de mogelijkheid voorzien om bestaand beeldmateriaal te hergebruiken door het opgeven van de uri, alsook door het uploaden van nieuw beeldmateriaal.
 
 :sectnums:
 === Minimum Viable Product
@@ -98,7 +97,6 @@ Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per erfgoedinste
 * Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdracht op de front-end worden uitgevoerd.
 * Vertalingen worden bijgehouden in een afzonderlijk tekstbestand, maar er is geen functionaliteit voorzien om meerdere talen te ondersteunen of hiertussen te wisselen.
 * Importeren en exporteren van objecten en collecties als functionaliteit.
-* Het beheren en gebruiken van eigen termen.
 * Objecten delen op sociale media als functionaliteit in de presentatielaag.
 * Opmerkingen plaatsen als functionaliteit in de presentatielaag.
 * Het beheren van toegangsrechten van beheerders vanuit de beheer-module.
