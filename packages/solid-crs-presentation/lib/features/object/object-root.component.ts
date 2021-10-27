@@ -452,7 +452,7 @@ export class ObjectRootComponent extends RxLitElement {
         .object-property > div:first-child {
           font-weight: var(--font-weight-bold);
           width: 33%;
-          max-width: 33%;
+          min-width: 33%;
         }
         .object-property > div:last-child {
           display: inline-flex;
