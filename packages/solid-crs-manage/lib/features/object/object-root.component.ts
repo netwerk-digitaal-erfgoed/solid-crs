@@ -198,7 +198,7 @@ export class ObjectRootComponent extends RxLitElement {
 
             if (scrollTo) {
 
-              scrollTo?.scrollIntoView({ block: 'center' });
+              scrollTo.scrollIntoView({ block: 'center' });
               break;
 
             }
