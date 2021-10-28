@@ -418,20 +418,20 @@ export class ObjectRootComponent extends RxLitElement {
           object-fit: cover;
         }
         #image-popup div[slot="content"] {
+          max-height: 90%;
+          width: 90%;
           display: flex;
           flex-direction: column;
-          max-height: 90%;
+          gap: var(--gap-normal);
         }
         #image-popup div[slot="content"] img {
-          max-width: 100%;
           max-height: 95%;
-          object-fit: contain;
+          object-fit: scale-down;
         }
         #image-popup div[slot="content"] div {
           fill: white;
-          margin-bottom: var(--gap-normal);
-          min-height: 20px;
-          min-width: 20px;
+          height: 20px;
+          width: 20px;
           align-self: flex-end;
           cursor: pointer;
         }
