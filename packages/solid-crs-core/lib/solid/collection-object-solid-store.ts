@@ -208,6 +208,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // transform and save the object to the dataset of objects
     const objectsDataset = await getSolidDataset(objectUri, { fetch });
 
+    // Prepare own/local terms
+    [ 'additionalType',
+      'creator',
+      'locationCreated',
+      'material',
+      'subject',
+      'location',
+      'person',
+      'organization',
+      'event' ].forEach((field: string) => {
+
+      if ((object as any)[field]?.length > 0) {
+
+        (object as any)[field] = (object as any)[field].map((value: Term) => ({
+          name: value.name,
+          uri: value.uri.startsWith('#') ? `${contentUrl}${value.uri}` : value.uri,
+        }));
+
+      }
+
+    });
+
     const {
       object: objectThing,
       digitalObject: digitalObjectThing,
