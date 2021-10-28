@@ -188,7 +188,22 @@ export class ObjectRootComponent extends RxLitElement {
         if (event instanceof SelectedTermsEvent) {
 
           this.formActor.send(new FormUpdatedEvent(event.field, event.terms.map((term) => term.uri)));
-          this.createComponents(this.components);
+          await this.createComponents(this.components);
+
+          for (const card of Array.from(this.formCards)) {
+
+            await card.updateComplete;
+            const largeCard = card.shadowRoot.querySelector('nde-large-card');
+            const scrollTo = largeCard.querySelector(`[field="${event.field}"]`);
+
+            if (scrollTo) {
+
+              scrollTo?.scrollIntoView({ block: 'center' });
+              break;
+
+            }
+
+          }
 
         }
 
