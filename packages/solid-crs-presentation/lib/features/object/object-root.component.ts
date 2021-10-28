@@ -425,6 +425,7 @@ export class ObjectRootComponent extends RxLitElement {
         #image-popup div[slot="content"] img {
           max-width: 100%;
           max-height: 95%;
+          object-fit: contain;
         }
         #image-popup div[slot="content"] div {
           fill: white;
