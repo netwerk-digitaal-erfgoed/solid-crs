@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Bug Fixes**
+
+* image popup scaling in firefox and safari ([#503](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/503)) ([58b7a44](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/58b7a449243d3cc887e12d66d87e873fe693a806))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-components

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Bug Fixes**
+
+* fixed wait for translator before rendering ([#501](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/501)) ([f375d05](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/f375d05fbf6912fd5e62b6bfb0dbedb85c354606))
+* fixed width of field titles in presentation package ([#499](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/499)) ([3a86faa](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/3a86faaa8126165666393ac8207feb12b1f045a4))
+* image popup scaling in firefox and safari ([#503](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/503)) ([58b7a44](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/58b7a449243d3cc887e12d66d87e873fe693a806))
+* term uris are not clickable ([#480](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/480)) ([3608e4d](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/3608e4de09305cf2d1ca9a2f7dfa0c13397032db))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 

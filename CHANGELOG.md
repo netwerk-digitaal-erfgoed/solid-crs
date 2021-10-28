@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Documentation**
+
+* add link to beheerders.adoc ([9b89152](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/9b891527c3866743b36e08bb5ab39e9d073cff61))
+* update requirements to second phase ([#494](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/494)) ([e76d709](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/e76d70917a538dc6ad1eb2917c4de87f5d4f54df))
+* usermanual updated ([#384](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/384)) ([fe4ebb7](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fe4ebb75fae62f8b87b3031bc1e5c24606bc149f))
+
+
+### **Bug Fixes**
+
+* fixed wait for translator before rendering ([#501](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/501)) ([f375d05](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/f375d05fbf6912fd5e62b6bfb0dbedb85c354606))
+* fixed width of field titles in presentation package ([#499](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/499)) ([3a86faa](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3a86faaa8126165666393ac8207feb12b1f045a4))
+* image popup scaling in firefox and safari ([#503](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/503)) ([58b7a44](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/58b7a449243d3cc887e12d66d87e873fe693a806))
+* object page no longer crashes when saving local terms ([#502](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/502)) ([fbee8f2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fbee8f26af11fed73bba48213a2a9441c5d711f2))
+* scroll to edited term field ([#504](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/504)) ([ccae1ee](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ccae1eefa9ee9624f6b930da6afb1b7fc1d88ae7))
+* term uris are not clickable ([#480](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/480)) ([3608e4d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3608e4de09305cf2d1ca9a2f7dfa0c13397032db))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 

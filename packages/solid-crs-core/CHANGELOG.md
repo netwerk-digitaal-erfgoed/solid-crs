@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Bug Fixes**
+
+* object page no longer crashes when saving local terms ([#502](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/502)) ([fbee8f2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fbee8f26af11fed73bba48213a2a9441c5d711f2))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 
