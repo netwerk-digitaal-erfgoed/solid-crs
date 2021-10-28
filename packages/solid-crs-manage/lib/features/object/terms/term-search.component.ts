@@ -318,7 +318,7 @@ export class TermSearchComponent extends RxLitElement {
           .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
           @click=${() => this.actor.send(new ClickedTermEvent(term))}>
             <div slot="title">${ term.name }</div>
-            <div slot="subtitle">${ term.uri.startsWith('#') || term.uri.includes(this.object?.uri.split('#')[0]) ? this.translator.translate('term.description-placeholder') : term.uri  }</div>
+            ${ term.uri.startsWith('#') || term.uri.includes(this.object?.uri.split('#')[0]) ? html`<div slot="subtitle">${this.translator.translate('term.description-placeholder')}</div>` : html`<a @click=${(event: Event) => event.stopPropagation()} slot="subtitle" href="${term.uri}" target="_blank" rel="noopener noreferrer">${ term.uri }</a>`  }
             <div slot="icon">
               ${unsafeSVG(CheckboxChecked)}
             </div>
@@ -346,7 +346,7 @@ export class TermSearchComponent extends RxLitElement {
             .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
-              <div slot="subtitle">${ term.uri }</div>
+              <a @click=${(event: Event) => event.stopPropagation()} slot="subtitle" href="${term.uri}" target="_blank" rel="noopener noreferrer">${ term.uri }</a>
               <div slot="icon">
                 ${ this.selectedTerms?.find((selected) => selected.uri === term.uri) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
