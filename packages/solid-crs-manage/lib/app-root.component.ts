@@ -85,6 +85,8 @@ export class AppRootComponent extends RxLitElement {
     const language = new URL(window.location.href).searchParams.get('lang');
     if (language) await this.translator.setLang(language);
 
+    await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
+
     this.actor = interpret(
       (appMachine(
         new SolidSDKService(this.logger),

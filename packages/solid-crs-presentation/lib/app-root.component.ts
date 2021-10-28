@@ -106,7 +106,7 @@ export class AppRootComponent extends RxLitElement {
   async connectedCallback(): Promise<void> {
 
     const language = new URL(window.location.href).searchParams.get('lang');
-    if (language) this.translator.setLang(language);
+    if (language) await this.translator.setLang(language);
 
     await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
 
