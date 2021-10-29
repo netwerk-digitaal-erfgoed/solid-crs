@@ -76,6 +76,17 @@ Aan de objecten en collecties kunnen termen worden toegewezen. Een term kan word
 Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per erfgoedinstelling. Daarnaast kunnen ze beeldmateriaal downloaden. Erfgoedobjecten zoeken en filteren per erfgoedinstelling zal mogelijk zijn. Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdrachten op de front-end worden uitgevoerd. 
 
 :sectnums:
+== Infrastructuur
+:sectnums!:
+=== Ondersteuning bij het opzetten van de Community Solid Server
+Digita zal het technische team van NDE ondersteunen bij het opzetten van een gehoste instantie van de Community Solid Server. Hierdoor kan NDE erfgoedinstellingen bijstaan in het voorzien van een pod voor de opslag van hun erfgoedinformatie. De opstelling die voorzien wordt zal gebruik maken van een Kubernetes omgeving, waarbij de pod server zal draaien op een file backend. 
+NDE zal zelf instaan voor het beschikbaar maken van een Kubernetes omgeving waarbinnen de nodige setup kan worden uitgevoerd.
+
+=== Ondersteuning bij het opzetten van de Digita Identity Proxy 
+Digita biedt ondersteuning aan het technisch team van NDE bij het opzetten van de Digita Identity Proxy. Deze service laat toe het collectieregistratiesysteem te gebruiken met een reeds bestaande OIDC-compatibele identity provider, zoals Auth0, waarbij reeds aanwezige accounts automatisch voorzien worden van een WebID nodig voor authenticatie. Er wordt voorzien deze service naast de Community Solid Server op te stellen in eenzelfde Kubernetes omgeving.
+Hierbij wordt ervan uitgegaan dat deze achterliggende identity provider reeds aanwezig is.
+
+:sectnums:
 == Niet-functionele vereisten
 
 * De architectuur en kwaliteit van de software artefacten moet geschikt zijn voor productie, afgezien van de elementen omschreven in “Out-of-scope”. 
