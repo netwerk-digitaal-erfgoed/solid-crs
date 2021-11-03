@@ -71,6 +71,7 @@ export enum AppRootStates {
  * State references for the application's features, with readable log format.
  */
 export enum AppFeatureStates {
+  WAITING_FOR_AUTH = '[AppFeatureState: Waiting For Auth]',
   COLLECTION  = '[AppFeatureState: Collection]',
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',
@@ -124,7 +125,7 @@ export const appMachine = (
      * Determines which feature is currently active.
      */
       [AppRootStates.FEATURE]: {
-        initial: AppFeatureStates.COLLECTION,
+        initial: AppFeatureStates.WAITING_FOR_AUTH,
         on: {
           [AppEvents.DISMISS_ALERT]: {
             actions: dismissAlert,
@@ -140,10 +141,19 @@ export const appMachine = (
           },
         },
         states: {
-        /**
-         * The collection feature is shown.
-         */
-          // [AppFeatureStates.AUTHENTICATE]: {},
+          /**
+           * Only create the collection machine once the user has logged in and the session is set
+           */
+          [AppFeatureStates.WAITING_FOR_AUTH]: {
+            on: {
+              [AppEvents.SET_PROFILE]: {
+                target: AppFeatureStates.COLLECTION,
+              },
+            },
+          },
+          /**
+           * The collection feature is shown.
+           */
           [AppFeatureStates.COLLECTION]: {
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
@@ -170,6 +180,7 @@ export const appMachine = (
                 src: collectionMachine(collectionStore, objectStore, objectTemplate),
                 data: (context) => ({
                   collection: context.selected,
+                  webId: context.session?.webId,
                 }),
                 onError: {
                   actions: send((context, event) => event),

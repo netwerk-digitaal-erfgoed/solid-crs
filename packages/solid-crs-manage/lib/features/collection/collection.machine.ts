@@ -22,6 +22,8 @@ export interface CollectionContext {
    * The list of objects in the current collection.
    */
   objects?: CollectionObject[];
+
+  webId?: string;
 }
 
 /**
