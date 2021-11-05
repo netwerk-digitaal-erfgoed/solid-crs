@@ -22,17 +22,18 @@ export const fulltextMatch = (object: unknown, term: string): boolean => {
   }
 
   const lowercaseTerm: string = term.toLowerCase();
+  const splitTerm: string[] = lowercaseTerm.split(' ');
 
   return !!Object.values(object)
     .map((value) => {
 
       if (typeof value === 'string' || value instanceof String) {
 
-        return value.toLowerCase().includes(term.toLowerCase());
+        return splitTerm.every((t: string) => value.toLowerCase().includes(t));
 
       } else if (typeof value === 'number' || value instanceof Number) {
 
-        return value.toString().includes(lowercaseTerm);
+        return splitTerm.every((t: string) => value.toString().toLowerCase().includes(t));
 
       } else if (value instanceof Array && value.length > 0) {
 
