@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Connect, Dots, Identity, Image, Object as ObjectIcon, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { fetch as solidFetch } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
@@ -138,7 +139,7 @@ export class ObjectRootComponent extends RxLitElement {
 
     const downloadRDF = () => {
 
-      fetch(this.object?.uri)
+      solidFetch(this.object?.uri)
         .then((response) => response.blob())
         .then((blob) => {
 
