@@ -37,6 +37,10 @@ export class AlertComponent extends LitElement {
       css`
         :host {
           margin-bottom: var(--gap-large);
+          position: sticky;
+          position: -webkit-sticky; /* Safari */
+          top: 0;
+          z-index: 100;
         }
         .alert {
           padding: var(--gap-normal) var(--gap-small);
@@ -77,6 +81,25 @@ export class AlertComponent extends LitElement {
         .alert .message {
           flex: 1 0;
         }
+
+        :host {
+          animation: slideIn linear 0.5s;
+          -webkit-animation: slideIn linear 0.5s;
+          -moz-animation: slideIn linear 0.5s;
+          -o-animation: slideIn linear 0.5s;
+          -ms-animation: slideIn linear 0.5s;
+        }
+
+        @keyframes slideIn {
+          from {
+            top: -300px;
+          }
+
+          to {
+            top: 0px;
+          }
+        }
+
       `,
     ];
 
