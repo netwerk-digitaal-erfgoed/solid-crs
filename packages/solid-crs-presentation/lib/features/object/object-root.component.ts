@@ -5,8 +5,9 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Connect, Dots, Identity, Image, Object as ObjectIcon, Download, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Connect, Dots, Identity, Image, Object as ObjectIcon, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { fetch as solidFetch } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
 import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectContext } from './object.machine';
@@ -132,9 +133,28 @@ export class ObjectRootComponent extends RxLitElement {
     const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
     const collection = this.collections?.find((coll) => coll.uri === this.object?.collection);
 
-    const toggleImage =  () => { this.imagePopup.toggle(); };
+    const toggleImage = () => { this.imagePopup.toggle(); };
 
-    const toggleInfo =  () => { this.infoPopup.toggle(); };
+    const toggleInfo = () => { this.infoPopup.toggle(); };
+
+    const downloadRDF = () => {
+
+      solidFetch(this.object?.uri)
+        .then((response) => response.blob())
+        .then((blob) => {
+
+          const blobURL = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobURL;
+          const slashSplit = this.object?.uri.split('/');
+          a.download = `${slashSplit[slashSplit.length - 1]}.ttl`;
+          (a as any).style = 'display: none';
+          document.body.appendChild(a);
+          a.click();
+
+        });
+
+    };
 
     return this.object ? html`
 
@@ -151,7 +171,7 @@ export class ObjectRootComponent extends RxLitElement {
           ${ unsafeSVG(Dots) }
           <nde-popup id="info-popup">
             <div slot="content">
-              <a target="_blank" rel="noopener noreferrer" href="${this.object.uri}">
+              <a @click="${downloadRDF}">
                 ${this.translator.translate('object.root.menu.view-rdf')}
               </a>
             </div>
