@@ -147,7 +147,10 @@ export const appMachine = (
       ],
     },
     [RouterEvents.NAVIGATED]: {
-      actions: (context, event) => updateHistory(event.path, event.title),
+      actions: [
+        (context, event) => updateHistory(event.path, event.title),
+        assign({ alerts: () => [] }),
+      ],
     },
     [AppEvents.CLICKED_HOME]: {
       actions: assign({ selected: (context) => undefined }),

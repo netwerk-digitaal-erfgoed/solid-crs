@@ -8,24 +8,24 @@ RUN apk update && apk upgrade && \
 
 ENV BASE_URL=http://localhost
 ENV PORT=80
-ENV CONFIG=config/config-file.json
+ENV CONFIG=config/file.json
 
 # Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p /community-server
+WORKDIR /community-server
 
 # Install app dependencies
 ARG NPM_TOKEN
-COPY package.json /usr/src/app/
+COPY package.json /community-server/
 RUN npm install  --unsafe-perm
 
 # Bundle app source
-COPY . /usr/src/app
-COPY node_modules/ /usr/src/app
+COPY . /community-server
 
 # Copy initial data
 COPY data/leapeeters/ /tmp/css/leapeeters/
+COPY data/hetlageland/ /tmp/css/hetlageland/
 
 # Expose ports.
 EXPOSE 80
-CMD node ./node_modules/community-server/bin/server.js -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css
+CMD node ./node_modules/.bin/community-solid-server -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css
