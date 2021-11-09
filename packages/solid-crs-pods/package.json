@@ -1,15 +1,15 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-pods",
-  "version": "0.10.2",
+  "version": "0.10.6",
   "description": "Pods for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/* tmp/ && community-solid-server -c config/config-file.json --rootFilePath ./tmp -p 3000",
+    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/. tmp/ && community-solid-server -c config/file.json --rootFilePath ./tmp -p 3000",
     "start:watch": "npm run start"
   },
   "dependencies": {
-    "@solid/community-server": "1.0.0"
+    "@solid/community-server": "2.0.1"
   },
   "devDependencies": {
     "shx": "^0.3.3"

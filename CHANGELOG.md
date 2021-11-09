@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.5...v0.10.6) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.5](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.4...v0.10.5) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.4](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.3...v0.10.4) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.3](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.2...v0.10.3) (2021-11-09)
+
+
+### **Documentation**
+
+* infrastructure added to scope ([#506](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/506)) ([2154224](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/2154224825fc24ef47fd2fb7b9ee0db05ac5d2b5))
+
+
+### **Bug Fixes**
+
+* add loading/progress bar when searching objects ([#505](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/505)) ([82bc5ff](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/82bc5ffdf26d0e67d0a262f6ab5e18f30de36459))
+
+
+
 ### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.1...v0.10.2) (2021-10-28)
 
 
