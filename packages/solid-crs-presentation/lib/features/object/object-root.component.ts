@@ -185,7 +185,7 @@ export class ObjectRootComponent extends RxLitElement {
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
             <div>
               <a target="_blank" rel="noopener noreferrer" @click="${ () => navigator.clipboard.writeText(this.object?.image)
-    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: this.translator.translate('common.copied-image-url') })))}">
+    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-image-url' })))}">
               ${ this.translator.translate('object.root.menu.copy-url') }
               </a>
             </div>
