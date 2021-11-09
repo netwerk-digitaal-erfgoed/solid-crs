@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.5...v0.10.6) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-pods
+
+
+
+
+
+### [0.10.5](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.4...v0.10.5) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-pods
+
+
+
+
+
+### [0.10.4](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.3...v0.10.4) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-pods
+
+
+
+
+
+### [0.10.3](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.2...v0.10.3) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-pods
+
+
+
+
+
 ### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.1...v0.10.2) (2021-10-28)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-pods
