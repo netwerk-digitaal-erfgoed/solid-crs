@@ -34,6 +34,12 @@ export class FormElementComponent<T> extends RxLitElement {
   fieldDiv: HTMLDivElement;
 
   /**
+   * The slot element which contains the icon.
+   */
+  @query('.icon')
+  iconDiv: HTMLDivElement;
+
+  /**
    * Decides whether a border should be shown around the content
    */
   @internalProperty()
@@ -287,6 +293,7 @@ export class FormElementComponent<T> extends RxLitElement {
             checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
             titleListItem.hidden = true;
             checkboxInputs[0].focus();
+            this.iconDiv.style.pointerEvents = 'initial';
 
           });
 
@@ -298,6 +305,7 @@ export class FormElementComponent<T> extends RxLitElement {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
+              this.iconDiv.style.pointerEvents = 'none';
 
               const selectedValues = checkboxInputs.filter((input) => input.checked).map((input) => input.id);
 
@@ -390,6 +398,9 @@ export class FormElementComponent<T> extends RxLitElement {
       css`
         :root {
           display: block;
+        }
+        .icon {
+          pointer-events: none;
         }
         .loading, .loading svg {
           margin-right: var(--gap-normal);
