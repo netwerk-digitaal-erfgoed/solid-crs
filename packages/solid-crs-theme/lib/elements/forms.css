@@ -86,6 +86,14 @@ nde-form-element ul li {
   overflow: hidden;
 }
 
+nde-form-element ul.closed:hover, /* When dropdown is closed, Make the padding on the ul clickable, not only the li */
+nde-form-element ul li:hover, /* This only effects the space between checkbox and label for some reason */
+nde-form-element input[type="checkbox"]:hover,
+nde-form-element input[type="checkbox"] ~ label:hover,
+nde-form-element div[slot="icon"]:hover {
+  cursor: pointer;
+}
+
 nde-form-element ul.dismiss li {
   background-color: var(--colors-foreground-normal);
   color: var(--colors-foreground-inverse);
