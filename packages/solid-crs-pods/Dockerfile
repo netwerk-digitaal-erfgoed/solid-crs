@@ -25,6 +25,7 @@ COPY node_modules/ /usr/src/app
 
 # Copy initial data
 COPY data/leapeeters/ /tmp/css/leapeeters/
+COPY data/hetlageland/ /tmp/css/hetlageland/
 
 # Expose ports.
 EXPOSE 80

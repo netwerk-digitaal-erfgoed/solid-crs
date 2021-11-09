@@ -12,6 +12,7 @@ jobs:
       image_presentation: ${{ steps.vars.outputs.image_presentation }}
       image_semcom_node: ${{ steps.vars.outputs.image_semcom_node }}
       image_semcom_components: ${{ steps.vars.outputs.image_semcom_components }}
+      image_pods: ${{ steps.vars.outputs.image_pods }}
     steps:
       - name: Set variables
         id: vars
@@ -21,6 +22,7 @@ jobs:
           echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-presentation"
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
+          echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
 
   test:
     name: Run tests
@@ -182,6 +184,17 @@ jobs:
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
+      - name: Build and push pods
+        uses: docker/build-push-action@v2
+        with:
+          context: packages/solid-crs-pods/
+          push: true
+          tags: |
+            ${{ needs.variables.outputs.image_pods }}:latest
+            ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
+
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
@@ -196,6 +209,7 @@ jobs:
           kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }} --record
 
       - name: Verify deployment
         run: |
@@ -203,3 +217,4 @@ jobs:
           kubectl rollout status deployment/solid-crs-presentation
           kubectl rollout status deployment/solid-crs-semcom-node
           kubectl rollout status deployment/solid-crs-semcom-components
+          kubectl rollout status deployment/solid-crs-pods

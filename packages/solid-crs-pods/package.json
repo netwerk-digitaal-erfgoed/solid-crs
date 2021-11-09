@@ -9,7 +9,7 @@
     "start:watch": "npm run start"
   },
   "dependencies": {
-    "@solid/community-server": "1.0.0"
+    "@solid/community-server": "2.0.1"
   },
   "devDependencies": {
     "shx": "^0.3.3"
