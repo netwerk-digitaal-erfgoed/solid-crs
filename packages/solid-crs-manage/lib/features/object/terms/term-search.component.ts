@@ -323,7 +323,9 @@ export class TermSearchComponent extends RxLitElement {
         <div slot="icon" @click=${() => this.formActorLocalTerm.send(new FormSubmittedEvent())}>
           ${unsafeSVG(Plus)}
         </div>
-        ` : '' }
+        ` : html`
+        <div slot="icon"></div> 
+        ` }
       </nde-large-card>
       `: ''}
 
