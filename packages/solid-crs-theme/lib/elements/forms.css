@@ -181,10 +181,10 @@ div[slot="input"] {
   gap: var(--gap-normal);
 }
 
-nde-form-element ul.closed:hover, /* When dropdown is closed, Make the padding on the ul clickable, not only the li */
-nde-form-element ul li:hover, /* This only effects the space between checkbox and label for some reason */
-nde-form-element input[type="checkbox"]:hover,
-nde-form-element input[type="checkbox"] ~ label:hover,
-nde-form-element div[slot="icon"]:hover {
+nde-form-element ul.closed, /* When dropdown is closed, Make the padding on the ul clickable, not only the li */
+nde-form-element ul li, /* This only effects the space between checkbox and label for some reason */
+nde-form-element input[type="checkbox"],
+nde-form-element input[type="checkbox"] ~ label,
+nde-form-element div[slot="icon"] {
   cursor: pointer;
 }
