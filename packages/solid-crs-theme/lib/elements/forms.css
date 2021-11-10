@@ -86,20 +86,6 @@ nde-form-element ul li {
   overflow: hidden;
 }
 
-nde-form-element ul.dismiss li {
-  background-color: var(--colors-foreground-normal);
-  color: var(--colors-foreground-inverse);
-  position: relative;
-  line-height: 15px;
-  padding: 5px;
-  width: fit-content;
-  height: 15px;
-  cursor: default;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-}
-
 nde-form-element ul li input {
   margin-right: var(--gap-normal) !important;
 }
@@ -158,16 +144,6 @@ input[type="checkbox"] {
   margin: 0;
 }
 
-input[type="radio"]:checked,
-input[type="checkbox"]:checked {
-  appearance: none;
-  outline: none;
-  padding: 0;
-  content: none;
-  border: none;
-  background: url(../icons/CheckboxChecked.svg);
-}
-
 input[type="radio"] ~ label,
 input[type="checkbox"] ~ label {
   display: inline-block;
@@ -187,4 +163,28 @@ nde-form-element input[type="checkbox"],
 nde-form-element input[type="checkbox"] ~ label,
 nde-form-element div[slot="icon"] {
   cursor: pointer;
+}
+
+nde-form-element ul.dismiss li {
+  background-color: var(--colors-foreground-normal);
+  color: var(--colors-foreground-inverse);
+  position: relative;
+  line-height: 15px;
+  padding: 5px;
+  width: fit-content;
+  height: 15px;
+  cursor: default;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+  appearance: none;
+  outline: none;
+  padding: 0;
+  content: none;
+  border: none;
+  background: url(../icons/CheckboxChecked.svg);
 }
