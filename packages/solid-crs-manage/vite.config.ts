@@ -12,6 +12,9 @@ export default defineConfig( ({ command, mode }) => {
         ['process.env.DEV']: `"${command === 'serve'}"`,
         ['process.env.PROD']: `"${command === 'build'}"`,
         ['process.env.MODE']: command === 'build' ? `"PROD"` : `"DEV"`,
+        ['process.env.PRESENTATION']: command === 'build'
+          ? `"https://solid-crs-presentatie.netwerkdigitaalerfgoed.nl/"`
+          : `"http://localhost:3005/"`,
       }
     },
     {},
