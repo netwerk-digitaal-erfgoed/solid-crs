@@ -258,6 +258,7 @@ export const appMachine = (
                 src: objectMachine(objectStore),
                 data: (context) => ({
                   collections: context.collections,
+                  webId: context.session?.webId,
                 }),
                 onError: {
                   actions: send((context, event) => event),
