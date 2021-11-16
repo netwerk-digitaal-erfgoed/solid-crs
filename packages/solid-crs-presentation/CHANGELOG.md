@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Features**
+
+* download collection object .ttl files ([#509](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/509)) ([652cf8d](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/652cf8d2887858103bccf0744969dcd3e0032313))
+
+
+### **Bug Fixes**
+
+* improve object search algorithm ([#510](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/510)) ([7203f51](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/7203f5110455137ba24b817d216ca2f52eb70e03)), closes [#509](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/509)
+* remove alerts on navigation ([#508](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/508)) ([300752b](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/300752bed4be9aa4dce8447c567d0b1f7bb24275))
+
+
+
 ### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.5...v0.10.6) (2021-11-09)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-presentation

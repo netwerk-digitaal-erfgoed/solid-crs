@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Bug Fixes**
+
+* dont allow adding of an empty local term ([#512](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/512)) ([a981c20](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a981c203b68405a52e253494e055f07ff93c7fb7))
+* improve object search algorithm ([#510](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/510)) ([7203f51](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/7203f5110455137ba24b817d216ca2f52eb70e03)), closes [#509](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/509)
+
+
+### **Features**
+
+* added button to open presentation view from manage view ([#507](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/507)) ([5bbd591](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5bbd591add7fe1c29fec3370aa2fadff7cd3ae7a))
+
+
+
 ### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.5...v0.10.6) (2021-11-09)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage

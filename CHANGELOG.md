@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Bug Fixes**
+
+* clicking dropdown arrow should open and close menu ([#516](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/516)) ([eace6fb](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/eace6fb82e4f7c3ad8658a1c1f263bdd40be1b73))
+* dont allow adding of an empty local term ([#512](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/512)) ([a981c20](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a981c203b68405a52e253494e055f07ff93c7fb7))
+* improve object search algorithm ([#510](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/510)) ([7203f51](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/7203f5110455137ba24b817d216ca2f52eb70e03)), closes [#509](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/509)
+* remove alerts on navigation ([#508](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/508)) ([300752b](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/300752bed4be9aa4dce8447c567d0b1f7bb24275))
+
+
+### **Features**
+
+* added button to open presentation view from manage view ([#507](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/507)) ([5bbd591](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5bbd591add7fe1c29fec3370aa2fadff7cd3ae7a))
+* always show active notifications on screen ([#513](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/513)) ([3d59490](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3d594909a3465ec5ec18dcd8b075683dbb9d34d2))
+* download collection object .ttl files ([#509](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/509)) ([652cf8d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/652cf8d2887858103bccf0744969dcd3e0032313))
+
+
+
 ### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.5...v0.10.6) (2021-11-09)
 
 **Note:** Version bump only for package root
