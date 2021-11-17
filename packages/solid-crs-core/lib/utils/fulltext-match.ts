@@ -7,7 +7,7 @@ import { ArgumentError } from '../errors/argument-error';
  * @param term The term to match.
  * @returns If a property matches the term.
  */
-export const fulltextMatch = (object: unknown, term: string): boolean => {
+export const fulltextMatch = (object: { [k: string]: unknown }, term: string): boolean => {
 
   if (object === null || object === undefined) {
 
@@ -24,7 +24,7 @@ export const fulltextMatch = (object: unknown, term: string): boolean => {
   const lowercaseTerm: string = term.toLowerCase().trim();
   const splitTerm: string[] = lowercaseTerm.split(' ');
 
-  return splitTerm.every((termPart: string) => Object.values(object).some((value: any) => {
+  return splitTerm.every((termPart: string) => Object.values(object).some((value) => {
 
     if (typeof value === 'string' || value instanceof String) {
 
@@ -40,7 +40,7 @@ export const fulltextMatch = (object: unknown, term: string): boolean => {
 
     } else if (typeof value === 'object' || value instanceof Object) {
 
-      return fulltextMatch(value, termPart);
+      return fulltextMatch(value as { [k: string]: unknown }, termPart);
 
     } else {
 
