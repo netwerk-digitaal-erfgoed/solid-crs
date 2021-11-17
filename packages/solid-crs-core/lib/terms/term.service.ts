@@ -88,9 +88,13 @@ export class TermService {
     );
 
     // parse and return query result
-    return [].concat(...result.data.terms.map(
-      (termList) => termList.terms.map((term) => ({ ...term, source: termList.source.uri, name: term.name[0] }))
-    ));
+    return result.data.terms.map(
+      (termList) => termList.terms.map((term) => ({
+        ...term,
+        source: termList.source.uri,
+        name: term.name[0],
+      }))
+    ).reduce((acc, val) => acc.concat(val), []);
 
   }
 
@@ -131,12 +135,12 @@ export class TermService {
  */
 interface GraphQlResult {
   data: {
-    terms?: [
+    terms: [
       {
         source: Partial<TermSource>;
         terms: Term[];
       },
     ];
-    sources?: TermSource[];
+    sources: TermSource[];
   };
 }
