@@ -7,7 +7,8 @@ import { ArgumentError } from '../errors/argument-error';
  * @param term The term to match.
  * @returns If a property matches the term.
  */
-export const fulltextMatch = (object: { [k: string]: unknown }, term: string): boolean => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+export const fulltextMatch = (object: any, term: string): boolean => {
 
   if (object === null || object === undefined) {
 

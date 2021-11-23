@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import fetchMock, { MockResponseInitFunction } from 'jest-fetch-mock';
+import fetchMock from 'jest-fetch-mock';
 import { LoggerLevel } from '../logging/logger-level';
 import { ConsoleLogger } from '../logging/console-logger';
 import { SolidSDKService } from './solid-sdk.service';
@@ -32,11 +33,11 @@ describe('SolidService', () => {
 
   it.each([
     [ { webId: 'lorem', isLoggedIn: true }, { webId: 'lorem' } ],
-    [ { webId: 'lorem', isLoggedIn: false }, null ],
-    [ null, null ],
+    [ { webId: 'lorem', isLoggedIn: false }, undefined ],
+    [ undefined, undefined ],
   ])('should call handleIncomingRedirect when getting session', async (resolved, result) => {
 
-    client.handleIncomingRedirect = jest.fn(async () => resolved);
+    (client.handleIncomingRedirect as any) = jest.fn(async () => resolved);
 
     expect(await service.getSession()).toEqual(result);
 
@@ -60,7 +61,7 @@ describe('SolidService', () => {
 
     it('should call login when issuer was set', async () => {
 
-      client.login = jest.fn(() => 'success');
+      (client.login as any) = jest.fn(() => 'success');
       service.getIssuer = jest.fn(async () => 'http://google.com/');
 
       await service.login('test');
@@ -75,7 +76,7 @@ describe('SolidService', () => {
 
     it.each([ null, undefined ])('should error when WebID is %s', async (value) => {
 
-      client.logout = jest.fn().mockResolvedValue(null);
+      (client.logout as any) = jest.fn().mockResolvedValue(null);
       await expect(service.logout()).resolves.not.toThrow();
 
     });
@@ -92,9 +93,9 @@ describe('SolidService', () => {
       [ null, validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.no-webid' ],
       [ undefined, validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.no-webid' ],
       [ 'invalid-url', validProfileDataset, validOpenIdConfig, 'authenticate.error.invalid-webid.invalid-url' ],
-    ])('should error when webId is %s', async (webId, profile: MockResponseInitFunction, openId, message) => {
+    ])('should error when webId is %s', async (webId, profile, openId, message) => {
 
-      client.getSolidDataset = jest.fn(async () => profile);
+      (client.getSolidDataset as any) = jest.fn(async () => profile);
 
       fetchMock
         .mockRejectOnce() // fail https:// URL check
@@ -107,7 +108,7 @@ describe('SolidService', () => {
 
     it('should error when webId is valid URL, but no profile', async () => {
 
-      client.getSolidDataset = jest.fn(async () => null);
+      (client.getSolidDataset as any) = jest.fn(async () => null);
 
       fetchMock
         .once('') // pass https:// URL check
@@ -121,7 +122,7 @@ describe('SolidService', () => {
 
       const webId = 'https://pod.inrupt.com/digitatestpod/profile/card#me';
 
-      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+      (client.getSolidDataset as any) = jest.fn(async () => { throw Error(); });
 
       await expect(service.getIssuer(webId)).rejects.toThrow();
 
@@ -131,8 +132,8 @@ describe('SolidService', () => {
 
       const webId = 'https://pod.inrupt.com';
 
-      client.getSolidDataset = jest.fn().mockReturnValueOnce(validProfileDataset);
-      client.getThing = jest.fn().mockReturnValueOnce(null);
+      (client.getSolidDataset as any) = jest.fn().mockReturnValueOnce(validProfileDataset);
+      (client.getThing as any) = jest.fn().mockReturnValueOnce(null);
 
       await expect(service.getIssuer(webId)).rejects.toThrow();
 
@@ -142,9 +143,9 @@ describe('SolidService', () => {
 
       const webId = 'https://pod.inrupt.com';
 
-      client.getSolidDataset = jest.fn().mockReturnValueOnce(validProfileDataset);
-      client.getThing = jest.fn().mockReturnValueOnce(validProfileThing);
-      client.getUrl = jest.fn().mockReturnValueOnce(null);
+      (client.getSolidDataset as any) = jest.fn().mockReturnValueOnce(validProfileDataset);
+      (client.getThing as any) = jest.fn().mockReturnValueOnce(validProfileThing);
+      (client.getUrl as any) = jest.fn().mockReturnValueOnce(null);
 
       await expect(service.getIssuer(webId)).rejects.toThrow();
 
@@ -152,9 +153,9 @@ describe('SolidService', () => {
 
     it('should error when oidcIssuer openid config is invalid', async () => {
 
-      client.getSolidDataset = jest.fn(async () => validProfileDataset);
-      client.getThing = jest.fn(async () => validProfileThing);
-      client.getUrl = jest.fn(() => 'https://google.com/');
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+      (client.getThing as any) = jest.fn(async () => validProfileThing);
+      (client.getUrl as any) = jest.fn(() => 'https://google.com/');
 
       fetchMock.mockRejectOnce();
 
@@ -164,9 +165,9 @@ describe('SolidService', () => {
 
     it('should error when oidcIssuer response does not contain "X-Powered-By: solid" header', async () => {
 
-      client.getSolidDataset = jest.fn(async () => validProfileDataset);
-      client.getThing = jest.fn(async () => validProfileThing);
-      client.getUrl = jest.fn(() => 'https://google.com/');
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+      (client.getThing as any) = jest.fn(async () => validProfileThing);
+      (client.getUrl as any) = jest.fn(() => 'https://google.com/');
 
       fetchMock
         .once('') // pass https:// URL check
@@ -178,9 +179,9 @@ describe('SolidService', () => {
 
     it('should return issuer when openid response contains "X-Powered-By: solid" header', async () => {
 
-      client.getSolidDataset = jest.fn(async () => validProfileDataset);
-      client.getThing = jest.fn(async () => validProfileThing);
-      client.getUrl = jest.fn(() => 'https://google.com/');
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+      (client.getThing as any) = jest.fn(async () => validProfileThing);
+      (client.getUrl as any) = jest.fn(() => 'https://google.com/');
 
       fetchMock
         .once('') // pass https:// URL check
@@ -213,7 +214,7 @@ describe('SolidService', () => {
 
     it('should error when unable to set dataset', async () => {
 
-      client.getSolidDataset = jest.fn(async () => { throw Error(); });
+      (client.getSolidDataset as any) = jest.fn(async () => { throw Error(); });
 
       await expect(service.getProfile(webId)).rejects.toThrow();
 
@@ -221,7 +222,7 @@ describe('SolidService', () => {
 
     it('should error when no dataset is found', async () => {
 
-      client.getSolidDataset = jest.fn(async () =>  null);
+      (client.getSolidDataset as any) = jest.fn(async () =>  null);
 
       await expect(service.getProfile(webId)).rejects.toThrow();
 
@@ -229,8 +230,8 @@ describe('SolidService', () => {
 
     it('should error when no profile is found', async () => {
 
-      client.getSolidDataset = jest.fn(async () => validProfileDataset);
-      client.getThing = jest.fn(() => null);
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+      (client.getThing as any) = jest.fn(() => null);
 
       await expect(service.getProfile(webId)).rejects.toThrow();
 
@@ -238,11 +239,11 @@ describe('SolidService', () => {
 
     it('should return valid profile when found', async () => {
 
-      client.getSolidDataset = jest.fn(async () => validProfileDataset);
-      client.getThing = jest.fn(() => validProfileThing);
-      client.getStringNoLocale = jest.fn(() => validName);
-      client.getStringWithLocale = jest.fn(() => validName);
-      client.getUrl = jest.fn(() => validName);
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+      (client.getThing as any) = jest.fn(() => validProfileThing);
+      (client.getStringNoLocale as any) = jest.fn(() => validName);
+      (client.getStringWithLocale as any) = jest.fn(() => validName);
+      (client.getUrl as any) = jest.fn(() => validName);
 
       const profile = await service.getProfile(webId);
 
