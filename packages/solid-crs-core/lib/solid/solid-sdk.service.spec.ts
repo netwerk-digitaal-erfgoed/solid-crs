@@ -237,6 +237,21 @@ describe('SolidService', () => {
 
     });
 
+    it('should error when no contactPointThing could be found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+
+      (client.getThing as any) = jest.fn((d, url) =>
+        url === validName ? undefined : validProfileThing);
+
+      (client.getStringNoLocale as any) = jest.fn(() => validName);
+      (client.getStringWithLocale as any) = jest.fn(() => validName);
+      (client.getUrl as any) = jest.fn(() => validName);
+
+      await expect(service.getProfile(webId)).rejects.toThrow('Could not find contactPointThing in dataset');
+
+    });
+
     it('should return valid profile when found', async () => {
 
       (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);

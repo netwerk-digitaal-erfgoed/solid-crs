@@ -282,6 +282,14 @@ describe('CollectionSolidStore', () => {
 
   describe('createCatalog()', () => {
 
+    it('should error when webId could be found', async () => {
+
+      (client.getDefaultSession as any) = jest.fn(() => undefined);
+
+      await expect(service.createCatalog('test-uri')).rejects.toThrow('Not logged in');
+
+    });
+
     it('should call overwriteFile', async (done) => {
 
       (client.getDefaultSession as any) = jest.fn(() => mockSession);
