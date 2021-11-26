@@ -25,7 +25,7 @@ describe('SolidStore', () => {
 
     it.each([ null, undefined ])('should error when webId is %s', async (value) => {
 
-      await expect(service.getInstanceForClass(value, 'test-string')).rejects.toThrow('Argument webId should be set');
+      await expect(service.getInstanceForClass(value as any, 'test-string')).rejects.toThrow('Argument webId should be set');
 
     });
 
@@ -35,22 +35,56 @@ describe('SolidStore', () => {
 
     });
 
-    it('should return null when no type index reference was found in profile', async () => {
+    it('should error when no profile could be found', async () => {
+
+      (client.getThing as any) = jest.fn(() => undefined);
+      await expect(service.getInstanceForClass('test-string', 'test-string')).rejects.toThrow('Could not find profile in dataset');
+
+    });
+
+    it('should return undefined when no type index reference was found in profile', async () => {
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
-      (client.getUrl as any) = jest.fn(() => null);
+      (client.getUrl as any) = jest.fn(() => undefined);
 
       await expect(service.getInstanceForClass('test-webid', 'test-forClass')).resolves.toEqual(undefined);
 
     });
 
-    it('should return null when no type registration was found', async () => {
+    it('should return undefined when no type registration was found', async () => {
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.getUrl as any) = jest.fn(() => 'test-url');
       (client.getThingAll as any) = jest.fn(() => []);
+
+      await expect(service.getInstanceForClass('test-webid', 'test-forClass')).resolves.toEqual(undefined);
+
+    });
+
+    it('should return undefined when no instance URI could be found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => 'test-thing');
+
+      (client.getUrl as any) = jest.fn((t, predicate) => {
+
+        if (predicate === 'http://www.w3.org/ns/solid/terms#forClass') {
+
+          return 'test-forClass';
+
+        } else if (predicate === 'http://www.w3.org/ns/solid/terms#instance') {
+
+          return undefined;
+
+        }
+
+        return 'test-url';
+
+      });
+
+      (client.getThingAll as any) = jest.fn(() => [ 'test-forClass' ]);
 
       await expect(service.getInstanceForClass('test-webid', 'test-forClass')).resolves.toEqual(undefined);
 
@@ -98,6 +132,26 @@ describe('SolidStore', () => {
     it.each([ null, undefined ])('should error when location is %s', async (value) => {
 
       await expect(service.saveInstanceForClass('test-string', 'test-string', value)).rejects.toThrow('Argument location should be set');
+
+    });
+
+    it('should error when no profile could be found', async () => {
+
+      (client.getThing as any) = jest.fn(() => undefined);
+      await expect(service.saveInstanceForClass('test-string', 'test-string', 'test-string')).rejects.toThrow('Could not find profile in dataset');
+
+    });
+
+    it('should error when no profile could be found', async () => {
+
+      (client.getThing as any) = jest.fn(() => ({}));
+      (client.getUrl as any) = jest.fn(() => undefined);
+
+      (service.createTypeIndexes as any) = jest.fn(async() => ({
+        publicTypeIndex: 'test',
+      }));
+
+      await expect(service.saveInstanceForClass('test-string', 'test-string', 'test-string')).rejects.toThrow('Could not find storage in profile');
 
     });
 
@@ -232,21 +286,31 @@ describe('SolidStore', () => {
 
   describe('createTypeIndexes()', () => {
 
-    (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
-    (client.getThing as any) = jest.fn(() => 'test-thing');
-    (client.overwriteFile as any) = jest.fn(async () => 'test-result');
-    (client.addUrl as any) = jest.fn(() => 'test-thing');
-    (client.setThing as any) = jest.fn(() => 'test-dataset');
-    (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-result');
+    beforeEach(() => {
 
-    (client.access as any) = {
-      setPublicAccess: async () => null,
-    };
-    // (client.access as any).setPublicAccess = jest.fn(async () => null);
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => 'test-thing');
+      (client.overwriteFile as any) = jest.fn(async () => 'test-result');
+      (client.addUrl as any) = jest.fn(() => 'test-thing');
+      (client.setThing as any) = jest.fn(() => 'test-dataset');
+      (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-result');
+
+      (client.access as any) = {
+        setPublicAccess: async () => null,
+      };
+
+    });
 
     it.each([ null, undefined ])('should error when webId is %s', async (value) => {
 
       await expect(service.createTypeIndexes(value)).rejects.toThrow('Argument webId should be set');
+
+    });
+
+    it('should error when no profile could be found', async () => {
+
+      (client.getThing as any) = jest.fn(() => undefined);
+      await expect(service.createTypeIndexes('http://test.url/profile/card#me')).rejects.toThrow('Could not find profile in dataset');
 
     });
 
