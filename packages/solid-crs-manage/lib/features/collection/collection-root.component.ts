@@ -90,6 +90,18 @@ export class CollectionRootComponent extends RxLitElement {
   isDirty? = false;
 
   /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  objectsPerPage? = 9;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  pageIndex? = 0;
+
+  /**
    * The popup component shown when the delete icon is clicked
    */
   @query('nde-popup#delete-popup')
@@ -228,8 +240,25 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
+          <div class="paginator-controls">
+            ${ this.pageIndex > 0 ? html`<a @click="${() => this.pageIndex--}">previous</a>` : '' } <!-- previous button -->
+
+            ${ this.pageIndex > 0 ? html`<a @click="${() => this.pageIndex-- }">${this.pageIndex}</a>` : '' } <!-- previous page -->
+
+            <a class="current">${this.pageIndex + 1}</a> <!-- current page -->
+            
+            ${ this.pageIndex * this.objectsPerPage < this.objects.length && (this.pageIndex + 1) * this.objectsPerPage > this.objects.length ? '' :
+    html`<a @click="${() => this.pageIndex++ }">${this.pageIndex + 2}</a>` } <!-- next page -->
+
+      ${ this.pageIndex * this.objectsPerPage < this.objects.length && (this.pageIndex + 1) * this.objectsPerPage > this.objects.length ? '' :
+    html`<a @click="${() => this.pageIndex++}">next</a>` } <!-- next button -->
+            
+          </div>
           <div class='three-column-content-grid'>
-            ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
+            ${this.objects
+    .slice(this.pageIndex * this.objectsPerPage, this.pageIndex * this.objectsPerPage + this.objectsPerPage)
+    .map((object) =>
+      html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
         `
     : html`
@@ -394,6 +423,24 @@ export class CollectionRootComponent extends RxLitElement {
           width: 20px;
           height: 20px;
           fill: var(--colors-primary-light);
+        }
+        .paginator-controls {
+          display: flex;
+          justify-content: center;
+          gap: var(--gap-small);
+          margin-bottom: var(--gap-large);
+        }
+        .paginator-controls a {
+          display: block;
+          min-width: var(--gap-small);  
+          cursor: pointer;
+          border-bottom: 1px var(--colors-primary-dark) solid;
+          text-align: center;
+        }
+        .paginator-controls a.current {
+          /* color: var(--colors-primary-light); */
+          cursor: default;
+          border-bottom: none;
         }
       `,
     ];
