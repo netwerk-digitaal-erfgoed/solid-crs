@@ -3,7 +3,7 @@ import { html, unsafeCSS, css, TemplateResult, CSSResult, property, query, inter
 import { RxLitElement } from 'rx-lit';
 import { interpret, Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Alert, FormActors, FormContext, FormEvents, formMachine, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormActors, FormCleanlinessStates, FormContext, FormEvents, formMachine, FormRootStates, FormSubmissionStates, FormSubmittedEvent, FormValidationStates, FormValidatorResult } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObject, Logger, Term, TermSource, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -64,7 +64,13 @@ export class TermSearchComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @internalProperty()
-  formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
+  formActorLocalTerm: Interpreter<FormContext<{ uri: string; name: string }>>;
+
+  /**
+   * Show the plus icon when adding a local term
+   */
+  @internalProperty()
+  showAddLocalTermPlus = false;
 
   /**
    * The field that for which Terms are being edited
@@ -151,6 +157,45 @@ export class TermSearchComponent extends RxLitElement {
 
   }
 
+  firstUpdated(changed: PropertyValues): void {
+
+    this.actor?.onEvent((event) => {
+
+      if (event instanceof ClickedAddEvent){
+
+        const uri = `#${v4()}`;
+
+        this.formMachineLocalTerm = formMachine<Term>(async (context): Promise<FormValidatorResult[]> => {
+
+          if (!context.data.name || context.data.name === '') return [ { field: 'name', message: 'test' } ];
+
+          return [];
+
+        }).withContext({
+          data: { name: '', uri },
+          original: { name: '', uri },
+        });
+
+        this.formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
+
+        this.formActorLocalTerm.onTransition((state) => {
+
+          this.showAddLocalTermPlus = state.matches({ [FormSubmissionStates.NOT_SUBMITTED]: {
+            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
+            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
+          } });
+
+        });
+
+        this.formActorLocalTerm.onDone((context) => this.actor.send(new ClickedTermEvent(context.data.data)));
+        this.formActorLocalTerm.start();
+
+      }
+
+    });
+
+  }
+
   groupSearchResults(searchResults: Term[]): { [key: string]: Term[] } {
 
     return searchResults?.length > 0 ? searchResults?.reduce<{ [key: string]: Term[] }>((searchResultsMap, term) => {
@@ -211,31 +256,6 @@ export class TermSearchComponent extends RxLitElement {
 
     });
 
-    this.actor?.onEvent((event) => {
-
-      if (event instanceof ClickedAddEvent){
-
-        const uri = `#${v4()}`;
-
-        this.formMachineLocalTerm = formMachine<Term>().withContext({
-          data: {
-            name: '',
-            uri,
-          },
-          original: {
-            name: '',
-            uri,
-          },
-        });
-
-        this.formActorLocalTerm = interpret(this.formMachineLocalTerm, { devTools: true });
-        this.formActorLocalTerm.onDone((context) => this.actor.send(new ClickedTermEvent(context.data.data)));
-        this.formActorLocalTerm.start();
-
-      }
-
-    });
-
     const loading = !this.actor?.state.matches(TermStates.IDLE);
 
     return html`
@@ -286,7 +306,7 @@ export class TermSearchComponent extends RxLitElement {
       <a id="create-term" @click="${() => this.actor.send(new ClickedAddEvent())}">${this.translator.translate('term.add-local-term')}</a>
 
       <!-- show local term input -->
-      ${ this.actor?.state?.matches(TermStates.CREATING) ? html `
+      ${ this.actor?.state?.matches(TermStates.CREATING) && this.formActorLocalTerm ? html `
       <nde-large-card
         id="create-term-card"
         class="term-card"
@@ -299,9 +319,13 @@ export class TermSearchComponent extends RxLitElement {
 
         <div slot="subtitle">${this.translator.translate('term.description-placeholder')}</div>
 
+        ${ this.showAddLocalTermPlus ? html`
         <div slot="icon" @click=${() => this.formActorLocalTerm.send(new FormSubmittedEvent())}>
           ${unsafeSVG(Plus)}
         </div>
+        ` : html`
+        <div slot="icon"></div> 
+        ` }
       </nde-large-card>
       `: ''}
 
@@ -318,7 +342,7 @@ export class TermSearchComponent extends RxLitElement {
           .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
           @click=${() => this.actor.send(new ClickedTermEvent(term))}>
             <div slot="title">${ term.name }</div>
-            <div slot="subtitle">${ term.uri.startsWith('#') || term.uri.includes(this.object?.uri.split('#')[0]) ? this.translator.translate('term.description-placeholder') : term.uri  }</div>
+            ${ term.uri.startsWith('#') || term.uri.includes(this.object?.uri.split('#')[0]) ? html`<div slot="subtitle">${this.translator.translate('term.description-placeholder')}</div>` : html`<a @click=${(event: Event) => event.stopPropagation()} slot="subtitle" href="${term.uri}" target="_blank" rel="noopener noreferrer">${ term.uri }</a>`  }
             <div slot="icon">
               ${unsafeSVG(CheckboxChecked)}
             </div>
@@ -346,7 +370,7 @@ export class TermSearchComponent extends RxLitElement {
             .showContent="${term.description?.length > 0 || term.alternateName?.length > 0 || term.broader?.length > 0 || term.narrower?.length > 0}"
             @click=${() => this.actor.send(new ClickedTermEvent(term))}>
               <div slot="title">${ term.name }</div>
-              <div slot="subtitle">${ term.uri }</div>
+              <a @click=${(event: Event) => event.stopPropagation()} slot="subtitle" href="${term.uri}" target="_blank" rel="noopener noreferrer">${ term.uri }</a>
               <div slot="icon">
                 ${ this.selectedTerms?.find((selected) => selected.uri === term.uri) ? unsafeSVG(CheckboxChecked) : unsafeSVG(CheckboxUnchecked)}
               </div>
@@ -402,6 +426,9 @@ export class TermSearchComponent extends RxLitElement {
           cursor: pointer;
           text-decoration: underline;
           color: var(--colors-primary-light);
+        }
+        #create-term {
+          width: fit-content
         }
         nde-progress-bar {
           position: absolute;

@@ -7,7 +7,8 @@ import { ArgumentError } from '../errors/argument-error';
  * @param term The term to match.
  * @returns If a property matches the term.
  */
-export const fulltextMatch = (object: unknown, term: string): boolean => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
+export const fulltextMatch = (object: any, term: string): boolean => {
 
   if (object === null || object === undefined) {
 
@@ -21,33 +22,33 @@ export const fulltextMatch = (object: unknown, term: string): boolean => {
 
   }
 
-  const lowercaseTerm: string = term.toLowerCase();
+  const lowercaseTerm: string = term.toLowerCase().trim();
+  const splitTerm: string[] = lowercaseTerm.split(' ');
 
-  return !!Object.values(object)
-    .map((value) => {
+  return splitTerm.every((termPart: string) => Object.values(object).some((value) => {
 
-      if (typeof value === 'string' || value instanceof String) {
+    if (typeof value === 'string' || value instanceof String) {
 
-        return value.toLowerCase().includes(term.toLowerCase());
+      return value.toLowerCase().includes(termPart);
 
-      } else if (typeof value === 'number' || value instanceof Number) {
+    } else if (typeof value === 'number' || value instanceof Number) {
 
-        return value.toString().includes(lowercaseTerm);
+      return value.toString().toLowerCase().includes(termPart);
 
-      } else if (value instanceof Array && value.length > 0) {
+    } else if (value instanceof Array && value.length > 0) {
 
-        return !!value.find((element) => fulltextMatch({ key: element }, lowercaseTerm));
+      return value.some((element) => fulltextMatch({ key: element }, termPart));
 
-      } else if (typeof value === 'object' || value instanceof Object) {
+    } else if (typeof value === 'object' || value instanceof Object) {
 
-        return fulltextMatch(value, lowercaseTerm);
+      return fulltextMatch(value as { [k: string]: unknown }, termPart);
 
-      } else {
+    } else {
 
-        return false;
+      return false;
 
-      }
+    }
 
-    }).find((value) => value === true);
+  }));
 
 };

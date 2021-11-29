@@ -22,6 +22,11 @@ export interface CollectionContext {
    * The list of objects in the current collection.
    */
   objects?: CollectionObject[];
+
+  /**
+   * The WebID of the heritage institution
+   */
+  webId?: string;
 }
 
 /**

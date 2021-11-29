@@ -3,6 +3,84 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Bug Fixes**
+
+* clicking dropdown arrow should open and close menu ([#516](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/516)) ([eace6fb](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/eace6fb82e4f7c3ad8658a1c1f263bdd40be1b73))
+* dont allow adding of an empty local term ([#512](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/512)) ([a981c20](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a981c203b68405a52e253494e055f07ff93c7fb7))
+* improve object search algorithm ([#510](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/510)) ([7203f51](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/7203f5110455137ba24b817d216ca2f52eb70e03)), closes [#509](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/509)
+* remove alerts on navigation ([#508](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/508)) ([300752b](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/300752bed4be9aa4dce8447c567d0b1f7bb24275))
+
+
+### **Features**
+
+* added button to open presentation view from manage view ([#507](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/507)) ([5bbd591](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5bbd591add7fe1c29fec3370aa2fadff7cd3ae7a))
+* always show active notifications on screen ([#513](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/513)) ([3d59490](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3d594909a3465ec5ec18dcd8b075683dbb9d34d2))
+* download collection object .ttl files ([#509](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/509)) ([652cf8d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/652cf8d2887858103bccf0744969dcd3e0032313))
+
+
+
+### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.5...v0.10.6) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.5](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.4...v0.10.5) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.4](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.3...v0.10.4) (2021-11-09)
+
+**Note:** Version bump only for package root
+
+
+
+
+
+### [0.10.3](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.2...v0.10.3) (2021-11-09)
+
+
+### **Documentation**
+
+* infrastructure added to scope ([#506](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/506)) ([2154224](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/2154224825fc24ef47fd2fb7b9ee0db05ac5d2b5))
+
+
+### **Bug Fixes**
+
+* add loading/progress bar when searching objects ([#505](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/505)) ([82bc5ff](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/82bc5ffdf26d0e67d0a262f6ab5e18f30de36459))
+
+
+
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Documentation**
+
+* add link to beheerders.adoc ([9b89152](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/9b891527c3866743b36e08bb5ab39e9d073cff61))
+* update requirements to second phase ([#494](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/494)) ([e76d709](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/e76d70917a538dc6ad1eb2917c4de87f5d4f54df))
+* usermanual updated ([#384](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/384)) ([fe4ebb7](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fe4ebb75fae62f8b87b3031bc1e5c24606bc149f))
+
+
+### **Bug Fixes**
+
+* fixed wait for translator before rendering ([#501](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/501)) ([f375d05](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/f375d05fbf6912fd5e62b6bfb0dbedb85c354606))
+* fixed width of field titles in presentation package ([#499](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/499)) ([3a86faa](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3a86faaa8126165666393ac8207feb12b1f045a4))
+* image popup scaling in firefox and safari ([#503](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/503)) ([58b7a44](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/58b7a449243d3cc887e12d66d87e873fe693a806))
+* object page no longer crashes when saving local terms ([#502](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/502)) ([fbee8f2](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/fbee8f26af11fed73bba48213a2a9441c5d711f2))
+* scroll to edited term field ([#504](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/504)) ([ccae1ee](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ccae1eefa9ee9624f6b930da6afb1b7fc1d88ae7))
+* term uris are not clickable ([#480](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/480)) ([3608e4d](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/3608e4de09305cf2d1ca9a2f7dfa0c13397032db))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 

@@ -3,6 +3,65 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Bug Fixes**
+
+* dont allow adding of an empty local term ([#512](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/512)) ([a981c20](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a981c203b68405a52e253494e055f07ff93c7fb7))
+* improve object search algorithm ([#510](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/510)) ([7203f51](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/7203f5110455137ba24b817d216ca2f52eb70e03)), closes [#509](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/509)
+
+
+### **Features**
+
+* added button to open presentation view from manage view ([#507](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/507)) ([5bbd591](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/5bbd591add7fe1c29fec3370aa2fadff7cd3ae7a))
+
+
+
+### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.5...v0.10.6) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+### [0.10.5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.4...v0.10.5) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+### [0.10.4](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.3...v0.10.4) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+### [0.10.3](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.2...v0.10.3) (2021-11-09)
+
+
+### **Bug Fixes**
+
+* add loading/progress bar when searching objects ([#505](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/505)) ([82bc5ff](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/82bc5ffdf26d0e67d0a262f6ab5e18f30de36459))
+
+
+
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+
+### **Bug Fixes**
+
+* fixed wait for translator before rendering ([#501](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/501)) ([f375d05](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/f375d05fbf6912fd5e62b6bfb0dbedb85c354606))
+* scroll to edited term field ([#504](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/504)) ([ccae1ee](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/ccae1eefa9ee9624f6b930da6afb1b7fc1d88ae7))
+* term uris are not clickable ([#480](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/480)) ([3608e4d](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/3608e4de09305cf2d1ca9a2f7dfa0c13397032db))
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage

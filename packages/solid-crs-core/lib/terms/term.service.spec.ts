@@ -81,6 +81,51 @@ describe('TermService', () => {
               },
             ],
           },
+          {
+            'source':{
+              'name':'Cultuurhistorische Thesaurus',
+              'uri':'https://data.cultureelerfgoed.nl/PoolParty/sparql/term/id/cht',
+            },
+            'terms':[
+              {
+                'uri':'https://data.cultureelerfgoed.nl/term/id/cht/ca4ec020-c0c1-48a2-baae-08eb0538c804',
+                'name':[
+                  'devotieprenten',
+                ],
+                'alternateName':[
+                  'devotieprent',
+                ],
+                'hiddenName':[
+                  'hidden-devotieprent',
+                ],
+                'description':[
+                  'Algemene benaming voor een houtsnede of gravure, al dan niet ingekleurd, of een gedrukte voorstelling van Christus, Maria, een heilige, een devotie(beeld) of een bijbelse voorstelling op een klein formaat perkament of papier. Veelal voorzien van een begeleidende tekst. (Religieus Erfgoedthesaurus)',
+                ],
+                'broader':[
+                  {
+                    'uri':'https://data.cultureelerfgoed.nl/term/id/cht/26b0d61a-e37a-4912-b516-48884f251bc6',
+                    'name':[
+                      'prenten',
+                    ],
+                  },
+                ],
+                'narrower':[
+                  {
+                    'uri':'https://data.cultureelerfgoed.nl/term/id/cht/0668b101-8ec0-4d39-8f9b-f0e43a0a779d',
+                    'name':[
+                      'bedevaartprenten',
+                    ],
+                  },
+                  {
+                    'uri':'https://data.cultureelerfgoed.nl/term/id/cht/0a117884-0cc2-4ee0-a223-8f6ce1fa8e67',
+                    'name':[
+                      'heiligenprenten',
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
     };

@@ -1,0 +1,29 @@
+= Hoe gebruik ik de zoekfunctie in Solid CRS?
+:description: Een gebruikershandleiding voor het gebruiken van de zoekfunctie in Solid CRS.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:imagesdir: ../images
+
+Dit document beschrijft hoe je de objecten van je erfgoedinstelling beheert in het Solid Collectieregistratiesysteem. 
+
+
+=== Vereisten
+Om de zoekfunctie te gebruiken in de presentatiemodule zijn er geen vereisten. Indien je de zoekfunctie in Solid CRS bezoekt, moet je je als beheerder xref:authenticeer.adoc[aanmelden]. 
+
+=== Zoek een object
+Klik in de primaire navigatie op de zoekbalk. Geef de zoekterm in. Dit kan eender welke informatie van een object zijn: titel, type, vervaardiger, locatie... Klik in de zoekresultaten op het gewenste object om het te bekijken.
+
+=== Verlaat de zoekopdracht 
+Klik op het kruisje in de zoekbalk om de zoekopdracht te verlaten.
+
+=== Ga terug naar zoekresultaten
+Wanneer je in de zoekresultaten op een object hebt geklikt en je wilt terug naar de zoekresultaten, vind je de gelijknamige knop 'terug naar zoekresultaten' in de primaire navigatie onder de zoekbalk.
+
+
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
+* xref:collecties.adoc[Collecties]
+* xref:objecten.adoc[Objecten]
+* xref:search.adoc[Zoeken]
+* xref:presentatiemodule.adoc[Presentatiemodule]

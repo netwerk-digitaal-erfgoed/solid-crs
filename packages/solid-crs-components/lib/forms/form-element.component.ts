@@ -1,14 +1,15 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator, debounce } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { debounce } from 'debounce';
 import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.
@@ -32,6 +33,12 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   @query('.field')
   fieldDiv: HTMLDivElement;
+
+  /**
+   * The slot element which contains the icon.
+   */
+  @query('.icon')
+  iconDiv: HTMLDivElement;
 
   /**
    * Decides whether a border should be shown around the content
@@ -274,6 +281,10 @@ export class FormElementComponent<T> extends RxLitElement {
         // Make the <ul> focusable, to be able to catch focusout events
         element.tabIndex = 0;
 
+        // When the dropdown is closed
+        // Make the padding on the ul clickable, not only the li
+        element.classList.add('closed');
+
         if (Array.isArray(fieldData)) {
 
           // Set default (checked) values
@@ -287,6 +298,8 @@ export class FormElementComponent<T> extends RxLitElement {
             checkboxListItems.forEach((checkbox) => checkbox.hidden = false);
             titleListItem.hidden = true;
             checkboxInputs[0].focus();
+            this.iconDiv.style.pointerEvents = 'initial';
+            element.classList.remove('closed');
 
           });
 
@@ -298,6 +311,8 @@ export class FormElementComponent<T> extends RxLitElement {
 
               checkboxListItems.forEach((checkbox) => checkbox.hidden = true);
               titleListItem.hidden = false;
+              this.iconDiv.style.pointerEvents = 'none';
+              element.classList.add('closed');
 
               const selectedValues = checkboxInputs.filter((input) => input.checked).map((input) => input.id);
 
@@ -390,6 +405,9 @@ export class FormElementComponent<T> extends RxLitElement {
       css`
         :root {
           display: block;
+        }
+        .icon {
+          pointer-events: none;
         }
         .loading, .loading svg {
           margin-right: var(--gap-normal);

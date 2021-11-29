@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.6...v0.11.0) (2021-11-16)
+
+
+### **Bug Fixes**
+
+* clicking dropdown arrow should open and close menu ([#516](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/516)) ([eace6fb](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/eace6fb82e4f7c3ad8658a1c1f263bdd40be1b73))
+
+
+
+### [0.10.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.5...v0.10.6) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+### [0.10.5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.4...v0.10.5) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+### [0.10.4](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.3...v0.10.4) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+### [0.10.3](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.2...v0.10.3) (2021-11-09)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
+### [0.10.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.1...v0.10.2) (2021-10-28)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
+
+
+
+
+
 ### [0.10.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.0...v0.10.1) (2021-09-14)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme

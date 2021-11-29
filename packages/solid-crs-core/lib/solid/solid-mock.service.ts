@@ -82,7 +82,7 @@ export class SolidMockService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async getSession(): Promise<SolidSession> {
+  async getSession(): Promise<SolidSession | undefined> {
 
     this.logger.debug(SolidMockService.name, 'Trying to retrieve session');
 
@@ -92,7 +92,7 @@ export class SolidMockService extends SolidService {
 
     }
 
-    return null;
+    return undefined;
 
   }
 

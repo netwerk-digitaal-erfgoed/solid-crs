@@ -27,6 +27,10 @@ export interface ObjectContext {
    * A list of all collections.
    */
   termService?: TermService;
+  /**
+   * The WebID of the heritage institution
+   */
+  webId?: string;
 }
 
 /**

@@ -7,7 +7,7 @@ import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
@@ -127,7 +127,12 @@ export class SearchRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const showLoading = this.actor?.state?.matches(SearchStates.SEARCHING);
+
     return html`
+
+      ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+
       <nde-content-header inverse>
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <div slot="title">${this.translator?.translate('search.header.search-results-for')} "${this.searchTerm}"</div>
@@ -191,6 +196,12 @@ export class SearchRootComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
+        nde-progress-bar {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+        }
 
         *::-webkit-scrollbar-thumb {
           background-color: var(--colors-foreground-light);

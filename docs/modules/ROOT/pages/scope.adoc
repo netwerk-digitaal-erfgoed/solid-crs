@@ -34,7 +34,6 @@ Beide front-end applicaties zullen bovendien beroep doen op de verschillende ond
 == Assumpties
  * De erfgoedinstelling heeft reeds een pod met daarin de nodige data.
  * Het collectiebeheersysteem is bestemd voor één soort erfgoedobject: beeldmateriaal​. Dit betekent dat onder molens en begraafplaatsen, scans van foto's van molens en begraafplaatsen worden verstaan.
- * Een term wordt gekozen uit een reeds bestaande lijst met termen, maar kan niet nieuw worden aangemaakt.
 
 == Functionele vereisten
 === Proof of Concept
@@ -59,7 +58,7 @@ Als onderdeel van de laatste omleiding wordt een toegangstoken naar de demo-appl
 Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier collecties kunnen toevoegen, bekijken en bewerken in het collectiebeheersysteem. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een collectie, noch voor het sorteren of filteren van collecties. Zoeken naar collecties zal wel mogelijk zijn, maar de zoekopdracht zal op de front-end worden uitgevoerd.
 
 ==== Beheer objecten
-Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier digitale objecten kunnen toevoegen, bekijken, bewerken en toewijzen aan een collectie. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een object, noch voor het sorteren en filteren van objecten. Verder wordt er enkel de mogelijkheid voorzien om bestaand beeldmateriaal te hergebruiken door het opgeven van de uri, en niet door het uploaden van nieuw beeldmateriaal.
+Digita ontwikkelt een user interface waar beheerders op een eenvoudige manier digitale objecten kunnen toevoegen, bekijken, bewerken en toewijzen aan een collectie. Er werd geen tijd voorzien voor het beheren van de publicatiestatus van een object, noch voor het sorteren en filteren van objecten. Verder wordt de mogelijkheid voorzien om bestaand beeldmateriaal te hergebruiken door het opgeven van de uri, alsook door het uploaden van nieuw beeldmateriaal.
 
 :sectnums:
 === Minimum Viable Product
@@ -75,6 +74,17 @@ Aan de objecten en collecties kunnen termen worden toegewezen. Een term kan word
 
 ==== Presentatie
 Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per erfgoedinstelling. Daarnaast kunnen ze beeldmateriaal downloaden. Erfgoedobjecten zoeken en filteren per erfgoedinstelling zal mogelijk zijn. Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdrachten op de front-end worden uitgevoerd. 
+
+:sectnums:
+== Infrastructuur
+:sectnums!:
+=== Ondersteuning bij het opzetten van de Community Solid Server
+Digita zal het technische team van NDE ondersteunen bij het opzetten van een gehoste instantie van de Community Solid Server. Hierdoor kan NDE erfgoedinstellingen bijstaan in het voorzien van een pod voor de opslag van hun erfgoedinformatie. De opstelling die voorzien wordt zal gebruik maken van een Kubernetes omgeving, waarbij de pod server zal draaien op een file backend. 
+NDE zal zelf instaan voor het beschikbaar maken van een Kubernetes omgeving waarbinnen de nodige setup kan worden uitgevoerd.
+
+=== Ondersteuning bij het opzetten van de Digita Identity Proxy 
+Digita biedt ondersteuning aan het technisch team van NDE bij het opzetten van de Digita Identity Proxy. Deze service laat toe het collectieregistratiesysteem te gebruiken met een reeds bestaande OIDC-compatibele identity provider, zoals Auth0, waarbij reeds aanwezige accounts automatisch voorzien worden van een WebID nodig voor authenticatie. Er wordt voorzien deze service naast de Community Solid Server op te stellen in eenzelfde Kubernetes omgeving.
+Hierbij wordt ervan uitgegaan dat deze achterliggende identity provider reeds aanwezig is.
 
 :sectnums:
 == Niet-functionele vereisten
@@ -98,7 +108,6 @@ Bezoekers kunnen erfgoedobjecten browsen en collecties bekijken per erfgoedinste
 * Er zal geen zoek-server voorzien worden, daarom zullen alle zoekopdracht op de front-end worden uitgevoerd.
 * Vertalingen worden bijgehouden in een afzonderlijk tekstbestand, maar er is geen functionaliteit voorzien om meerdere talen te ondersteunen of hiertussen te wisselen.
 * Importeren en exporteren van objecten en collecties als functionaliteit.
-* Het beheren en gebruiken van eigen termen.
 * Objecten delen op sociale media als functionaliteit in de presentatielaag.
 * Opmerkingen plaatsen als functionaliteit in de presentatielaag.
 * Het beheren van toegangsrechten van beheerders vanuit de beheer-module.

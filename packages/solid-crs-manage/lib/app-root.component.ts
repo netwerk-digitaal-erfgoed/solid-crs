@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -79,20 +79,13 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<SearchEvent>;
 
-  // Defer the first update of the component until the strings has been loaded to avoid empty strings being shown
-  @internalProperty()
-  hasLoadedStrings = false;
-
-  protected shouldUpdate (changedProperties: PropertyValues): boolean {
-
-    return this.hasLoadedStrings && super.shouldUpdate(changedProperties);
-
-  }
-
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
 
-    await this.translator.setLng('nl-NL');
+    const language = new URL(window.location.href).searchParams.get('lang');
+    if (language) await this.translator.setLang(language);
+
+    await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
 
     this.actor = interpret(
       (appMachine(
@@ -130,7 +123,6 @@ export class AppRootComponent extends RxLitElement {
       }), { devTools: process.env.MODE === 'DEV' },
     );
 
-    this.hasLoadedStrings = true;
     super.connectedCallback();
     this.actor.start();
 

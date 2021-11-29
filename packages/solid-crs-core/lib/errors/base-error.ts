@@ -11,7 +11,7 @@ export class BaseError extends Error {
    * @param messsage Describes the error.
    * @param cause The underlying cause of the error.
    */
-  constructor(messsage: string, public cause: Error) {
+  constructor(messsage: string, public cause?: Error) {
 
     super(messsage);
 

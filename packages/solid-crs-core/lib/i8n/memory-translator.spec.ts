@@ -1,6 +1,7 @@
 import fetchMock from 'jest-fetch-mock';
 import { ArgumentError } from '../errors/argument-error';
 import { MemoryTranslator } from './memory-translator';
+import { TRANSLATIONS_LOADED } from './translator';
 
 describe('MemoryTranslator', () => {
 
@@ -69,7 +70,7 @@ describe('MemoryTranslator', () => {
 
   });
 
-  describe('setLng', () => {
+  describe('setLang', () => {
 
     const newLang = 'en-US';
 
@@ -78,8 +79,8 @@ describe('MemoryTranslator', () => {
       fetchMock.mockIf(/en-US/, '<not-json>');
       fetchMock.mockIf(/en-GB/, mockResponse);
 
-      await service.setLng(newLang);
-      expect(service.lng).not.toEqual(newLang);
+      await service.setLang(newLang);
+      expect(service.lang).not.toEqual(newLang);
 
     });
 
@@ -99,25 +100,37 @@ describe('MemoryTranslator', () => {
 
       });
 
-      await service.setLng(newLang);
-      expect(service.lng).not.toEqual(newLang);
+      await service.setLang(newLang);
+      expect(service.lang).not.toEqual(newLang);
 
     });
 
     it('should set new language correctly', async () => {
 
-      await service.setLng('nl-BE');
-      expect(service.getLng()).toEqual('nl-BE');
+      await service.setLang('nl-BE');
+      expect(service.getLang()).toEqual('nl-BE');
+
+    });
+
+    it('should fire event when done', async (done) => {
+
+      service.addEventListener(TRANSLATIONS_LOADED, () => {
+
+        done();
+
+      });
+
+      await service.setLang('nl-BE');
 
     });
 
   });
 
-  describe('getLng', () => {
+  describe('getLang', () => {
 
     it('should return the current language', async () => {
 
-      expect(service.getLng()).toEqual(service.lng);
+      expect(service.getLang()).toEqual(service.lang);
 
     });
 

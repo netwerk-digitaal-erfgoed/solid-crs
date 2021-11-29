@@ -7,11 +7,7 @@
     "resolveJsonModule": true,
     // Recommended by Lit Element
     "module": "es2020",
-    "target": "es2017",
-    // Strict should actually be true
-    "strict": false,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
+    "target": "es2017"
   },
   "files": [ "node_modules/vite/client.d.ts" ],
   "include": [ "lib" ],

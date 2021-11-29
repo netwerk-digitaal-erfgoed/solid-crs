@@ -1,5 +1,80 @@
-= Objecten
-:description: Een omschrijving van de architectuur van het project.
+= Hoe beheer ik de objecten van mijn erfgoedinstelling?
+:description: Een gebruikershandleiding voor het beheren van objecten in Solid CRS.
 :sectanchors:
 :url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
 :imagesdir: ../images
+
+Dit document toont je hoe je de objecten van je erfgoedinstelling beheert in het Solid Collectieregistratiesysteem. 
+
+
+=== Vereisten
+Om objecten te beheren, moet je aangemeld zijn op het Collectieregistratiesysteem. Meer uitleg over aanmelden vind je op xref:authenticeer.adoc[de authenticeer pagina]. 
+
+=== Maak een nieuw object aan
+Kies de collectie waaraan je het object wilt toewijzen door de gewenste collectie te selecteren in de primaire navigatie (links). Wanneer de collectie nog geen objecten bevat, kan je in het midden van het scherm op de knop 'object aanmaken' klikken. Wanneer de collectie wel reeds objecten bevat, kan je een object toevoegen door rechtsboven op het plusje te klikken. Je wordt nu doorgestuurd naar de objectdetailpagina. 
+
+=== Pas de titel en onderschrift van het object aan
+Klik op de titel van het object, bovenaan de pagina. Je kan nu de naam en het onderschrift aanpassen. Wanneer je klaar bent, druk je rechts op het 'opslaan' icoontje of enter om op te slaan. Om te annuleren, druk je op het kruisje. 
+
+=== Verwijder een object
+Ga naar het object dat je wilt verwijderen. Druk in de rechterbovenhoek op het vuilbak-icoontje. Het object is nu verwijderd.
+
+=== Sla wijzingingen op
+Klik na het uitvoeren van wijzigingen op het 'opslaan'-icoontje in de rechterbovenhoek.
+
+=== Details van een object aanpassen
+In de secundaire navigatiebalk kan je het gewenste onderdeel aanklikken waarvan je de details wilt aanpassen. Je kan het onderdeel ook vinden door te scrollen, de navigatie zal zich dan mee aanpassen. Vergeet niet om de wijzigingen op te slaan.
+Hieronder worden de aanpasbare velden per onderdeel besproken.
+
+. Beeldmateriaal
+* Bestand: +
+Typ of plak het webadres (URL) waar het beeldmateriaal staat, zoals een scan van een bidprentje of een foto van een gebouw. Gebruik bij voorkeur beeldmateriaal van hoge kwaliteit en van type JPEG of PNG.
+* Licentie: +
+Kies de correcte licentie van het beeldmateriaal uit de lijst. Gebruik bij voorkeur een zo open mogelijke licentie, als dat juridisch is toegestaan.
+
+. Identificatie
+* Objectnummer: +
+Typ het unieke identificatienummer waarmee het object kan worden geïdentificeerd. Bijvoorbeeld een inventarisnummer of catalogusnummer. 
+* Type: +
+Klik rechts op de knop om naar de pagina van het xref:termennetwerk.adoc[termennetwerk] te gaan. Zoek de specifieke typering, vorm of functie van het object. Bijvoorbeeld ‘ansichtkaart’, ‘bidprentje’ of ‘prent’. Dit veld kan meerdere typeringen bevatten.
+* Objectnaam: +
+* Titel: +
+Vul de naam in van het object. De titel bovenaan de pagina zal automatisch mee worden aangepast wanneer je dit veld aanpast. Omgekeerd zal dit veld ook aangepast worden wanneer je de titel bovenaan de pagina wijzigt. 
+* Korte beschrijving: +
+Geef een korte en bondige beschrijving van het object. 
+* Collectie: +
+Indien je het object aan een andere collectie wilt toewijzen dan waar het object werd in gemaakt, kan je dit hier doen door de gewenste collectie te selecteren uit de lijst.
+
+. Vervaardiging
+* Vervaardiger: +
+Klik rechts op de knop om naar de pagina van het xref:termennetwerk.adoc[termennetwerk] te gaan. Zoek op naam van de vervaardiger in één of meerdere thesauri. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere vervaardigers bevatten.
+* Plaats: + 
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek de plaats waar het object is vervaardigd in één of meerdere thesauri. Bijvoorbeeld ‘Amsterdam’ of ‘Leuven’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere plaatsen bevatten.
+* Materiaal: + 
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Zoek het materiaal dat is gebruikt bij de vervaardiging van het object. Bijvoorbeeld ‘karton’, ‘olieverf’ of ‘papier’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere materialen bevatten.
+* Datum: + 
+Geef de datum van vervaardiging in als YYYY-MM-DD, waarbij YYYY staat voor jaar, MM staat voor maand en DD staat voor dag. Het speciale Extended Date/Time Format (EDTF) maakt het echter ook mogelijk om naast specifieke datums een bredere periode te specifiëren, zoals een volledig jaar en intervallen. Bijvoorbeeld: ‘1902-08-02’ (‘gemaakt op 2 augustus 1902’), ‘1902-08’ (‘gemaakt in augustus 1902’), ‘1902’ (‘gemaakt in 1902’), ‘1902?’ (‘wellicht gemaakt in 1902’), ‘1902/1905’ (‘gemaakt tussen 1902 en 1905’). 
+
+. Voorstelling
+* Onderwerp: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. Het onderwerp dat wordt afgebeeld op of beschreven door het object. Bijvoorbeeld 'kerk', ‘markt’ of ‘veldslag’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere onderwerpen bevatten.
+* Locatie: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De plaats die wordt afgebeeld op of beschreven door het object. Bijvoorbeeld ‘Brugge’ of ‘Middelburg’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere locaties bevatten.
+* Persoon: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De persoon die wordt afgebeeld op of beschreven door het object. Bijvoorbeeld ‘Arthur Wellesley’ of ‘Frans Banning Cocq’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere personen bevatten.
+* Organisatie: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De organisatie die wordt afgebeeld op of beschreven door het object. Bijvoorbeeld 'Café Brabant' of ‘Verenigde Oost-Indische Compagnie’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere organisaties bevatten.
+* Gebeurtenis: +
+Klik rechts op de knop naar het xref:termennetwerk.adoc[termennetwerk]. De gebeurtenis die wordt afgebeeld op of beschreven door het object. Bijvoorbeeld ‘Delftse donderslag’ of ‘Slag bij Waterloo’. Selecteer de gewenste term en klik op 'bevestig'. Dit veld kan meerdere gebeurtenissen bevatten.
+
+. Afmetingen: +
+Vul voor de hoogte, breedte, diepte en het gewicht het getal in en duid in de lijst aan welke maateenheid van toepassing is.
+
+
+==== Biedt dit geen antwoord op jouw vraag? Dan vind je het mogelijks wel in een van de volgende pagina's: 
+* xref:authenticeer.adoc[Authenticatie]
+* xref:beheerders.adoc[Beheerders]
+* xref:collecties.adoc[Collecties]
+* xref:search.adoc[Zoeken]
+* xref:termennetwerk.adoc[Termennetwerk]
+* xref:presentatiemodule.adoc[Presentatiemodule]

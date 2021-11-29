@@ -16,7 +16,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-1',
       name: 'Object 1',
-      description: 'This is object 1',
+      description: 'This is object 1 something new',
       image: null,
       subject: null,
       type: null,
@@ -26,7 +26,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-2',
       name: 'Object 2',
-      description: 'This is object 2',
+      description: 'This is object 2 added characters',
       image: null,
       subject: null,
       type: null,
@@ -36,7 +36,7 @@ describe('CollectionObjectMemoryStore', () => {
     {
       uri: 'object-uri-3',
       name: 'Object 3',
-      description: 'This is object 3',
+      description: 'This is object 3 and some extra filler text',
       image: null,
       subject: null,
       type: null,
@@ -123,13 +123,13 @@ describe('CollectionObjectMemoryStore', () => {
 
     it('should return the correct object', async () => {
 
-      await expect(service.search('Object 1', resources)).resolves.toEqual([ resources[0] ]);
+      await expect(service.search('collection something', resources)).resolves.toEqual([ resources[0] ]);
 
     });
 
     it('should return the correct objects', async () => {
 
-      await expect(service.search('Object 2', resources)).resolves.toEqual([ resources[1] ]);
+      await expect(service.search('uri extra', resources)).resolves.toEqual([ resources[2] ]);
 
     });
 

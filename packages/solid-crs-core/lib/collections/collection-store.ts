@@ -22,6 +22,6 @@ export interface CollectionStore extends Store<Collection> {
    * @param webId The WebID of the Solid pod
    * @param forClass The forClass value of the type registration
    */
-  getInstanceForClass(webId: string, forClass: string): Promise<string>;
+  getInstanceForClass(webId: string, forClass: string): Promise<string | undefined>;
 
 }
