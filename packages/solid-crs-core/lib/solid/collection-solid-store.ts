@@ -53,6 +53,12 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     const catalog = getThing(catalogDataset, catalogUri);
 
+    if (!catalog) {
+
+      throw new ArgumentError('Could not find catalog in dataset', catalog);
+
+    }
+
     // get datasets (=== collections) in this catalog
     const collectionUris = getUrlAll(catalog, 'http://schema.org/dataset') as string[];
 
@@ -77,6 +83,12 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const catalogDataset = await getSolidDataset(collection.uri, { fetch });
     const catalogThing = getThing(catalogDataset, collection.uri.split('#')[0]);
 
+    if (!catalogThing) {
+
+      throw new ArgumentError('Could not find catalogThing in dataset', catalogThing);
+
+    }
+
     // remove the collection reference from catalog
     const updatedCatalog = removeUrl(catalogThing, 'http://schema.org/dataset', collection.uri);
     let updatedDataset = setThing(catalogDataset, updatedCatalog);
@@ -84,7 +96,21 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // remove the collection and distribution from the dataset
     updatedDataset = removeThing(updatedDataset, collection.uri);
     const collectionThing = getThing(catalogDataset, collection.uri);
+
+    if (!collectionThing) {
+
+      throw new ArgumentError('Could not find collectionThing in dataset', collectionThing);
+
+    }
+
     const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+
+    if (!distributionUri) {
+
+      throw new ArgumentError('Could not find distributionUri in dataset', distributionUri);
+
+    }
+
     updatedDataset = removeThing(updatedDataset, distributionUri);
 
     // replace existing dataset with updated
@@ -112,10 +138,37 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     // retrieve base urls for storage and catalogs (https://leapeeters.nl/ or https://leapeeters.nl/catalog)
     const webId = getDefaultSession()?.info?.webId;
+
+    if (!webId) {
+
+      throw new ArgumentError('Not logged in', webId);
+
+    }
+
     const catalogUri = await this.getInstanceForClass(webId, 'http://schema.org/DataCatalog');
+
+    if (!catalogUri) {
+
+      throw new ArgumentError('Could not find catalogUri', catalogUri);
+
+    }
+
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
+
+    if (!profile) {
+
+      throw new ArgumentError('Could not find profile in dataset', profile);
+
+    }
+
     const storage = getUrl(profile, 'http://www.w3.org/ns/pim/space#storage');
+
+    if (!storage) {
+
+      throw new ArgumentError('Could not find storage in dataset', storage);
+
+    }
 
     // uris for creating new collection
     const collectionUri = collection.uri || new URL(`#collection-${v4()}`, catalogUri).toString();
@@ -125,6 +178,12 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     // retrieve the catalog
     const catalogDataset = await getSolidDataset(collectionUri, { fetch });
     const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
+
+    if (!catalogThing) {
+
+      throw new ArgumentError('Could not find catalogThing in dataset', catalogThing);
+
+    }
 
     // add collection to catalog
     const updatedCatalogThing = addUrl(catalogThing, 'http://schema.org/dataset', collectionUri);
@@ -180,19 +239,41 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     if (!collectionThing) {
 
-      return null;
+      throw new ArgumentError('Could not find collectionThing in dataset', collectionThing);
 
     }
 
     // retrieve distribution for the collection objects location
     const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+
+    if (!distributionUri) {
+
+      throw new ArgumentError('Could not find distributionUri in dataset', distributionUri);
+
+    }
+
     const distributionThing = getThing(dataset, distributionUri);
+
+    if (!distributionThing) {
+
+      throw new ArgumentError('Could not find distributionThing in dataset', distributionThing);
+
+    }
+
     const objectsUri = getUrl(distributionThing, 'http://schema.org/contentUrl');
+    const name = getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl');
+    const description = getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl');
+
+    if (!objectsUri || !name || !description) {
+
+      throw new ArgumentError('Could not find uri, name or data in dataset', { objectsUri, name, description });
+
+    }
 
     return {
       uri,
-      name: getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl'),
-      description: getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl'),
+      name,
+      description,
       objectsUri,
       distribution: distributionUri,
     };
@@ -208,8 +289,20 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     const webId = getDefaultSession()?.info?.webId;
 
+    if (!webId) {
+
+      throw new ArgumentError('Not logged in', webId);
+
+    }
+
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
+
+    if (!profile) {
+
+      throw new ArgumentError('Could not find profile in dataset', profile);
+
+    }
 
     // fall back on foaf:name value if schema:name is missing
     const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl') ||

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArgumentError } from '../errors/argument-error';
 import { ConsoleLogger } from '../logging/console-logger';
 import { SolidMockService } from './solid-mock.service';
@@ -51,6 +52,12 @@ describe('SolidMockService', () => {
 
     });
 
+    it('should return undefined', async () => {
+
+      await expect(service.getSession()).resolves.toEqual(undefined);
+
+    });
+
   });
 
   describe('login()', () => {
@@ -73,6 +80,22 @@ describe('SolidMockService', () => {
 
       (service as any).profiles = [ { webId: 'https://test.com', issuer: 'test' } ];
       await expect(service.login('https://test.com')).resolves.toBeUndefined();
+
+    });
+
+  });
+
+  describe('logout()', () => {
+
+    it('should log', async () => {
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      (service['logger'].debug as any) = jest.fn();
+
+      await service.logout();
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      expect(service['logger'].debug).toHaveBeenCalled();
 
     });
 

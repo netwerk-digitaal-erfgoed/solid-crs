@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
@@ -30,8 +30,8 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    const objectThings = getThingAll(dataset).filter((thing: ThingPersisted) =>
-      getUrl(thing, 'http://schema.org/isPartOf') === collection.uri); // a list of CollectionObject Things
+    const objectThings = getThingAll(dataset).filter((thing) =>
+      getUrl(thing, 'http://schema.org/isPartOf') === collection.uri) as ThingPersisted[]; // a list of CollectionObject Things
 
     if (!objectThings || objectThings.length === 0) {
 
@@ -39,17 +39,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    return objectThings.map((objectThing: ThingPersisted) =>
-      CollectionObjectSolidStore.fromThing(
+    return objectThings.map((objectThing) => {
+
+      const digitalObject = getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(asUrl(objectThing)));
+
+      if (!digitalObject) {
+
+        throw new ArgumentError('Could not find digitalObject in dataset', digitalObject);
+
+      }
+
+      return CollectionObjectSolidStore.fromThing(
         objectThing,
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(asUrl(objectThing))),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${asUrl(objectThing)}-height`),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`),
-        getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`),
-        getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => !!thing),
+        digitalObject,
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${asUrl(objectThing)}-height`) ?? undefined,
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`) ?? undefined,
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`) ?? undefined,
+        getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`) ?? undefined,
+        getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => thing !== null) as ThingPersisted[],
         dataset
-      ));
+      );
+
+    });
 
   }
 
@@ -70,14 +81,28 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     const objectThing = getThing(dataset, uri);
 
+    if (!objectThing) {
+
+      throw new ArgumentError('Could not find objectThing in dataset', objectThing);
+
+    }
+
+    const digitalObject = getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(asUrl(objectThing)));
+
+    if (!digitalObject) {
+
+      throw new ArgumentError('Could not find digitalObject in dataset', digitalObject);
+
+    }
+
     return CollectionObjectSolidStore.fromThing(
       objectThing,
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/mainEntityOfPage') || CollectionObjectSolidStore.getDigitalObjectUri(uri)),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${uri}-height`),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${uri}-width`),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${uri}-depth`),
-      getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${uri}-weight`),
-      getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => !!thing),
+      digitalObject,
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/height') || `${asUrl(objectThing)}-height`) ?? undefined,
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/width') || `${asUrl(objectThing)}-width`) ?? undefined,
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/depth') || `${asUrl(objectThing)}-depth`) ?? undefined,
+      getThing(dataset, getUrl(objectThing, 'http://schema.org/weight') || `${asUrl(objectThing)}-weight`) ?? undefined,
+      getUrlAll(objectThing, 'http://schema.org/about').map((thingUri) => getThing(dataset, thingUri)).filter((thing) => thing !== null) as ThingPersisted[],
       dataset
     );
 
@@ -116,12 +141,25 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     updatedDataset = removeThing(updatedDataset, `${object.uri}-depth`);
     updatedDataset = removeThing(updatedDataset, `${object.uri}-weight`);
 
-    const oldRepresentationThings = getUrlAll(getThing(objectDataset, object.uri), 'http://schema.org/about')
+    const objectThing = getThing(objectDataset, object.uri);
+
+    if (!objectThing) {
+
+      throw new ArgumentError('Could not find objectThing in dataset', objectThing);
+
+    }
+
+    const oldRepresentationThings = getUrlAll(objectThing, 'http://schema.org/about')
       .map((thingUri) => getThing(updatedDataset, thingUri))
       .filter((thing) => !!thing);
 
-    updatedDataset = oldRepresentationThings.reduce((dataset, thing) =>
-      removeThing(dataset, thing), updatedDataset);
+    updatedDataset = oldRepresentationThings.reduce((dataset, thing) => {
+
+      if (thing) return removeThing(dataset, thing);
+
+      return dataset;
+
+    }, updatedDataset);
 
     // save the dataset
     await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
@@ -154,9 +192,37 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     // find out where to save this object based on its collection
     const collectionThing = getThing(catalogDataset, object.collection);
+
+    if (!collectionThing) {
+
+      throw new ArgumentError('Could not find collectionThing in dataset', collectionThing);
+
+    }
+
     const distributionUri = getUrl(collectionThing, 'http://schema.org/distribution');
+
+    if (!distributionUri) {
+
+      throw new ArgumentError('Could not find distributionUri in dataset', distributionUri);
+
+    }
+
     const distributionThing = getThing(catalogDataset, distributionUri);
+
+    if (!distributionThing) {
+
+      throw new ArgumentError('Could not find distributionThing in dataset', distributionThing);
+
+    }
+
     const contentUrl = getUrl(distributionThing, 'http://schema.org/contentUrl');
+
+    if (!contentUrl) {
+
+      throw new ArgumentError('Could not find contentUrl in dataset', contentUrl);
+
+    }
+
     let objectUri: string;
 
     // check if the collection changed (aka contentUrl changed)
@@ -174,7 +240,21 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       // -> delete object from old contentUrl
       const oldDataset = await getSolidDataset(object.uri, { fetch });
       const oldObjectThing = getThing(oldDataset, object.uri);
+
+      if (!oldObjectThing) {
+
+        throw new ArgumentError('Could not find oldObjectThing in dataset', oldObjectThing);
+
+      }
+
       const oldDigitalObjectThing = getThing(oldDataset, CollectionObjectSolidStore.getDigitalObjectUri(object.uri));
+
+      if (!oldDigitalObjectThing) {
+
+        throw new ArgumentError('Could not find oldDigitalObjectThing in dataset', oldDigitalObjectThing);
+
+      }
+
       const oldHeightThing = getThing(oldDataset, `${object.uri}-height`);
       const oldWidthThing = getThing(oldDataset, `${object.uri}-width`);
       const oldDepthThing = getThing(oldDataset, `${object.uri}-depth`);
@@ -198,8 +278,13 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
         .map((thingUri) => getThing(oldDataset, thingUri))
         .filter((thing) => !!thing);
 
-      updatedOldObjectsDataset = oldRepresentationThings.reduce((dataset, thing) =>
-        removeThing(dataset, thing), updatedOldObjectsDataset);
+      updatedOldObjectsDataset = oldRepresentationThings.reduce((dataset, thing) => {
+
+        if (thing) return removeThing(dataset, thing);
+
+        return updatedOldObjectsDataset;
+
+      }, updatedOldObjectsDataset);
 
       await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
 
@@ -253,11 +338,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     // save representation Things seperately
     const representationThings = [
-      ... subjectThings?.length > 0 ? subjectThings : [],
-      ... locationThings?.length > 0 ? locationThings : [],
-      ... personThings?.length > 0 ? personThings : [],
-      ... organizationThings?.length > 0 ? organizationThings : [],
-      ... eventThings?.length > 0 ? eventThings : [],
+      ... subjectThings && subjectThings?.length > 0 ? subjectThings : [],
+      ... locationThings && locationThings?.length > 0 ? locationThings : [],
+      ... personThings && personThings?.length > 0 ? personThings : [],
+      ... organizationThings && organizationThings?.length > 0 ? organizationThings : [],
+      ... eventThings && eventThings?.length > 0 ? eventThings : [],
     ];
 
     updatedObjectsDataset = representationThings.reduce((dataset, thing) =>
@@ -298,11 +383,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     width: ThingPersisted;
     depth: ThingPersisted;
     weight: ThingPersisted;
-    subjects: ThingPersisted[];
-    locations: ThingPersisted[];
-    persons: ThingPersisted[];
-    organizations: ThingPersisted[];
-    events: ThingPersisted[];
+    subjects: ThingPersisted[] | undefined;
+    locations: ThingPersisted[] | undefined;
+    persons: ThingPersisted[] | undefined;
+    organizations: ThingPersisted[] | undefined;
+    events: ThingPersisted[] | undefined;
   } {
 
     if (!object) {
@@ -317,7 +402,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     // identification
     objectThing = object.updated ? addStringNoLocale(objectThing, 'http://schema.org/dateModified', object.updated) : objectThing;
     objectThing = object.type ? addUrl(objectThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', object.type) : objectThing;
-    objectThing = object.additionalType?.length > 0 ? object.additionalType.reduce((thing, value) => addUrl(thing, 'http://schema.org/additionalType', value.uri), objectThing) : objectThing;
+    objectThing = object.additionalType && object.additionalType.length > 0 ? object.additionalType?.reduce((thing, value) => addUrl(thing, 'http://schema.org/additionalType', value.uri), objectThing) : objectThing;
     objectThing = object.identifier ? addStringNoLocale(objectThing, 'http://schema.org/identifier', object.identifier) : objectThing;
     objectThing = object.name ? addStringWithLocale(objectThing, 'http://schema.org/name', object.name, 'nl') : objectThing;
     objectThing = object.description ? addStringWithLocale(objectThing, 'http://schema.org/description', object.description, 'nl') : objectThing;
@@ -325,9 +410,9 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     objectThing = object.maintainer ? addUrl(objectThing, 'http://schema.org/maintainer', object.maintainer) : objectThing;
 
     // creation
-    objectThing = object.creator?.length > 0 ? object.creator.reduce((thing, value) => addUrl(thing, 'http://schema.org/creator', value.uri), objectThing) : objectThing;
-    objectThing = object.locationCreated?.length > 0 ? object.locationCreated.reduce((thing, value) => addUrl(thing, 'http://schema.org/locationCreated', value.uri), objectThing) : objectThing;
-    objectThing = object.material?.length > 0 ? object.material.reduce((thing, value) => addUrl(thing, 'http://schema.org/material', value.uri), objectThing) : objectThing;
+    objectThing = object.creator && object.creator?.length > 0 ? object.creator.reduce((thing, value) => addUrl(thing, 'http://schema.org/creator', value.uri), objectThing) : objectThing;
+    objectThing = object.locationCreated && object.locationCreated?.length > 0 ? object.locationCreated.reduce((thing, value) => addUrl(thing, 'http://schema.org/locationCreated', value.uri), objectThing) : objectThing;
+    objectThing = object.material && object.material?.length > 0 ? object.material.reduce((thing, value) => addUrl(thing, 'http://schema.org/material', value.uri), objectThing) : objectThing;
     objectThing = object.dateCreated ? addStringNoLocale(objectThing, 'http://schema.org/dateCreated', object.dateCreated) : objectThing;
 
     // representation
@@ -395,7 +480,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     let heightThing = createThing({ url: `${object.uri}-height` });
     heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
 
-    if (object.height > 0) {
+    if (object.height && object.height > 0) {
 
       heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       heightThing = addDecimal(heightThing, 'http://schema.org/value', object.height);
@@ -407,7 +492,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     let widthThing = createThing({ url: `${object.uri}-width` });
     widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
 
-    if (object.width > 0) {
+    if (object.width && object.width > 0) {
 
       widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       widthThing = addDecimal(widthThing, 'http://schema.org/value', object.width);
@@ -419,7 +504,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     let depthThing = createThing({ url: `${object.uri}-depth` });
     depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
 
-    if (object.depth > 0) {
+    if (object.depth && object.depth > 0) {
 
       depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       depthThing = addDecimal(depthThing, 'http://schema.org/value', object.depth);
@@ -431,7 +516,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     let weightThing = createThing({ url: `${object.uri}-weight` });
     weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
 
-    if (object.weight > 0) {
+    if (object.weight && object.weight > 0) {
 
       weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       weightThing = addDecimal(weightThing, 'http://schema.org/value', object.weight);
@@ -476,10 +561,10 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
   static fromThing(
     object: ThingPersisted,
     digitalObject: ThingPersisted,
-    height: ThingPersisted,
-    width: ThingPersisted,
-    depth: ThingPersisted,
-    weight: ThingPersisted,
+    height: ThingPersisted | undefined,
+    width: ThingPersisted | undefined,
+    depth: ThingPersisted | undefined,
+    weight: ThingPersisted | undefined,
     representations: ThingPersisted[],
     dataset: SolidDataset
   ): CollectionObject {
@@ -651,7 +736,15 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     }
 
-    return { name: getStringNoLocale(termThing, 'http://schema.org/name'), uri };
+    const name = getStringNoLocale(termThing, 'http://schema.org/name');
+
+    if (!name) {
+
+      throw new ArgumentError('Could not find name in dataset', name);
+
+    }
+
+    return { name, uri };
 
   }
 

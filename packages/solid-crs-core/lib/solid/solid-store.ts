@@ -40,7 +40,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
    * @param webId The WebID of the Solid pod
    * @param forClass The forClass value of the type registration
    */
-  async getInstanceForClass(webId: string, forClass: string): Promise<string> {
+  async getInstanceForClass(webId: string, forClass: string): Promise<string | undefined> {
 
     if (!webId) {
 
@@ -57,11 +57,17 @@ export class SolidStore<T extends Resource> implements Store<T> {
     const profileDataset = await getSolidDataset(webId, { fetch });
     const profile = getThing(profileDataset, webId);
 
+    if (!profile) {
+
+      throw new ArgumentError('Could not find profile in dataset', profile);
+
+    }
+
     const publicTypeIndexUrl = getUrl(profile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex');
 
     if (!publicTypeIndexUrl) {
 
-      return null;
+      return undefined;
 
     }
 
@@ -72,11 +78,11 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     if (!typeRegistration) {
 
-      return null;
+      return undefined;
 
     }
 
-    return getUrl(typeRegistration, 'http://www.w3.org/ns/solid/terms#instance');
+    return getUrl(typeRegistration, 'http://www.w3.org/ns/solid/terms#instance') ?? undefined;
 
   }
 
@@ -110,6 +116,13 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
+
+    if (!profile) {
+
+      throw new ArgumentError('Could not find profile in dataset', profile);
+
+    }
+
     let typeIndexUrl = getUrl(profile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex');
 
     if (!typeIndexUrl) {
@@ -119,6 +132,13 @@ export class SolidStore<T extends Resource> implements Store<T> {
     }
 
     const storage = getUrl(profile, 'http://www.w3.org/ns/pim/space#storage');
+
+    if (!storage) {
+
+      throw new ArgumentError('Could not find storage in profile', storage);
+
+    }
+
     const instance =  new URL(location, storage).toString(); // https://leapeeters.be/ + /heritage-collections/catalog
 
     const publicTypeIndexDataset = await getSolidDataset(typeIndexUrl, { fetch });
@@ -157,6 +177,12 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const profileDataset = await getSolidDataset(webId);
     const profile = getThing(profileDataset, webId);
+
+    if (!profile) {
+
+      throw new ArgumentError('Could not find profile in dataset', profile);
+
+    }
 
     // assuming profile does not include the
     // http://www.w3.org/ns/pim/space#storage triple ->

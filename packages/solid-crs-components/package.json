@@ -32,6 +32,7 @@
     "@digita-ai/semcom-core": "0.3.4",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.11.0",
     "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.11.0",
+    "debounce": "^1.2.1",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
     "rxjs": "^6.6.7",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
+    "@types/debounce": "^1.2.1",
     "@types/jest": "^26.0.23",
     "@types/node": "^14.14.44",
     "crypto": "^1.0.1",

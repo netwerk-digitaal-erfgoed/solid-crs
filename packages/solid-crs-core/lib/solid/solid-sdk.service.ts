@@ -131,13 +131,13 @@ export class SolidSDKService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async getSession(): Promise<SolidSession> {
+  async getSession(): Promise<SolidSession | undefined> {
 
     this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
 
     const session = await handleIncomingRedirect({ restorePreviousSession: true });
 
-    return session && session.isLoggedIn ? { webId: session.webId } : null;
+    return session && session.isLoggedIn && session.webId ? { webId: session.webId } : undefined;
 
   }
 
@@ -197,7 +197,7 @@ export class SolidSDKService extends SolidService {
     // Parse the user's WebID as a url.
     try {
 
-      const webIdUrl = new URL(webId);
+      new URL(webId);
 
     } catch {
 
@@ -233,7 +233,7 @@ export class SolidSDKService extends SolidService {
 
     }
 
-    const name = getStringNoLocale(profile, 'http://schema.org/name') || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') || undefined;
+    const name = getStringNoLocale(profile, 'http://schema.org/name') || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') || '';
     const alternateName = getStringNoLocale(profile, 'http://schema.org/alternateName') || undefined;
     const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description') || undefined;
     const website = getUrl(profile, 'http://schema.org/url') || undefined;
@@ -246,6 +246,13 @@ export class SolidSDKService extends SolidService {
     if (contactPoint) {
 
       const contactPointThing = getThing(profileDataset, contactPoint);
+
+      if (!contactPointThing) {
+
+        throw new ArgumentError('Could not find contactPointThing in dataset', contactPointThing);
+
+      }
+
       email = getStringNoLocale(contactPointThing, 'http://schema.org/email') || undefined;
       telephone = getStringNoLocale(contactPointThing, 'http://schema.org/telephone') || undefined;
 
