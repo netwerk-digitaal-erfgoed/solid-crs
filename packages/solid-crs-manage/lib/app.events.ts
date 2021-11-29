@@ -126,6 +126,7 @@ export class SetProfileEvent implements EventObject {
  * Union type of app events.
  */
 export type AppEvent =
+  | RouterEvent
   | LoggedInEvent
   | LoggingOutEvent
   | LoggedOutEvent
@@ -141,8 +142,7 @@ export type AppEvent =
   | ClickedDeleteObjectEvent
   | ClickedInstitutionTypeEvent
   | ClickedAdministratorTypeEvent
-  | SetProfileEvent
-  | RouterEvent;
+  | SetProfileEvent;
 
 /**
  * Actions for the alerts component.

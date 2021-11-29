@@ -99,7 +99,7 @@ export enum AppDataStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates | RouterStates;
+export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates;
 
 const routes: Route[] = [
   createRoute(

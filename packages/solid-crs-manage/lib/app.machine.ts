@@ -130,18 +130,21 @@ export const appMachine = (
 ) =>
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
+    context: {
+      alerts: [],
+    },
     type: 'parallel',
     on: {
       /**
        * Router events
        */
-      ...routerEventsConfig(),
+      ... (routerEventsConfig as any)(),
     },
     states: {
       /**
        * Router
        */
-      ...routerStateConfig(routes),
+      ... (routerStateConfig as any)(),
       /**
        * Determines which feature is currently active.
        */
@@ -154,12 +157,12 @@ export const appMachine = (
           [AppEvents.ADD_ALERT]: {
             actions: addAlert,
           },
-          // [AppEvents.ERROR]: {
-          //   actions: [
-          //     log(() => 'An error occurred'),
-          //     send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
-          //   ],
-          // },
+          [AppEvents.ERROR]: {
+            actions: [
+              log(() => 'An error occurred'),
+              send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
+            ],
+          },
           [ObjectEvents.SELECTED_OBJECT]: {
             actions: [
               log('selected object'),

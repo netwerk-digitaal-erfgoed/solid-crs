@@ -109,6 +109,7 @@
           "warnOnly": true
         }
       }
-    }
+    },
+    "maxWorkers": 4
   }
 }
