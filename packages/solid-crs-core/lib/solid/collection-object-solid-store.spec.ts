@@ -69,6 +69,19 @@ describe('CollectionObjectSolidStore', () => {
 
     });
 
+    it('should error when no digitalObject was found in dataset', async () => {
+
+      let objectThing = client.createThing({ url: mockObject.uri });
+      objectThing = client.addUrl(objectThing, 'http://schema.org/isPartOf', mockCollection.uri);
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThingAll as any) = jest.fn(() => [ objectThing ]);
+      (client.getThing as any) = jest.fn(() => undefined);
+
+      await expect(service.getObjectsForCollection(mockCollection)).rejects.toThrow('Could not find digitalObject in dataset');
+
+    });
+
     it('should return empty list when no dataset was found', async () => {
 
       (client.getSolidDataset as any) = jest.fn(async () => null);
@@ -149,6 +162,25 @@ describe('CollectionObjectSolidStore', () => {
     it.each([ null, undefined ])('should error when uri is %s', async (value) => {
 
       await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
+
+    });
+
+    it('should error when no object thing was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => undefined);
+
+      await expect(service.get('test-uri')).rejects.toThrow('Could not find objectThing in dataset');
+
+    });
+
+    it('should error when no digital object was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn((d, uri) => uri === 'test-uri' ? 'test-thing' : undefined);
+      (client.getUrl as any) = jest.fn(() => 'test-url');
+
+      await expect(service.get('test-uri')).rejects.toThrow('Could not find digitalObject in dataset');
 
     });
 
@@ -256,6 +288,68 @@ describe('CollectionObjectSolidStore', () => {
       delete mockObject.collection;
 
       await expect(service.save(mockObject)).rejects.toThrow('The object must be linked to a collection');
+
+    });
+
+    it('should error when no collection thing was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => undefined);
+
+      await expect(service.save(mockObject)).rejects.toThrow('Could not find collectionThing in dataset');
+
+    });
+
+    it('should error when no distribution uri was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => client.createThing());
+      (client.getUrl as any) = jest.fn(() => undefined);
+
+      await expect(service.save(mockObject)).rejects.toThrow('Could not find distributionUri in dataset');
+
+    });
+
+    it('should error when no distribution thing was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+
+      (client.getThing as any) = jest.fn((d, uri) => {
+
+        if (uri === 'http://test-uri/') {
+
+          return undefined;
+
+        }
+
+        return client.createThing();
+
+      });
+
+      (client.getUrl as any) = jest.fn(() => 'http://test-uri/');
+
+      await expect(service.save(mockObject)).rejects.toThrow('Could not find distributionThing in dataset');
+
+    });
+
+    it('should error when no content (objects) uri was found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => client.createThing());
+
+      (client.getUrl as any) = jest.fn((t, pred) => {
+
+        if (pred === 'http://schema.org/contentUrl') {
+
+          return undefined;
+
+        }
+
+        return 'test-url';
+
+      });
+
+      await expect(service.save(mockObject)).rejects.toThrow('Could not find contentUrl in dataset');
 
     });
 
@@ -660,6 +754,10 @@ describe('CollectionObjectSolidStore', () => {
 
   describe('getTerm()', () => {
 
+    const termUri = 'https://test.url/';
+    const termName = 'name';
+    const termThing = client.createThing({ url: termUri });
+
     it.each([ null, undefined ])('should error when dataset is %s', (value) => {
 
       expect(() => CollectionObjectSolidStore.getTerm('uri', value)).toThrow('Argument dataset should be set');
@@ -680,11 +778,16 @@ describe('CollectionObjectSolidStore', () => {
 
     });
 
-    it('should return correct Thing when present', () => {
+    it('should error when name not found in thing', async () => {
 
-      const termUri = 'https://test.url/';
-      const termName = 'name';
-      const termThing = client.createThing({ url: termUri });
+      (client.getStringNoLocale as any) = jest.fn(() => undefined);
+      (client.getThing as any) = jest.fn(() => termThing);
+
+      expect(() => CollectionObjectSolidStore.getTerm('uri', client.createSolidDataset())).toThrow('Could not find name in dataset');
+
+    });
+
+    it('should return correct Thing when present', () => {
 
       (client.getStringNoLocale as any) = jest.fn(() => termName);
       (client.getThing as any) = jest.fn(() => termThing);
