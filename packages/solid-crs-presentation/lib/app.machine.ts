@@ -137,7 +137,7 @@ export const appMachine = (
     /**
      * Router events
      */
-    ...routerEventsConfig(),
+    ...(routerEventsConfig as any)(),
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
         send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/object/${encodeURIComponent(event.object.uri)}`)),
@@ -165,7 +165,7 @@ export const appMachine = (
     /**
      * Router
      */
-    ...routerStateConfig(routes),
+    ...(routerStateConfig as any)(routes),
     /**
      * Determines which feature is currently active.
      */
