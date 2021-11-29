@@ -1,5 +1,5 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
@@ -144,7 +144,7 @@ export const appMachine = (
       /**
        * Router
        */
-      ... (routerStateConfig as any)(),
+      ... (routerStateConfig as any)(routes),
       /**
        * Determines which feature is currently active.
        */
@@ -185,6 +185,13 @@ export const appMachine = (
             ],
             target: `#${AppFeatureStates.SEARCH}`,
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+          },
+          [RouterEvents.NAVIGATED]: {
+            // this overwrites default behavior as defined in the routerStateConfig
+            actions: [
+              (c, event) => updateHistory(event.path, event.title),
+              assign({ alerts: () => [] }),
+            ],
           },
         },
         states: {
