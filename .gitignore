@@ -117,3 +117,6 @@ dist
 
 .DS_store
 coverage-summary.json
+
+# id-proxy assets
+assets
