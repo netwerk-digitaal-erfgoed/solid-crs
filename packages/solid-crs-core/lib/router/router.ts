@@ -259,10 +259,10 @@ export const routerStateConfig = (routes: Route[]) => ({
 export const routerEventsConfig = () => ({
   [RouterEvents.NAVIGATE]: {
     target: [ `#${RouterStates.NAVIGATING}` ],
-    actions: assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }),
+    actions: [ assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }) ],
   },
   [RouterEvents.NAVIGATED]: {
-    actions: (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title),
+    actions: [ (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title) ],
   },
 });
 

@@ -188,7 +188,7 @@ describe('SearchRootComponent', () => {
 
     const textDiv = emptyContainer.querySelector('.text');
     expect(textDiv).toBeTruthy();
-    expect(textDiv.textContent).toBe('[search.root.empty.no-search-results]');
+    expect(textDiv.textContent).toContain('search.root.empty.no-search-results');
 
   });
 

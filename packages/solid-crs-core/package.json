@@ -99,6 +99,7 @@
       }
     },
     "displayName": "core",
-    "preset": "@digita-ai/jest-config"
+    "preset": "@digita-ai/jest-config",
+    "maxWorkers": 6
   }
 }

@@ -1,4 +1,4 @@
-import { FormActors, FormContext, FormSubmittedEvent, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { CollectionObjectMemoryStore, CollectionObjectStore, ConsoleLogger, LoggerLevel, CollectionStore, CollectionMemoryStore, Collection, CollectionObject, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
@@ -112,6 +112,12 @@ describe('ObjectMachine', () => {
 
     machine.onTransition((state) => {
 
+      if(state.matches(ObjectStates.IDLE)) {
+
+        machine.send(new ClickedSaveEvent(object1));
+
+      }
+
       if(state.matches(ObjectStates.SAVING)) {
 
         done();
@@ -121,7 +127,6 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedSaveEvent(object1));
 
   });
 
@@ -198,6 +203,12 @@ describe('ObjectMachine', () => {
 
     machine.onTransition((state) => {
 
+      if(state.matches(ObjectStates.IDLE) && !(state.event instanceof ClickedObjectSidebarItem)) {
+
+        machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
+
+      }
+
       if(state.matches(ObjectStates.IDLE) && state.event instanceof ClickedObjectSidebarItem) {
 
         done();
@@ -213,13 +224,18 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedTermFieldEvent('field', [ { name: 'test', uri: 'test' } ]));
 
   });
 
   it('should transition to EDITING_FIELD when CLICKED_TERM_FIELD was fired', async (done) => {
 
     machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.IDLE)) {
+
+        machine.send(new ClickedTermFieldEvent('name', [ { name: 'test', uri: 'test' } ]));
+
+      }
 
       if(state.matches(ObjectStates.EDITING_FIELD)) {
 
@@ -230,13 +246,18 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedTermFieldEvent('name', [ { name: 'test', uri: 'test' } ]));
 
   });
 
   it('should transition to deleting when clicked edit was emitted', async (done) => {
 
     machine.onTransition((state) => {
+
+      if(state.matches(ObjectStates.IDLE)) {
+
+        machine.send(new ClickedDeleteObjectEvent(object1));
+
+      }
 
       if(state.matches(ObjectStates.DELETING)) {
 
@@ -247,7 +268,6 @@ describe('ObjectMachine', () => {
     });
 
     machine.start();
-    machine.send(new ClickedDeleteObjectEvent(object1));
 
   });
 
