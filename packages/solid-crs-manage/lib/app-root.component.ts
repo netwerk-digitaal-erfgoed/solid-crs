@@ -155,7 +155,11 @@ export class AppRootComponent extends RxLitElement {
 
   firstUpdated(changed: PropertyValues): void {
 
-    super.firstUpdated(changed);
+    window.onpopstate = () => {
+
+      window.location.reload();
+
+    };
 
     document.title = this.translator.translate('app.root.title');
 
@@ -176,6 +180,8 @@ export class AppRootComponent extends RxLitElement {
     this.subscribe('selected', from(this.actor).pipe(
       map((state) => state.context.selected),
     ));
+
+    super.firstUpdated(changed);
 
   }
 

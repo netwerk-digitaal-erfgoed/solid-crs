@@ -1,5 +1,5 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigateEvent, NavigatedEvent, RouterStates, RouterEvents, updateHistory, createRoute, activeRoute } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
@@ -113,16 +113,8 @@ export type AppStates = AppRootStates | AppFeatureStates | AppAuthenticateStates
  */
 export const routes: Route[] = [
   createRoute(
-    '/collection/{{collectionUri}}',
+    '.*',
     [ `#${AppFeatureStates.COLLECTION}` ],
-  ),
-  createRoute(
-    '/object/{{objectUri}}',
-    [ `#${AppFeatureStates.OBJECT}` ],
-  ),
-  createRoute(
-    '/search/{{searchTerm}}',
-    [ `#${AppFeatureStates.SEARCH}` ],
   ),
 ];
 
@@ -139,6 +131,12 @@ export const appMachine = (
   createMachine<AppContext, AppEvent, State<AppStates, AppContext>>({
     id: AppActors.APP_MACHINE,
     type: 'parallel',
+    on: {
+      /**
+       * Router events
+       */
+      ...routerEventsConfig(),
+    },
     states: {
       /**
        * Router
@@ -156,34 +154,26 @@ export const appMachine = (
           [AppEvents.ADD_ALERT]: {
             actions: addAlert,
           },
-          [AppEvents.ERROR]: {
-            actions: [
-              log(() => 'An error occurred'),
-              send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
-            ],
-          },
+          // [AppEvents.ERROR]: {
+          //   actions: [
+          //     log(() => 'An error occurred'),
+          //     send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
+          //   ],
+          // },
           [ObjectEvents.SELECTED_OBJECT]: {
             actions: [
-              send((c, event) => new NavigatedEvent(`/object/${encodeURIComponent(event.object.uri)}`)),
+              log('selected object'),
+              send((c, event) => new NavigatedEvent(`/object/${encodeURIComponent(event.object.uri)}`, `${event.object.name} | Collectieregistratiesysteem`)),
               forwardTo(AppActors.OBJECT_MACHINE),
             ],
           },
           [CollectionEvents.SELECTED_COLLECTION]: {
             actions: [
               log('selected collection'),
-              send((c, event) => new NavigatedEvent(`/collection/${encodeURIComponent(event.collection?.uri)}`)),
+              send((c, event) => new NavigatedEvent(`/collection/${encodeURIComponent(event.collection?.uri)}`, `${event.collection?.name} | Collectieregistratiesysteem`)),
               assign({ selected: (c, event) => event.collection }),
               forwardTo(AppActors.COLLECTION_MACHINE),
             ],
-          },
-          [RouterEvents.NAVIGATE]: {
-            target: [ `#${RouterStates.NAVIGATING}` ],
-            actions: [
-              assign({ path: (c, event) => event.path||window.location.pathname }),
-            ],
-          },
-          [RouterEvents.NAVIGATED]: {
-            actions: (c, event) => updateHistory(event.path, event.title),
           },
           [SearchEvents.SEARCH_UPDATED]: {
             actions: [
@@ -199,6 +189,7 @@ export const appMachine = (
            * Only create the collection machine once the user has logged in and the session is set
            */
           [AppFeatureStates.WAITING_FOR_AUTH]: {
+            id: AppFeatureStates.WAITING_FOR_AUTH,
             on: {
               [AppEvents.SET_PROFILE]: {
                 target: AppFeatureStates.COLLECTION,
@@ -214,9 +205,9 @@ export const appMachine = (
               // send((context, event) => new NavigatedEvent(`/collection/${encodeURIComponent(context.selected.uri)}`)),
               assign({ selected: (context) =>
                 context.selected
-                  || context.collections?.find((collection) =>
+                  ?? context.collections?.find((collection) =>
                     collection.uri === decodeURIComponent(activeRoute(routes).pathParams.get('collectionUri')))
-                  || context.collections[0] }),
+                  ?? context.collections ? context.collections[0] : undefined }),
             ],
             on: {
               [ObjectEvents.SELECTED_OBJECT]: {
@@ -471,6 +462,7 @@ export const appMachine = (
            * Refresh collections, set current collection and assign to state.
            */
           [AppDataStates.REFRESHING]: {
+            id: AppDataStates.REFRESHING,
             invoke: {
               /**
                * Get all collections from store.
@@ -480,17 +472,17 @@ export const appMachine = (
                 {
                   target: [ AppDataStates.IDLE ],
                   actions: [
-                    send((context, event) => new NavigateEvent()),
+                    send((c, event) => new SelectedCollectionEvent(event.data[0])),
                     setCollections,
                   ],
-                  cond: (context, event) => event.data.length > 0,
+                  cond: (c, event) => event.data.length > 0,
                 },
                 {
                   target: AppDataStates.CREATING,
                 },
               ],
               onError: {
-                actions: send((context, event) => event),
+                actions: send((c, event) => event),
               },
             },
           },

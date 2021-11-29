@@ -1,4 +1,4 @@
-import { assign, EventObject, StatesConfig } from 'xstate';
+import { assign, EventObject, send } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -177,6 +177,39 @@ export const updateHistory = (path: string, title?: string): void => {
 };
 
 /**
+ * Event references for the router, with readable log format.
+ */
+export enum RouterEvents {
+  NAVIGATE = '[RouterEvent: Navigate]',
+  NAVIGATED = '[RouterEvent: Navigated]',
+}
+
+/**
+ * An event which is dispatched when routing should start
+ */
+export class NavigateEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATE = RouterEvents.NAVIGATE;
+  constructor(public path?: string) { }
+
+}
+
+/**
+ * An event which is dispatched at the end of routing
+ */
+export class NavigatedEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATED = RouterEvents.NAVIGATED;
+  constructor(public path: string, public title?: string) { }
+
+}
+
+/**
+ * Union type of router events.
+ */
+export type RouterEvent = NavigateEvent | NavigatedEvent;
+
+/**
  * State references for the application's features, with readable log format.
  */
 export enum RouterStates {
@@ -214,6 +247,7 @@ export const routerStateConfig = (routes: Route[]) => ({
                 if (route?.title) updateTitle(route.title);
 
               },
+              send(new NavigatedEvent(window.location.pathname, activeRoute(routes)?.title)),
             ],
           },
         },
@@ -222,50 +256,13 @@ export const routerStateConfig = (routes: Route[]) => ({
   },
 });
 
-/**
- * Event references for the router, with readable log format.
- */
-export enum RouterEvents {
-  NAVIGATE = '[AppEvent: Navigate]',
-  NAVIGATED = '[AppEvent: Navigated]',
-}
-
-/**
- * An event which is dispatched when routing should start
- */
-export class NavigateEvent implements EventObject {
-
-  public type: RouterEvents.NAVIGATE = RouterEvents.NAVIGATE;
-  constructor(public path?: string) { }
-
-}
-
-/**
- * An event which is dispatched at the end of routing
- */
-export class NavigatedEvent implements EventObject {
-
-  public type: RouterEvents.NAVIGATED = RouterEvents.NAVIGATED;
-  constructor(public path: string, public title?: string) { }
-
-}
-
-/**
- * Union type of router events.
- */
-export type RouterEvent = NavigateEvent | NavigatedEvent;
-
 export const routerEventsConfig = () => ({
   [RouterEvents.NAVIGATE]: {
     target: [ `#${RouterStates.NAVIGATING}` ],
-    actions: [
-      assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }),
-    ],
+    actions: assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }),
   },
   [RouterEvents.NAVIGATED]: {
-    actions: [
-      (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title),
-    ],
+    actions: (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title),
   },
 });
 
