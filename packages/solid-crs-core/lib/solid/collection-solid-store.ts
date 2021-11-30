@@ -193,6 +193,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Dataset');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/name', collection.name, 'nl');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
+    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', webId);
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
 
     // create empty distribution
@@ -310,8 +311,9 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // fall back on foaf:name value if schema:name is missing
-    const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl') ||
-      getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ;
+    const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl')
+      || getStringNoLocale(profile, 'http://schema.org/name')
+      || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ;
 
     await overwriteFile(`${uri}`, new Blob([ `
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
