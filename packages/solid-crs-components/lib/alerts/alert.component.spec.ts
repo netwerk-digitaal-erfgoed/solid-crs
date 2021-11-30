@@ -1,4 +1,4 @@
-import { ArgumentError, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert } from './alert';
 import { AlertComponent } from './alert.component';
 
@@ -48,14 +48,14 @@ describe('AlertComponent', () => {
       message: 'foo',
     };
 
-    component.translator = new MemoryTranslator('en-GB');
+    component.translator = new MockTranslator('nl-NL');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
 
     const message = window.document.body.getElementsByTagName('nde-alert')[0].shadowRoot.querySelector('.message').innerHTML.replace(/<!---->/g, '');
 
-    expect(message).toBe('[foo]');
+    expect(message).toBe('foo');
 
   });
 

@@ -83,6 +83,7 @@
       "ts-jest": {
         "tsconfig": "<rootDir>/tsconfig.spec.json"
       }
-    }
+    },
+    "maxWorkers": 6
   }
 }

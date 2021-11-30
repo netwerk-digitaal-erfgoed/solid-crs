@@ -1,4 +1,4 @@
-import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectCreationComponent } from './object-creation.component';
 
 describe('ObjectCreationComponent', () => {
@@ -9,7 +9,7 @@ describe('ObjectCreationComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement(tag) as ObjectCreationComponent;
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
   });
 

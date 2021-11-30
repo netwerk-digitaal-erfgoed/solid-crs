@@ -82,7 +82,7 @@
         "branches": 93.17,
         "functions": 98.97,
         "lines": 100,
-        "statements": 99.68
+        "statements": 99.69
       }
     },
     "coveragePathIgnorePatterns": [
@@ -100,6 +100,7 @@
           "warnOnly": true
         }
       }
-    }
+    },
+    "maxWorkers": 6
   }
 }

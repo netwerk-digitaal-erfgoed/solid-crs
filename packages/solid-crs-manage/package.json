@@ -88,10 +88,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 88.87,
-        "branches": 85.26,
-        "lines": 89.61,
-        "functions": 79.58
+        "statements": 87.14,
+        "branches": 83.79,
+        "lines": 87.95,
+        "functions": 76.07
       }
     },
     "automock": false,
@@ -110,6 +110,7 @@
           "warnOnly": true
         }
       }
-    }
+    },
+    "maxWorkers": 6
   }
 }

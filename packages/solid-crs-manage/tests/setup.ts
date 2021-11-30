@@ -12,15 +12,54 @@ Object.defineProperty(window.self, 'crypto', {
   },
 });
 
+import * as core from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
-import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
-import { AuthenticateSetupComponent } from '../lib/features/authenticate/authenticate-setup.component';
-import { AppRootComponent } from '../lib/app-root.component';
-import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
-import { SearchRootComponent } from '../lib/features/search/search-root.component';
-import { ObjectRootComponent } from '../lib/features/object/object-root.component';
+import { ROUTER, RouterStates } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { TermSearchComponent } from '../lib/features/object/terms/term-search.component';
+import { ObjectRootComponent } from '../lib/features/object/object-root.component';
+import { SearchRootComponent } from '../lib/features/search/search-root.component';
+import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
+import { AppRootComponent } from '../lib/app-root.component';
+import { AuthenticateSetupComponent } from '../lib/features/authenticate/authenticate-setup.component';
+import { AuthenticateRootComponent } from '../lib/features/authenticate/authenticate-root.component';
+
+// mock router function and state config
+// essentially disables the router in tests
+core.urlVariables = () => ({
+  searchParams: {
+    get: jest.fn(() => ''),
+  },
+  pathParams: {
+    get: jest.fn(() => ''),
+  },
+});
+
+core.activeRoute = () => ({
+  path: undefined, targets: [],
+  ...core.urlVariables(undefined),
+});
+
+core.routerStateConfig = () => ({
+  [ROUTER]: {
+    initial: RouterStates.IDLE,
+    states: {
+      [RouterStates.IDLE]: {
+        id: RouterStates.IDLE,
+      },
+      [RouterStates.NAVIGATING]: {
+        id: RouterStates.NAVIGATING,
+        invoke: {
+          src: async () => Promise.resolve(),
+          onDone: {
+            target: [],
+            actions: [],
+          },
+        },
+      },
+    },
+  },
+});
 
 /**
  * Enable mocks for fetch.

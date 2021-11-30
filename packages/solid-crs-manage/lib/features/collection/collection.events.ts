@@ -1,6 +1,6 @@
-import { Alert, Event, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { sendParent } from 'xstate';
+import { EventObject, sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { ClickedDeleteObjectEvent, SelectedObjectEvent } from '../object/object.events';
 
@@ -18,58 +18,72 @@ export enum CollectionEvents {
 }
 
 /**
- * Event interfaces for the collection component, with their payloads.
+ * Event classes for the collection component, with their payloads.
  */
 
 /**
  * Fired when the user clicks the delete collection button.
  */
-export interface ClickedDeleteCollectionEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.CLICKED_DELETE;
-  collection: Collection;
+export class ClickedDeleteCollectionEvent implements EventObject {
+
+  public type: CollectionEvents.CLICKED_DELETE = CollectionEvents.CLICKED_DELETE;
+  constructor(public collection: Collection) { }
+
 }
 
 /**
  * Fired when the user clicks the edit button.
  */
-export interface ClickedEditEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.CLICKED_EDIT;
+export class ClickedEditEvent implements EventObject {
+
+  public type: CollectionEvents.CLICKED_EDIT = CollectionEvents.CLICKED_EDIT;
+
 }
 
 /**
  * Fired when the user clicks the save button.
  */
-export interface ClickedSaveEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.CLICKED_SAVE;
+export class ClickedSaveEvent implements EventObject {
+
+  public type: CollectionEvents.CLICKED_SAVE = CollectionEvents.CLICKED_SAVE;
+
 }
 
 /**
  * Fired when the user clicks the cancel button when editing.
  */
-export interface CancelledEditEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.CANCELLED_EDIT;
+export class CancelledEditEvent implements EventObject {
+
+  public type: CollectionEvents.CANCELLED_EDIT = CollectionEvents.CANCELLED_EDIT;
+
 }
 
 /**
  * Fired when the user clicks the add object button.
  */
-export interface ClickedCreateObjectEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.CLICKED_CREATE_OBJECT;
+export class ClickedCreateObjectEvent implements EventObject {
+
+  public type: CollectionEvents.CLICKED_CREATE_OBJECT = CollectionEvents.CLICKED_CREATE_OBJECT;
+
 }
 
 /**
  * An event which is dispatched when the collections were successfully retrieved
  */
-export interface SelectedCollectionEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.SELECTED_COLLECTION;
-  collection: Collection;
+export class SelectedCollectionEvent implements EventObject {
+
+  public type: CollectionEvents.SELECTED_COLLECTION = CollectionEvents.SELECTED_COLLECTION;
+  constructor(public collection: Collection) { }
+
 }
 
 /**
  * Fired when the application is done saving a collection.
  */
-export interface SavedCollectionEvent extends Event<CollectionEvents> {
-  type: CollectionEvents.SAVED_COLLECTION;
+export class SavedCollectionEvent implements EventObject {
+
+  public type: CollectionEvents.SAVED_COLLECTION = CollectionEvents.SAVED_COLLECTION;
+
 }
 
 /**
