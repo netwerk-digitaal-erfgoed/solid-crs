@@ -145,6 +145,7 @@ describe('CollectionSolidStore', () => {
       (client.setThing as any) = jest.fn(() => 'test-dataset');
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.overwriteFile as any) = jest.fn(async () => 'test-file');
@@ -166,6 +167,7 @@ describe('CollectionSolidStore', () => {
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
@@ -188,6 +190,7 @@ describe('CollectionSolidStore', () => {
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
@@ -210,6 +213,7 @@ describe('CollectionSolidStore', () => {
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
@@ -229,6 +233,7 @@ describe('CollectionSolidStore', () => {
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.overwriteFile as any) = jest.fn(async () => 'test-file');
       (client.fetch as any) = jest.fn(async () => ({ ok: false }));

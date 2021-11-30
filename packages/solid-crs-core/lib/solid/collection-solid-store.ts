@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale, addStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionStore } from '../collections/collection-store';
@@ -199,6 +199,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     let distributionThing = createThing({ url: distributionUri });
     distributionThing = addUrl(distributionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DataDownload');
     distributionThing = addUrl(distributionThing, 'http://schema.org/contentUrl', objectsUri);
+    distributionThing = addStringNoLocale(distributionThing, 'http://schema.org/encodingFormat', 'text/turtle');
 
     // save collection and distribution in dataset
     updatedDataset = setThing(updatedDataset, collectionThing);
@@ -206,6 +207,10 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     // replace existing dataset with updated
     await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
+    // set public read access for collection
+    await this.setPublicAccess(collectionUri);
+    // set public read access for parent folder
+    await this.setPublicAccess(`${new URL(collectionUri).origin}${new URL(collectionUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     const result = await fetch(objectsUri, { method: 'head' });
 

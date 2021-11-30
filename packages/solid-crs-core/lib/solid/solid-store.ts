@@ -1,4 +1,4 @@
-import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access, getResourceAcl, getSolidDatasetWithAcl, hasResourceAcl, saveAclFor, createAclFromFallbackAcl, hasAccessibleAcl, hasFallbackAcl, setPublicResourceAccess, getPublicAccess } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
@@ -229,6 +229,69 @@ export class SolidStore<T extends Resource> implements Store<T> {
     );
 
     return { privateTypeIndex, publicTypeIndex };
+
+  }
+
+  /**
+   * Sets public read access for a resource when not already set.
+   * From https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/manage-access-control-list/ (made slight edits)
+   *
+   * @param resourceUri uri of the resource
+   */
+  async setPublicAccess(resourceUri: string): Promise<void> {
+
+    // Fetch the SolidDataset and its associated ACLs, if available:
+    const myDatasetWithAcl = await getSolidDatasetWithAcl(resourceUri, { fetch });
+
+    // Obtain the SolidDataset's own ACL, if available,
+    // or initialise a new one, if possible:
+    let resourceAcl;
+
+    if (!hasResourceAcl(myDatasetWithAcl)) {
+
+      if (!hasAccessibleAcl(myDatasetWithAcl)) {
+
+        throw new Error(
+          'The current user does not have permission to change access rights to this Resource.'
+        );
+
+      }
+
+      if (!hasFallbackAcl(myDatasetWithAcl)) {
+
+        throw new Error(
+          'The current user does not have permission to see who currently has access to this Resource.'
+        );
+        // Alternatively, initialise a new empty ACL as follows,
+        // but be aware that if you do not give someone Control access,
+        // **nobody will ever be able to change Access permissions in the future**:
+        // resourceAcl = createAcl(myDatasetWithAcl);
+
+      }
+
+      resourceAcl = createAclFromFallbackAcl(myDatasetWithAcl);
+
+    } else {
+
+      resourceAcl = getResourceAcl(myDatasetWithAcl);
+
+    }
+
+    const currentAccess = getPublicAccess(myDatasetWithAcl);
+
+    if (!currentAccess?.read) {
+
+      // Give everyone Read access to the given Resource:
+
+      const updatedAcl = setPublicResourceAccess(
+        resourceAcl,
+        { read: true, append: false, write: false, control: false },
+      );
+
+      // Now save the ACL:
+      await saveAclFor(myDatasetWithAcl, updatedAcl, { fetch });
+
+    }
 
   }
 
