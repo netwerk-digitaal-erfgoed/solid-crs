@@ -72,6 +72,12 @@ export const activeRoute = (routes: Route[]): Route | undefined => {
  */
 export const urlVariables = (path: string): Map<string, string> => {
 
+  if (!path) {
+
+    throw new ArgumentError('Argument path should be set.', path);
+
+  }
+
   const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
   const parts = path.split('/')
