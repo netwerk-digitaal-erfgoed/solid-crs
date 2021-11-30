@@ -17,6 +17,7 @@ import { LargeCardComponent } from './collections/large-card.component';
 import { DemoLargeCardComponent } from './demo/demo-large-card.component';
 import { ProgressBarComponent } from './loading/progress-bar-component';
 import { PopupComponent } from './alerts/popup.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 
 /**
  * Register tags for components.
@@ -40,3 +41,4 @@ customElements.define('nde-demo-svg', DemoSVGComponent);
 customElements.define('nde-sidebar-item', SidebarItemComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
 customElements.define('nde-popup', PopupComponent);
+customElements.define('nde-paginator', PaginatorComponent);

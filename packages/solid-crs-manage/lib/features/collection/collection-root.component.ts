@@ -469,40 +469,6 @@ export class CollectionRootComponent extends RxLitElement {
           height: 20px;
           fill: var(--colors-primary-light);
         }
-        .paginator-controls {
-          display: flex;
-          justify-content: flex-end;
-          gap: var(--gap-normal);
-          height: var(--gap-normal);
-        }
-        .paginator-controls[hidden] {
-          display: none;
-        }
-        .paginator-controls > * {
-          margin: 0;
-          padding: 0;
-          display: block;
-          background-color: unset;
-          font-size: var(--font-size-small);
-          line-height: var(--gap-normal);
-          min-width: var(--gap-normal);
-        }
-
-        .paginator-controls svg {
-          fill: var(--colors-primary-dark);
-        }
-
-        .paginator-controls :disabled svg {
-          fill: var(--colors-foreground-light);
-        }
-
-        .paginator-controls .previous svg {
-          transform: rotate(90deg);
-        }
-
-        .paginator-controls .next svg {
-          transform: rotate(270deg);
-        }
       `,
     ];
 
