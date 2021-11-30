@@ -18,7 +18,7 @@ export abstract class SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  public abstract getSession(): Promise<SolidSession>;
+  public abstract getSession(): Promise<SolidSession | undefined>;
 
   /**
    * Redirects the user to their OIDC provider

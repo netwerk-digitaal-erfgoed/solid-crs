@@ -1,14 +1,15 @@
 import { css, CSSResult, html, internalProperty, property, PropertyValues, query, TemplateResult, unsafeCSS } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { ArgumentError, Translator, debounce } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { SpawnedActorRef, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Loading, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { debounce } from 'debounce';
 import { FormContext, FormRootStates, FormSubmissionStates, FormValidationStates } from './form.machine';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvent, FormEvents, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
+import { FormEvent, FormSubmittedEvent, FormUpdatedEvent } from './form.events';
 
 /**
  * A component which shows the details of a single collection.

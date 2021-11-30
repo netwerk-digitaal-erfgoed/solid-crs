@@ -28,6 +28,6 @@ export interface Store<T extends Resource> {
    *
    * @param uri uri of the resource
    */
-  get(uri: string): Promise<T>;
+  get(uri: string): Promise<T | undefined>;
 
 }

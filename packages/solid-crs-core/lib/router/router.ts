@@ -41,7 +41,9 @@ export const matchPath = (match: string): boolean => {
 
   const regex = new RegExp(`^${match.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
 
-  return window.location.pathname.match(regex)?.length > 0;
+  const matches =  window.location.pathname.match(regex);
+
+  return !!matches && matches.length > 0;
 
 };
 
@@ -51,7 +53,7 @@ export const matchPath = (match: string): boolean => {
  * @param routes A list of all routes
  * @returns The currently active route
  */
-export const activeRoute = (routes: Route[]): Route => {
+export const activeRoute = (routes: Route[]): Route | undefined => {
 
   if (!routes || routes.length < 1) {
 
@@ -102,11 +104,9 @@ export const urlVariables = (path: string): Map<string, string> => {
  *
  * @param title The new page title
  */
-export const updateTitle = (title: string): string => {
+export const updateTitle = (title: string): void => {
 
   document.title = title;
-
-  return undefined;
 
 };
 
@@ -164,17 +164,13 @@ export const routerStateConfig = (routes: Route[]) => ({
         invoke: {
           src: async () => Promise.resolve(),
           onDone: {
-            target: [ RouterStates.IDLE, ...activeRoute(routes).targets ],
+            target: [ RouterStates.IDLE, ... (activeRoute(routes)?.targets ?? []) ],
             actions: [
               () => {
 
                 const route = activeRoute(routes);
 
-                if (route.title) {
-
-                  updateTitle(route.title);
-
-                }
+                if (route?.title) updateTitle(route.title);
 
               },
             ],

@@ -21,7 +21,6 @@ export * from './stores/memory-store';
 export * from './stores/resource';
 export * from './stores/store';
 export * from './utils/date-parser';
-export * from './utils/debounce';
 export * from './utils/fulltext-match';
 export * from './utils/alphabetical-sort';
 export * from './terms/term';

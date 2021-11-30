@@ -22,13 +22,11 @@ export class MockTranslator extends Translator {
     return this.lang;
 
   }
-  setLang(lang: string): Promise<void> {
+  async setLang(lang: string): Promise<void> {
 
     this.lang = lang;
     this.loaded = true;
     this.dispatchEvent(new TranslationsLoadedEvent());
-
-    return undefined;
 
   }
 
