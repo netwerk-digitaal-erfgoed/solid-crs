@@ -74,10 +74,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 95.82,
-        "branches": 89.76,
-        "lines": 95.75,
-        "functions": 99.36
+        "branches": 92.06,
+        "statements": 97.38,
+        "lines": 97.25,
+        "functions": 99.38
       }
     },
     "automock": false,
@@ -99,6 +99,7 @@
       }
     },
     "displayName": "core",
-    "preset": "@digita-ai/jest-config"
+    "preset": "@digita-ai/jest-config",
+    "maxWorkers": 6
   }
 }

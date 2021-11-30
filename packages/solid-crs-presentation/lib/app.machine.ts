@@ -1,5 +1,5 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, urlVariables, RouterStates, updateHistory, routerStateConfig, RouterEvents, NavigatedEvent, NavigateEvent, updateTitle } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidService, SolidSession, Route, activeRoute, routerEventsConfig, RouterStates, routerStateConfig, NavigatedEvent, NavigateEvent, updateTitle, createRoute, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine, DoneInvokeEvent } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
@@ -99,25 +99,25 @@ export enum AppDataStates {
 /**
  * Union type of all app events.
  */
-export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates | RouterStates;
+export type AppStates = AppRootStates | AppFeatureStates | RouterStates | AppDataStates;
 
 const routes: Route[] = [
-  {
-    path: '/{{webId}}/collection/{{collectionUri}}',
-    targets: [ `#${AppFeatureStates.COLLECTION}` ],
-  },
-  {
-    path: '/{{webId}}/object/{{objectUri}}',
-    targets: [ `#${AppDataStates.LOADING_OBJECT}` ],
-  },
-  {
-    path: '/{{webId}}/search/{{searchTerm}}',
-    targets: [ `#${AppFeatureStates.SEARCH}` ],
-  },
-  {
-    path: '/{{webId}}/about',
-    targets: [ `#${AppFeatureStates.ABOUT}` ],
-  },
+  createRoute(
+    '/{{webId}}/collection/{{collectionUri}}',
+    [ `#${AppFeatureStates.COLLECTION}` ],
+  ),
+  createRoute(
+    '/{{webId}}/object/{{objectUri}}',
+    [ `#${AppDataStates.LOADING_OBJECT}` ],
+  ),
+  createRoute(
+    '/{{webId}}/search/{{searchTerm}}',
+    [ `#${AppFeatureStates.SEARCH}` ],
+  ),
+  createRoute(
+    '/{{webId}}/about',
+    [ `#${AppFeatureStates.ABOUT}` ],
+  ),
 ];
 
 /**
@@ -134,6 +134,10 @@ export const appMachine = (
   },
   type: 'parallel',
   on: {
+    /**
+     * Router events
+     */
+    ...(routerEventsConfig as any)(),
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
         send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/object/${encodeURIComponent(event.object.uri)}`)),
@@ -161,7 +165,7 @@ export const appMachine = (
     /**
      * Router
      */
-    ...routerStateConfig(routes),
+    ...(routerStateConfig as any)(routes),
     /**
      * Determines which feature is currently active.
      */
@@ -222,7 +226,7 @@ export const appMachine = (
                   /**
                    * Get all collections from store.
                    */
-                  src: () => solidService.getProfile(decodeURIComponent(urlVariables(activeRoute(routes).path).get('webId'))),
+                  src: () => solidService.getProfile(decodeURIComponent(activeRoute(routes).pathParams.get('webId'))),
                   onDone: [
                     {
                       target: [ AppDataStates.LOADING_COLLECTIONS ],
@@ -273,7 +277,7 @@ export const appMachine = (
 
                   if (window.location.pathname?.match(/^\/.+\/object\/.+\/?$/)) {
 
-                    return objectStore.get(decodeURIComponent(urlVariables(activeRoute(routes).path).get('objectUri')));
+                    return objectStore.get(decodeURIComponent(activeRoute(routes).pathParams.get('objectUri')));
 
                   } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
 
@@ -324,7 +328,7 @@ export const appMachine = (
             assign({ selected: (context) =>
               context.selected
                 || context.collections?.find((collection) =>
-                  collection.uri === decodeURIComponent(urlVariables(activeRoute(routes).path).get('collectionUri')))
+                  collection.uri === decodeURIComponent(activeRoute(routes).pathParams.get('collectionUri')))
                 || context.collections[0] }),
           ],
           on: {
@@ -397,7 +401,7 @@ export const appMachine = (
               id: AppActors.SEARCH_MACHINE,
               src: searchMachine(collectionStore, objectStore),
               data: (context, event: SearchUpdatedEvent) => ({
-                searchTerm: event.searchTerm||(urlVariables(activeRoute(routes).path).get('searchTerm')||''),
+                searchTerm: event.searchTerm||(activeRoute(routes).pathParams.get('searchTerm')||''),
               }),
               onDone: {
                 actions: send((context, event) => ({

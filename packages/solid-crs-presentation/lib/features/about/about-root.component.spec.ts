@@ -1,5 +1,5 @@
 import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { AppContext, appMachine } from '../../app.machine';
@@ -52,7 +52,7 @@ describe('AboutRootComponent', () => {
     component = window.document.createElement('nde-about-root') as AboutRootComponent;
     component.actor = machine;
     component.collections = [ collection1, collection2 ];
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
   });
 

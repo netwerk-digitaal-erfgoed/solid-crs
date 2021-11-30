@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, RouterEvent, SolidSession } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { DoneInvokeEvent, EventObject } from 'xstate';
 import { assign, choose, send } from 'xstate/lib/actions';
 import { AppContext } from './app.machine';
@@ -126,6 +126,7 @@ export class SetProfileEvent implements EventObject {
  * Union type of app events.
  */
 export type AppEvent =
+  | RouterEvent
   | LoggedInEvent
   | LoggingOutEvent
   | LoggedOutEvent

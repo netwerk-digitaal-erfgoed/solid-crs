@@ -24,10 +24,19 @@ import { AppRootComponent } from '../lib/app-root.component';
 
 // mock router function and state config
 // essentially disables the router in tests
-core.activeRoute = () => ({ path: undefined, targets: [] });
 
 core.urlVariables = () => ({
-  get: jest.fn(() => ''),
+  searchParams: {
+    get: jest.fn(() => ''),
+  },
+  pathParams: {
+    get: jest.fn(() => ''),
+  },
+});
+
+core.activeRoute = () => ({
+  path: undefined, targets: [],
+  ...core.urlVariables(undefined),
 });
 
 core.routerStateConfig = () => ({
@@ -50,8 +59,6 @@ core.routerStateConfig = () => ({
     },
   },
 });
-
-core.MemoryTranslator = core.MockTranslator;
 
 /**
  * Enable mocks for fetch.

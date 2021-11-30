@@ -1,4 +1,4 @@
-import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectDimensionsComponent } from './object-dimensions.component';
 
 describe('ObjectDimensionsComponent', () => {
@@ -9,7 +9,7 @@ describe('ObjectDimensionsComponent', () => {
   beforeEach(() => {
 
     component = window.document.createElement(tag) as ObjectDimensionsComponent;
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
   });
 

@@ -1,5 +1,5 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
@@ -78,7 +78,7 @@ describe('ObjectRootComponent', () => {
 
     component.actor = machine;
 
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
     component.object = object1;
 
