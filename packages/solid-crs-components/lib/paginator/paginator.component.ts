@@ -59,20 +59,17 @@ export class PaginatorComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-    <!-- <div ?hidden="${this.objectsAmount <= this.objectsPerPage}" class="paginator-controls"> -->
-
-      <!-- e.g. page 1 of 10 -->
+    <!-- e.g. page 1 of 10 -->
       <p>${this.translator.translate('common.paginator.page-counter')
     .replace('{CURRENT}', (this.pageIndex+1).toString())
     .replace('{TOTAL}', Math.ceil(this.objectsAmount / this.objectsPerPage).toString())}
-        </p>
+      </p>
 
       <!-- previous button -->
       <button
         .disabled="${this.pageIndex < 1}"
         class="previous"
         @click="${this.onPrevious}">
-        <!-- this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"> -->
         ${ unsafeSVG(Dropdown) }
       </button> 
 
@@ -81,7 +78,6 @@ export class PaginatorComponent extends RxLitElement {
         .disabled="${(this.pageIndex + 1) * this.objectsPerPage >= this.objectsAmount}"
         class="next"
         @click="${this.onNext}">
-        <!-- this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"> -->
         ${ unsafeSVG(Dropdown) }
       </button> 
 
@@ -116,7 +112,7 @@ export class PaginatorComponent extends RxLitElement {
           line-height: var(--gap-normal);
           min-width: var(--gap-normal);
         }
-        svg {
+        :host svg {
           fill: var(--colors-primary-dark);
         }
         button:disabled svg {

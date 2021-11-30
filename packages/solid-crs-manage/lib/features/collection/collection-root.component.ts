@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Connect, Cross, Dropdown, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Collection as CollectionIcon, Connect, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
@@ -75,31 +75,31 @@ export class CollectionRootComponent extends RxLitElement {
    * Indicates if the form is being submitted.
    */
   @internalProperty()
-  isSubmitting? = false;
+  isSubmitting = false;
 
   /**
    * Indicates if if the form validation passed.
    */
   @internalProperty()
-  isValid? = false;
+  isValid = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  isDirty? = false;
+  isDirty = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  objectsPerPage? = 18;
+  objectsPerPage = 18;
 
   /**
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  pageIndex? = 0;
+  pageIndex = 0;
 
   /**
    * The popup component shown when the delete icon is clicked
@@ -246,31 +246,16 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
-          <div ?hidden="${this.objects.length <= this.objectsPerPage}" class="paginator-controls">
 
-            <!-- e.g. page 1 of 10 -->
-            <p>${this.translator.translate('common.paginator.page-counter')
-    .replace('{CURRENT}', (this.pageIndex+1).toString())
-    .replace('{TOTAL}', Math.ceil(this.objects.length / this.objectsPerPage).toString())}
-              </p>
-            
-            <!-- previous button -->
-            <button
-              .disabled="${this.pageIndex < 1}"
-              class="previous"
-              @click="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}">
-              ${ unsafeSVG(Dropdown) }
-            </button> 
-
-            <!-- next button -->
-            <button
-              .disabled="${this.pageIndex * this.objectsPerPage <= this.objects.length && (this.pageIndex + 1) * this.objectsPerPage >= this.objects.length}"
-              class="next"
-              @click="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}">
-              ${ unsafeSVG(Dropdown) }
-            </button> 
-            
-          </div>
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
 
           <div class="three-column-content-grid">
             ${this.objects
@@ -279,31 +264,15 @@ export class CollectionRootComponent extends RxLitElement {
       html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
 
-          <div ?hidden="${this.objects.length <= this.objectsPerPage}" class="paginator-controls">
-
-            <!-- e.g. page 1 of 10 -->
-            <p>${this.translator.translate('common.paginator.page-counter')
-    .replace('{CURRENT}', (this.pageIndex+1).toString())
-    .replace('{TOTAL}', Math.ceil(this.objects.length / this.objectsPerPage).toString())}
-              </p>
-            
-            <!-- previous button -->
-            <button
-              .disabled="${this.pageIndex < 1}"
-              class="previous"
-              @click="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}">
-              ${ unsafeSVG(Dropdown) }
-            </button> 
-
-            <!-- next button -->
-            <button
-              .disabled="${this.pageIndex * this.objectsPerPage <= this.objects.length && (this.pageIndex + 1) * this.objectsPerPage >= this.objects.length}"
-              class="next"
-              @click="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}">
-              ${ unsafeSVG(Dropdown) }
-            </button> 
-            
-          </div>
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
         `
     : html`
           <div class="empty-container">

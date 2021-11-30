@@ -67,9 +67,7 @@ describe('CollectionRootComponent', () => {
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
-
     component.formActor = machine.children.get(FormActors.FORM_MACHINE);
-
     component.translator = new MemoryTranslator('nl-NL');
 
   });
