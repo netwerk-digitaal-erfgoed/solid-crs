@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Connect, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Collection as CollectionIcon, Connect, Cross, Dropdown, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
@@ -93,7 +93,7 @@ export class CollectionRootComponent extends RxLitElement {
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  objectsPerPage? = 9;
+  objectsPerPage? = 18;
 
   /**
    * Indicates if one the form fields has changed.
@@ -106,6 +106,12 @@ export class CollectionRootComponent extends RxLitElement {
    */
   @query('nde-popup#delete-popup')
   deletePopup: PopupComponent;
+
+  /**
+   * The element containing the grid of collection objects.
+   */
+  @query('.content')
+  pageContent: HTMLElement;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -240,25 +246,63 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
-          <div class="paginator-controls">
-            ${ this.pageIndex > 0 ? html`<a @click="${() => this.pageIndex--}">previous</a>` : '' } <!-- previous button -->
+          <div ?hidden="${this.objects.length <= this.objectsPerPage}" class="paginator-controls">
 
-            ${ this.pageIndex > 0 ? html`<a @click="${() => this.pageIndex-- }">${this.pageIndex}</a>` : '' } <!-- previous page -->
-
-            <a class="current">${this.pageIndex + 1}</a> <!-- current page -->
+            <!-- e.g. page 1 of 10 -->
+            <p>${this.translator.translate('common.paginator.page-counter')
+    .replace('{CURRENT}', (this.pageIndex+1).toString())
+    .replace('{TOTAL}', Math.ceil(this.objects.length / this.objectsPerPage).toString())}
+              </p>
             
-            ${ this.pageIndex * this.objectsPerPage < this.objects.length && (this.pageIndex + 1) * this.objectsPerPage > this.objects.length ? '' :
-    html`<a @click="${() => this.pageIndex++ }">${this.pageIndex + 2}</a>` } <!-- next page -->
+            <!-- previous button -->
+            <button
+              .disabled="${this.pageIndex < 1}"
+              class="previous"
+              @click="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}">
+              ${ unsafeSVG(Dropdown) }
+            </button> 
 
-      ${ this.pageIndex * this.objectsPerPage < this.objects.length && (this.pageIndex + 1) * this.objectsPerPage > this.objects.length ? '' :
-    html`<a @click="${() => this.pageIndex++}">next</a>` } <!-- next button -->
+            <!-- next button -->
+            <button
+              .disabled="${this.pageIndex * this.objectsPerPage <= this.objects.length && (this.pageIndex + 1) * this.objectsPerPage >= this.objects.length}"
+              class="next"
+              @click="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}">
+              ${ unsafeSVG(Dropdown) }
+            </button> 
             
           </div>
-          <div class='three-column-content-grid'>
+
+          <div class="three-column-content-grid">
             ${this.objects
     .slice(this.pageIndex * this.objectsPerPage, this.pageIndex * this.objectsPerPage + this.objectsPerPage)
     .map((object) =>
       html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
+          </div>
+
+          <div ?hidden="${this.objects.length <= this.objectsPerPage}" class="paginator-controls">
+
+            <!-- e.g. page 1 of 10 -->
+            <p>${this.translator.translate('common.paginator.page-counter')
+    .replace('{CURRENT}', (this.pageIndex+1).toString())
+    .replace('{TOTAL}', Math.ceil(this.objects.length / this.objectsPerPage).toString())}
+              </p>
+            
+            <!-- previous button -->
+            <button
+              .disabled="${this.pageIndex < 1}"
+              class="previous"
+              @click="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}">
+              ${ unsafeSVG(Dropdown) }
+            </button> 
+
+            <!-- next button -->
+            <button
+              .disabled="${this.pageIndex * this.objectsPerPage <= this.objects.length && (this.pageIndex + 1) * this.objectsPerPage >= this.objects.length}"
+              class="next"
+              @click="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}">
+              ${ unsafeSVG(Dropdown) }
+            </button> 
+            
           </div>
         `
     : html`
@@ -334,6 +378,7 @@ export class CollectionRootComponent extends RxLitElement {
           overflow-y: auto;
           display:flex; 
           flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;
@@ -426,21 +471,37 @@ export class CollectionRootComponent extends RxLitElement {
         }
         .paginator-controls {
           display: flex;
-          justify-content: center;
-          gap: var(--gap-small);
-          margin-bottom: var(--gap-large);
+          justify-content: flex-end;
+          gap: var(--gap-normal);
+          height: var(--gap-normal);
         }
-        .paginator-controls a {
+        .paginator-controls[hidden] {
+          display: none;
+        }
+        .paginator-controls > * {
+          margin: 0;
+          padding: 0;
           display: block;
-          min-width: var(--gap-small);  
-          cursor: pointer;
-          border-bottom: 1px var(--colors-primary-dark) solid;
-          text-align: center;
+          background-color: unset;
+          font-size: var(--font-size-small);
+          line-height: var(--gap-normal);
+          min-width: var(--gap-normal);
         }
-        .paginator-controls a.current {
-          /* color: var(--colors-primary-light); */
-          cursor: default;
-          border-bottom: none;
+
+        .paginator-controls svg {
+          fill: var(--colors-primary-dark);
+        }
+
+        .paginator-controls :disabled svg {
+          fill: var(--colors-foreground-light);
+        }
+
+        .paginator-controls .previous svg {
+          transform: rotate(90deg);
+        }
+
+        .paginator-controls .next svg {
+          transform: rotate(270deg);
         }
       `,
     ];
