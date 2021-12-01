@@ -1,4 +1,4 @@
-import { css, html, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { Translator, Logger } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -11,27 +11,27 @@ export class SidebarComponent extends RxLitElement {
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
-  public translator: Translator;
+  @property({ type: Object })
+  translator?: Translator;
 
   /**
    * The component's translator.
    */
-  @property({ type: Logger })
-  public logger: Logger;
+  @property({ type: Object })
+  logger?: Logger;
 
   /**
    * Display inverted colors
    */
   @property({ type: Boolean })
-  public inverse = false;
+  inverse = false;
 
   /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="sidebar${this.inverse ? ' inverse' : ''} primary">
@@ -44,7 +44,7 @@ export class SidebarComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
