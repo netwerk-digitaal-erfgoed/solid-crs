@@ -61,7 +61,7 @@ export class ObjectImageryComponent extends RxLitElement {
    * The popup component shown when the image preview is clicked
    */
   @query('nde-popup#image-popup')
-  imagePopup: PopupComponent;
+  private imagePopup?: PopupComponent;
 
   /**
    * Renders the component as HTML.

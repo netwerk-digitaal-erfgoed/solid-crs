@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 

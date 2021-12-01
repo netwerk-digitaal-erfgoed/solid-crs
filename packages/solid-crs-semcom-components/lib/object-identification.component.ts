@@ -95,7 +95,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('object.card.identification.field.collection.title')}</label>
           <select slot="input" name="collection" id="collection">
-            ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object?.collection}">${collection.name}</option>`)}
+            ${this.collections?.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object?.collection}">${collection.name}</option>`)}
           </select>
           <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.collection.description')}</div>
         </nde-form-element>
