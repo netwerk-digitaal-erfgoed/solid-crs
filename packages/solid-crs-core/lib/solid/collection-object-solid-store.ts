@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, saveFileInContainer } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
@@ -314,6 +314,13 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
       }
 
     });
+
+    // upload the image if a file is set and update image URI
+    if (object.imageFile) {
+
+      object.image = await this.uploadImage(object.imageFile, object.image);
+
+    }
 
     const {
       object: objectThing,
@@ -681,6 +688,26 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     }
 
     return objects.filter((object) => fulltextMatch(object, searchTerm));
+
+  }
+
+  /**
+   * Uploads an image file to an 'images' directory next to the collection object.
+   *
+   * @param imageFile The image file to upload.
+   * @param objectUri The URI of the related object.
+   *
+   * @returns The URI of the uploaded image.
+   */
+  async uploadImage(imageFile: File, objectUri: string): Promise<string> {
+
+    const savedFile = await saveFileInContainer(
+      `${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`,
+      imageFile,
+      { slug: imageFile.name, contentType: imageFile.type, fetch }
+    );
+
+    return savedFile.internal_resourceInfo.sourceIri;
 
   }
 
