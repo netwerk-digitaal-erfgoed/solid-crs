@@ -1,4 +1,4 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
@@ -57,6 +57,24 @@ export class CollectionRootComponent extends RxLitElement {
    */
   @internalProperty()
   objects?: CollectionObject[];
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  objectsPerPage = 18;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  pageIndex = 0;
+
+  /**
+   * The element containing the grid of collection objects.
+   */
+  @query('.content')
+  pageContent: HTMLElement;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -143,9 +161,31 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
+
           <div class='three-column-content-grid'>
-            ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
+            ${this.objects.slice(this.pageIndex * this.objectsPerPage, this.pageIndex * this.objectsPerPage + this.objectsPerPage)
+    .map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>  
         `
     : html`
           <div class="empty-container">
@@ -191,6 +231,7 @@ export class CollectionRootComponent extends RxLitElement {
           overflow-y: auto;
           display: flex;
           flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;

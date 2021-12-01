@@ -75,25 +75,43 @@ export class CollectionRootComponent extends RxLitElement {
    * Indicates if the form is being submitted.
    */
   @internalProperty()
-  isSubmitting? = false;
+  isSubmitting = false;
 
   /**
    * Indicates if if the form validation passed.
    */
   @internalProperty()
-  isValid? = false;
+  isValid = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  isDirty? = false;
+  isDirty = false;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  objectsPerPage = 18;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  pageIndex = 0;
 
   /**
    * The popup component shown when the delete icon is clicked
    */
   @query('nde-popup#delete-popup')
   deletePopup: PopupComponent;
+
+  /**
+   * The element containing the grid of collection objects.
+   */
+  @query('.content')
+  pageContent: HTMLElement;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -228,9 +246,33 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
-          <div class='three-column-content-grid'>
-            ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
+
+          <div class="three-column-content-grid">
+            ${this.objects
+    .slice(this.pageIndex * this.objectsPerPage, this.pageIndex * this.objectsPerPage + this.objectsPerPage)
+    .map((object) =>
+      html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
         `
     : html`
           <div class="empty-container">
@@ -305,6 +347,7 @@ export class CollectionRootComponent extends RxLitElement {
           overflow-y: auto;
           display:flex; 
           flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;

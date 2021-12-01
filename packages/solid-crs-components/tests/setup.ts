@@ -27,6 +27,7 @@ import { SidebarListComponent } from '../lib/sidebar/sidebar-list.component';
 import { SidebarListItemComponent } from '../lib/sidebar/sidebar-list-item.component';
 import { FormElementComponent } from '../lib/forms/form-element.component';
 import { AlertComponent } from '../lib/alerts/alert.component';
+import { PaginatorComponent } from '../lib/paginator/paginator.component';
 
 /**
  * Enable mocks for fetch.
@@ -50,3 +51,4 @@ customElements.define('nde-card', CardComponent);
 customElements.define('nde-large-card', LargeCardComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
 customElements.define('nde-popup', PopupComponent);
+customElements.define('nde-paginator', PaginatorComponent);

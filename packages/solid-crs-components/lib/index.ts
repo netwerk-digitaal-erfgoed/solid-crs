@@ -25,3 +25,4 @@ export * from './state/schema';
 export * from './state/state';
 export * from './header/content-header.component';
 export * from './loading/progress-bar-component';
+export * from './paginator/paginator.component';
