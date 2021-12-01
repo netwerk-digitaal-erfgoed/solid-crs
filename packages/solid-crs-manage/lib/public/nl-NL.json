@@ -252,6 +252,9 @@
             "months-ago": "maanden geleden",
             "year-ago": "jaar geleden",
             "years-ago": "jaar geleden"
+        },
+        "paginator": {
+            "page-counter": "Pagina {CURRENT} van {TOTAL}"
         }
     },
     "search": {

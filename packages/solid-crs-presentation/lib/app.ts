@@ -1,4 +1,4 @@
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, LargeCardComponent, ObjectCardComponent, SidebarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent, ProgressBarComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, LargeCardComponent, ObjectCardComponent, SidebarComponent, SidebarItemComponent, SidebarListComponent, SidebarListItemComponent, ProgressBarComponent, PopupComponent, PaginatorComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { inspect } from '@xstate/inspect';
 import { SearchRootComponent } from './features/search/search-root.component';
 import { AppRootComponent } from './app-root.component';
@@ -41,3 +41,4 @@ customElements.define('nde-sidebar-list', SidebarListComponent);
 customElements.define('nde-sidebar-item', SidebarItemComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);
 customElements.define('nde-popup', PopupComponent);
+customElements.define('nde-paginator', PaginatorComponent);
