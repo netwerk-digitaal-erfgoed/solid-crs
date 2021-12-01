@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { WithResourceInfo } from '@netwerk-digitaal-erfgoed/solid-crs-client/node_modules/@inrupt/solid-client';
+import { getStringNoLocale, getStringWithLocale, getUrl, WithResourceInfo } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
