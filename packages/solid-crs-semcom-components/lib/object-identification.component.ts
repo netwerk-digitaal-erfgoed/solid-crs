@@ -15,13 +15,13 @@ export class ObjectIdentificationComponent extends RxLitElement {
    * The component's logger.
    */
   @property({ type: Object })
-  public logger: Logger;
+  logger?: Logger;
 
   /**
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator;
+  translator?: Translator;
 
   /**
    * The object to be displayed and/or edited.
@@ -33,7 +33,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @property({ type: Object })
-  formActor: SpawnedActorRef<FormEvent>;
+  formActor?: SpawnedActorRef<FormEvent>;
 
   /**
    * A list of all collections
@@ -77,7 +77,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
           <ul slot="input" name="additionalType" id="additionalType" type="dismiss" class="dismiss">
             ${sort(this.object.additionalType ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
-          <button @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'additionalType', terms: this.object.additionalType } }))}" type="button" slot="action">
+          <button @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'additionalType', terms: this.object?.additionalType ?? [] } }))}" type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
           <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.additionalType.description')}</div>
@@ -95,7 +95,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
         <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="collection">
           <label slot="label" for="collection">${this.translator?.translate('object.card.identification.field.collection.title')}</label>
           <select slot="input" name="collection" id="collection">
-            ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object.collection}">${collection.name}</option>`)}
+            ${this.collections.map((collection) => html`<option id="${collection.uri}" ?selected="${collection.uri === this.object?.collection}">${collection.name}</option>`)}
           </select>
           <div slot="help" for="event">${this.translator?.translate('object.card.identification.field.collection.description')}</div>
         </nde-form-element>
