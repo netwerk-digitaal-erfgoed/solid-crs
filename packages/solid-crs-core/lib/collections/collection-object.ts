@@ -148,7 +148,7 @@ export interface CollectionObject extends Resource {
   /**
    * The image file to be uploaded to the pod
    */
-  imageFile: File;
+  imageFile?: File;
 
   /**
    * A link to the digital representation of this object.

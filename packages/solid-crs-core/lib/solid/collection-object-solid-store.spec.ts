@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { getStringNoLocale, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { WithResourceInfo } from '@netwerk-digitaal-erfgoed/solid-crs-client/node_modules/@inrupt/solid-client';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
@@ -52,6 +53,8 @@ describe('CollectionObjectSolidStore', () => {
       organization: [ { name: 'organization', uri: 'https://uri/' } ],
       event: [ { name: 'event', uri: 'https://uri/' } ],
     };
+
+    (service.uploadImage as any) = jest.fn(async () => 'http://test.image');
 
   });
 
@@ -425,8 +428,7 @@ describe('CollectionObjectSolidStore', () => {
         event: undefined,
       };
 
-      const result = await service.save(objectWithoutSubject)
-;
+      const result = await service.save(objectWithoutSubject);
 
       expect(result).toEqual(expect.objectContaining({
         description: objectWithoutSubject.description,
@@ -439,6 +441,32 @@ describe('CollectionObjectSolidStore', () => {
         organization: undefined,
         event: undefined,
       }));
+
+    });
+
+    it('should call uploadImage when imageFile is set', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => client.createThing());
+      (client.getUrl as any) = jest.fn(() => 'http://test-uri/');
+      (client.getUrlAll as any) = jest.fn(() => [ 'http://test-uri/' ]);
+      (client.setThing as any) = jest.fn(() => 'test-thing');
+      (client.removeThing as any) = jest.fn(() => 'test-thing');
+      (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
+      (client.addUrl as any) = jest.fn(() => 'test-url');
+      (client.addStringNoLocale as any) = jest.fn(() => 'test-url');
+      (client.addStringWithLocale as any) = jest.fn(() => 'test-url');
+      (client.addInteger as any) = jest.fn(() => 'test-url');
+      (client.addDecimal as any) = jest.fn(() => 'test-url');
+
+      const objectWithImageFile = {
+        ...mockObject,
+        imageFile: new File([ 'test-image' ], 'test-image.jpg'),
+      };
+
+      await service.save(objectWithImageFile);
+
+      expect(service.uploadImage).toHaveBeenCalledTimes(1);
 
     });
 
@@ -794,6 +822,56 @@ describe('CollectionObjectSolidStore', () => {
 
       expect(CollectionObjectSolidStore.getTerm(termUri, client.createSolidDataset()))
         .toEqual({ uri: termUri, name: termName });
+
+    });
+
+  });
+
+  describe('uploadImage()', () => {
+
+    const imageUri = 'https://image.uri/image.png';
+    const objectUri = 'https://object.uri/objects/object-1';
+    const imageFile = new File([ 'test' ], 'image.png', { type: 'image/png' });
+
+    beforeEach(() => {
+
+      // reset mocked uploadImage
+      service = new CollectionObjectSolidStore();
+
+      (client.saveFileInContainer as any) = jest.fn(async (): Promise<WithResourceInfo> => ({
+        internal_resourceInfo: {
+          sourceIri: imageUri,
+          isRawData: true,
+          contentType: 'image/png',
+        },
+      }));
+
+    });
+
+    it.each([ null, undefined ])('should error when objectUri is %s', async (value) => {
+
+      await expect(() => service.uploadImage(imageFile, value)).rejects.toThrow('Argument objectUri should be set');
+
+    });
+
+    it.each([ null, undefined ])('should error when imageFile is %s', async (value) => {
+
+      await expect(() => service.uploadImage(value, objectUri)).rejects.toThrow('Argument imageFile should be set');
+
+    });
+
+    it('should return image Uri when successful', async () => {
+
+      const result = await service.uploadImage(imageFile, objectUri);
+
+      expect(result).toEqual(imageUri);
+      expect(client.saveFileInContainer).toHaveBeenCalledTimes(1);
+
+      expect(client.saveFileInContainer).toHaveBeenCalledWith(
+        `https://object.uri/objects/`,
+        imageFile,
+        expect.objectContaining({ slug: 'image.png', contentType: 'image/png' }),
+      );
 
     });
 

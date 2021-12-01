@@ -378,7 +378,9 @@ export class ObjectRootComponent extends RxLitElement {
     this.formActor.send(new FormUpdatedEvent(
       'image',
       // use the object's uri to determine object storage directory
-      `${new URL(this.object.uri).origin}${new URL(this.object.uri).pathname.split('/').slice(0, -1).join('/')}/${v4()}-${this.object.imageFile.name}`
+      // this value will only be used temporarily until the object is saved
+      // after which it is set to a value chosen by the pod server
+      `${new URL(this.object.uri).origin}${new URL(this.object.uri).pathname.split('/').slice(0, -1).join('/')}/${this.object.imageFile.name}`
     ));
 
   }

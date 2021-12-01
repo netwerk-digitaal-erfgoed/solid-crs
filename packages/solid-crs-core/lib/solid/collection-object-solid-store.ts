@@ -701,6 +701,18 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
    */
   async uploadImage(imageFile: File, objectUri: string): Promise<string> {
 
+    if (!imageFile) {
+
+      throw new ArgumentError('Argument imageFile should be set.', imageFile);
+
+    }
+
+    if (!objectUri) {
+
+      throw new ArgumentError('Argument objectUri should be set.', objectUri);
+
+    }
+
     const savedFile = await saveFileInContainer(
       `${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`,
       imageFile,
