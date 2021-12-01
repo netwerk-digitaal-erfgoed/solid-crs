@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { ActorRef, interpret, Interpreter, State } from 'xstate';
+import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
@@ -35,7 +35,7 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor: Interpreter<AppContext, any, AppEvent>;
+  actor: Interpreter<AppContext, any, EventObject>;
 
   /**
    * The state of this component.

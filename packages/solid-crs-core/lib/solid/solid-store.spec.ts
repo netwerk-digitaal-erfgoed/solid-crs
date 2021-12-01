@@ -37,6 +37,7 @@ describe('SolidStore', () => {
 
     it('should error when no profile could be found', async () => {
 
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => undefined);
       await expect(service.getInstanceForClass('test-string', 'test-string')).rejects.toThrow('Could not find profile in dataset');
 
@@ -330,6 +331,70 @@ describe('SolidStore', () => {
       expect((client.saveSolidDatasetAt as any)).toHaveBeenCalled();
       // expect((client.access as any).setPublicAccess).toHaveBeenCalled();
       expect((client.overwriteFile as any)).toHaveBeenCalledTimes(2);
+
+    });
+
+  });
+
+  describe('setPublicAccess', () => {
+
+    beforeEach(() => {
+
+      (client.getSolidDatasetWithAcl as any) = jest.fn(async () => 'test-dataset');
+      (client.hasResourceAcl as any) = jest.fn(() => true);
+      (client.hasAccessibleAcl as any) = jest.fn(() => true);
+      (client.hasFallbackAcl as any) = jest.fn(() => true);
+      (client.createAclFromFallbackAcl as any) = jest.fn(() => 'test-acl');
+      (client.getResourceAcl as any) = jest.fn(() => 'test-acl');
+      (client.getPublicAccess as any) = jest.fn(() => ({ read: false }));
+      (client.setPublicResourceAccess as any) = jest.fn(() => 'test-acl');
+      (client.saveAclFor as any) = jest.fn(async () => 'test-dataset');
+
+    });
+
+    it('should error when no accessible acl was present', async () => {
+
+      (client.hasResourceAcl as any) = jest.fn(() => false);
+      (client.hasAccessibleAcl as any) = jest.fn(() => false);
+
+      await expect(service.setPublicAccess('https://test.uri/')).rejects.toThrow('The current user does not have permission to change access rights to this Resource.');
+
+    });
+
+    it('should error when no fallback acl was present', async () => {
+
+      (client.hasResourceAcl as any) = jest.fn(() => false);
+      (client.hasFallbackAcl as any) = jest.fn(() => false);
+
+      await expect(service.setPublicAccess('https://test.uri/')).rejects.toThrow('The current user does not have permission to see who currently has access to this Resource.');
+
+    });
+
+    it('should create new acl from fallback when no acl present', async () => {
+
+      (client.hasResourceAcl as any) = jest.fn(() => false);
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.createAclFromFallbackAcl).toHaveBeenCalled();
+      expect(client.saveAclFor).toHaveBeenCalled();
+
+    });
+
+    it('should update existing acl when one is present', async () => {
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.getResourceAcl).toHaveBeenCalled();
+      expect(client.saveAclFor).toHaveBeenCalled();
+
+    });
+
+    it('should not update existing acl when read permissions already set', async () => {
+
+      (client.getPublicAccess as any) = jest.fn(() => ({ read: true }));
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.getResourceAcl).toHaveBeenCalled();
+      expect(client.saveAclFor).not.toHaveBeenCalled();
 
     });
 

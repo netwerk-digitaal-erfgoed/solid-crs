@@ -23,11 +23,11 @@ describe('CollectionSolidStore', () => {
     jest.clearAllMocks();
 
     mockCollection = {
-      uri: 'test-uri',
+      uri: 'https://test.uri/',
       name: 'test-name',
       description: 'test-description',
-      objectsUri: 'test-url',
-      distribution: 'test-url',
+      objectsUri: 'https://test.uri/',
+      distribution: 'https://test.uri/',
     } as Collection;
 
   });
@@ -119,7 +119,7 @@ describe('CollectionSolidStore', () => {
       (client.removeUrl as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
       (client.removeThing as any) = jest.fn(() => 'test-thing');
-      (client.getUrl as any) = jest.fn(() => 'test-url');
+      (client.getUrl as any) = jest.fn(() => 'https://test.uri/');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.deleteFile as any) = jest.fn(async () => 'test-file');
 
@@ -131,6 +131,12 @@ describe('CollectionSolidStore', () => {
 
   describe('save()', () => {
 
+    beforeEach(() => {
+
+      (service.setPublicAccess as any) = jest.fn(async() => true);
+
+    });
+
     it.each([ null, undefined ])('should error when collection is %s', async (value) => {
 
       await expect(service.save(value)).rejects.toThrow('Argument collection should be set');
@@ -139,7 +145,7 @@ describe('CollectionSolidStore', () => {
 
     it('should return collection when saved', async () => {
 
-      (service.getInstanceForClass as any) = jest.fn(() => 'https://test-uri/');
+      (service.getInstanceForClass as any) = jest.fn(() => 'https://test.uri/');
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
@@ -159,10 +165,10 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.uri;
 
-      (service.getInstanceForClass as any) = jest.fn(() => 'https://test-uri/');
+      (service.getInstanceForClass as any) = jest.fn(() => 'https://test.uri/');
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
-      (client.getUrl as any) = jest.fn(() => 'test-url');
+      (client.getUrl as any) = jest.fn(() => 'https://test.uri/');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
@@ -182,11 +188,11 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.objectsUri;
 
-      (service.getInstanceForClass as any) = jest.fn(() => 'https://test-uri/');
+      (service.getInstanceForClass as any) = jest.fn(() => 'https://test.uri/');
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
-      (client.getUrl as any) = jest.fn(() => 'https://test-uri/');
+      (client.getUrl as any) = jest.fn(() => 'https://test.uri/');
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
@@ -205,11 +211,11 @@ describe('CollectionSolidStore', () => {
 
       delete mockCollection.distribution;
 
-      (service.getInstanceForClass as any) = jest.fn(() => 'https://test-uri/');
+      (service.getInstanceForClass as any) = jest.fn(() => 'https://test.uri/');
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
-      (client.getUrl as any) = jest.fn(() => 'test-url');
+      (client.getUrl as any) = jest.fn(() => 'https://test.uri/');
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.createThing as any) = jest.fn(() => 'test-thing');
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
@@ -226,7 +232,7 @@ describe('CollectionSolidStore', () => {
 
     it('should create new objects file if it doesnt exist', async () => {
 
-      (service.getInstanceForClass as any) = jest.fn(() => 'https://test-uri/');
+      (service.getInstanceForClass as any) = jest.fn(() => 'https://test.uri/');
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
@@ -262,7 +268,7 @@ describe('CollectionSolidStore', () => {
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => null);
 
-      await expect(service.get('test-uri')).rejects.toThrow('Could not find collectionThing in dataset');
+      await expect(service.get('test.uri')).rejects.toThrow('Could not find collectionThing in dataset');
 
     });
 
@@ -270,15 +276,15 @@ describe('CollectionSolidStore', () => {
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
-      (client.getUrl as any) = jest.fn(() => 'test-url');
+      (client.getUrl as any) = jest.fn(() => 'https://test.uri/');
       (client.getStringWithLocale as any) = jest.fn(() => 'test-string');
 
-      await expect(service.get('test-uri')).resolves.toEqual({
-        uri: 'test-uri',
+      await expect(service.get('test.uri')).resolves.toEqual({
+        uri: 'test.uri',
         name: 'test-string',
         description: 'test-string',
-        objectsUri: 'test-url',
-        distribution: 'test-url',
+        objectsUri: 'https://test.uri/',
+        distribution: 'https://test.uri/',
       });
 
     });
@@ -291,7 +297,7 @@ describe('CollectionSolidStore', () => {
 
       (client.getDefaultSession as any) = jest.fn(() => undefined);
 
-      await expect(service.createCatalog('test-uri')).rejects.toThrow('Not logged in');
+      await expect(service.createCatalog('test.uri')).rejects.toThrow('Not logged in');
 
     });
 
@@ -305,7 +311,7 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
 
       (client.overwriteFile as any) = jest.fn(() => done());
-      await service.createCatalog('test-uri');
+      await service.createCatalog('test.uri');
 
     });
 
@@ -319,7 +325,7 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
       (client.overwriteFile as any) = jest.fn(() => 'test-file');
 
-      await service.createCatalog('test-uri');
+      await service.createCatalog('test.uri');
       expect(client.getStringWithLocale).toHaveBeenCalledTimes(1);
       expect(client.getStringNoLocale).not.toHaveBeenCalled();
 
@@ -335,7 +341,7 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => done());
       (client.overwriteFile as any) = jest.fn(() => 'test-file');
 
-      await service.createCatalog('test-uri');
+      await service.createCatalog('test.uri');
 
     });
 

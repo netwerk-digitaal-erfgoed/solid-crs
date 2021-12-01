@@ -242,7 +242,6 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     // Fetch the SolidDataset and its associated ACLs, if available:
     const myDatasetWithAcl = await getSolidDatasetWithAcl(resourceUri, { fetch });
-
     // Obtain the SolidDataset's own ACL, if available,
     // or initialise a new one, if possible:
     let resourceAcl;

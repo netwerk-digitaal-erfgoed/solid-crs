@@ -157,22 +157,20 @@ export const appMachine = (
           [AppEvents.ADD_ALERT]: {
             actions: addAlert,
           },
-          // [AppEvents.ERROR]: {
-          //   actions: [
-          //     log(() => 'An error occurred'),
-          //     send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
-          //   ],
-          // },
+          [AppEvents.ERROR]: {
+            actions: [
+              log(() => 'An error occurred'),
+              send((c, event) => new AddAlertEvent({ type: 'danger', message: event.data?.error ? event.data.error.toString() : 'app.root.alerts.error' })),
+            ],
+          },
           [ObjectEvents.SELECTED_OBJECT]: {
             actions: [
-              log('selected object'),
               send((c, event) => new NavigatedEvent(`/object/${encodeURIComponent(event.object.uri)}`, `${event.object.name} | Collectieregistratiesysteem`)),
               forwardTo(AppActors.OBJECT_MACHINE),
             ],
           },
           [CollectionEvents.SELECTED_COLLECTION]: {
             actions: [
-              log('selected collection'),
               send((c, event) => new NavigatedEvent(`/collection/${encodeURIComponent(event.collection?.uri)}`, `${event.collection?.name} | Collectieregistratiesysteem`)),
               assign({ selected: (c, event) => event.collection }),
               forwardTo(AppActors.COLLECTION_MACHINE),
