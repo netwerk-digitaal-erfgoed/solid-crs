@@ -13,25 +13,25 @@ export class PaginatorComponent extends RxLitElement {
    * The index of the page curently being viewed.
    */
   @property({ type: Object })
-  public translator: Translator;
+  translator?: Translator;
 
   /**
    * The index of the page curently being viewed.
    */
   @property({ type: Number })
-  public pageIndex: number;
+  pageIndex?: number;
 
   /**
    * The amount of objects to show per page.
    */
   @property({ type: Number })
-  public objectsPerPage: number;
+  objectsPerPage?: number;
 
   /**
    * The total amount of objects.
    */
   @property({ type: Number })
-  public objectsAmount: number;
+  objectsAmount?: number;
 
   /**
    * Emits a custom next event.
@@ -58,9 +58,11 @@ export class PaginatorComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    return html`
+    return this.pageIndex !== undefined
+      && this.objectsAmount !== undefined
+      && this.objectsPerPage !== undefined ? html`
     <!-- e.g. page 1 of 10 -->
-      <p>${this.translator.translate('common.paginator.page-counter')
+      <p>${this.translator?.translate('common.paginator.page-counter')
     .replace('{CURRENT}', (this.pageIndex+1).toString())
     .replace('{TOTAL}', Math.ceil(this.objectsAmount / this.objectsPerPage).toString())}
       </p>
@@ -82,7 +84,7 @@ export class PaginatorComponent extends RxLitElement {
       </button> 
 
     <!-- </div> -->
-  `;
+  ` : html`not all properties are set`;
 
   }
 
