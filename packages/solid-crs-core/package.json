@@ -61,9 +61,9 @@
     "@appnest/lit-translate": "^1.1.18",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.11.0",
     "moment": "^2.29.1",
-    "rxjs": "^6.6.7",
+    "rxjs": "^7.4.0",
     "uuid": "8.3.2",
-    "xstate": "^4.23.4"
+    "xstate": "^4.26.0"
   },
   "jest": {
     "transformIgnorePatterns": [
