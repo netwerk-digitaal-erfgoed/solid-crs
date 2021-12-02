@@ -867,9 +867,9 @@ describe('CollectionObjectSolidStore', () => {
       expect(client.saveFileInContainer).toHaveBeenCalledTimes(1);
 
       expect(client.saveFileInContainer).toHaveBeenCalledWith(
-        `https://object.uri/objects/`,
+        expect.stringMatching(`https://object.uri/objects/`),
         imageFile,
-        expect.objectContaining({ slug: 'image.png', contentType: 'image/png' }),
+        expect.objectContaining({ slug: expect.stringMatching(/^.*-image\.png$/), contentType: 'image/png' }),
       );
 
     });

@@ -716,7 +716,7 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     const savedFile = await saveFileInContainer(
       `${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`,
       imageFile,
-      { slug: imageFile.name, contentType: imageFile.type, fetch }
+      { slug: `${v4().split('-')[0]}-${imageFile.name}`, contentType: imageFile.type, fetch }
     );
 
     return savedFile.internal_resourceInfo.sourceIri;
