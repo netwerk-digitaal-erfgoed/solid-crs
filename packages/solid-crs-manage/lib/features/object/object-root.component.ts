@@ -690,6 +690,11 @@ export class ObjectRootComponent extends RxLitElement {
         button.light {
           color:var(--colors-primary-dark);
         }
+        div[slot="actions"] a svg {
+          width: 20px;
+          height: 20px;
+          fill: var(--colors-primary-light);
+        }
       `,
     ];
 
