@@ -56,6 +56,8 @@
         "httpHandler": {
           "@type": "HttpCorsRequestHandler",
           "handler": {
+            "@type": "ErrorHandler",
+            "nestedHandler": {
             "@type": "ClientCompressionHandler",
             "handler": {
               "@id": "urn:handlersjs-http:default:RoutedHttpRequestHandler",
@@ -92,11 +94,15 @@
                     },
                     {
                       "@id": "urn:dgt-id-proxy:default:RegistrationEndpoint"
+                    },
+                    {
+                      "@id": "urn:dgt-id-proxy:default:SignupEndpoint"
                     }
                   ]
                 }
               ]
             }
+          } 
           }
         }
       }
@@ -104,8 +110,8 @@
     {
       "@id": "urn:dgt-id-proxy:default:SingleClaimWebIdFactory",
       "@type": "SingleClaimWebIdFactory",
-      "webIdPattern": "http://localhost:3000/:customclaim/profile/card#me",
-      "claim": "http://digita.ai/nickname"
+      "webIdPattern": "http://localhost:3000/:customclaim",
+      "claim": "https://netwerkdigitaalerfgoed.nl/username"
     },
     {
       "@id": "urn:dgt-id-proxy:default:StaticAuthStore",
@@ -114,7 +120,7 @@
     {
       "@id": "urn:dgt-id-proxy:default:ClientIdStaticAuthRequestHandler",
       "@type": "ClientIdStaticAuthRequestHandler",
-      "clientId": "r5oioNlX1IyM9gnQ2j6rlZxfx0UjptcF",
+      "clientId": "VUXJUOJG4ubzsNtPMXFADjCQ1jpK5EPx",
       "redirectUri": "http://localhost:3003/redirect",
       "keyValueStore": {
         "@id": "urn:dgt-id-proxy:default:StaticAuthStore"
@@ -133,8 +139,8 @@
       "httpHandler": {
         "@id": "urn:dgt-id-proxy:default:DpopTokenRequestHandler"
       },
-      "clientId": "r5oioNlX1IyM9gnQ2j6rlZxfx0UjptcF",
-      "clientSecret": "SbvZ_apuxaT8dU5kHpr_u5qVtEsz2BY5uY7h7egyafNcwnj33KFy1xzbBTMnDsto",
+      "clientId": "VUXJUOJG4ubzsNtPMXFADjCQ1jpK5EPx",
+      "clientSecret": "fBV0486gO-fytTNe-4QeQGv4QabENuZkTyO7T6ugOK-xpMnGzVazVHN6RMlSsioo",
       "redirectUri": "http://localhost:3003/redirect"
     },
     {
@@ -446,6 +452,22 @@
         "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
       },
       "path": "/oidc/register"
+    },
+    {
+      "@id": "urn:dgt-id-proxy:default:SignupEndpoint",
+      "@type": "HttpHandlerRoute",
+      "operations": [
+        {
+          "@id": "urn:dgt-id-proxy:default:PostOperation"
+        },
+        {
+          "@id": "urn:dgt-id-proxy:default:GetOperation"
+        }
+      ],
+      "handler": {
+        "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+      },
+      "path": "/u/signup"
     }
   ]
 }

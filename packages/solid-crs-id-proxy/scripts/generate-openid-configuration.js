@@ -26,15 +26,11 @@ if (args.length < 2) {
 
     for (const key of Object.keys(data)) {
 
-      // don't replace the auth endpoint
-      if (key !== 'authorization_endpoint'){
+      if (typeof data[key] === 'string'){
 
-        if (typeof data[key] === 'string'){
+        // replace all instances of the upstream url with the proxy url
+        data[key] = data[key].replace(upstreamUrl, proxyUrl);
 
-          // replace all instances of the upstream url with the proxy url
-          data[key] = data[key].replace(upstreamUrl, proxyUrl);
-
-        }
       }
     }
 

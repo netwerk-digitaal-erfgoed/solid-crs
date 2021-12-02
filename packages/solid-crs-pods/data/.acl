@@ -11,3 +11,17 @@
     acl:mode        acl:Control;
     acl:accessTo    <./>;
     acl:default     <./>.
+
+<#minter-append-webids>
+    a acl:Authorization;
+    acl:agent <http://localhost:3002/dgt-id-proxy/card#me>;
+    acl:accessTo <./>;
+    acl:mode
+        acl:Read, acl:Append.
+
+<#minter-control-webids>
+    a acl:Authorization;
+    acl:agent <http://localhost:3002/dgt-id-proxy/card#me>;
+    acl:default <./>;
+    acl:mode
+        acl:Read, acl:Write, acl:Control.
