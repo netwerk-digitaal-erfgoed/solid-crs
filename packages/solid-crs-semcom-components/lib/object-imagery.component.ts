@@ -189,7 +189,8 @@ export class ObjectImageryComponent extends RxLitElement {
           object-fit: cover;
         }
         nde-separator {
-          height: var(--gap-normal);
+          margin: 10px 0;
+          font-size: var(--font-size-small);
         }
         .image-container {
           display: flex;
@@ -203,6 +204,7 @@ export class ObjectImageryComponent extends RxLitElement {
         }
         .image-upload-container p {
           margin: 0;
+          font-size: var(--font-size-small);
         }
         .image-upload-container button {
           background-color: var(--colors-primary-light);
