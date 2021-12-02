@@ -1,4 +1,4 @@
-import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { ArgumentError, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Bell, Cross, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -12,25 +12,59 @@ export class AlertComponent extends LitElement {
   /**
    * The component's logger.
    */
-  @property({ type: Logger })
-  public logger: Logger;
+  @property({ type: Object })
+  logger?: Logger;
 
   /**
    * The component's translator.
    */
-  @property({ type: Translator })
-  public translator: Translator;
+  @property({ type: Object })
+  translator?: Translator;
 
   /**
    * The collection which will be rendered by the component.
    */
   @property({ type: Object })
-  public alert: Alert;
+  alert?: Alert;
+
+  /**
+   * Dispatches an event to dismiss the alert.
+   */
+  dismiss(): void {
+
+    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
+
+    if (!this.alert) {
+
+      throw new ArgumentError('Argument this.alert should be set.', this.alert);
+
+    }
+
+    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
+
+  }
+
+  /**
+   * Renders the component as HTML.
+   *
+   * @returns The rendered HTML of the component.
+   */
+  render(): TemplateResult {
+
+    return this.alert ? html`
+    <div class="alert ${ this.alert.type ? this.alert.type : 'warning' }">
+      <div class="icon">${ unsafeSVG(Bell) }</div>
+      <div class="message">${ this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message }</div>
+      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
+    </div>
+  ` : html``;
+
+  }
 
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -102,43 +136,6 @@ export class AlertComponent extends LitElement {
 
       `,
     ];
-
-  }
-
-  /**
-   * Dispatches an event to dismiss the alert.
-   */
-  dismiss() {
-
-    this.logger?.debug(AlertComponent.name, 'Dismissing alert', this.alert);
-
-    if (!this.alert) {
-
-      throw new ArgumentError('Argument this.alert should be set.', this.alert);
-
-    }
-
-    this.dispatchEvent(new CustomEvent<Alert>('dismiss', { detail:this.alert }));
-
-  }
-
-  /**
-   * Renders the component as HTML.
-   *
-   * @returns The rendered HTML of the component.
-   */
-  render() {
-
-    const message = this.translator ? this.translator.translate(this.alert?.message) : this.alert?.message;
-    const type = this.alert && this.alert.type ? this.alert.type : 'warning';
-
-    return html`
-    <div class="alert ${ type }">
-      <div class="icon">${ unsafeSVG(Bell) }</div>
-      <div class="message">${ message }</div>
-      <div class="dismiss" @click="${ this.dismiss }">${ unsafeSVG(Cross) }</div>
-    </div>
-  `;
 
   }
 
