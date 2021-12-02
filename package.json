@@ -2,6 +2,9 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "clean": "npm run clean:locks && npm run clean:modules",
+    "clean:locks": "npm i --package-locks-only && lerna exec 'npm i --package-locks-only'",
+    "clean:modules": "lerna clean && shx rm -rf ./node_modules/",
     "bootstrap": "npm ci && lerna bootstrap",
     "bootstrap:no-ci": "npm i && lerna bootstrap --no-ci",
     "build": "lerna run build --since HEAD",
