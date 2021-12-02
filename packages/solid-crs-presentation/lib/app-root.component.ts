@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { ActorRef, interpret, State } from 'xstate';
+import { ActorRef, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
@@ -11,6 +11,7 @@ import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, App
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
+import { SearchContext } from './features/search/search.machine';
 
 /**
  * The root page of the application.
@@ -200,7 +201,8 @@ export class AppRootComponent extends RxLitElement {
 
     if(changed.has('searchActor') && this.searchActor) {
 
-      this.subscribe('searchTerm', from(this.searchActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('searchTerm', from((this.searchActor as unknown) as Interpreter<SearchContext, any, SearchEvent>).pipe(
         map((state) => state.context.searchTerm)
       ));
 
