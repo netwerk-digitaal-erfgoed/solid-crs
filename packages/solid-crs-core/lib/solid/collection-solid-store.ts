@@ -195,6 +195,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
     collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', webId);
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
+    collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
 
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
