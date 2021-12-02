@@ -9,8 +9,8 @@ import { FormSubmitter } from './form-submitter';
  * The context of a form.
  */
 export interface FormContext<TData> {
-  data?: TData;
-  original?: TData;
+  data: TData;
+  original: TData;
   validation?: FormValidatorResult[];
 }
 

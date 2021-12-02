@@ -35,8 +35,8 @@
     "debounce": "^1.2.1",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",
-    "rxjs": "^6.6.7",
-    "xstate": "^4.17.1"
+    "rxjs": "^7.4.0",
+    "xstate": "^4.26.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",

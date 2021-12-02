@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArgumentError } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { of } from 'rxjs';
 import { interpret, Interpreter } from 'xstate';
+import { State } from '../state/state';
 import { FormElementComponent } from './form-element.component';
 import { FormValidatorResult } from './form-validator-result';
-import { FormEvents, FormUpdatedEvent } from './form.events';
-import { FormContext, formMachine } from './form.machine';
+import { FormEvent, FormEvents, FormUpdatedEvent } from './form.events';
+import { FormContext, formMachine, FormStates } from './form.machine';
 
 describe('FormElementComponent', () => {
 
   let component: FormElementComponent<any>;
-  let machine: Interpreter<FormContext<any>>;
-  let input;
+  let machine: Interpreter<FormContext<any>, State<FormStates, FormContext<unknown>>, FormEvent>;
+  let input: HTMLInputElement;
 
   beforeEach(() => {
 
@@ -61,7 +63,7 @@ describe('FormElementComponent', () => {
 
     component.translator = {
       translate: jest.fn(() => 'translation'),
-    };
+    } as any;
 
     jest.clearAllMocks();
 
@@ -158,7 +160,7 @@ describe('FormElementComponent', () => {
       await component.updateComplete;
 
       input.type = 'number';
-      input.value = 123;
+      (input.value as any) = 123;
       input.dispatchEvent(new Event('input'));
 
     });
