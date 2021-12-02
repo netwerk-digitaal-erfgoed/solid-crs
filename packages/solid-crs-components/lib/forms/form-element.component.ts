@@ -111,7 +111,7 @@ export class FormElementComponent<T> extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  actor?: Interpreter<FormContext<T>, State<FormStates, FormContext<unknown>>, FormEvent>;
+  actor?: Interpreter<FormContext<T>, State<FormStates, FormContext<T>>, FormEvent>;
 
   /**
    * Decides whether validation results should be shown below the form element
@@ -192,7 +192,7 @@ export class FormElementComponent<T> extends RxLitElement {
    */
   bindActorToInput(
     slot: HTMLSlotElement,
-    actor: Interpreter<FormContext<T>, State<FormStates, FormContext<unknown>>, FormEvent>,
+    actor: Interpreter<FormContext<T>, State<FormStates, FormContext<T>>, FormEvent>,
     field: keyof T,
     data: T
   ): void {
