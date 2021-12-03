@@ -1,4 +1,4 @@
-import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access, getResourceAcl, getSolidDatasetWithAcl, hasResourceAcl, saveAclFor, createAclFromFallbackAcl, hasAccessibleAcl, hasFallbackAcl, setPublicResourceAccess, getPublicAccess } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access, getResourceAcl, getSolidDatasetWithAcl, hasResourceAcl, saveAclFor, createAclFromFallbackAcl, hasAccessibleAcl, hasFallbackAcl, setPublicResourceAccess, getPublicAccess, setAgentResourceAccess, getDefaultSession } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
@@ -222,11 +222,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
     await saveSolidDatasetAt(webId, updatedDataset, { fetch });
 
     // make public type index public
-    await access.setPublicAccess(
-      publicTypeIndex,
-      { read: true },
-      { fetch }
-    );
+    await this.setPublicAccess(publicTypeIndex);
 
     return { privateTypeIndex, publicTypeIndex };
 
@@ -240,55 +236,62 @@ export class SolidStore<T extends Resource> implements Store<T> {
    */
   async setPublicAccess(resourceUri: string): Promise<void> {
 
-    // Fetch the SolidDataset and its associated ACLs, if available:
-    const myDatasetWithAcl = await getSolidDatasetWithAcl(resourceUri, { fetch });
-    // Obtain the SolidDataset's own ACL, if available,
-    // or initialise a new one, if possible:
-    let resourceAcl;
+    const currentAccess = await access.getPublicAccess(
+      resourceUri,
+      { fetch }
+    ).catch(async (err) => {
 
-    if (!hasResourceAcl(myDatasetWithAcl)) {
+      // create the .acl file if it doesn't exist
+      if (err.response.status === 404) {
 
-      if (!hasAccessibleAcl(myDatasetWithAcl)) {
+        const webId = getDefaultSession()?.info?.webId;
+        const url = new URL(resourceUri);
+        const target = url.origin + url.pathname;
 
-        throw new Error(
-          'The current user does not have permission to change access rights to this Resource.'
+        const body = `@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+        @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+    
+        # The directory is readable by the public.
+        <#public>
+            a acl:Authorization;
+            acl:agentClass foaf:Agent;
+            acl:accessTo <${target}>;
+            acl:mode acl:Read.
+    
+        # The owner has full access to the entire directory.
+        <#owner>
+            a acl:Authorization;
+            acl:agent <${webId}>;
+            acl:accessTo <${target}>;
+            acl:mode acl:Read, acl:Write, acl:Control.`;
+
+        await fetch(`${target}.acl`, {
+          method: 'PUT',
+          body,
+          headers: { 'Content-Type': 'text/turtle' },
+        });
+
+        // try again
+        return await access.getPublicAccess(
+          resourceUri,
+          { fetch }
         );
+
+      } else {
+
+        throw Error(err);
 
       }
 
-      if (!hasFallbackAcl(myDatasetWithAcl)) {
+    });
 
-        throw new Error(
-          'The current user does not have permission to see who currently has access to this Resource.'
-        );
-        // Alternatively, initialise a new empty ACL as follows,
-        // but be aware that if you do not give someone Control access,
-        // **nobody will ever be able to change Access permissions in the future**:
-        // resourceAcl = createAcl(myDatasetWithAcl);
+    if (currentAccess && !currentAccess.read) {
 
-      }
-
-      resourceAcl = createAclFromFallbackAcl(myDatasetWithAcl);
-
-    } else {
-
-      resourceAcl = getResourceAcl(myDatasetWithAcl);
-
-    }
-
-    const currentAccess = getPublicAccess(myDatasetWithAcl);
-
-    if (!currentAccess?.read) {
-
-      // Give everyone Read access to the given Resource:
-
-      const updatedAcl = setPublicResourceAccess(
-        resourceAcl,
-        { read: true, append: false, write: false, control: false },
+      await access.setPublicAccess(
+        resourceUri,
+        { read: true },
+        { fetch }
       );
-
-      // Now save the ACL:
-      await saveAclFor(myDatasetWithAcl, updatedAcl, { fetch });
 
     }
 
