@@ -1,0 +1,11 @@
+<h1>Registreren</h1>
+<form method="post" id="mainForm">
+
+  <% if (locals.message) { %>
+    <p class="error">Error: <%= message %></p>
+  <% } %>
+
+  <%- include('./register-partial.html.ejs', { allowRoot: false }) %>
+
+  <p class="actions"><button type="submit" name="submit">REGISTREER</button></p>
+</form>

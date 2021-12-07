@@ -1,0 +1,26 @@
+{
+    "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^2.0.0/components/context.jsonld",
+    "@graph": [
+      {
+        "comment": "Renders Markdown snippets into the main page template.",
+        "@id": "urn:solid-server:default:MarkdownToHtmlConverter",
+        "@type": "MarkdownToHtmlConverter",
+        "templateEngine": {
+          "@type": "EjsTemplateEngine",
+          "template": "./assets/main.html.ejs" 
+        }
+      },
+      {
+        "comment": "Converts a container into a Markdown listing of its contents.",
+        "@id": "urn:solid-server:default:ContainerToTemplateConverter",
+        "@type": "ContainerToTemplateConverter",
+        "templateEngine": {
+          "@type": "HandlebarsTemplateEngine",
+          "template": "@css:templates/container.md.hbs"
+        },
+        "contentType": "text/markdown",
+        "identifierStrategy": { "@id": "urn:solid-server:default:IdentifierStrategy" }
+      }
+    ]
+  }
+  

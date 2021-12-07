@@ -1,0 +1,115 @@
+   
+  html {
+  
+    height: 100%;
+  
+    background-color: #25438E;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    overscroll-behavior: none;
+  }
+  
+  body, input, button {
+    font: 12pt/1.6 Poppins, sans-serif;
+    font-weight: 300;
+  }
+
+  h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      font-weight: Bold;
+  }
+
+  h2 {
+      font-size: 1.5em;
+      margin-bottom: 5px;
+      font-weight: 400;
+  }
+  
+  body {
+    box-sizing: border-box;
+    max-width: 780px;
+    margin: 2em auto;
+    padding: 2em 3em 1em;
+  
+    background: white;
+    box-shadow: 5px 5px 2px rgba(0, 0, 0, .1);
+    border-radius: 3px;
+  }
+
+  li {
+    list-style: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+  }
+
+  img {
+    padding: 10px;
+    max-width: 50%;
+    margin: auto auto 1.5em auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  form { display: inline-block;
+    justify-content: center;
+  }
+  
+  form p.error {
+    color: #ad0f0f;
+    font-weight: 600;
+  }
+  
+  form ul.actions {
+    padding: 0;
+    margin: 0 0 1em 11em;
+  }
+  form ul.actions > li {
+    list-style-type: none;
+    display: inline;
+    margin-right: 1em;
+  }
+  
+  form.loaded * {
+    max-height: 1000px;
+    transition: max-height .2s;
+  }
+  form .hidden {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  form p.actions {
+    display: flex;
+    margin: none;
+    justify-content: center;
+  }
+
+  button {
+    cursor: pointer;
+    padding: 0.5em 2em;
+    margin: 40px;
+    border: 0px;
+    background-color: #0A3DFA;;
+    color: white;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    border-radius: 2px;
+  }
+
+
+  input {
+      border: 1.9px solid #172A59;
+      width: 60%;
+      float: right;
+
+  }
+  
+  label {
+      font-weight: 400;
+      min-width: 30%;
+      line-height: 33.57px;
+      
+  }
