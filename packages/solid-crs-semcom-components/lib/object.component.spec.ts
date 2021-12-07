@@ -59,7 +59,7 @@ describe.each([
 
     const root = window.document.body.querySelector(tag);
     expect(root).toBeTruthy();
-    expect(root.shadowRoot.querySelector('nde-large-card')).toBeTruthy();
+    expect(root?.shadowRoot?.querySelector('nde-large-card')).toBeTruthy();
 
   });
 
