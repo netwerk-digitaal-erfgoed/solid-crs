@@ -1,7 +1,7 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult, PropertyValues } from 'lit-element';
 import { Collection, CollectionObject, Logger, Translator, Term, sort } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { SpawnedActorRef } from 'xstate';
+import { ActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Identity, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -33,7 +33,7 @@ export class ObjectIdentificationComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @property({ type: Object })
-  formActor?: SpawnedActorRef<FormEvent>;
+  formActor?: ActorRef<FormEvent>;
 
   /**
    * A list of all collections

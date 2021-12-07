@@ -1,7 +1,7 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { SpawnedActorRef } from 'xstate';
+import { ActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Image, Open, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -34,7 +34,7 @@ export class ObjectImageryComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @property()
-  formActor?: SpawnedActorRef<FormEvent>;
+  formActor?: ActorRef<FormEvent>;
 
   /**
    * A list of licenses
@@ -71,11 +71,17 @@ export class ObjectImageryComponent extends RxLitElement {
    */
   private onSelectedFile = (event: Event): void => {
 
-    const input = this.shadowRoot.querySelector<HTMLInputElement>('#image-upload');
-    // update label with correct filename
-    this.shadowRoot.querySelector<HTMLParagraphElement>('#image-upload-label').textContent = input.files[0].name;
-    // send event
-    this.dispatchEvent(new CustomEvent('image-selected', { detail: input.files[0] }));
+    const input = this.shadowRoot?.querySelector<HTMLInputElement>('#image-upload');
+
+    if (input?.files) {
+
+      const label = this.shadowRoot?.querySelector<HTMLInputElement>('#image-upload-label');
+      // update label with correct filename
+      if (label) label.textContent = input.files[0].name;
+      // send event
+      this.dispatchEvent(new CustomEvent('image-selected', { detail: input.files[0] }));
+
+    }
 
   };
 
@@ -132,7 +138,7 @@ export class ObjectImageryComponent extends RxLitElement {
 
           <!-- image upload -->
           <div class="image-upload-container">
-            <button @click="${() => this.shadowRoot.getElementById('image-upload').click()}">Bestand kiezen</button>
+            <button @click="${() => this.shadowRoot?.getElementById('image-upload')?.click()}">Bestand kiezen</button>
             <p id="image-upload-label">Geen bestand gekozen</p>
             <input type="file" id="image-upload" @change="${this.onSelectedFile}" accept="image/*"/>
           </div>
