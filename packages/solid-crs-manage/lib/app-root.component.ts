@@ -8,7 +8,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
+import { AppEvent, AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
