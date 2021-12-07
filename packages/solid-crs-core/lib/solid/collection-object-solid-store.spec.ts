@@ -279,6 +279,12 @@ describe('CollectionObjectSolidStore', () => {
 
   describe('save()', () => {
 
+    beforeEach(() => {
+
+      (service.setPublicAccess as any) = jest.fn(async() => true);
+
+    });
+
     it.each([ null, undefined ])('should error when object is %s', async (value) => {
 
       await expect(service.save(value)).rejects.toThrow('Argument object should be set');

@@ -1,4 +1,4 @@
-import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access, getResourceAcl, getSolidDatasetWithAcl, hasResourceAcl, saveAclFor, createAclFromFallbackAcl, hasAccessibleAcl, hasFallbackAcl, setPublicResourceAccess, getPublicAccess, setAgentResourceAccess, getDefaultSession } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
@@ -222,13 +222,78 @@ export class SolidStore<T extends Resource> implements Store<T> {
     await saveSolidDatasetAt(webId, updatedDataset, { fetch });
 
     // make public type index public
-    await access.setPublicAccess(
-      publicTypeIndex,
-      { read: true },
-      { fetch }
-    );
+    await this.setPublicAccess(publicTypeIndex);
 
     return { privateTypeIndex, publicTypeIndex };
+
+  }
+
+  /**
+   * Sets public read access for a resource when not already set.
+   * From https://docs.inrupt.com/developer-tools/javascript/client-libraries/tutorial/manage-access-control-list/ (made slight edits)
+   *
+   * @param resourceUri uri of the resource
+   */
+  async setPublicAccess(resourceUri: string): Promise<void> {
+
+    const currentAccess = await access.getPublicAccess(
+      resourceUri,
+      { fetch }
+    ).catch(async (err) => {
+
+      // create the .acl file if it doesn't exist
+      if (err.response.status === 404) {
+
+        const webId = getDefaultSession()?.info?.webId;
+        const url = new URL(resourceUri);
+        const target = url.origin + url.pathname;
+
+        const body = `@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+        @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+    
+        # The directory is readable by the public.
+        <#public>
+            a acl:Authorization;
+            acl:agentClass foaf:Agent;
+            acl:accessTo <${target}>;
+            acl:mode acl:Read.
+    
+        # The owner has full access to the entire directory.
+        <#owner>
+            a acl:Authorization;
+            acl:agent <${webId}>;
+            acl:accessTo <${target}>;
+            acl:mode acl:Read, acl:Write, acl:Control.`;
+
+        await fetch(`${target}.acl`, {
+          method: 'PUT',
+          body,
+          headers: { 'Content-Type': 'text/turtle' },
+        });
+
+        // try again
+        return await access.getPublicAccess(
+          resourceUri,
+          { fetch }
+        );
+
+      } else {
+
+        throw Error(err);
+
+      }
+
+    });
+
+    if (currentAccess && !currentAccess.read) {
+
+      await access.setPublicAccess(
+        resourceUri,
+        { read: true },
+        { fetch }
+      );
+
+    }
 
   }
 
