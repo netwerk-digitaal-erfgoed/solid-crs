@@ -851,6 +851,8 @@ describe('CollectionObjectSolidStore', () => {
         },
       }));
 
+      service.setPublicAccess = jest.fn(async () => undefined);
+
     });
 
     it.each([ null, undefined ])('should error when objectUri is %s', async (value) => {
@@ -877,6 +879,8 @@ describe('CollectionObjectSolidStore', () => {
         imageFile,
         expect.objectContaining({ slug: expect.stringMatching(/^.*-image\.png$/), contentType: 'image/png' }),
       );
+
+      expect(service.setPublicAccess).toHaveBeenCalledTimes(1);
 
     });
 

@@ -725,7 +725,12 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
       { slug: `${v4().split('-')[0]}-${imageFile.name}`, contentType: imageFile.type, fetch }
     );
 
-    return savedFile.internal_resourceInfo.sourceIri;
+    const imageUri = savedFile.internal_resourceInfo.sourceIri;
+
+    // set public access for this image
+    await this.setPublicAccess(imageUri);
+
+    return imageUri;
 
   }
 
