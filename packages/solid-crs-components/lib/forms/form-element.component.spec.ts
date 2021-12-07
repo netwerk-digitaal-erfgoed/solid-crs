@@ -332,7 +332,7 @@ describe('FormElementComponent', () => {
 
     component.validationResults = [];
     component.isValid = true;
-    input.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
 
   });
 
