@@ -165,14 +165,12 @@ export const appMachine = (
           },
           [ObjectEvents.SELECTED_OBJECT]: {
             actions: [
-              log('selected object'),
               send((c, event) => new NavigatedEvent(`/object/${encodeURIComponent(event.object.uri)}`, `${event.object.name} | Collectieregistratiesysteem`)),
               forwardTo(AppActors.OBJECT_MACHINE),
             ],
           },
           [CollectionEvents.SELECTED_COLLECTION]: {
             actions: [
-              log('selected collection'),
               send((c, event) => new NavigatedEvent(`/collection/${encodeURIComponent(event.collection?.uri)}`, `${event.collection?.name} | Collectieregistratiesysteem`)),
               assign({ selected: (c, event) => event.collection }),
               forwardTo(AppActors.COLLECTION_MACHINE),

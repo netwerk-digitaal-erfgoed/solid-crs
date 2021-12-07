@@ -39,7 +39,7 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "dependencies": {
-    "@inrupt/solid-client": "1.6.1",
+    "@inrupt/solid-client": "1.16.0",
     "@inrupt/solid-client-authn-browser": "1.11.2",
     "@peculiar/webcrypto": "^1.1.7",
     "buffer": "^6.0.3",

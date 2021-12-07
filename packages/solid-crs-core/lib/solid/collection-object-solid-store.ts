@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
@@ -6,8 +6,9 @@ import { CollectionObjectStore } from '../collections/collection-object-store';
 import { ArgumentError } from '../errors/argument-error';
 import { Term } from '../terms/term';
 import { fulltextMatch } from '../utils/fulltext-match';
+import { SolidStore } from './solid-store';
 
-export class CollectionObjectSolidStore implements CollectionObjectStore {
+export class CollectionObjectSolidStore extends SolidStore<CollectionObject> implements CollectionObjectStore {
 
   /**
    * Retrieves all objects for a specific collection.
@@ -365,6 +366,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     });
 
     await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
+
+    // set public read access for object
+    await this.setPublicAccess(objectUri);
+    // set public read access for parent folder
+    await this.setPublicAccess(`${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     return { ...object, uri: objectUri };
 
