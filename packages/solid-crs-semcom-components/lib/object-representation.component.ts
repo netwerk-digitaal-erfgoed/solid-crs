@@ -145,7 +145,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
         nde-large-card div[slot="content"] {
           display: flex;
           flex-direction: column;
-          gap: var(--gap-normal);
+          gap: var(--gap-large);
         }
       `,
     ];

@@ -18,8 +18,8 @@
     "release:antora": "echo \"$(yaml set docs/antora.yml version $(dot-json lerna.json version))\" > docs/antora.yml",
     "start": "lerna run start --parallel",
     "start:watch": "lerna run start:watch --parallel",
-    "test": "lerna run test --since HEAD --parallel",
-    "test:all": "lerna run test --parallel",
+    "test": "lerna run test --since HEAD --parallel --concurrency 2",
+    "test:all": "lerna run test --parallel --concurrency 2",
     "test:ci": "lerna run test:ci"
   },
   "devDependencies": {
