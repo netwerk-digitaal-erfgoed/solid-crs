@@ -21,7 +21,7 @@
           },
           {
             "StaticAssetHandler:_assets_key": "/.well_known/css/images/",
-            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/assets/"
+            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/assets/images/"
           }
         ]
       }
