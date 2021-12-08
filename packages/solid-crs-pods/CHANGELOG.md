@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.11.0...v0.12.0) (2021-12-08)
+
+
+### **Features**
+
+* add paginator to collection page ([#526](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/526)) ([ae4a700](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ae4a7002bf4d2f5c15fadb7c71fe6e21fd1727d4))
+
+
+
 ## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.6...v0.11.0) (2021-11-16)
 
 
