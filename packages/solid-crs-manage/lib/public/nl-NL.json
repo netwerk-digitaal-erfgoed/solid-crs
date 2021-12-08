@@ -221,6 +221,7 @@
                 "title": "Collectieregistratiesysteem",
                 "webid-placeholder": "bv. https://profile.janjanssens.nl/",
                 "webid-label": "WebID",
+                "separator": "of",
                 "create-webid": "Nog geen WebID? Klik <a href=\"https://signup.pod.inrupt.com\">hier</a>."
             },
 

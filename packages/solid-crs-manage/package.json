@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@digita-ai/dgt-components": "^0.8.6",
+    "@digita-ai/inrupt-solid-service": "^0.11.0",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.12.0",

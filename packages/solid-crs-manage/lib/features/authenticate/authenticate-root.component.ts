@@ -1,15 +1,11 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { ArgumentError, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormActors, FormRootStates, FormSubmissionStates, FormCleanlinessStates, FormValidationStates, Alert, FormSubmittedEvent, FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Interpreter, State } from 'xstate';
+import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, Logo, Theme, Loading } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { map } from 'rxjs/operators';
-import { from } from 'rxjs';
-import { DismissAlertEvent } from '../../app.events';
-import { AuthenticateContext, AuthenticateStates } from './authenticate.machine';
+import { Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { AuthenticateComponent, define, hydrate } from '@digita-ai/dgt-components';
+import { Issuer, SolidService } from '@digita-ai/inrupt-solid-service';
 
 /**
  * The root page of the authenticate feature.
@@ -29,124 +25,28 @@ export class AuthenticateRootComponent extends RxLitElement {
   public translator: Translator;
 
   /**
-   * The actor controlling this component.
-   */
-  @property({ type: Object })
-  public actor: Interpreter<AuthenticateContext>;
-
-  /**
-   * The component's alerts.
+   * List of predefined issuers.
    */
   @internalProperty()
-  alerts: Alert[];
+  issuers: Issuer[] = [ {
+    uri: 'https://id.netwerkdigitaalerfgoed.nl/',
+    description: 'Log in met je NDE account',
+    icon: '',
+  } ];
 
-  /**
-   * The actor responsible for form validation in this component.
-   */
-  @internalProperty()
-  formActor: Interpreter<FormContext<unknown>>;
+  constructor(private solidService: SolidService) {
 
-  /**
-   * The state of this component.
-   */
-  @internalProperty()
-  state?: State<AuthenticateContext>;
+    super();
 
-  /**
-   * Indicates if the form can be submitted.
-   */
-  @internalProperty()
-  canSubmit? = false;
-
-  /**
-   * Indicates if the form is being submitted.
-   */
-  @internalProperty()
-  isSubmitting? = false;
-
-  /**
-   * Indicates if the state is INITIAL.
-   */
-  @internalProperty()
-  isInitializing? = false;
-
-  /**
-   * Indicates if the user is being redirected.
-   */
-  @internalProperty()
-  isRedirecting? = false;
-
-  /**
-   * Hook called on at every update after connection to the DOM.
-   */
-  updated(changed: PropertyValues): void {
-
-    super.updated(changed);
-
-    if(changed.has('actor') && this.actor){
-
-      this.subscribe('formActor', from(this.actor).pipe(
-        map((state) => state.children[FormActors.FORM_MACHINE] as Interpreter<FormContext<unknown>>),
-      ));
-
-      if(this.actor.parent) {
-
-        this.subscribe('alerts', from(this.actor.parent)
-          .pipe(map((state) => state.context?.alerts)));
-
-      }
-
-      this.subscribe('isInitializing', from(this.actor).pipe(
-        map((state) => state.matches(AuthenticateStates.INITIAL)),
-      ));
-
-      this.subscribe('isRedirecting', from(this.actor).pipe(
-        map((state) => state.matches(AuthenticateStates.REDIRECTING)),
-      ));
-
-    }
-
-    if(changed.has('formActor') && this.formActor){
-
-      this.subscribe('canSubmit', from(this.formActor).pipe(
-        map((state) => state.matches({
-          [FormSubmissionStates.NOT_SUBMITTED]:{
-            [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
-            [FormRootStates.VALIDATION]: FormValidationStates.VALID,
-          },
-        })),
-      ));
-
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
-        map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
-      ));
-
-    }
+    define('authenticate-component', hydrate(AuthenticateComponent)(this.solidService));
 
   }
 
-  /**
-   * Handles a dismiss event by sending a dismiss alert event to its parent.
-   *
-   * @param event Dismiss event dispatched by an alert componet.
-   */
-  handleDismiss(event: CustomEvent<Alert>): void {
+  private onAuthenticated = (event: CustomEvent<unknown>): void => {
 
-    if (!event || !event.detail) {
+    alert('authenticated');
 
-      throw new ArgumentError('Argument event || event.detail should be set.', event);
-
-    }
-
-    if (!this.actor || !this.actor.parent) {
-
-      throw new ArgumentError('Argument this.actor || !this.actor.parent should be set.', this.actor);
-
-    }
-
-    this.actor.parent.send(new DismissAlertEvent(event.detail));
-
-  }
+  };
 
   /**
    * Renders the component as HTML.
@@ -155,32 +55,26 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    // Create an alert components for each alert.
-    const alerts = this.alerts?.map((alert) => html`<nde-alert .logger='${this.logger}' .translator='${this.translator}' .alert='${alert}' @dismiss="${this.handleDismiss}"></nde-alert>`);
-
     return html`
       <div class="title-container">
         ${ unsafeSVG(Logo) }
         <h1>${this.translator?.translate('authenticate.pages.login.title')}</h1>
       </div>
-      ${this.isInitializing || this.isRedirecting ? html`${unsafeSVG(Loading)}` : html`
-        <div class="form-container">
-          ${ alerts }
-          
-          <form onsubmit="return false">
-            <nde-form-element class="inverse" .actor="${this.formActor}" .translator="${this.translator}" field="webId">
-              <label slot="label" for="webid">${this.translator?.translate('authenticate.pages.login.webid-label')}</label>
-              <input type="text" name="webid" id="webid" slot="input" ?disabled="${this.isSubmitting}" placeholder="${this.translator?.translate('authenticate.pages.login.webid-placeholder')}" autocomplete="url"/>
-              <button type="button" slot="action" class="primary" ?disabled="${!this.canSubmit || this.isSubmitting}" @click="${() => this.formActor?.send(new FormSubmittedEvent())}">${ unsafeSVG(Login) }</button>
-            </nde-form-element>
-          </form>
-        
-        </div>
-        <div class="webid-container">
-          <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
-        </div>
-      `}
-      `;
+      
+      <authenticate-component
+        hideCreateNewWebId
+        @authenticated="${this.onAuthenticated}"
+        .predefinedIssuers="${this.issuers}"
+        .textSeparator="${ this.translator?.translate('authenticate.pages.login.separator') }"
+        .textWebIdLabel="${ this.translator?.translate('authenticate.pages.login.webid-label') }"
+        .textWebIdPlaceholder="${ this.translator?.translate('authenticate.pages.login.webid-placeholder') }"
+        .textButton="${ 'O' }"
+        .translator="${this.translator}"
+      ></authenticate-component>
+
+      <div class="webid-container">
+        <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
+      </div>`;
 
   }
 
@@ -197,12 +91,63 @@ export class AuthenticateRootComponent extends RxLitElement {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          gap: 80px;
           background-color: var(--colors-primary-dark);
         }
-        
-        :host > * {
-          margin-bottom: var(--gap-huge);
+        authenticate-component {
           width: 400px;
+          max-width: 400px;
+          min-width: 400px;
+        }
+        authenticate-component::part(provider) {
+          border: none;
+          background-color: var(--colors-primary-light);
+          color: var(--colors-foreground-inverse);
+          cursor: pointer;
+          outline: none;
+          padding: 0 0 0 6.5rem;
+          margin: 0;
+          height: 40px;
+          font-size: var(--font-size-small);
+        }
+
+        authenticate-component::part(webid-label) {
+          color: var(--colors-foreground-inverse);
+          margin-bottom: calc(var(--gap-small) * -1);
+        }
+
+        authenticate-component::part(webid-input) {
+          padding: var(--gap-small);
+          color: var(--colors-foreground-normal);
+          font-size: var(--font-size-small);
+          width: calc(85% - (2 * var(--gap-small)));
+          border: none;
+          height: 20px;
+        }
+
+        authenticate-component::part(t) {
+          font-size: var(--font-size-small);
+          width: 75%;
+          margin: var(--gap-large) auto;
+          --colors-foreground-light: white;
+        }
+
+        authenticate-component::part(webid-button) {
+          border: none;
+          background-color: var(--colors-primary-light);
+          text-transform: uppercase;
+          padding: var(--gap-small);
+          color: var(--colors-foreground-inverse);
+          cursor: pointer;
+          outline: none;
+          text-transform: unset;
+          font-size: var(--font-size-small);
+          width: 15%;
+          padding-left: 0;
+          padding-right: 0;
+          margin-top: -60px;
+          height: 40px;
+          align-self: flex-end
         }
 
         .title-container {
@@ -211,9 +156,10 @@ export class AuthenticateRootComponent extends RxLitElement {
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
+          gap: var(--gap-large);
           color: var(--colors-foreground-inverse);
         }
-        
+
         .title-container svg {
           max-height: 50px;
           height: 50px;
@@ -222,12 +168,12 @@ export class AuthenticateRootComponent extends RxLitElement {
           fill: var(--colors-foreground-inverse);
           stroke: none !important;
         }
-        
+
         .title-container h1 {
           font-size: var(--font-size-header-normal);
           font-weight: normal;
         }
-        
+
         nde-form-element label {
           color: white;
         }
@@ -236,26 +182,16 @@ export class AuthenticateRootComponent extends RxLitElement {
           text-align: center;
           color: var(--colors-foreground-light);
           font-size: var(--font-size-small);
+          margin: 0;
         }
 
         .webid-container p a {
           color: var(--colors-foreground-light);
         }
 
-        .form-container {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: stretch;
-        }
-
-        .form-container > * {
-          margin-bottom: var(--gap-large);
-        }
-
         svg {
           stroke: var(--colors-foreground-light) !important;
-        }
+        } */
         `,
     ];
 

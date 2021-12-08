@@ -2,16 +2,19 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Alert, FormActors, FormContext, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { define, hydrate } from '@digita-ai/dgt-components';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { AppEvent, AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
+import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
+import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 
 /**
  * The root page of the application.
@@ -80,6 +83,20 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<FormEvent>;
 
+  /**
+   * The solid service used throughout the application.
+   */
+  @internalProperty()
+  solidService = new SolidSDKService('Collectieregistratiesysteem');
+
+  constructor() {
+
+    super();
+
+    define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
+
+  }
+
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
 
@@ -129,7 +146,7 @@ export class AppRootComponent extends RxLitElement {
 
     this.actor = interpret(
       (appMachine(
-        new SolidSDKService(this.logger),
+        this.solidService,
         new CollectionSolidStore(),
         new CollectionObjectSolidStore(),
         {
@@ -293,9 +310,9 @@ export class AppRootComponent extends RxLitElement {
       </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
-    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`<nde-authenticate-root .actor='${this.actor?.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`: ''}   
+    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED })
+    ? html`<nde-authenticate-root .solidService="${this.solidService}" .translator='${this.translator}'></nde-authenticate-root>`: ''}   
     ${ this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE }) ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
-    
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }

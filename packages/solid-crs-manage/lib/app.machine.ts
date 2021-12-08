@@ -1,9 +1,10 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidService, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
+import { authenticateMachine } from '@digita-ai/dgt-components';
+import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedInEvent, LoggedOutEvent, LoggingOutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
-import { authenticateMachine } from './features/authenticate/authenticate.machine';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
@@ -377,7 +378,7 @@ export const appMachine = (
           [AppAuthenticateStates.UNAUTHENTICATED]: {
             invoke: {
               id: AppActors.AUTHENTICATE_MACHINE,
-              src: authenticateMachine(solid).withContext({ }),
+              src: authenticateMachine(solid),
               /**
                * Send logged in event when authenticate machine is done, and the user has authenticated.
                */
