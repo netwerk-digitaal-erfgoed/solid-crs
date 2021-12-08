@@ -1,4 +1,4 @@
-import { css, html, LitElement, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 
 /**
@@ -6,10 +6,33 @@ import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
  */
 export class CardComponent extends LitElement {
 
+  render(): TemplateResult {
+
+    return html`
+      <div class='card'>
+        <div class="image">
+          <slot name='image'></slot>
+        </div>
+
+        <div class='content'>
+
+          <div class='subtitle'>
+            <slot name='subtitle'></slot>
+          </div>
+          
+          <div class='title'>
+            <slot name='title'></slot>
+          </div>
+        </div>
+      </div>
+    `;
+
+  }
+
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
@@ -59,29 +82,6 @@ export class CardComponent extends LitElement {
         }
       `,
     ];
-
-  }
-
-  render() {
-
-    return html`
-      <div class='card'>
-        <div class="image">
-          <slot name='image'></slot>
-        </div>
-
-        <div class='content'>
-
-          <div class='subtitle'>
-            <slot name='subtitle'></slot>
-          </div>
-          
-          <div class='title'>
-            <slot name='title'></slot>
-          </div>
-        </div>
-      </div>
-    `;
 
   }
 

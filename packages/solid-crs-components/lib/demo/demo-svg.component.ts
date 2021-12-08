@@ -1,5 +1,5 @@
 import { Cross, Logout, Search, Object, Login, Edit, Bell, Loading, Trash, Dropdown, Identity, Connect, Plus, Dots, Collection, Save, Image } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { css, html, LitElement } from 'lit-element';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 /**
  * A component which represents different icons.
@@ -11,7 +11,7 @@ export class DemoSVGComponent extends LitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div>
@@ -40,7 +40,7 @@ export class DemoSVGComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       css`

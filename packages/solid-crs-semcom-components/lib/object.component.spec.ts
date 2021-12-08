@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 
@@ -58,7 +59,7 @@ describe.each([
 
     const root = window.document.body.querySelector(tag);
     expect(root).toBeTruthy();
-    expect(root.shadowRoot.querySelector('nde-large-card')).toBeTruthy();
+    expect(root?.shadowRoot?.querySelector('nde-large-card')).toBeTruthy();
 
   });
 

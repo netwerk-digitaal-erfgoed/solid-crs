@@ -8,6 +8,6 @@ export interface Schema<TContext, TStates extends string> extends StateSchema<TC
    * States within the machine.
    */
   states?: {
-    [key in TStates]?: StateSchema<TContext>;
+    [key in TStates]: StateSchema<TContext>;
   };
 }

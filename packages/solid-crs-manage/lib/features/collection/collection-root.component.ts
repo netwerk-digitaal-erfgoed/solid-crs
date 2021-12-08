@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates, PopupComponent, FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -145,11 +145,13 @@ export class CollectionRootComponent extends RxLitElement {
 
     if(changed?.has('formActor') && this.formActor){
 
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isSubmitting', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
       ));
 
-      this.subscribe('isValid', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isValid', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALID,
@@ -157,7 +159,8 @@ export class CollectionRootComponent extends RxLitElement {
         })),
       ));
 
-      this.subscribe('isDirty', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isDirty', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,

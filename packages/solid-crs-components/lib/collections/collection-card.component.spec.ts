@@ -1,4 +1,5 @@
 import { Collection, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import fetchMock from 'jest-fetch-mock';
 import { CollectionCardComponent } from './collection-card.component';
 
 describe('AlertComponent', () => {

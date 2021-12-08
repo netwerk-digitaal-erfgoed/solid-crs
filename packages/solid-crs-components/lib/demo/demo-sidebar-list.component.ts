@@ -1,4 +1,4 @@
-import { css, html, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, TemplateResult, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -15,7 +15,7 @@ export class DemoSidebarListComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <nde-sidebar inverse>
@@ -43,7 +43,7 @@ export class DemoSidebarListComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

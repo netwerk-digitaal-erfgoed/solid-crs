@@ -1,4 +1,4 @@
-import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 
 /**
@@ -10,20 +10,20 @@ export class ContentHeaderComponent extends LitElement {
    * Decides the color variant of this component (dark/light)
    */
   @property({ type: Boolean })
-  public inverse = false;
+  inverse = false;
 
   /**
    * Whether or not a border should be shown at the bottom
    */
   @property({ type: Boolean })
-  public noBorder = false;
+  noBorder = false;
 
   /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <div class="header${this.inverse ? '' : ' inverse'}${this.noBorder ? ' no-border' : ''}">
@@ -49,7 +49,7 @@ export class ContentHeaderComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),
