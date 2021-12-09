@@ -274,7 +274,7 @@ export class AppRootComponent extends RxLitElement {
     <nde-sidebar inverse>
       <nde-content-header>
         <div slot="title">${this.profile?.name}</div>
-        <div slot="icon"><button class="no-padding" @click="${() => this.actor.send(AppEvents.LOGGING_OUT)}">${unsafeSVG(Logout)}</button></div>
+        <div slot="icon"><button class="no-padding" @click="${() => this.actor.send(AppEvents.CLICKED_LOGOUT)}">${unsafeSVG(Logout)}</button></div>
       </nde-content-header>
       <nde-sidebar-item>
         <div slot="content">

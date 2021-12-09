@@ -15,7 +15,7 @@ export enum AppEvents {
   DISMISS_ALERT = '[AppEvent: Dismiss alert]',
   ERROR = 'xstate.error',
   LOGGED_IN = '[AppEvent: Logged in]',
-  LOGGING_OUT = '[AppEvent: Logging out]',
+  CLICKED_LOGOUT = '[AppEvent: Clicked logout]',
   LOGGED_OUT = '[AppEvent: Logged out]',
   CLICKED_CREATE_COLLECTION = '[AppEvent: Clicked create collection]',
   COLLECTIONS_LOADED = '[AppEvent: Collections loaded]',
@@ -72,7 +72,7 @@ export class LoggedOutEvent implements EventObject {
  */
 export class LoggingOutEvent implements EventObject {
 
-  public type: AppEvents.LOGGING_OUT = AppEvents.LOGGING_OUT;
+  public type: AppEvents.CLICKED_LOGOUT = AppEvents.CLICKED_LOGOUT;
 
 }
 

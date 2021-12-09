@@ -348,7 +348,7 @@ export const appMachine = (
               },
             ],
             on: {
-              [AppEvents.LOGGING_OUT]: AppAuthenticateStates.UNAUTHENTICATING,
+              [AppEvents.CLICKED_LOGOUT]: AppAuthenticateStates.UNAUTHENTICATING,
             },
           },
 
@@ -367,7 +367,10 @@ export const appMachine = (
               },
             },
             on: {
-              [AppEvents.LOGGED_OUT]: AppAuthenticateStates.UNAUTHENTICATED,
+              [AppEvents.LOGGED_OUT]: {
+                target: AppAuthenticateStates.UNAUTHENTICATED,
+                actions: () => location.reload(),
+              },
             },
           },
 

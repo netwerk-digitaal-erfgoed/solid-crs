@@ -243,7 +243,7 @@ describe('AppMachine', () => {
     machine.start();
 
     machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
-    machine.send(AppEvents.LOGGING_OUT);
+    machine.send(AppEvents.CLICKED_LOGOUT);
 
   });
 
