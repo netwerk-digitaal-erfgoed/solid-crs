@@ -8,9 +8,9 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
+import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
@@ -147,8 +147,8 @@ export class AppRootComponent extends RxLitElement {
     this.actor = interpret(
       (appMachine(
         this.solidService,
-        new CollectionSolidStore(),
-        new CollectionObjectSolidStore(),
+        new CollectionSolidStore(this.solidService),
+        new CollectionObjectSolidStore(this.solidService),
         {
           uri: undefined,
           name: this.translator.translate('collections.new-collection-name'),
@@ -311,7 +311,11 @@ export class AppRootComponent extends RxLitElement {
     </nde-sidebar>
     ` : '' }  
     ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED })
-    ? html`<nde-authenticate-root .solidService="${this.solidService}" .translator='${this.translator}'></nde-authenticate-root>`: ''}   
+    ? html`<nde-authenticate-root
+    @authenticated="${(event: CustomEvent<Session>) => this.actor.send(new LoggedInEvent(event.detail))}"
+    .solidService="${this.solidService}"
+    .translator="${this.translator}"
+    ></nde-authenticate-root>`: ''}   
     ${ this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE }) ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }

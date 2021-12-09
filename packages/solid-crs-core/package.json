@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
+    "@digita-ai/inrupt-solid-service": "^0.11.0",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.12.0",
     "moment": "^2.29.1",
     "rxjs": "^7.4.0",
@@ -75,9 +76,9 @@
     "coverageThreshold": {
       "global": {
         "branches": 92.23,
-        "statements": 97.46,
-        "lines": 97.34,
-        "functions": 99.39
+        "statements": 97.48,
+        "lines": 97.35,
+        "functions": 99.4
       }
     },
     "automock": false,
@@ -100,6 +101,6 @@
     },
     "displayName": "core",
     "preset": "@digita-ai/jest-config",
-    "maxWorkers": 6
+    "maxWorkers": 4
   }
 }

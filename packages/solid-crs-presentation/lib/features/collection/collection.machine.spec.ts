@@ -1,9 +1,11 @@
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, SolidMockService, SolidService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { interpret, Interpreter } from 'xstate';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SolidService } from '@digita-ai/inrupt-solid-service';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { interpret } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
-import { CollectionContext, collectionMachine, CollectionStates } from './collection.machine';
+import { collectionMachine, CollectionStates } from './collection.machine';
 
 global.window = Object.create(window);
 const url = 'http://test.presentation.solid-crs/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fprofile%2Fcard%23me/collection/http%3A%2F%2Flocalhost%3A3000%2Fhetlageland%2Fheritage-collections%2Fcatalog%23collection-1';
@@ -39,15 +41,16 @@ describe('CollectionMachine', () => {
     collection: 'collection-uri-1',
   };
 
-  let machine: Interpreter<CollectionContext>;
+  let machine;
   let collectionStore: CollectionStore;
   let objectStore: CollectionObjectStore;
   let solidService: SolidService;
 
   beforeEach(() => {
 
-    solidService = new SolidMockService(new ConsoleLogger(LoggerLevel.error, LoggerLevel.error));
-    solidService.getProfile = jest.fn(async() => ({ uri: 'https://test.url/', name: 'name' }));
+    (solidService as any) = {
+      getProfile: jest.fn(async() => ({ uri: 'https://test.url/', name: 'name' })),
+    };
 
     collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 

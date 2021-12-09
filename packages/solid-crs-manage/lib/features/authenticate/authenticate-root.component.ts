@@ -3,9 +3,9 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Login, Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { AuthenticateComponent, define, hydrate } from '@digita-ai/dgt-components';
-import { Issuer, SolidService } from '@digita-ai/inrupt-solid-service';
+import { Issuer, Session, SolidService } from '@digita-ai/inrupt-solid-service';
 
 /**
  * The root page of the authenticate feature.
@@ -42,9 +42,14 @@ export class AuthenticateRootComponent extends RxLitElement {
 
   }
 
-  private onAuthenticated = (event: CustomEvent<unknown>): void => {
+  /**
+   * Dsipatches an authenticated event to parent element when the user is authenticated.
+   *
+   * @param event the original authenticated event
+   */
+  private onAuthenticated = (event: CustomEvent<Session>): void => {
 
-    alert('authenticated');
+    this.dispatchEvent(new CustomEvent('authenticated', { detail: event.detail }));
 
   };
 
@@ -68,7 +73,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         .textSeparator="${ this.translator?.translate('authenticate.pages.login.separator') }"
         .textWebIdLabel="${ this.translator?.translate('authenticate.pages.login.webid-label') }"
         .textWebIdPlaceholder="${ this.translator?.translate('authenticate.pages.login.webid-placeholder') }"
-        .textButton="${ 'O' }"
+        textButton="Login"
         .translator="${this.translator}"
       ></authenticate-component>
 

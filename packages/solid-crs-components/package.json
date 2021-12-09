@@ -101,6 +101,6 @@
         }
       }
     },
-    "maxWorkers": 6
+    "maxWorkers": 4
   }
 }

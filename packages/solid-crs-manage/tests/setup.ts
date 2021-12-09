@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Polyfill for encoding which isn't present globally in jsdom
 // eslint-disable-next-line import/order, @typescript-eslint/no-var-requires
 const crypto = require('crypto');
@@ -26,7 +27,7 @@ import { AuthenticateRootComponent } from '../lib/features/authenticate/authenti
 
 // mock router function and state config
 // essentially disables the router in tests
-core.urlVariables = () => ({
+(core.urlVariables as any) = () => ({
   searchParams: {
     get: jest.fn(() => ''),
   },
@@ -35,12 +36,12 @@ core.urlVariables = () => ({
   },
 });
 
-core.activeRoute = () => ({
+(core.activeRoute as any) = () => ({
   path: undefined, targets: [],
   ...core.urlVariables(undefined),
 });
 
-core.routerStateConfig = () => ({
+(core.routerStateConfig as any) = () => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {
