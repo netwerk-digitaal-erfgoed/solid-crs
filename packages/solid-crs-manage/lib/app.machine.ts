@@ -375,19 +375,6 @@ export const appMachine = (
            * The user has not been authenticated.
            */
           [AppAuthenticateStates.UNAUTHENTICATED]: {
-            // invoke: {
-            //   id: AppActors.AUTHENTICATE_MACHINE,
-            //   src: authenticateMachine(solid),
-            //   /**
-            //    * Send logged in event when authenticate machine is done, and the user has authenticated.
-            //    */
-            //   onDone: {
-            //     actions: send((_, event) => new LoggedInEvent(event.data.session)),
-            //   },
-            //   onError: {
-            //     actions: send((context, event) => event),
-            //   },
-            // },
             on: {
               [AppEvents.LOGGED_IN]: {
                 target: AppAuthenticateStates.AUTHENTICATED,

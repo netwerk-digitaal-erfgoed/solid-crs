@@ -3,7 +3,7 @@ import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Login, Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { AuthenticateComponent, define, hydrate } from '@digita-ai/dgt-components';
 import { Issuer, Session, SolidService } from '@digita-ai/inrupt-solid-service';
 

@@ -1,12 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObjectMemoryStore, CollectionObject, Collection, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AddAlertEvent, AppEvents, ClickedAdministratorTypeEvent, DismissAlertEvent, LoggedInEvent, SetProfileEvent } from './app.events';
 import { AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+const solidService = {
+  getProfile: jest.fn(async () => ({
+    uri: 'https://example.com/profile',
+  })),
+  logout: jest.fn(async() => undefined),
+} as any;
 
 describe('AppMachine', () => {
 
@@ -43,7 +49,7 @@ describe('AppMachine', () => {
 
     machine = interpret(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        solidService,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
@@ -80,7 +86,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        solidService,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
@@ -124,7 +130,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
-        new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+        solidService,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
@@ -212,7 +218,7 @@ describe('AppMachine', () => {
 
     machine = interpret<AppContext>(
       appMachine(
-        solid,
+        solidService,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
@@ -238,34 +244,6 @@ describe('AppMachine', () => {
 
     machine.send(AppEvents.LOGGED_IN, { session: { webId: 'foo' } });
     machine.send(AppEvents.LOGGING_OUT);
-
-  });
-
-  it('should send logged in when authenticate machine is done', async (done) => {
-
-    solid.getSession = jest.fn(async () => ({ webId: 'lorem' }));
-
-    machine = interpret<AppContext>(
-      appMachine(solid,
-        new CollectionMemoryStore([ collection1, collection2 ]),
-        new CollectionObjectMemoryStore([ object1 ]),
-        collection1,
-        object1).withContext({
-        alerts: [],
-      }),
-    );
-
-    machine.onEvent((event) => {
-
-      if(event.type === AppEvents.LOGGED_IN && (event as LoggedInEvent).session?.webId === 'lorem') {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
 
   });
 
@@ -314,7 +292,7 @@ describe('AppMachine', () => {
   it('should add alert when ClickedAdministratorType is fired', async (done) => {
 
     machine = interpret<AppContext>(
-      appMachine(solid,
+      appMachine(solidService,
         {
           search: jest.fn(),
           all: jest.fn(),

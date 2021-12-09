@@ -83,13 +83,7 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<FormEvent>;
 
-  /**
-   * The solid service used throughout the application.
-   */
-  @internalProperty()
-  solidService = new SolidSDKService('Collectieregistratiesysteem');
-
-  constructor() {
+  constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem')) {
 
     super();
 
