@@ -17,7 +17,7 @@
             {
               "comment": "Will embed the result of the first engine into the main HTML template.",
               "@type": "EjsTemplateEngine",
-              "template": "./assets/main.html.ejs"
+              "template": "./templates/main.html.ejs"
             }
           ]
         }

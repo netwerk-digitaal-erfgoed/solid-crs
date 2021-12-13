@@ -118,6 +118,14 @@ const visibilityConditions = {
   createPodForm: () => elements.createPod.checked,
   podNameForm: () => !elements.rootPodOn.checked,
 };
+
+// Enables the submit button when all fields are filled
+function enableSubmitButton() {
+  const submitButton = document.getElementById('submitButton');
+  const allFieldsFilled = Object.values(elements).every(element => element.value);
+  submitButton.disabled = !allFieldsFilled;
+}
+
 // Ensures that the only relevant input fields are visible and enabled
 function synchronizeInputFields({ srcElement } = {}) {
   // The user needs a Pod if they want to create a WebID

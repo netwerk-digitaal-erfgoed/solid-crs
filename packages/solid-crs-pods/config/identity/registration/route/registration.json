@@ -8,11 +8,11 @@
         "route": "^/register/$",
         "viewTemplates": {
           "BasicInteractionRoute:_viewTemplates_key": "text/html",
-          "BasicInteractionRoute:_viewTemplates_value": "./assets/register.html.ejs"
+          "BasicInteractionRoute:_viewTemplates_value": "./templates/identity/email-password/register.html.ejs"
         },
         "responseTemplates": {
           "BasicInteractionRoute:_responseTemplates_key": "text/html",
-          "BasicInteractionRoute:_responseTemplates_value": "./assets/register-response.html.ejs"
+          "BasicInteractionRoute:_responseTemplates_value": "./templates/identity/email-password/register-response.html.ejs"
         },
         "controls": {
           "BasicInteractionRoute:_controls_key": "register",

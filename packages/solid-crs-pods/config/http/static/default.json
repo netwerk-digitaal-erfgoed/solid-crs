@@ -9,7 +9,7 @@
         "assets": [
           {
             "StaticAssetHandler:_assets_key": "/favicon.ico",
-            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/assets/favicon/favicon-16.png"
+            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/templates/images/favicon-16.png"
           },
           {
             "StaticAssetHandler:_assets_key": "/.well_known/css/styles/",
@@ -21,7 +21,7 @@
           },
           {
             "StaticAssetHandler:_assets_key": "/.well_known/css/images/",
-            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/assets/images/"
+            "StaticAssetHandler:_assets_value": "./../solid-crs-pods/templates/images/"
           }
         ]
       }

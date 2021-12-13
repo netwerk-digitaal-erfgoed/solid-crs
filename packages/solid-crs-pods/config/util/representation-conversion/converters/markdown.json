@@ -7,7 +7,7 @@
         "@type": "MarkdownToHtmlConverter",
         "templateEngine": {
           "@type": "EjsTemplateEngine",
-          "template": "./assets/main.html.ejs" 
+          "template": "./templates/main.html.ejs" 
         }
       },
       {
