@@ -15,15 +15,17 @@
   }
 
   h1 {
-      font-size: 2.5em;
+      font-size: 24px;
       margin-bottom: 10px;
-      font-weight: Bold;
+      font-weight: normal;
+      color: #172a59;
   }
 
   h2 {
-      font-size: 1.5em;
+      font-size: 16.95px;
       margin-bottom: 5px;
-      font-weight: 400;
+      font-weight: 600;
+      color: #172a59;
   }
   
   body {
@@ -37,10 +39,17 @@
     border-radius: 3px;
   }
 
+  p {
+    color: #172a59;
+    font-size: 14.4px;
+
+    line-height: 21.6px;
+  }
+
   li {
     list-style: none;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 
   }
 
@@ -88,8 +97,10 @@
 
   button {
     cursor: pointer;
+    width: 150px;
+    height: 45px;
     padding: 0.5em 2em;
-    margin: 40px;
+    margin: 20px;
     border: 0px;
     background-color: #0A3DFA;;
     color: white;
@@ -101,15 +112,17 @@
 
 
   input {
-      border: 1.9px solid #172A59;
+      border: 2px solid #172A59;
       width: 60%;
       float: right;
 
   }
   
   label {
-      font-weight: 400;
+      font-size: 14.4px;
+      font-weight: 600;
       min-width: 30%;
-      line-height: 33.57px;
+      line-height: 21.6px;
+      color: #172a59;
       
   }
