@@ -59,10 +59,10 @@ describe('AlertComponent', () => {
 
   });
 
-  it.each([ 'success', 'warning', 'danger' ])('should be assigned the appropriate class when %s', async (type: 'success' | 'warning' | 'danger') => {
+  it.each([ 'success', 'warning', 'danger' ])('should be assigned the appropriate class when %s', async (type) => {
 
     component.alert = {
-      type,
+      type: type as 'success' | 'warning' | 'danger',
       message: 'Foo',
     };
 

@@ -1,5 +1,6 @@
-import { css, html, LitElement, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, LitElement, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ifDefined } from 'lit-html/directives/if-defined';
 
 /**
  * A component which represents a sidebar item.
@@ -10,24 +11,24 @@ export class ProgressBarComponent extends LitElement {
    * The type of progress bar to display
    */
   @property({ type: String })
-  public type: 'indeterminate' | 'determinate' = 'indeterminate';
+  type: 'indeterminate' | 'determinate' = 'indeterminate';
 
   /**
    * The type of progress bar to display
    */
   @property({ type: Number })
-  public value: number;
+  value?: number;
 
   /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return this.type === 'determinate'
       ? html`
-        <progress class="determinate" max="100" value="${this.value}"></progress> 
+        <progress class="determinate" max="100" value="${ifDefined(this.value)}"></progress> 
       `
       : html`
         <div class="progress-indeterminate">
@@ -40,7 +41,7 @@ export class ProgressBarComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

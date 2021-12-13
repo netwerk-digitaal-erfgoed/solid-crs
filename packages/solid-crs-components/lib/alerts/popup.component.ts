@@ -13,13 +13,13 @@ export class PopupComponent extends RxLitElement {
    * The content element of this component
    */
   @query('slot[name="content"]')
-  content: HTMLSlotElement;
+  content?: HTMLSlotElement;
 
   /**
    * Decides whether the component has a dark background
    */
   @property({ type: Boolean })
-  public dark = false;
+  dark = false;
 
   /**
    * Hides/shows the component
@@ -48,6 +48,18 @@ export class PopupComponent extends RxLitElement {
 
   }
 
+  constructor() {
+
+    super();
+
+    document.addEventListener('keydown', (event) => {
+
+      if (event.key === 'Escape') this.hide();
+
+    });
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -63,22 +75,6 @@ export class PopupComponent extends RxLitElement {
       <slot name="content" @click="${ (event: MouseEvent) => event.stopPropagation() }"></slot>
     </div>
   `;
-
-  }
-
-  constructor() {
-
-    super();
-
-    document.addEventListener('keydown', (event) => {
-
-      if (event.key === 'Escape') {
-
-        this.hide();
-
-      }
-
-    });
 
   }
   /**

@@ -1,10 +1,11 @@
-import { Collection, CollectionObject, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { css, html, LitElement } from 'lit-element';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Collection, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit-element';
 import fetchMock from 'jest-fetch-mock';
 
 export class DemoNDECardComponent extends LitElement {
 
-  render() {
+  render(): TemplateResult {
 
     const translator = new MemoryTranslator('nl-NL',);
 
@@ -33,27 +34,27 @@ export class DemoNDECardComponent extends LitElement {
 
     const obj1 = {
       uri: 'nl',
-      name: 'Object nummertje 1',
+      name: 'Object nummer 1',
       description: 'Een object',
       image: 'https://images.unsplash.com/photo-1615390164801-cf2e70f32b53?ixid=MnwxMjA3fDB8MHxwcm9maWxlLXBhZ2V8M3x8fGVufDB8fHx8&ixlib=rb-1.2.1&w=1000&q=80',
       subject: [ { name: 'Wel Degelijk Geen Molen' } ],
       type: 'type',
       updated: '1620216600000',
       collection: undefined,
-    } as CollectionObject;
+    } as any;
 
-    const obj2 = { ...obj1, name: undefined } as CollectionObject;
-    const obj3 = { ...obj2, subject: undefined } as CollectionObject;
-    const obj4 = { ...obj3, updated: undefined } as CollectionObject;
-    const obj5 = { ...obj4, image: undefined } as CollectionObject;
+    const obj2 = { ...obj1, name: undefined } as any;
+    const obj3 = { ...obj2, subject: undefined } as any;
+    const obj4 = { ...obj3, updated: undefined } as any;
+    const obj5 = { ...obj4, image: undefined } as any;
 
     const col1 = {
-      name: 'Collectie nummertje 1',
+      name: 'Collectie nummer 1',
       description: 'Beschrijving eerste collectie',
     } as Collection;
 
-    const col2 = { ...col1, name: undefined } as Collection;
-    const col3 = { ...col2, description: undefined } as Collection;
+    const col2 = { ...col1, name: undefined } as any;
+    const col3 = { ...col2, description: undefined } as any;
 
     return html`
       <p>Collection Objects</p>
@@ -90,7 +91,7 @@ export class DemoNDECardComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [ css`
       .grid {

@@ -4,7 +4,7 @@
     "baseUrl": "lib",
     "outDir": "dist",
     "sourceMap": true,
-    "strict": false
+    "noImplicitAny": false
   },
   "files": [ 
     "node_modules/vite/client.d.ts",

@@ -3,7 +3,7 @@ import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormActors, FormContext, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -11,6 +11,7 @@ import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeature
 import { AppEvent, AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
+import { SearchContext } from './features/search/search.machine';
 
 /**
  * The root page of the application.
@@ -77,7 +78,7 @@ export class AppRootComponent extends RxLitElement {
    * The actor responsible for the search field.
    */
   @internalProperty()
-  searchActor: ActorRef<SearchEvent>;
+  searchActor: ActorRef<FormEvent>;
 
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
@@ -203,7 +204,8 @@ export class AppRootComponent extends RxLitElement {
 
     if(changed.has('searchActor') && this.searchActor) {
 
-      this.subscribe('searchTerm', from(this.searchActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('searchTerm', from((this.searchActor as unknown) as Interpreter<SearchContext, any, SearchEvent>).pipe(
         map((state) => state.context.searchTerm)
       ));
 

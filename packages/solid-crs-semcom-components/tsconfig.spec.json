@@ -5,7 +5,6 @@
       "outDir": "dist",
       "sourceMap": true,
       "resolveJsonModule": true,
-      "strict": false
     },
     "files": [ "tests/setup.ts" ],
     "include": [ "lib" ],
