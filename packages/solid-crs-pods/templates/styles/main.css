@@ -109,10 +109,10 @@
   input {
       border: 2px solid #172A59;
       width: 60%;
-      height: 30px;
+      height: 20px;
       float: right;
-      padding-top: 5px;
-      padding-bottom: 5px;
+      padding-top: 10px;
+      padding-bottom: 10px;
       padding-left: 10px;
       font-size: 14.4px;
       font-weight: 500;
