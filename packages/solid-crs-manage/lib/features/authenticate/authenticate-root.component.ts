@@ -1,9 +1,9 @@
 import { html, property, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, webIdValidator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Login, Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { AuthenticateComponent, define, hydrate } from '@digita-ai/dgt-components';
 import { Issuer, Session, SolidService } from '@digita-ai/inrupt-solid-service';
 
@@ -16,13 +16,13 @@ export class AuthenticateRootComponent extends RxLitElement {
    * The component's logger.
    */
   @property({ type: Object })
-  public logger: Logger;
+  logger: Logger;
 
   /**
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator;
+  translator: Translator;
 
   /**
    * List of predefined issuers.
@@ -38,7 +38,7 @@ export class AuthenticateRootComponent extends RxLitElement {
 
     super();
 
-    define('authenticate-component', hydrate(AuthenticateComponent)(this.solidService));
+    define('authenticate-component', hydrate(AuthenticateComponent)(this.solidService, undefined, webIdValidator));
 
   }
 
@@ -73,7 +73,7 @@ export class AuthenticateRootComponent extends RxLitElement {
         .textSeparator="${ this.translator?.translate('authenticate.pages.login.separator') }"
         .textWebIdLabel="${ this.translator?.translate('authenticate.pages.login.webid-label') }"
         .textWebIdPlaceholder="${ this.translator?.translate('authenticate.pages.login.webid-placeholder') }"
-        textButton="Login"
+        .textButton="${Login}"
         .translator="${this.translator}"
       ></authenticate-component>
 
@@ -122,19 +122,20 @@ export class AuthenticateRootComponent extends RxLitElement {
         }
 
         authenticate-component::part(webid-input) {
-          padding: var(--gap-small);
+          padding: var(--gap-small) var(--gap-normal);
           color: var(--colors-foreground-normal);
           font-size: var(--font-size-small);
-          width: calc(85% - (2 * var(--gap-small)));
           border: none;
+          outline-style: none;
           height: 20px;
+          text-overflow: ellipsis;
         }
 
-        authenticate-component::part(t) {
+        authenticate-component::part(separator) {
           font-size: var(--font-size-small);
-          width: 75%;
           margin: var(--gap-large) auto;
           --colors-foreground-light: white;
+          width: 75%;
         }
 
         authenticate-component::part(webid-button) {
@@ -147,12 +148,17 @@ export class AuthenticateRootComponent extends RxLitElement {
           outline: none;
           text-transform: unset;
           font-size: var(--font-size-small);
-          width: 15%;
-          padding-left: 0;
-          padding-right: 0;
-          margin-top: -60px;
-          height: 40px;
-          align-self: flex-end
+          height: var(--gap-large);
+          width: 60px;
+        }
+
+        authenticate-component::part(alert) {
+          height: var(--gap-small);
+          font-size: var(--font-size-small);
+        }
+
+        authenticate-component::part(loading) {
+          --colors-foreground-normal: var(--colors-foreground-light);
         }
 
         .title-container {
