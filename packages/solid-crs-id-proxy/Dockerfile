@@ -2,7 +2,7 @@ FROM node:14-alpine AS build
 LABEL org.opencontainers.image.source=https://github.com/cultuurnet/solid-poc
 ARG NPM_TOKEN
 ENV UPSTREAM_URL=https://nde.eu.auth0.com/
-ENV PROXY_URL= TO DO
+ENV PROXY_URL=https://auth.netwerkdigitaalerfgoed.nl/
 WORKDIR /usr/src/id-proxy
 COPY package*.json ./
 COPY .npmrc ./
