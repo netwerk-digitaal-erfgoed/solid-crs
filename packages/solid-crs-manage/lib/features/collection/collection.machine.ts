@@ -180,9 +180,9 @@ export const collectionMachine =
                 sendParent(() => ({ type: CollectionEvents.SAVED_COLLECTION })),
               ],
             },
-            onError: {
-              actions: sendParent(AppEvents.ERROR),
-            },
+            // onError: {
+            //   actions: sendParent(AppEvents.ERROR),
+            // },
           },
         },
         /**

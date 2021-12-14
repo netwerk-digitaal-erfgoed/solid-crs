@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import fetchMock from 'jest-fetch-mock';
 import { Collection } from '../collections/collection';
 import { SolidStore } from './solid-store';
 
@@ -37,6 +38,7 @@ describe('SolidStore', () => {
 
     it('should error when no profile could be found', async () => {
 
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => undefined);
       await expect(service.getInstanceForClass('test-string', 'test-string')).rejects.toThrow('Could not find profile in dataset');
 
@@ -294,6 +296,7 @@ describe('SolidStore', () => {
       (client.addUrl as any) = jest.fn(() => 'test-thing');
       (client.setThing as any) = jest.fn(() => 'test-dataset');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-result');
+      (service.setPublicAccess as any) = jest.fn(async () => true);
 
       (client.access as any) = {
         setPublicAccess: async () => null,
@@ -330,6 +333,81 @@ describe('SolidStore', () => {
       expect((client.saveSolidDatasetAt as any)).toHaveBeenCalled();
       // expect((client.access as any).setPublicAccess).toHaveBeenCalled();
       expect((client.overwriteFile as any)).toHaveBeenCalledTimes(2);
+
+    });
+
+  });
+
+  describe('setPublicAccess', () => {
+
+    beforeEach(() => {
+
+      (client.access.getPublicAccess as any) = jest.fn(async () => ({
+        read: false,
+        append: false,
+        write: false,
+        controlRead: false,
+        controlWrite: false,
+      }));
+
+      (client.access.setPublicAccess as any) = jest.fn(async () => true);
+
+    });
+
+    it('should update existing acl when one is present', async () => {
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.access.setPublicAccess).toHaveBeenCalled();
+
+    });
+
+    it('should not update existing acl when read permissions already set', async () => {
+
+      (client.access.getPublicAccess as any) = jest.fn(async () => ({
+        read: true,
+      }));
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.access.setPublicAccess).not.toHaveBeenCalled();
+
+    });
+
+    it('should PUT new .acl file when none was found', async () => {
+
+      let aclCreated: boolean;
+
+      fetchMock.mockOnce(async () => {
+
+        aclCreated = true;
+
+        return { body: 'created', init: { status: 201 } };
+
+      });
+
+      (client.access.getPublicAccess as any) = jest.fn(async () => {
+
+        if (!aclCreated) {
+
+          return Promise.reject({ response: { status: 404 } });
+
+        }
+
+        return {
+          read: false,
+        };
+
+      });
+
+      await service.setPublicAccess('https://test.uri/');
+      expect(client.access.setPublicAccess).toHaveBeenCalled();
+
+    });
+
+    it('should error when server returned error for access resource', async () => {
+
+      (client.access.getPublicAccess as any) = jest.fn(async () => Promise.reject({ response: { status: 500 } }));
+
+      await expect(service.setPublicAccess('https://test.uri/')).rejects.toThrow();
 
     });
 

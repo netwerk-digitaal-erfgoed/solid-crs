@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.11.0...v0.12.0) (2021-12-08)
+
+
+### **Bug Fixes**
+
+* enable routing in manage ([#474](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/474)) ([a992be9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a992be9f0a24bec1289dabc93984099695499932))
+
+
+### **Features**
+
+* add image upload button to object page ([#529](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/529)) ([898f9cb](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/898f9cbaf6ebcb43e76c26f26ba68812ccacfeb7))
+
+
+
 ## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.10.6...v0.11.0) (2021-11-16)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-components

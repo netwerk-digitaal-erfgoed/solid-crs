@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.11.0...v0.12.0) (2021-12-08)
+
+
+### **Bug Fixes**
+
+* enable routing in manage ([#474](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/474)) ([a992be9](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/a992be9f0a24bec1289dabc93984099695499932))
+* requirements for datasets violations ([#528](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/528)) ([5cac643](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/5cac643febfb85989c7f1a808bd5851f669a2a53))
+
+
+### **Features**
+
+* add image upload button to object page ([#529](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/529)) ([898f9cb](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/898f9cbaf6ebcb43e76c26f26ba68812ccacfeb7))
+* add paginator to collection page ([#526](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/526)) ([ae4a700](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/ae4a7002bf4d2f5c15fadb7c71fe6e21fd1727d4))
+
+
+### **Documentation**
+
+* correct order for install instructions ([#530](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/issues/530)) ([71c91cf](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/commit/71c91cf352bdd22035899d98e8ec12cab13d8298))
+
+
+
 ## [0.11.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.10.6...v0.11.0) (2021-11-16)
 
 

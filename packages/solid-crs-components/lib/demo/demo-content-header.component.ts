@@ -1,5 +1,5 @@
 import { Cross, Logout, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { css, html, LitElement } from 'lit-element';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit-element';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 
 /**
@@ -12,7 +12,7 @@ export class DemoContentHeaderComponent extends LitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <nde-content-header>
@@ -38,7 +38,7 @@ export class DemoContentHeaderComponent extends LitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       css`

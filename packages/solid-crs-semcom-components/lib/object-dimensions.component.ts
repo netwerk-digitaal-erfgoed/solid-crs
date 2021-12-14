@@ -1,7 +1,7 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult, internalProperty } from 'lit-element';
 import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { SpawnedActorRef } from 'xstate';
+import { ActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -15,25 +15,25 @@ export class ObjectDimensionsComponent extends RxLitElement {
    * The component's logger.
    */
   @property({ type: Object })
-  public logger: Logger;
+  logger?: Logger;
 
   /**
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator;
+  translator?: Translator;
 
   /**
    * The object to be displayed and/or edited.
    */
-  @property()
+  @property({ type: Object })
   object?: CollectionObject;
 
   /**
    * The actor responsible for form validation in this component.
    */
-  @property()
-  formActor: SpawnedActorRef<FormEvent>;
+  @property({ type: Object })
+  formActor?: ActorRef<FormEvent>;
 
   /**
    * The possible values for lengths
@@ -77,7 +77,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="heightUnit">
             <label slot="label" for="height-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
             <select slot="input" name="height-unit" id="height-unit">
-              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.heightUnit}">${this.lengthUnits.get(unit)}</option>`)}
+              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object?.heightUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
           </nde-form-element>
         </div>
@@ -90,7 +90,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="widthUnit">
             <label slot="label" for="width-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
             <select slot="input" name="width-unit" id="width-unit">
-              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.widthUnit}">${this.lengthUnits.get(unit)}</option>`)}
+              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object?.widthUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
           </nde-form-element>
         </div>
@@ -103,7 +103,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="depthUnit">
             <label slot="label" for="depth-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
             <select slot="input" name="depth-unit" id="depth-unit">
-              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.depthUnit}">${this.lengthUnits.get(unit)}</option>`)}
+              ${Array.from(this.lengthUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object?.depthUnit}">${this.lengthUnits.get(unit)}</option>`)}
             </select>
           </nde-form-element>
         </div>
@@ -116,7 +116,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
           <nde-form-element .actor="${this.formActor}" .translator="${this.translator}" field="weightUnit">
             <label slot="label" for="weight-unit" class="invisible">${this.translator?.translate('object.card.dimensions.field.unit.title')}</label>
             <select slot="input" name="weight-unit" id="weight-unit">
-              ${Array.from(this.weightUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object.weightUnit}">${this.weightUnits.get(unit)}</option>`)}
+              ${Array.from(this.weightUnits.keys()).map((unit) => html`<option id="${unit}" ?selected="${unit === this.object?.weightUnit}">${this.weightUnits.get(unit)}</option>`)}
             </select>
           </nde-form-element>
         </div>
@@ -134,7 +134,7 @@ export class ObjectDimensionsComponent extends RxLitElement {
         nde-large-card div[slot="content"] {
           display: flex;
           flex-direction: column;
-          gap: var(--gap-normal);
+          gap: var(--gap-large);
         }
         .dimension-field {
           width: 100%;

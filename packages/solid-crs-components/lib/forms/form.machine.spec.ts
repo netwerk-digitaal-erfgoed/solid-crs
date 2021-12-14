@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { FormEvent, FormEvents } from './form.events';
@@ -5,19 +6,27 @@ import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSu
 
 describe('FormMachine', () => {
 
-  let machine: Interpreter<FormContext<Collection>>;
+  let machine: Interpreter<FormContext<any>, any, FormEvent>;
+
+  const mockCollection: Collection = {
+    name: 'Collection 1',
+    description: 'Description',
+    objectsUri: 'https://objects.uri/',
+    distribution: 'https://distribution.uri/',
+    uri: 'https://collection.uri/',
+  };
 
   beforeEach(() => {
 
-    machine = interpret<FormContext<Collection>>(
+    machine = interpret<FormContext<Collection>, any, FormEvent>(
       formMachine(
-        async (context: FormContext<Collection>, event: FormEvent) => [
+        async (context: FormContext<Collection>) => [
           ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
           ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
         ],
       ).withContext({
-        data: { uri: '', name: 'Test' },
-        original: { uri: '', name: 'Test' },
+        data: mockCollection as any,
+        original: mockCollection as any,
         validation: [],
       }),
     );
@@ -31,9 +40,16 @@ describe('FormMachine', () => {
   });
 
   it.each([
-    [ [ ], FormCleanlinessStates.PRISTINE, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.NOT_VALIDATED, [], { uri: '', name: 'Test' } ],
+    [
+      [ ],
+      FormCleanlinessStates.PRISTINE,
+      FormSubmissionStates.NOT_SUBMITTED,
+      FormValidationStates.NOT_VALIDATED,
+      [],
+      mockCollection,
+    ],
     [ [ { field: 'uri', value: 'foo' } ], FormCleanlinessStates.DIRTY, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.VALID, [], { uri: 'foo', name: 'Test' } ],
-    [ [ { field: 'uri', value: '' } ], FormCleanlinessStates.PRISTINE, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.INVALID, [ { field: 'uri', message: 'demo-form.uri.required' } ], { uri: '', name: 'Test' } ],
+    [ [ { field: 'uri', value: '' } ], FormCleanlinessStates.PRISTINE, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.INVALID, [ { field: 'uri', message: 'demo-form.uri.required' } ], mockCollection ],
     [ [ { field: 'name', value: '' } ], FormCleanlinessStates.DIRTY, FormSubmissionStates.NOT_SUBMITTED, FormValidationStates.INVALID, [ { field: 'name', message: 'demo-form.name.required' }, { field: 'uri', message: 'demo-form.uri.required' } ], { uri: '', name: '' } ],
   ])('should handle form updates correctly', (updates, cleanliness, submission, validation, results, data) => {
 
@@ -99,7 +115,7 @@ describe('FormMachine', () => {
 
     machine.send(FormEvents.FORM_UPDATED, { field: 'uri', value: 'foo' });
 
-    expect(machine.state.context.original).toEqual({ uri: '', name: 'Test' });
+    expect(machine.state.context.original).toEqual(mockCollection);
 
   });
 
@@ -131,14 +147,14 @@ describe('FormMachine', () => {
 
     const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
 
-    machine = interpret<FormContext<Collection>>(
+    machine = interpret<FormContext<Collection>, any, FormEvent>(
       formMachine(
         async (context: FormContext<Collection>, event: FormEvent) => [],
         submitter,
       )
         .withContext({
-          data: { uri: '', name: 'Test' },
-          original: { uri: '', name: 'Test' },
+          data: mockCollection,
+          original: mockCollection,
           validation: [],
         }),
     );
@@ -163,11 +179,11 @@ describe('FormMachine', () => {
 
   it('should use default validator function when set', async (done) => {
 
-    machine = interpret<FormContext<Collection>>(
-      formMachine()
+    machine = interpret<FormContext<Collection>, any, FormEvent>(
+      formMachine<Collection>()
         .withContext({
-          data: { uri: '', name: 'Test' },
-          original: { uri: '', name: 'Test' },
+          data: mockCollection,
+          original: mockCollection,
           validation: [],
         }),
     );
@@ -196,8 +212,8 @@ describe('FormMachine', () => {
 
   it('should accept string as TData', async (done) => {
 
-    machine = interpret<FormContext<string>>(
-      formMachine()
+    machine = interpret<FormContext<string>, any, FormEvent>(
+      formMachine<string>()
         .withContext({
           data: 'test',
           original: 'test',
@@ -229,8 +245,8 @@ describe('FormMachine', () => {
 
   it('should accept empty object as TData', async (done) => {
 
-    machine = interpret<FormContext<unknown>>(
-      formMachine()
+    machine = interpret<FormContext<undefined>, any, FormEvent>(
+      formMachine<undefined>()
         .withContext({
           data: undefined,
           original: undefined,

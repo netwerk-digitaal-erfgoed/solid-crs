@@ -1,4 +1,5 @@
-import { MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 
 describe.each([
@@ -33,8 +34,8 @@ describe.each([
   beforeEach(() => {
 
     component = window.document.createElement(tag) as RxLitElement;
+    (component as any).translator = new MockTranslator('nl-NL');
     (component as any).object = object1;
-    (component as any).translator = new MemoryTranslator('nl-NL');
     (component as any).collections = [ collection1 ];
 
   });
@@ -58,7 +59,7 @@ describe.each([
 
     const root = window.document.body.querySelector(tag);
     expect(root).toBeTruthy();
-    expect(root.shadowRoot.querySelector('nde-large-card')).toBeTruthy();
+    expect(root?.shadowRoot?.querySelector('nde-large-card')).toBeTruthy();
 
   });
 

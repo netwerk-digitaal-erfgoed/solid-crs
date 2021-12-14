@@ -1,4 +1,4 @@
-import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates, NavigateEvent, NavigatedEvent } from './router';
+import { matchPath, activeRoute, Route, urlVariables, updateHistory, updateTitle, routerStateConfig, ROUTER, RouterStates, NavigateEvent, NavigatedEvent, routerEventsConfig, RouterEvents, createRoute } from './router';
 
 describe('Router', () => {
 
@@ -55,18 +55,18 @@ describe('Router', () => {
         { path: '/test/{{numbers}}/testing', targets: [] },
       ];
 
-      expect(activeRoute(routes)).toEqual(routes[0]);
+      expect(activeRoute(routes)).toEqual(expect.objectContaining(routes[0]));
 
     });
 
-    it('should return undefined when no match is found', () => {
+    it('should error when no match is found', () => {
 
       const routes: Route[] = [
         { path: '/test/testing', targets: [] },
         { path: '/test', targets: [] },
       ];
 
-      expect(activeRoute(routes)).toEqual(undefined);
+      expect(() => activeRoute(routes)).toThrow('No route match found for this URL');
 
     });
 
@@ -74,22 +74,64 @@ describe('Router', () => {
 
   describe('urlVariables', () => {
 
-    it('should return a correct map of URL variables', () => {
+    const route: Route = {
+      path: '/{{partOne}}/{{numbers}}/{{partTwo}}',
+      targets: [],
+    };
+
+    beforeEach(() => {
+
+      delete window.location;
+      (window.location as any) = new URL('http://localhost/test/12345/testing?search=test#test');
+
+    });
+
+    it('should return a correct map of path params', () => {
 
       // window.location.pathname = '/test/12345/testing'
-      const resultMap = urlVariables('/{{partOne}}/{{numbers}}/{{partTwo}}');
+      const result = urlVariables(route);
 
-      expect(resultMap.get('partOne')).toEqual('test');
-      expect(resultMap.get('numbers')).toEqual('12345');
-      expect(resultMap.get('partTwo')).toEqual('testing');
+      expect(result.pathParams.get('partOne')).toEqual('test');
+      expect(result.pathParams.get('numbers')).toEqual('12345');
+      expect(result.pathParams.get('partTwo')).toEqual('testing');
+
+    });
+
+    it('should return correct searchParams', () => {
+
+      const result = urlVariables(route);
+      expect(result.searchParams.get('search')).toEqual('test');
+
+    });
+
+    it('should return correct hash', () => {
+
+      const result = urlVariables(route);
+      expect(result.hash).toEqual('#test');
+
+    });
+
+    it('should return empty map when no path variable exists', () => {
+
+      const routeWithoutParams: Route = {
+        path: '/path/without/variables',
+        targets: [],
+      };
+
+      expect(urlVariables(routeWithoutParams).pathParams.size).toEqual(0);
 
     });
 
     it('should error when no match was found for every variable', () => {
 
+      const invalidRoute: Route = {
+        path: '/{{partOne}}//{{numbers}}/{{partTwo}}',
+        targets: [],
+      };
+
       // usually happens when an invalid path was provided (here: double slashes)
       // or when the regex is made incorrect matches (should not happen)
-      expect(() => urlVariables('/{{partOne}}//{{numbers}}/{{partTwo}}')).toThrow('No match for every variable');
+      expect(() => urlVariables(invalidRoute)).toThrow('No match for every variable');
 
     });
 
@@ -167,6 +209,7 @@ describe('Router', () => {
       {
         path,
         targets: [ 'target' ],
+        title: 'test title',
       },
     ];
 
@@ -190,6 +233,13 @@ describe('Router', () => {
 
       expect(config[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.actions[0]())
         .toEqual(updateTitle(activeRoute(routes).title));
+
+      // dont update title when it is undefined in activeroute
+      const routesWithoutTitle = routes.map((rte) => ({ path: rte.path, targets: rte.targets }));
+      const configWithoutTitle = routerStateConfig(routesWithoutTitle);
+
+      expect(configWithoutTitle[ROUTER].states[RouterStates.NAVIGATING].invoke.onDone.actions[0]())
+        .toEqual(updateTitle(activeRoute(routesWithoutTitle).title));
 
     });
 
@@ -226,6 +276,41 @@ describe('Router', () => {
       expect(event).toBeTruthy();
       expect(event.path).toEqual(path);
       expect(event.title).toEqual(title);
+
+    });
+
+  });
+
+  describe('routerEventsConfig', () => {
+
+    it('should return NAVIGATE event config', () => {
+
+      const result = routerEventsConfig();
+      expect(result).toEqual(expect.objectContaining({ [RouterEvents.NAVIGATE]: expect.objectContaining({}) }));
+      expect(result[RouterEvents.NAVIGATE].target).toContain(`#${RouterStates.NAVIGATING}`);
+      expect((result[RouterEvents.NAVIGATE].actions[0].assignment as any).path(undefined, new NavigateEvent('path'))).toEqual('path');
+
+      expect((result[RouterEvents.NAVIGATE].actions[0].assignment as any).path(undefined, new NavigateEvent()))
+        .toEqual(window.location.pathname);
+
+    });
+
+    it('should return NAVIGATED event config', () => {
+
+      const result = routerEventsConfig();
+      expect(result).toEqual(expect.objectContaining({ [RouterEvents.NAVIGATED]: expect.objectContaining({}) }));
+      expect(result[RouterEvents.NAVIGATED].actions[0](undefined, new NavigatedEvent('test', 'test'))).toEqual(undefined);
+
+    });
+
+  });
+
+  describe('createRoute', () => {
+
+    it('should return correct route object', () => {
+
+      expect(createRoute('path', [])).toEqual({ path: 'path', targets: [], title: undefined });
+      expect(createRoute('path', [], 'title')).toEqual({ path: 'path', targets: [], title: 'title' });
 
     });
 

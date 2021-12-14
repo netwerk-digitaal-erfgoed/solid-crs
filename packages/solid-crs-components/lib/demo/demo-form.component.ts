@@ -1,13 +1,13 @@
 import { CSSResult, html, internalProperty, property, PropertyValues, TemplateResult, unsafeCSS } from 'lit-element';
-import { ArgumentError, Collection, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { interpret, Interpreter } from 'xstate';
+import { ArgumentError, MemoryTranslator, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { interpret } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Dropdown, Login, Search, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import fetchMock from 'jest-fetch-mock';
-import { FormCleanlinessStates, FormContext, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
+import { FormCleanlinessStates, formMachine, FormRootStates, FormSubmissionStates, FormValidationStates } from '../forms/form.machine';
 import { FormEvents } from '../forms/form.events';
 import { FormValidator } from '../forms/form-validator';
 import { FormSubmitter } from '../forms/form-submitter';
@@ -19,7 +19,7 @@ import { FormSubmitter } from '../forms/form-submitter';
  * @param event The event which triggered the validation.
  * @returns Results of the validation.
  */
-export const validator: FormValidator<Collection> = async (context) => ([
+export const validator: FormValidator<any> = async (context) => ([
   ...context.data && context.data.name ? [] : [ { field: 'name', message: 'demo-form.name.required' } ],
   ...context.data && context.data.uri ? [] : [ { field: 'uri', message: 'demo-form.uri.required' } ],
 ]);
@@ -31,7 +31,7 @@ export const validator: FormValidator<Collection> = async (context) => ([
  * @param event The event which triggered the validation.
  * @returns Returns a promise.
  */
-export const submitter: FormSubmitter<Collection> = () => new Promise((resolve) => {
+export const submitter: FormSubmitter<unknown> = () => new Promise((resolve) => {
 
   setTimeout(resolve, 2000);
 
@@ -52,7 +52,12 @@ export class DemoFormComponent extends RxLitElement {
    * The actor controlling this component.
    */
   @property({ type: Object })
-  public actor: Interpreter<FormContext<Partial<Collection>>>;
+  public actor = interpret(
+    formMachine<unknown>(validator, submitter).withContext({
+      data: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
+      original: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
+    }),
+  );
 
   /**
    * Enables or disables the submit button.
@@ -67,13 +72,6 @@ export class DemoFormComponent extends RxLitElement {
   constructor() {
 
     super();
-
-    this.actor = interpret(
-      formMachine<Partial<unknown>>(validator, submitter).withContext({
-        data: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
-        original: { uri: '', name: 'Test', description: 'Test desc', vehicle: [ 'Car' ] },
-      }),
-    );
 
     this.actor.start();
 
@@ -101,17 +99,6 @@ export class DemoFormComponent extends RxLitElement {
         },
       })),
     ));
-
-  }
-
-  /**
-   * The styles associated with the component.
-   */
-  static get styles(): CSSResult[] {
-
-    return [
-      unsafeCSS(Theme),
-    ];
 
   }
 
@@ -179,6 +166,17 @@ export class DemoFormComponent extends RxLitElement {
       <button ?disabled="${!this.enableSubmit}" @click="${() => this.actor.send(FormEvents.FORM_SUBMITTED)}">Save changes</button>
     </form>
   `;
+
+  }
+
+  /**
+   * The styles associated with the component.
+   */
+  static get styles(): CSSResult[] {
+
+    return [
+      unsafeCSS(Theme),
+    ];
 
   }
 

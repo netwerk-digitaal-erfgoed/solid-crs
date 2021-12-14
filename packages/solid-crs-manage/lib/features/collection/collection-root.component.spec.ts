@@ -1,5 +1,5 @@
-import { Alert, FormActors, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MemoryTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Alert, FormActors } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
@@ -67,10 +67,8 @@ describe('CollectionRootComponent', () => {
     component = window.document.createElement('nde-collection-root') as CollectionRootComponent;
 
     component.actor = machine;
-
     component.formActor = machine.children.get(FormActors.FORM_MACHINE);
-
-    component.translator = new MemoryTranslator('nl-NL');
+    component.translator = new MockTranslator('nl-NL');
 
   });
 

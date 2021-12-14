@@ -55,7 +55,7 @@ describe('AppRootComponent', () => {
       }));
 
     component = window.document.createElement('nde-app-root') as AppRootComponent;
-    component.translator = new MockTranslator();
+    component.translator = new MockTranslator('nl-NL');
     component.actor = machine;
 
   });

@@ -65,7 +65,8 @@
                 "field": {
                     "file": {
                         "title": "Bestand",
-                        "description": "Het webadres (URL) waar het beeldmateriaal staat, zoals een scan van een bidprentje of een foto van een gebouw. Gebruik bij voorkeur beeldmateriaal van hoge kwaliteit en van type JPEG of PNG."
+                        "description": "Het webadres (URL) waar het beeldmateriaal staat, zoals een scan van een bidprentje of een foto van een gebouw. Gebruik bij voorkeur beeldmateriaal van hoge kwaliteit en van type JPEG of PNG.",
+                        "or": "of"
                     },
                     "license": {
                         "title": "Licentie",
@@ -252,6 +253,9 @@
             "months-ago": "maanden geleden",
             "year-ago": "jaar geleden",
             "years-ago": "jaar geleden"
+        },
+        "paginator": {
+            "page-counter": "Pagina {CURRENT} van {TOTAL}"
         }
     },
     "search": {

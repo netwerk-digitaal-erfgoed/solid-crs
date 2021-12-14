@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { assign, EventObject } from 'xstate';
 import { FormValidatorResult } from './form-validator-result';
 import { FormContext } from './form.machine';
@@ -56,7 +57,7 @@ export type FormEvent = FormUpdatedEvent | FormSubmittedEvent | FormValidatedEve
 /**
  * Updates the data in context.
  */
-export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
+export const update = assign<FormContext<any>, FormEvent>({
   data: (context: FormContext<any>, event: FormUpdatedEvent) =>
     ({ ...context.data||{}, [event.field]: event.value }),
 });
@@ -64,6 +65,6 @@ export const update = assign<FormContext<unknown>, FormUpdatedEvent>({
 /**
  * Adds validation data to context.
  */
-export const addValidationResults = assign<FormContext<unknown>, FormValidatedEvent>({
-  validation: (context, event: FormValidatedEvent) => [ ...event.results ],
+export const addValidationResults = assign<FormContext<any>, FormValidatedEvent>({
+  validation: (context, event: FormValidatedEvent) => [ ...(event as FormValidatedEvent).results ],
 });

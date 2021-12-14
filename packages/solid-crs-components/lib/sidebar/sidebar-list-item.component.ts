@@ -1,4 +1,4 @@
-import { css, html, internalProperty, property, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, internalProperty, property, TemplateResult, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { classMap } from 'lit-html/directives/class-map';
@@ -9,13 +9,13 @@ import { classMap } from 'lit-html/directives/class-map';
 export class SidebarListItemComponent extends RxLitElement {
 
   @property({ type: Boolean })
-  public inverse = false;
+  inverse = false;
 
   @property({ type: Boolean })
-  public selected = false;
+  selected = false;
 
   @property({ type: Boolean })
-  public isTitle = false;
+  isTitle = false;
 
   @internalProperty()
   private classes = () => ({ inverse: this.inverse, selected: this.selected, title: this.isTitle });
@@ -25,7 +25,7 @@ export class SidebarListItemComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <li class="item ${classMap(this.classes())}">
@@ -41,7 +41,7 @@ export class SidebarListItemComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

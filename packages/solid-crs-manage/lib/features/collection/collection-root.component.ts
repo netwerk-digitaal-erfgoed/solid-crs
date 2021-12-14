@@ -1,6 +1,6 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormEvent, FormActors, FormSubmissionStates, FormEvents, Alert, FormRootStates, FormValidationStates, FormCleanlinessStates, PopupComponent, FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
@@ -75,25 +75,43 @@ export class CollectionRootComponent extends RxLitElement {
    * Indicates if the form is being submitted.
    */
   @internalProperty()
-  isSubmitting? = false;
+  isSubmitting = false;
 
   /**
    * Indicates if if the form validation passed.
    */
   @internalProperty()
-  isValid? = false;
+  isValid = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
   @internalProperty()
-  isDirty? = false;
+  isDirty = false;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  objectsPerPage = 18;
+
+  /**
+   * Indicates if one the form fields has changed.
+   */
+  @internalProperty()
+  pageIndex = 0;
 
   /**
    * The popup component shown when the delete icon is clicked
    */
   @query('nde-popup#delete-popup')
   deletePopup: PopupComponent;
+
+  /**
+   * The element containing the grid of collection objects.
+   */
+  @query('.content')
+  pageContent: HTMLElement;
 
   /**
    * Hook called on at every update after connection to the DOM.
@@ -127,11 +145,13 @@ export class CollectionRootComponent extends RxLitElement {
 
     if(changed?.has('formActor') && this.formActor){
 
-      this.subscribe('isSubmitting', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isSubmitting', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches(FormSubmissionStates.SUBMITTING)),
       ));
 
-      this.subscribe('isValid', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isValid', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.VALIDATION]: FormValidationStates.VALID,
@@ -139,7 +159,8 @@ export class CollectionRootComponent extends RxLitElement {
         })),
       ));
 
-      this.subscribe('isDirty', from(this.formActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('isDirty', from((this.formActor as unknown) as Interpreter<FormContext<CollectionObject>, any, FormEvent>).pipe(
         map((state) => state.matches({
           [FormSubmissionStates.NOT_SUBMITTED]:{
             [FormRootStates.CLEANLINESS]: FormCleanlinessStates.DIRTY,
@@ -228,9 +249,33 @@ export class CollectionRootComponent extends RxLitElement {
     : html`
                 ${this.objects?.length
     ? html`
-          <div class='three-column-content-grid'>
-            ${this.objects.map((object) => html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
+
+          <div class="three-column-content-grid">
+            ${this.objects
+    .slice(this.pageIndex * this.objectsPerPage, this.pageIndex * this.objectsPerPage + this.objectsPerPage)
+    .map((object) =>
+      html`<nde-object-card @click="${() => this.actor.send(ObjectEvents.SELECTED_OBJECT, { object })}" .translator=${this.translator} .object=${object}></nde-object-card>`)}
           </div>
+
+          <nde-paginator
+            ?hidden="${this.objects.length <= this.objectsPerPage}"
+            @next="${() => { this.pageIndex++; this.pageContent.scrollTo(0, 0); }}"
+            @previous="${() => { this.pageIndex--; this.pageContent.scrollTo(0, 0); }}"
+            .translator="${this.translator}"
+            .pageIndex="${this.pageIndex}"
+            .objectsPerPage="${this.objectsPerPage}"
+            .objectsAmount="${this.objects.length}">
+          </nde-paginator>
         `
     : html`
           <div class="empty-container">
@@ -305,6 +350,7 @@ export class CollectionRootComponent extends RxLitElement {
           overflow-y: auto;
           display:flex; 
           flex-direction: column;
+          gap: var(--gap-large);
         }
         nde-progress-bar {
           position: absolute;
@@ -389,7 +435,6 @@ export class CollectionRootComponent extends RxLitElement {
         button.light {
           color:var(--colors-primary-dark);
         }
-
         div[slot="actions"] a svg {
           width: 20px;
           height: 20px;

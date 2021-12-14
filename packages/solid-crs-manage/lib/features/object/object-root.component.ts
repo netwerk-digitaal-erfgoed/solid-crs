@@ -3,16 +3,17 @@ import { ArgumentError, Collection, CollectionObject, Logger, Translator } from 
 import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
-import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent, doneInvoke } from 'xstate';
+import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
+import { v4 } from 'uuid';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, ObjectEvents, SelectedObjectEvent, SelectedTermsEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, SelectedTermsEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
 
@@ -150,6 +151,12 @@ export class ObjectRootComponent extends RxLitElement {
   deletePopup: PopupComponent;
 
   /**
+   * The image file to be uploaded
+   */
+  @internalProperty()
+  imageFile?: File;
+
+  /**
    * Hook called on first update after connection to the DOM.
    */
   async firstUpdated(changed: PropertyValues): Promise<void> {
@@ -248,11 +255,17 @@ export class ObjectRootComponent extends RxLitElement {
       this.subscribe('object', from(this.actor).pipe(
         map((state) => {
 
-          this.formCards?.forEach((card) => card.object = state.context?.object);
+          if (state.context?.object && state.context?.original) {
 
-          this.initFormMachine(state.context?.object, state.context?.original);
+            this.formCards?.forEach((card) => card.object = state.context.object);
 
-          return state.context?.object;
+            this.initFormMachine(state.context.object, state.context.original);
+
+            return state.context?.object;
+
+          }
+
+          return undefined;
 
         })
       ));
@@ -316,6 +329,8 @@ export class ObjectRootComponent extends RxLitElement {
           person: this.object?.person,
           organization: this.object?.organization,
           event: this.object?.event,
+          // set the image file as it is not included in form machine's data
+          imageFile: this.object.imageFile,
         }));
 
       });
@@ -348,6 +363,25 @@ export class ObjectRootComponent extends RxLitElement {
       this.formActor.send(new FormUpdatedEvent('name', object.name));
 
     }
+
+  }
+
+  /**
+   * Prepares for a new image upload when an image is selected
+   *
+   * @param event The custom image-selected event containing the image file.
+   */
+  private onImageSelected(event: CustomEvent<File>): void {
+
+    this.object.imageFile = event.detail;
+
+    this.formActor.send(new FormUpdatedEvent(
+      'image',
+      // use the object's uri to determine object storage directory
+      // this value will only be used temporarily until the object is saved
+      // after which it is set to a value chosen by the pod server
+      `${new URL(this.object.uri).origin}${new URL(this.object.uri).pathname.split('/').slice(0, -1).join('/')}/${this.object.imageFile.name}`
+    ));
 
   }
 
@@ -411,6 +445,7 @@ export class ObjectRootComponent extends RxLitElement {
 
         element = document.createElement(component.tag) as ObjectImageryComponent;
         element.id = 'object.sidebar.image';
+        element.addEventListener('image-selected', this.onImageSelected);
 
       } else if (component.tag.includes('creation')) {
 
@@ -654,6 +689,11 @@ export class ObjectRootComponent extends RxLitElement {
         }
         button.light {
           color:var(--colors-primary-dark);
+        }
+        div[slot="actions"] a svg {
+          width: 20px;
+          height: 20px;
+          fill: var(--colors-primary-light);
         }
       `,
     ];

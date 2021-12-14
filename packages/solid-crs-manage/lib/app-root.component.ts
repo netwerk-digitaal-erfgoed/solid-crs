@@ -3,14 +3,15 @@ import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, SolidSDKService, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormActors, FormContext, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
-import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
+import { AppEvent, AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
+import { SearchContext } from './features/search/search.machine';
 
 /**
  * The root page of the application.
@@ -35,7 +36,7 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor: Interpreter<AppContext, unknown, EventObject>;
+  actor: Interpreter<AppContext, any, EventObject>;
 
   /**
    * The state of this component.
@@ -77,7 +78,7 @@ export class AppRootComponent extends RxLitElement {
    * The actor responsible for the search field.
    */
   @internalProperty()
-  searchActor: ActorRef<SearchEvent>;
+  searchActor: ActorRef<FormEvent>;
 
   // Load the initial language and mark that the strings has been loaded.
   async connectedCallback(): Promise<void> {
@@ -86,6 +87,45 @@ export class AppRootComponent extends RxLitElement {
     if (language) await this.translator.setLang(language);
 
     await new Promise((resolve) => this.translator.addEventListener(TRANSLATIONS_LOADED, resolve));
+
+    super.connectedCallback();
+
+  }
+
+  /**
+   * Dismisses an alert when a dismiss event is fired by the AlertComponent.
+   *
+   * @param event The event fired when dismissing an alert.
+   */
+  dismiss(event: CustomEvent<Alert>): void {
+
+    this.logger.debug(AppRootComponent.name, 'Dismiss', event);
+
+    if (!event) {
+
+      throw new ArgumentError('Argument event should be set.', event);
+
+    }
+
+    if (!event.detail) {
+
+      throw new ArgumentError('Argument event.detail should be set.', event.detail);
+
+    }
+
+    this.actor.send(new DismissAlertEvent(event.detail));
+
+  }
+
+  firstUpdated(changed: PropertyValues): void {
+
+    window.onpopstate = () => {
+
+      window.location.reload();
+
+    };
+
+    document.title = this.translator.translate('app.root.title');
 
     this.actor = interpret(
       (appMachine(
@@ -123,42 +163,6 @@ export class AppRootComponent extends RxLitElement {
       }), { devTools: process.env.MODE === 'DEV' },
     );
 
-    super.connectedCallback();
-    this.actor.start();
-
-  }
-
-  /**
-   * Dismisses an alert when a dismiss event is fired by the AlertComponent.
-   *
-   * @param event The event fired when dismissing an alert.
-   */
-  dismiss(event: CustomEvent<Alert>): void {
-
-    this.logger.debug(AppRootComponent.name, 'Dismiss', event);
-
-    if (!event) {
-
-      throw new ArgumentError('Argument event should be set.', event);
-
-    }
-
-    if (!event.detail) {
-
-      throw new ArgumentError('Argument event.detail should be set.', event.detail);
-
-    }
-
-    this.actor.send(new DismissAlertEvent(event.detail));
-
-  }
-
-  firstUpdated(changed: PropertyValues): void {
-
-    super.firstUpdated(changed);
-
-    document.title = this.translator.translate('app.root.title');
-
     this.subscribe('state', from(this.actor));
 
     this.subscribe('collections', from(this.actor).pipe(
@@ -176,6 +180,10 @@ export class AppRootComponent extends RxLitElement {
     this.subscribe('selected', from(this.actor).pipe(
       map((state) => state.context.selected),
     ));
+
+    this.actor.start();
+
+    super.firstUpdated(changed);
 
   }
 
@@ -196,7 +204,8 @@ export class AppRootComponent extends RxLitElement {
 
     if(changed.has('searchActor') && this.searchActor) {
 
-      this.subscribe('searchTerm', from(this.searchActor).pipe(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      this.subscribe('searchTerm', from((this.searchActor as unknown) as Interpreter<SearchContext, any, SearchEvent>).pipe(
         map((state) => state.context.searchTerm)
       ));
 
@@ -284,7 +293,7 @@ export class AppRootComponent extends RxLitElement {
       </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
-    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`<nde-authenticate-root .actor='${this.actor.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`: ''}   
+    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED }) ? html`<nde-authenticate-root .actor='${this.actor?.children.get(AppActors.AUTHENTICATE_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-root>`: ''}   
     ${ this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE }) ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
     
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  

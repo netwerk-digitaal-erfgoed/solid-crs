@@ -1,4 +1,4 @@
-import { EventObject } from 'xstate';
+import { assign, EventObject, send } from 'xstate';
 import { ArgumentError } from '../errors/argument-error';
 
 /**
@@ -21,6 +21,24 @@ export interface Route {
    * When set, router will update document.title to this value
    */
   title?: string;
+}
+
+export interface UrlVariables {
+
+  /**
+   * The query parameters of a URL
+   */
+  searchParams: URLSearchParams;
+
+  /**
+   * The path parameters of a URL
+   */
+  pathParams: Map<string, string>;
+
+  /**
+   * The hash of a URL
+   */
+  hash: string;
 }
 
 /**
@@ -48,12 +66,58 @@ export const matchPath = (match: string): boolean => {
 };
 
 /**
+ * For a given route, returns the URL variables as a Map
+ *
+ * @param route The route for which to retrieve variables
+ */
+export const urlVariables = (route: Route): UrlVariables => {
+
+  const searchParams = new URL(window.location.href).searchParams;
+  const hash = new URL(window.location.href).hash;
+
+  const regex = new RegExp(`^${route.path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
+
+  const parts = route.path.split('/')
+    .filter((part) => part.startsWith('{{') && part.endsWith('}}'));
+
+  const pathParams = new Map();
+
+  if (parts.length > 0) {
+
+    const matches = (window.location.pathname.match(regex)||[]).splice(1);
+
+    // this check might not be necessary
+    if (matches.length !== parts.length) {
+
+      throw new ArgumentError('No match for every variable', { parts, matches });
+
+    }
+
+    const variableNames = parts.map((part) => part.substring(2, part.length - 2));
+
+    variableNames.forEach((variable, i) => {
+
+      pathParams.set(variable, matches[i]);
+
+    });
+
+  }
+
+  return {
+    searchParams,
+    pathParams,
+    hash,
+  };
+
+};
+
+/**
  * Returns the currently active route base on window.location.pathname
  *
  * @param routes A list of all routes
  * @returns The currently active route
  */
-export const activeRoute = (routes: Route[]): Route | undefined => {
+export const activeRoute = (routes: Route[]): Route & UrlVariables => {
 
   if (!routes || routes.length < 1) {
 
@@ -61,41 +125,18 @@ export const activeRoute = (routes: Route[]): Route | undefined => {
 
   }
 
-  return routes.find((route) => matchPath(route.path));
+  const route = routes.find((rte) => matchPath(rte.path));
 
-};
+  if (!route) {
 
-/**
- * For a given path, returns the URL variables as a Map
- *
- * @param path The path structure with variable names
- */
-export const urlVariables = (path: string): Map<string, string> => {
-
-  const regex = new RegExp(`^${path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
-
-  const parts = path.split('/')
-    .filter((part) => part.startsWith('{{') && part.endsWith('}}'));
-
-  const matches = (window.location.pathname.match(regex)||[]).splice(1);
-
-  // this check might not be necessary
-  if (matches.length !== parts.length) {
-
-    throw new ArgumentError('No match for every variable', { parts, matches });
+    throw new ArgumentError('No route match found for this URL', window.location.href);
 
   }
 
-  const variables = new Map();
-  const variableNames = parts.map((part) => part.substring(2, part.length - 2));
-
-  variableNames.forEach((variable, i) => {
-
-    variables.set(variable, matches[i]);
-
-  });
-
-  return variables;
+  return {
+    ...route,
+    ...urlVariables(route),
+  };
 
 };
 
@@ -136,6 +177,39 @@ export const updateHistory = (path: string, title?: string): void => {
 };
 
 /**
+ * Event references for the router, with readable log format.
+ */
+export enum RouterEvents {
+  NAVIGATE = '[RouterEvent: Navigate]',
+  NAVIGATED = '[RouterEvent: Navigated]',
+}
+
+/**
+ * An event which is dispatched when routing should start
+ */
+export class NavigateEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATE = RouterEvents.NAVIGATE;
+  constructor(public path?: string) { }
+
+}
+
+/**
+ * An event which is dispatched at the end of routing
+ */
+export class NavigatedEvent implements EventObject {
+
+  public type: RouterEvents.NAVIGATED = RouterEvents.NAVIGATED;
+  constructor(public path: string, public title?: string) { }
+
+}
+
+/**
+ * Union type of router events.
+ */
+export type RouterEvent = NavigateEvent | NavigatedEvent;
+
+/**
  * State references for the application's features, with readable log format.
  */
 export enum RouterStates {
@@ -173,6 +247,7 @@ export const routerStateConfig = (routes: Route[]) => ({
                 if (route?.title) updateTitle(route.title);
 
               },
+              send(new NavigatedEvent(window.location.pathname, activeRoute(routes)?.title)),
             ],
           },
         },
@@ -181,35 +256,15 @@ export const routerStateConfig = (routes: Route[]) => ({
   },
 });
 
-/**
- * Event references for the router, with readable log format.
- */
-export enum RouterEvents {
-  NAVIGATE = '[AppEvent: Navigate]',
-  NAVIGATED = '[AppEvent: Navigated]',
-}
+export const routerEventsConfig = () => ({
+  [RouterEvents.NAVIGATE]: {
+    target: [ `#${RouterStates.NAVIGATING}` ],
+    actions: [ assign({ path: (c, event: NavigateEvent) => event.path||window.location.pathname }) ],
+  },
+  [RouterEvents.NAVIGATED]: {
+    actions: [ (c: unknown, event: NavigatedEvent): void => updateHistory(event.path, event.title) ],
+  },
+});
 
-/**
- * An event which is dispatched when routing should start
- */
-export class NavigateEvent implements EventObject {
-
-  public type: RouterEvents.NAVIGATE = RouterEvents.NAVIGATE;
-  constructor(public path?: string) { }
-
-}
-
-/**
- * An event which is dispatched at the end of routing
- */
-export class NavigatedEvent implements EventObject {
-
-  public type: RouterEvents.NAVIGATED = RouterEvents.NAVIGATED;
-  constructor(public path: string, public title?: string) { }
-
-}
-
-/**
- * Union type of router events.
- */
-export type RouterEvent = NavigateEvent | NavigatedEvent;
+export const createRoute = (path: string, targets: string[], title?: string): Route =>
+  ({ path, targets, title });

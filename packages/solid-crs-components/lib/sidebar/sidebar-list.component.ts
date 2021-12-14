@@ -1,9 +1,9 @@
-import { css, html, unsafeCSS } from 'lit-element';
+import { css, CSSResult, html, TemplateResult, unsafeCSS } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 
 /**
- * A component which represents a sidebar list item.
+ * A component which represents a sidebar list.
  */
 export class SidebarListComponent extends RxLitElement {
 
@@ -11,15 +11,15 @@ export class SidebarListComponent extends RxLitElement {
    * Selects clicked list item and deslected all other list items.
    *
    */
-  select(event: MouseEvent){
+  select(event: MouseEvent): void {
 
-    const element = event.composedPath().find((el: Element) => el.localName === 'nde-sidebar-list-item') as Element;
+    const element = (event.composedPath() as Element[]).find((el) => el.localName === 'nde-sidebar-list-item');
 
     if(element && (element as HTMLSlotElement).name === 'item'){
 
       for(let i = 0; i < this.children.length; i++) {
 
-        this.children.item(i).removeAttribute('selected');
+        this.children.item(i)?.removeAttribute('selected');
 
       }
 
@@ -34,7 +34,7 @@ export class SidebarListComponent extends RxLitElement {
    *
    * @returns The rendered HTML of the component.
    */
-  render() {
+  render(): TemplateResult {
 
     return html`
     <slot name="title" @click="${this.select}"></slot>
@@ -48,7 +48,7 @@ export class SidebarListComponent extends RxLitElement {
   /**
    * The styles associated with the component.
    */
-  static get styles() {
+  static get styles(): CSSResult[] {
 
     return [
       unsafeCSS(Theme),

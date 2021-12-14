@@ -1,7 +1,7 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { CollectionObject, Logger, sort, Term, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { SpawnedActorRef } from 'xstate';
+import { ActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Object as ObjectIcon, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
@@ -15,13 +15,13 @@ export class ObjectRepresentationComponent extends RxLitElement {
    * The component's logger.
    */
   @property({ type: Object })
-  public logger: Logger;
+  logger?: Logger;
 
   /**
    * The component's translator.
    */
   @property({ type: Object })
-  public translator: Translator;
+  translator?: Translator;
 
   /**
    * The object to be displayed and/or edited.
@@ -33,7 +33,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
    * The actor responsible for form validation in this component.
    */
   @property()
-  formActor: SpawnedActorRef<FormEvent>;
+  formActor?: ActorRef<FormEvent>;
 
   /**
    * Renders the component as HTML.
@@ -61,7 +61,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             ${sort(this.object.subject ?? []).map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
-            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'subject', terms: this.object.subject } }))}"
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'subject', terms: this.object?.subject ?? [] } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
@@ -77,7 +77,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             ${this.object.location?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
-            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'location', terms: this.object.location } }))}"
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'location', terms: this.object?.location ?? [] } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
@@ -93,7 +93,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             ${this.object.person?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
-            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'person', terms: this.object.person } }))}"
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'person', terms: this.object?.person ?? [] } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
@@ -109,7 +109,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             ${this.object.organization?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
-            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'organization', terms: this.object.organization } }))}"
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'organization', terms: this.object?.organization ?? [] } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
@@ -125,7 +125,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
             ${this.object.event?.map((value: Term) => html`<li id="${value.uri}">${value.name}</li>`)}
           </ul>
           <button
-            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'event', terms: this.object.event } }))}"
+            @click="${() => this.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>('CLICKED_TERM_FIELD', { bubbles: true, composed: true, detail: { field: 'event', terms: this.object?.event ?? [] } }))}"
             type="button" slot="action">
             ${ unsafeSVG(Connect) }
           </button>
@@ -145,7 +145,7 @@ export class ObjectRepresentationComponent extends RxLitElement {
         nde-large-card div[slot="content"] {
           display: flex;
           flex-direction: column;
-          gap: var(--gap-normal);
+          gap: var(--gap-large);
         }
       `,
     ];

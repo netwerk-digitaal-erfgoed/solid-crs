@@ -1,0 +1,781 @@
+
+> @netwerk-digitaal-erfgoed/solid-crs-core@0.11.0 test /Users/stijn/Documents/digita/nde-erfgoedinstellingen/packages/solid-crs-core
+> jest
+
+PASS core lib/logging/console-logger.spec.ts
+  ● Console
+
+    console.log
+      [2021-12-01T08:52:11.958Z TestService] test message
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+
+    console.info
+      [2021-12-01T08:52:11.968Z TestService] test message data
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+
+    console.debug
+      [2021-12-01T08:52:11.968Z TestService] test message data
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+
+    console.warn
+      [2021-12-01T08:52:11.969Z TestService] test message data
+
+      72 | 
+      73 |         case LoggerLevel.warn:
+    > 74 |           console.warn(...log);
+         |                   ^
+      75 |           break;
+      76 | 
+      77 |         case LoggerLevel.error:
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+      at ConsoleLogger.log (lib/logging/console-logger.ts:74:19)
+      at Object.<anonymous> (lib/logging/console-logger.spec.ts:47:19)
+
+    console.error
+      [2021-12-01T08:52:11.970Z TestService] test message data
+
+      76 | 
+      77 |         case LoggerLevel.error:
+    > 78 |           console.error(...log);
+         |                   ^
+      79 |           break;
+      80 | 
+      81 |         default:
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+      at ConsoleLogger.log (lib/logging/console-logger.ts:78:19)
+      at Object.<anonymous> (lib/logging/console-logger.spec.ts:47:19)
+
+    console.info
+      [2021-12-01T08:52:11.975Z TestService] test message test data
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+
+    console.debug
+      [2021-12-01T08:52:11.980Z TestService] test message test data
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+
+    console.warn
+      [2021-12-01T08:52:11.982Z TestService] test message test data
+
+      72 | 
+      73 |         case LoggerLevel.warn:
+    > 74 |           console.warn(...log);
+         |                   ^
+      75 |           break;
+      76 | 
+      77 |         case LoggerLevel.error:
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+      at ConsoleLogger.log (lib/logging/console-logger.ts:74:19)
+
+    console.error
+      [2021-12-01T08:52:11.984Z TestService] test message { error: 'test error', caught: 'error' }
+
+      76 | 
+      77 |         case LoggerLevel.error:
+    > 78 |           console.error(...log);
+         |                   ^
+      79 |           break;
+      80 | 
+      81 |         default:
+
+      at console.<anonymous> (node_modules/jest-mock/build/index.js:845:25)
+      at ConsoleLogger.log (lib/logging/console-logger.ts:78:19)
+
+PASS core lib/i8n/memory-translator.spec.ts
+PASS core lib/router/router.spec.ts
+PASS core lib/solid/solid-store.spec.ts
+PASS core lib/solid/solid-sdk.service.spec.ts
+  ● Console
+
+    console.debug
+      [2021-12-01T08:52:12.114Z SolidSDKService] Trying to retrieve session
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.132Z SolidSDKService] Trying to retrieve session
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.133Z SolidSDKService] Trying to retrieve session
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.134Z SolidSDKService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.141Z SolidSDKService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.142Z SolidSDKService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.143Z SolidSDKService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.144Z SolidSDKService] Logging out user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.145Z SolidSDKService] Logging out user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.146Z SolidSDKService] Retrieving issuer
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.146Z SolidSDKService] Retrieving issuer
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.150Z SolidSDKService] Retrieving issuer invalid-url
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.151Z SolidSDKService] Retrieving issuer https://nde.nl/
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.154Z SolidSDKService] Retrieving issuer https://pod.inrupt.com/digitatestpod/profile/card#me
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.156Z SolidSDKService] Retrieving issuer https://pod.inrupt.com
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.158Z SolidSDKService] Retrieving issuer https://pod.inrupt.com
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.159Z SolidSDKService] Retrieving issuer https://pod.inrupt.com/digitatestpod/profile/card#me
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.161Z SolidSDKService] Retrieving issuer https://pod.inrupt.com/digitatestpod/profile/card#me
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.164Z SolidSDKService] Retrieving issuer https://pod.inrupt.com/digitatestpod/profile/card#me
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+(node:82787) UnhandledPromiseRejectionWarning: Error: expect(received).resolves.toEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+@@ -1,19 +1,19 @@
+  Array [
+    Object {
+      "collection": "collection-uri-1",
+-     "description": "This is object 1",
++     "description": "This is object 1 something new",
+      "image": null,
+      "name": "Object 1",
+      "subject": null,
+      "type": null,
+      "updated": undefined,
+      "uri": "object-uri-1",
+    },
+    Object {
+      "collection": "collection-uri-1",
+-     "description": "This is object 2",
++     "description": "This is object 2 added characters",
+      "image": null,
+      "name": "Object 2",
+      "subject": null,
+      "type": null,
+      "updated": undefined,
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82787) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 2)
+(node:82787) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+PASS core lib/collections/collection-object-memory-store.spec.ts
+PASS core lib/solid/solid-mock.service.spec.ts
+  ● Console
+
+    console.debug
+      [2021-12-01T08:52:12.252Z SolidMockService] Retrieving issuer
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.275Z SolidMockService] Retrieving issuer https://webid.com
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.276Z SolidMockService] Retrieving issuer notAurl
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.295Z SolidMockService] Retrieving issuer https://test.com
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.297Z SolidMockService] Trying to retrieve session
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.298Z SolidMockService] Trying to retrieve session
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.300Z SolidMockService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.302Z SolidMockService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.302Z SolidMockService] Logging in user
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+    console.debug
+      [2021-12-01T08:52:12.303Z SolidMockService] Retrieving issuer https://test.com
+
+      at ConsoleLogger.log (lib/logging/console-logger.ts:70:19)
+
+PASS core lib/collections/collection-memory-store.spec.ts
+PASS core lib/terms/term.service.spec.ts
+PASS core lib/stores/memory-store.spec.ts
+PASS core lib/utils/fulltext-match.spec.ts
+PASS core lib/i8n/mock-translator.spec.ts
+PASS core lib/utils/date-parser.spec.ts
+PASS core lib/utils/alphabetical-sort.spec.ts
+PASS core lib/i8n/translator.spec.ts
+ts-jest[ts-compiler] (WARN) [96mlib/solid/collection-solid-store.spec.ts[0m:[93m17[0m:[93m7[0m - [91merror[0m[90m TS7034: [0mVariable 'mockCollection' implicitly has type 'any' in some locations where its type cannot be determined.
+
+[7m17[0m   let mockCollection;
+[7m  [0m [91m      ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m76[0m:[93m50[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m76[0m       (service.get as any) = jest.fn(async () => mockCollection);
+[7m  [0m [91m                                                 ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m82[0m:[93m54[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m82[0m       await expect(service.all()).resolves.toEqual([ mockCollection ]);
+[7m  [0m [91m                                                     ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m90[0m:[93m50[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m90[0m       (service.get as any) = jest.fn(async () => mockCollection);
+[7m  [0m [91m                                                 ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m111[0m:[93m35[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'Collection'.
+  Type 'undefined' is not assignable to type 'Collection'.
+
+[7m111[0m       await expect(service.delete(value)).rejects.toThrow('Argument collection should be set');
+[7m   [0m [91m                                  ~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m126[0m:[93m29[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m126[0m       expect(service.delete(mockCollection)).resolves.toEqual(mockCollection);
+[7m   [0m [91m                            ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m126[0m:[93m63[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m126[0m       expect(service.delete(mockCollection)).resolves.toEqual(mockCollection);
+[7m   [0m [91m                                                              ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m142[0m:[93m33[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'Collection'.
+  Type 'undefined' is not assignable to type 'Collection'.
+
+[7m142[0m       await expect(service.save(value)).rejects.toThrow('Argument collection should be set');
+[7m   [0m [91m                                ~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m160[0m:[93m33[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m160[0m       await expect(service.save(mockCollection)).resolves.toEqual(mockCollection);
+[7m   [0m [91m                                ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m160[0m:[93m67[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m160[0m       await expect(service.save(mockCollection)).resolves.toEqual(mockCollection);
+[7m   [0m [91m                                                                  ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m166[0m:[93m14[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m166[0m       delete mockCollection.uri;
+[7m   [0m [91m             ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m180[0m:[93m41[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m180[0m       const result = await service.save(mockCollection);
+[7m   [0m [91m                                        ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m182[0m:[93m59[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m182[0m       expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
+[7m   [0m [91m                                                          ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m189[0m:[93m14[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m189[0m       delete mockCollection.objectsUri;
+[7m   [0m [91m             ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m203[0m:[93m41[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m203[0m       const result = await service.save(mockCollection);
+[7m   [0m [91m                                        ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m205[0m:[93m59[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m205[0m       expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
+[7m   [0m [91m                                                          ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m212[0m:[93m14[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m212[0m       delete mockCollection.distribution;
+[7m   [0m [91m             ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m226[0m:[93m41[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m226[0m       const result = await service.save(mockCollection);
+[7m   [0m [91m                                        ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m228[0m:[93m59[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m228[0m       expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
+[7m   [0m [91m                                                          ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m247[0m:[93m41[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m247[0m       const result = await service.save(mockCollection);
+[7m   [0m [91m                                        ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m248[0m:[93m36[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m248[0m       await expect(result).toEqual(mockCollection);
+[7m   [0m [91m                                   ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m262[0m:[93m32[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m262[0m       await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
+[7m   [0m [91m                               ~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m354[0m:[93m49[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'Collection[]'.
+  Type 'undefined' is not assignable to type 'Collection[]'.
+
+[7m354[0m       await expect(service.search('searchterm', value)).rejects.toThrow(ArgumentError);
+[7m   [0m [91m                                                ~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m360[0m:[93m35[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m360[0m       await expect(service.search(value, [ mockCollection ])).rejects.toThrow(ArgumentError);
+[7m   [0m [91m                                  ~~~~~[0m
+[96mlib/solid/colts-jest[ts-compiler] (WARN) [96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m29[0m:[93m7[0m - [91merror[0m[90m TS2322: [0mType 'undefined' is not assignable to type 'string'.
+
+[7m29[0m       distribution: undefined,
+[7m  [0m [91m      ~~~~~~~~~~~~[0m
+
+  [96mlib/collections/collection.ts[0m:[93m25[0m:[93m3[0m
+    [7m25[0m   distribution: string;
+    [7m  [0m [96m  ~~~~~~~~~~~~[0m
+    The expected type comes from property 'distribution' which is declared here on type 'Collection'
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m68[0m:[93m52[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'Collection'.
+  Type 'undefined' is not assignable to type 'Collection'.
+
+[7m68[0m       await expect(service.getObjectsForCollection(value)).rejects.toThrow('Argument collection should be set');
+[7m  [0m [91m                                                   ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m164[0m:[93m32[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m164[0m       await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
+[7m   [0m [91m                               ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m256[0m:[93m35[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'CollectionObject'.
+  Type 'undefined' is not assignable to type 'CollectionObject'.
+
+[7m256[0m       await expect(service.delete(value)).rejects.toThrow('Argument object should be set');
+[7m   [0m [91m                                  ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m288[0m:[93m33[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'CollectionObject'.
+  Type 'undefined' is not assignable to type 'CollectionObject'.
+
+[7m288[0m       await expect(service.save(value)).rejects.toThrow('Argument object should be set');
+[7m   [0m [91m                                ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m294[0m:[93m14[0m - [91merror[0m[90m TS2790: [0mThe operand of a 'delete' operator must be optional.
+
+[7m294[0m       delete mockObject.collection;
+[7m   [0m [91m             ~~~~~~~~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m394[0m:[93m14[0m - [91merror[0m[90m TS2790: [0mThe operand of a 'delete' operator must be optional.
+
+[7m394[0m       delete mockObject.uri;
+[7m   [0m [91m             ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m457[0m:[93m55[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null' is not assignable to parameter of type 'CollectionObject'.
+
+[7m457[0m       expect(() => CollectionObjectSolidStore.toThing(null)).toThrow('Argument object should be set');
+[7m   [0m [91m                                                      ~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m561[0m:[93m7[0m - [91merror[0m[90m TS7053: [0mElement implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ object: ThingPersisted; digitalObject: ThingPersisted; height: ThingPersisted; width: ThingPersisted; depth: ThingPersisted; weight: ThingPersisted; representations: ThingPersisted[]; dataset: ThingPersisted; }'.
+  No index signature with a parameter of type 'string' was found on type '{ object: ThingPersisted; digitalObject: ThingPersisted; height: ThingPersisted; width: ThingPersisted; depth: ThingPersisted; weight: ThingPersisted; representations: ThingPersisted[]; dataset: ThingPersisted; }'.
+
+[7m561[0m       params[value] = null;
+[7m   [0m [91m      ~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m571[0m:[93m9[0m - [91merror[0m[90m TS2345: [0mArgument of type 'ThingPersisted' is not assignable to parameter of type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+
+[7m571[0m         params.dataset
+[7m   [0m [91m        ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m595[0m:[93m9[0m - [91merror[0m[90m TS2345: [0mArgument of type 'ThingPersisted' is not assignable to parameter of type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+  Property 'graphs' is missing in type 'ThingPersisted' but required in type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+
+[7m595[0m         objectThing
+[7m   [0m [91m        ~~~~~~~~~~~[0m
+
+  [96m../solid-crs-client/node_modules/@inrupt/solid-client/dist/rdf.internal.d.ts[0m:[93m46[0m:[93m5[0m
+    [7m46[0m     graphs: Readonly<Record<IriString, Graph> & {
+    [7m  [0m [96m    ~~~~~~[0m
+    'graphs' is declared here.
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m692[0m:[93m9[0m - [91merror[0m[90m TS2345: [0mArgument of type 'ThingPersisted' is not assignable to parameter of type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+
+[7m692[0m         objectThing
+[7m   [0m [91m        ~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m709[0m:[93m49[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'CollectionObject[]'.
+  Type 'undefined' is not assignable to type 'CollectionObject[]'.
+
+[7m709[0m       await expect(service.search('searchterm', value)).rejects.toThrow('Argument objects should be set');
+[7m   [0m [91m                                                ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m715[0m:[93m35[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m715[0m       await expect(service.search(value, [ mockObject ])).rejects.toThrow('Argument searchTerm should be set');
+[7m   [0m [91m                                  ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m723[0m:[93m60[0m - [91merror[0m[90m TS2345: [0mArgument of type '(CollectionObject | { name: undefined; type: string; additionalType?: Term[] | undefined; identifier?: string | undefined; description: string; collection: string; ... 22 more ...; updated?: string | undefined; })[]' is not assignable to parameter of type 'CollectionObject[]'.
+  Type 'CollectionObject | { name: undefined; type: string; additionalType?: Term[] | undefined; identifier?: string | undefined; description: string; collection: string; ... 22 more ...; updated?: string | undefined; }' is not assignable to type 'CollectionObject'.
+    Type '{ name: undefined; type: string; additionalType?: Term[] | undefined; identifier?: string | undefined; description: string; collection: string; maintainer?: string | ulection-solid-store.spec.ts[0m:[93m360[0m:[93m44[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m360[0m       await expect(service.search(value, [ mockCollection ])).rejects.toThrow(ArgumentError);
+[7m   [0m [91m                                           ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m366[0m:[93m29[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m366[0m       const collections = [ mockCollection, mockCollection, { ...mockCollection, name: undefined } ];
+[7m   [0m [91m                            ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m366[0m:[93m45[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m366[0m       const collections = [ mockCollection, mockCollection, { ...mockCollection, name: undefined } ];
+[7m   [0m [91m                                            ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m366[0m:[93m66[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m366[0m       const collections = [ mockCollection, mockCollection, { ...mockCollection, name: undefined } ];
+[7m   [0m [91m                                                                 ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-solid-store.spec.ts[0m:[93m368[0m:[93m43[0m - [91merror[0m[90m TS7005: [0mVariable 'mockCollection' implicitly has an 'any' type.
+
+[7m368[0m       const result = await service.search(mockCollection.name, collections);
+[7m   [0m [91m                                          ~~~~~~~~~~~~~~[0m
+(node:82784) UnhandledPromiseRejectionWarning: Error
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:82784) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 4)
+(node:82784) [DEP0018] DeprecationWarning: Unhandled promise rejections are deprecated. In the future, promise rejections that are not handled will terminate the Node.js process with a non-zero exit code.
+PASS core lib/solid/collection-solid-store.spec.ts
+  ● Console
+
+    console.log
+      before updating
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:187:13)
+
+    console.log
+      before updating distribution
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:200:13)
+
+    console.log
+      before setting things
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:207:13)
+
+    console.log
+      before saveSolidDatasetAt
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:212:13)
+
+    console.log
+      before setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:215:13)
+
+    console.log
+      after setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:221:13)
+
+    console.log
+      after fetch
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:223:13)
+
+    console.log
+      after all
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:233:13)
+
+    console.log
+      before updating
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:187:13)
+
+    console.log
+      before updating distribution
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:200:13)
+
+    console.log
+      before setting things
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:207:13)
+
+    console.log
+      before saveSolidDatasetAt
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:212:13)
+
+    console.log
+      before setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:215:13)
+
+    console.log
+      after setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:221:13)
+
+    console.log
+      after fetch
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:223:13)
+
+    console.log
+      after all
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:233:13)
+
+    console.log
+      before updating
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:187:13)
+
+    console.log
+      before updating distribution
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:200:13)
+
+    console.log
+      before setting things
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:207:13)
+
+    console.log
+      before saveSolidDatasetAt
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:212:13)
+
+    console.log
+      before setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:215:13)
+
+    console.log
+      after setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:221:13)
+
+    console.log
+      after fetch
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:223:13)
+
+    console.log
+      after all
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:233:13)
+
+    console.log
+      before updating
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:187:13)
+
+    console.log
+      before updating distribution
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:200:13)
+
+    console.log
+      before setting things
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:207:13)
+
+    console.log
+      before saveSolidDatasetAt
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:212:13)
+
+    console.log
+      before setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:215:13)
+
+    console.log
+      after setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:221:13)
+
+    console.log
+      after fetch
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:223:13)
+
+    console.log
+      after all
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:233:13)
+
+    console.log
+      before updating
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:187:13)
+
+    console.log
+      before updating distribution
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:200:13)
+
+    console.log
+      before setting things
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:207:13)
+
+    console.log
+      before saveSolidDatasetAt
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:212:13)
+
+    console.log
+      before setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:215:13)
+
+    console.log
+      after setpublic
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:221:13)
+
+    console.log
+      after fetch
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:223:13)
+
+    console.log
+      fetch not ok
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:227:15)
+
+    console.log
+      after all
+
+      at CollectionSolidStore.save (lib/solid/collection-solid-store.ts:233:13)
+
+ndefined; creator?: Term[] | undefined; ... 20 more ...; updated?: string | undefined; }' is not assignable to type 'CollectionObject'.
+      Types of property 'name' are incompatible.
+        Type 'undefined' is not assignable to type 'string'.
+
+[7m723[0m       const result = await service.search(mockObject.name, objects);
+[7m   [0m [91m                                                           ~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m735[0m:[93m67[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null' is not assignable to parameter of type 'string'.
+
+[7m735[0m       expect(() => CollectionObjectSolidStore.getDigitalObjectUri(null)).toThrow();
+[7m   [0m [91m                                                                  ~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m747[0m:[93m14[0m - [91merror[0m[90m TS2790: [0mThe operand of a 'delete' operator must be optional.
+
+[7m747[0m       delete mockObject.uri;
+[7m   [0m [91m             ~~~~~~~~~~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m769[0m:[93m62[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+  Type 'undefined' is not assignable to type 'Readonly<{ type: "Dataset"; graphs: Readonly<Record<string, Readonly<Record<string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`, Readonly<{ type: "Subject"; url: string | `_:${string}` | `https://inrupt.com/.well-known/sdk-local-node/${string}`; predicates: Readonly<Record<string, Read...'.
+
+[7m769[0m       expect(() => CollectionObjectSolidStore.getTerm('uri', value)).toThrow('Argument dataset should be set');
+[7m   [0m [91m                                                             ~~~~~[0m
+[96mlib/solid/collection-object-solid-store.spec.ts[0m:[93m775[0m:[93m55[0m - [91merror[0m[90m TS2345: [0mArgument of type 'null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+
+[7m775[0m       expect(() => CollectionObjectSolidStore.getTerm(value, client.createSolidDataset())).toThrow('Argument uri should be set');
+[7m   [0m [91m                                                      ~~~~~[0m
+PASS core lib/solid/collection-object-solid-store.spec.ts
+
+=============================== Coverage summary ===============================
+Statements   : 95.29% ( 870/913 )
+Branches     : 90.85% ( 546/601 )
+Functions    : 98.77% ( 160/162 )
+Lines        : 95.07% ( 829/872 )
+================================================================================
+------------------------------------|---------|----------|---------|---------|---------------------------------------------------
+File                                | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                 
+------------------------------------|---------|----------|---------|---------|---------------------------------------------------
+All files                           |   95.29 |    90.85 |   98.77 |   95.07 |                                                   
+ collections                        |     100 |      100 |     100 |     100 |                                                   
+  collection-memory-store.ts        |     100 |      100 |     100 |     100 |                                                   
+  collection-object-memory-store.ts |     100 |      100 |     100 |     100 |                                                   
+ errors                             |   68.75 |      100 |   66.67 |   68.75 |                                                   
+  argument-error.ts                 |     100 |      100 |     100 |     100 |                                                   
+  base-error.ts                     |     100 |      100 |     100 |     100 |                                                   
+  not-implemented-error.ts          |       0 |      100 |       0 |       0 | 1-21                                              
+ i8n                                |     100 |      100 |     100 |     100 |                                                   
+  memory-translator.ts              |     100 |      100 |     100 |     100 |                                                   
+  mock-translator.ts                |     100 |      100 |     100 |     100 |                                                   
+  translator.ts                     |     100 |      100 |     100 |     100 |                                                   
+ logging                            |     100 |     97.3 |     100 |     100 |                                                   
+  console-logger.ts                 |     100 |    94.74 |     100 |     100 | 57                                                
+  logger-level.ts                   |     100 |      100 |     100 |     100 |                                                   
+  logger.ts                         |     100 |      100 |     100 |     100 |                                                   
+ router                             |     100 |    97.37 |     100 |     100 |                                                   
+  router.ts                         |     100 |    97.37 |     100 |     100 | 241                                               
+ solid                              |   93.49 |    87.87 |   98.82 |   93.33 |                                                   
+  collection-object-solid-store.ts  |   98.05 |    91.67 |     100 |   97.96 | 149,161,247,255,286                               
+  collection-solid-store.ts         |   89.76 |    79.03 |     100 |    89.6 | 58,88,102,110,144,152,161,169,184,267,275,285,319 
+  solid-mock.service.ts             |     100 |      100 |     100 |     100 |                                                   
+  solid-sdk.service.ts              |     100 |    81.13 |     100 |     100 | 236-246,256-257                                   
+  solid-store.ts                    |   78.72 |    81.82 |      90 |   78.72 | 243-307                                           
+  solid.service.ts                  |     100 |      100 |     100 |     100 |                                                   
+ stores                             |     100 |      100 |     100 |     100 |                                                   
+  memory-store.ts                   |     100 |      100 |     100 |     100 |                                                   
+ terms                              |     100 |      100 |     100 |     100 |                                                   
+  term.service.ts                   |     100 |      100 |     100 |     100 |                                                   
+ utils                              |     100 |      100 |     100 |     100 |                                                   
+  alphabetical-sort.ts              |     100 |      100 |     100 |     100 |                                                   
+  date-parser.ts                    |     100 |      100 |     100 |     100 |                                                   
+  fulltext-match.ts                 |     100 |      100 |     100 |     100 |                                                   
+------------------------------------|---------|----------|---------|---------|---------------------------------------------------
+Jest: "global" coverage threshold for statements (97.38%) not met: 95.29%
+Jest: "global" coverage threshold for branches (92.06%) not met: 90.85%
+Jest: "global" coverage threshold for lines (97.25%) not met: 95.07%
+Jest: "global" coverage threshold for functions (99.38%) not met: 98.77%
+
+Test Suites: 17 passed, 17 total
+Tests:       302 passed, 302 total
+Snapshots:   0 total
+Time:        6.709 s
+Ran all test suites.
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! @netwerk-digitaal-erfgoed/solid-crs-core@0.11.0 test: `jest`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the @netwerk-digitaal-erfgoed/solid-crs-core@0.11.0 test script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /Users/stijn/.npm/_logs/2021-12-01T08_52_16_312Z-debug.log

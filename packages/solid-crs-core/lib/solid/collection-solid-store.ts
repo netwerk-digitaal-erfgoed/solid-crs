@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale, addStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionStore } from '../collections/collection-store';
@@ -193,12 +193,15 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Dataset');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/name', collection.name, 'nl');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
+    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', webId);
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
+    collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
 
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
     distributionThing = addUrl(distributionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DataDownload');
     distributionThing = addUrl(distributionThing, 'http://schema.org/contentUrl', objectsUri);
+    distributionThing = addStringNoLocale(distributionThing, 'http://schema.org/encodingFormat', 'text/turtle');
 
     // save collection and distribution in dataset
     updatedDataset = setThing(updatedDataset, collectionThing);
@@ -206,6 +209,10 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     // replace existing dataset with updated
     await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
+    // set public read access for collection
+    await this.setPublicAccess(collectionUri);
+    // set public read access for parent folder
+    await this.setPublicAccess(`${new URL(collectionUri).origin}${new URL(collectionUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     const result = await fetch(objectsUri, { method: 'head' });
 
@@ -305,8 +312,9 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // fall back on foaf:name value if schema:name is missing
-    const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl') ||
-      getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ;
+    const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl')
+      || getStringNoLocale(profile, 'http://schema.org/name')
+      || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ;
 
     await overwriteFile(`${uri}`, new Blob([ `
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.

@@ -1,4 +1,4 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, saveFileInContainer } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
@@ -6,8 +6,9 @@ import { CollectionObjectStore } from '../collections/collection-object-store';
 import { ArgumentError } from '../errors/argument-error';
 import { Term } from '../terms/term';
 import { fulltextMatch } from '../utils/fulltext-match';
+import { SolidStore } from './solid-store';
 
-export class CollectionObjectSolidStore implements CollectionObjectStore {
+export class CollectionObjectSolidStore extends SolidStore<CollectionObject> implements CollectionObjectStore {
 
   /**
    * Retrieves all objects for a specific collection.
@@ -315,6 +316,13 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
 
     });
 
+    // upload the image if a file is set and update image URI
+    if (object.imageFile) {
+
+      object.image = await this.uploadImage(object.imageFile, object.image);
+
+    }
+
     const {
       object: objectThing,
       digitalObject: digitalObjectThing,
@@ -365,6 +373,11 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     });
 
     await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
+
+    // set public read access for object
+    await this.setPublicAccess(objectUri);
+    // set public read access for parent folder
+    await this.setPublicAccess(`${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     return { ...object, uri: objectUri };
 
@@ -681,6 +694,43 @@ export class CollectionObjectSolidStore implements CollectionObjectStore {
     }
 
     return objects.filter((object) => fulltextMatch(object, searchTerm));
+
+  }
+
+  /**
+   * Uploads an image file to an 'images' directory next to the collection object.
+   *
+   * @param imageFile The image file to upload.
+   * @param objectUri The URI of the related object.
+   *
+   * @returns The URI of the uploaded image.
+   */
+  async uploadImage(imageFile: File, objectUri: string): Promise<string> {
+
+    if (!imageFile) {
+
+      throw new ArgumentError('Argument imageFile should be set.', imageFile);
+
+    }
+
+    if (!objectUri) {
+
+      throw new ArgumentError('Argument objectUri should be set.', objectUri);
+
+    }
+
+    const savedFile = await saveFileInContainer(
+      `${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`,
+      imageFile,
+      { slug: `${v4().split('-')[0]}-${imageFile.name}`, contentType: imageFile.type, fetch }
+    );
+
+    const imageUri = savedFile.internal_resourceInfo.sourceIri;
+
+    // set public access for this image
+    await this.setPublicAccess(imageUri);
+
+    return imageUri;
 
   }
 

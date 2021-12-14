@@ -1,4 +1,4 @@
-import { CollectionObject, MemoryTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionObject, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectCardComponent } from './object-card.component';
 
 describe('ObjectCardComponent', () => {
@@ -21,23 +21,7 @@ describe('ObjectCardComponent', () => {
 
     component = window.document.createElement('nde-object-card') as ObjectCardComponent;
 
-    component.translator = new MemoryTranslator('en-GB');
-
-    fetchMock.resetMocks();
-
-    fetchMock.mockResponseOnce(JSON.stringify({
-      'collections': {
-        'card': {
-          'name-unavailable': 'Name unavailable',
-          'additionalType-unavailable': 'Type unavailable',
-        },
-      },
-      'common': {
-        'date': {
-          'just-now': 'Just Now',
-        },
-      },
-    }));
+    component.translator = new MockTranslator('nl-NL');
 
   });
 
@@ -63,9 +47,9 @@ describe('ObjectCardComponent', () => {
 
     expect(html).toContain(testObject.name);
     expect(html).toContain(testObject.additionalType[0].name);
-    expect(html).not.toContain('Name unavailable');
-    expect(html).not.toContain('Type unavailable');
-    expect(html).toContain('- Just Now');
+    expect(html).not.toContain(component.translator.translate('collections.card.name-unavailable'));
+    expect(html).not.toContain(component.translator.translate('collections.card.additionalType-unavailable'));
+    expect(html).toContain(component.translator.translate('common.date.just-now'));
 
   });
 
@@ -78,10 +62,10 @@ describe('ObjectCardComponent', () => {
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
 
     expect(html).not.toContain(testObject.name);
-    expect(html).toContain('Name unavailable');
+    expect(html).toContain(component.translator.translate('collections.card.name-unavailable'));
     expect(html).toContain(testObject.additionalType[0].name);
-    expect(html).not.toContain('Type unavailable');
-    expect(html).toContain('- Just Now');
+    expect(html).not.toContain(component.translator.translate('collections.card.additionalType-unavailable'));
+    expect(html).toContain(component.translator.translate('common.date.just-now'));
 
   });
 
@@ -93,10 +77,10 @@ describe('ObjectCardComponent', () => {
 
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
     expect(html).toContain(testObject.name);
-    expect(html).not.toContain('Name unavailable');
     expect(html).not.toContain(testObject.additionalType[0].name);
-    expect(html).toContain('Type unavailable');
-    expect(html).toContain('- Just Now');
+    expect(html).not.toContain(component.translator.translate('collections.card.name-unavailable'));
+    expect(html).toContain(component.translator.translate('collections.card.additionalType-unavailable'));
+    expect(html).toContain(component.translator.translate('common.date.just-now'));
 
   });
 
@@ -109,10 +93,10 @@ describe('ObjectCardComponent', () => {
     const html = window.document.body.getElementsByTagName(tag)[0].shadowRoot.innerHTML;
 
     expect(html).toContain(testObject.name);
-    expect(html).not.toContain('Name unavailable');
+    expect(html).not.toContain(component.translator.translate('collections.card.name-unavailable'));
     expect(html).toContain(testObject.additionalType[0].name);
-    expect(html).not.toContain('Type unavailable');
-    expect(html).not.toContain('- Just Now');
+    expect(html).not.toContain(component.translator.translate('collections.card.additionalType-unavailable'));
+    expect(html).not.toContain(component.translator.translate('common.date.just-now'));
 
   });
 
