@@ -6,9 +6,9 @@ prefilled = locals.prefilled || {};
 
 <h2>Uw WebID</h2>
 <p>
-  Een WebID is een unieke identificatie voor u in de vorm van een URL.
+  Een WebID is jouw unieke identificatie in de vorm van een URL.
   <br>
-  Met uw WebID kunt u inloggen bij Solid-apps en toegang krijgen tot niet-openbare gegevens in Pods.
+  Met je WebID kun je inloggen bij Solid-apps en toegang krijgen tot niet-openbare gegevens in Pods.
 </p>
 <ol>
   <li hidden class="radio">
@@ -18,7 +18,7 @@ prefilled = locals.prefilled || {};
       Maak een nieuwe WebID voor mijn Pod.
     </label>
     <p id="createWebIdForm">
-      Maak hieronder ook een Pod aan, aangezien uw WebID daar wordt opgeslagen.
+      Maak hieronder ook een Pod aan, aangezien je WebID daar wordt opgeslagen.
     </p>
   </li>
   <li class="radio">
@@ -26,14 +26,14 @@ prefilled = locals.prefilled || {};
       <input hidden type="radio" id="createWebIdOff" name="createWebId" value=""<% { %> checked<% } %>>
     </label>
     <ol id="existingWebIdForm">
-      <li>
-        <label for="webId">Uw WebID:</label>
+      <li class="form-group">
+        <label for="webId">Je WebID:</label>
         <input id="webId" type="text" name="webId" value="<%= prefilled.webId || '' %>">
       </li>
       <li hidden class="checkbox">
         <label>
           <input type="checkbox" id="register" name="register"<% { %> unchecked<% } %>>
-          Gebruik mijn nieuwe account om in te loggen met deze WebID.
+          Gebruik mijn nieuwe account om in te loggen met dit WebID.
         </label>
       </li>
     </ol>
@@ -41,7 +41,7 @@ prefilled = locals.prefilled || {};
 </ol>
 <h2>Uw Pod</h2>
 <p>
-  Een Pod is een opslagplaats voor uw gegevens.
+  Een Pod is een opslagplaats voor je gegevens.
 </p>
 <ol>
   <li class="checkbox">
@@ -65,8 +65,8 @@ prefilled = locals.prefilled || {};
           </label>
         </li>
       <% } %>
-      <li id="podNameForm">
-        <label for="podName">Kies een naam voor uw pod:</label>
+      <li id="podNameForm" class="form-group">
+        <label for="podName">Kies een naam voor je pod:</label>
         <input id="podName" type="text" name="podName" value="<%= prefilled.podName || '' %>">
       </li>
     </ol>
@@ -75,20 +75,20 @@ prefilled = locals.prefilled || {};
 <h2>Uw account</h2>
 <div>
   <p>
-    Kies de inloggegevens die u wilt gebruiken om in de toekomst op deze server in te loggen.
+    Kies de inloggegevens die je wilt gebruiken om in de toekomst op deze server in te loggen.
   </p>
   <ol>
-    <li>
+    <li class="form-group">
       <label for="email">Email:</label>
       <input id="email" type="text" name="email" value="<%= prefilled.email || '' %>" >
     </li>
   </ol>
   <ol id="passwordForm">
-    <li>
+    <li class="form-group">
       <label for="password">Wachtwoord:</label>
       <input id="password" type="password" name="password">
     </li>
-    <li>
+    <li class="form-group">
       <label for="confirmPassword">Bevestig wachtwoord:</label>
       <input id="confirmPassword" type="password" name="confirmPassword">
     </li>
