@@ -29,6 +29,10 @@
       "path": "packages/solid-crs-theme"
     },
     {
+      "name": "id-proxy",
+      "path": "packages/solid-crs-id-proxy"
+    },
+    {
       "name": "pods",
       "path": "packages/solid-crs-pods"
     },

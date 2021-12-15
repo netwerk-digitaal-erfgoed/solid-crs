@@ -1,0 +1,17 @@
+{
+  "extends": "@digita-ai/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "module": "commonjs",
+  },
+  "include": [ 
+      "lib", 
+      "assets"
+  ],
+  "exclude": [
+      "dist",
+      "node_modules",
+      "**/*.spec.ts"
+  ]
+}
