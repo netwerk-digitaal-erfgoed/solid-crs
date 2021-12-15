@@ -2,7 +2,7 @@
   html {
   
     font-family: Poppins, sans-serif;
-    background-color: #25438E;
+    background-color: #172A59;
     background-repeat: no-repeat;
     background-attachment: fixed;
     overscroll-behavior: none;
@@ -49,11 +49,13 @@
   }
 
   li.radio {
-    padding: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   li.checkbox {
-    padding: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   img {
@@ -117,7 +119,7 @@
   input {
       border: 2px solid #172A59;
       color: #172A59;
-      width: 60%;
+      width: 360px;
       height: 16px;
       float: right;
       padding: 10px 20px;
@@ -128,14 +130,14 @@
   label {
       font-size: 14.4px;
       font-weight: 600;
-      min-width: 30%;
       line-height: 21.6px;
       color: #172a59;
       
   }
 
   .form-group {
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     display: flex;
+    margin-left: 40px;
   }
