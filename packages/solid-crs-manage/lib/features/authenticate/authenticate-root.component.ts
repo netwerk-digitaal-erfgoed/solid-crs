@@ -1,6 +1,6 @@
 import { html, property, internalProperty, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
-import { Logger, Translator, webIdValidator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, validateWebId } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Login, Logo, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -38,7 +38,7 @@ export class AuthenticateRootComponent extends RxLitElement {
 
     super();
 
-    define('authenticate-component', hydrate(AuthenticateComponent)(this.solidService, undefined, webIdValidator));
+    define('authenticate-component', hydrate(AuthenticateComponent)(this.solidService, undefined, validateWebId));
 
   }
 
