@@ -68,17 +68,17 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@appnest/lit-translate|lit-html)/)"
+      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client)/)"
     ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 92.23,
-        "statements": 97.48,
-        "lines": 97.35,
-        "functions": 99.4
+        "branches": 92.43,
+        "statements": 97.56,
+        "lines": 97.44,
+        "functions": 99.41
       }
     },
     "automock": false,

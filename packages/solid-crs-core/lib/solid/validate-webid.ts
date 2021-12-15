@@ -6,7 +6,7 @@ import { getSolidDataset, getThing, getUrl } from '@digita-ai/inrupt-solid-clien
  * @param webId The WebID to validate
  * @returns A list of errors if the WebID is invalid, or an empty list if the WebID is valid
  */
-export const webIdValidator = async (webId: string): Promise<string[]> => {
+export const validateWebId = async (webId: string): Promise<string[]> => {
 
   if (!webId) {
 
@@ -88,10 +88,9 @@ export const webIdValidator = async (webId: string): Promise<string[]> => {
   }
 
   // Throw an error if the issuer is an invalid OIDC provider.
-  if (
   // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
-    (openidConfig && openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc') && !poweredByHeader?.includes('solid')
-  ) {
+  if ((openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
+    && !poweredByHeader?.includes('solid')) {
 
     return [ 'authenticate.error.invalid-webid.invalid-oidc-registration' ];
 
