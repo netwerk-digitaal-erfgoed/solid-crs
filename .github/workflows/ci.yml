@@ -24,7 +24,7 @@ jobs:
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
           echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
-          echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-id-proxy"
+          echo "::set-output name=image_id_proxy::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-id-proxy"
 
   test:
     name: Run tests
