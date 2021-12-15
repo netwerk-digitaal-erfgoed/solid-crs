@@ -60,6 +60,7 @@
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
     "@digita-ai/inrupt-solid-service": "^0.11.0",
+    "@digita-ai/inrupt-solid-client": "^0.11.0",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.13.1",
     "moment": "^2.29.1",
     "rxjs": "^7.4.0",
