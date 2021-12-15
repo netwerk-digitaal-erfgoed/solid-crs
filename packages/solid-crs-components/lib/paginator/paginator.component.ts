@@ -101,11 +101,12 @@ export class PaginatorComponent extends RxLitElement {
           justify-content: flex-end;
           gap: var(--gap-normal);
           height: var(--gap-normal);
+          width: 100%;
         }
         :host[hidden] {
           display: none;
         }
-        :host > * {
+        :host > *:not(style) {
           margin: 0;
           padding: 0;
           display: block;
