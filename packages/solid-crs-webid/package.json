@@ -5,7 +5,7 @@
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
   "scripts": {
-    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/. tmp/ && community-solid-server -c config/file.json --rootFilePath ./tmp -p 3000",
+    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/local/. tmp/ && community-solid-server -c config/file.json --rootFilePath ./tmp -p 3003",
     "start:watch": "npm run start"
   },
   "dependencies": {
