@@ -9,6 +9,7 @@ RUN apk update && apk upgrade && \
 ENV BASE_URL=http://localhost
 ENV PORT=80
 ENV CONFIG=config/file.json
+ENV ENVIRONMENT=test
 
 # Create app directory
 RUN mkdir -p /community-server
@@ -23,7 +24,8 @@ RUN npm install  --unsafe-perm
 COPY . /community-server
 
 # Copy initial data
-# TODO add .acl to root for proxy access
+COPY ./data/$ENVIRONMENT/ /data
+COPY ./config/ /config
 
 # Expose ports.
 EXPOSE 80
