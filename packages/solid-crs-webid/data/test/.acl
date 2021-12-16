@@ -14,14 +14,14 @@
 
 <#minter-append-webids>
     a acl:Authorization;
-    acl:agent <https://id.netwerkdigitaalerfgoed.nl/dgt-id-proxy/card#me>;
+    acl:agent <https://webid.netwerkdigitaalerfgoed.nl/dgt-id-proxy/card#me>;
     acl:accessTo <./>;
     acl:mode
         acl:Read, acl:Append.
 
 <#minter-control-webids>
     a acl:Authorization;
-    acl:agent <http:s//id.netwerkdigitaalerfgoed.nl/dgt-id-proxy/card#me>;
+    acl:agent <https://webid.netwerkdigitaalerfgoed.nl/dgt-id-proxy/card#me>;
     acl:default <./>;
     acl:mode
         acl:Read, acl:Write, acl:Control.
