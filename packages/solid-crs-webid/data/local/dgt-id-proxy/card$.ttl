@@ -3,11 +3,11 @@
 
 <>
     a foaf:PersonalProfileDocument;
-    foaf:maker <http://localhost:3003/dgt-id-proxy/card#me>;
-    foaf:primaryTopic <http://localhost:3003/dgt-id-proxy/card#me>.
+    foaf:maker <http://localhost:3007/dgt-id-proxy/card#me>;
+    foaf:primaryTopic <http://localhost:3007/dgt-id-proxy/card#me>.
 
-<http://localhost:3003/dgt-id-proxy/card#me>
+<http://localhost:3007/dgt-id-proxy/card#me>
     a foaf:Person;
     foaf:name "dgt-id-proxy";
-    solid:oidcIssuer <http://localhost:????/> ;
+    solid:oidcIssuer <http://localhost:3006/> ;
     solid:oidcIssuerRegistrationToken "" .
