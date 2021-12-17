@@ -37,6 +37,10 @@
       "path": "packages/solid-crs-pods"
     },
     {
+      "name": "webid",
+      "path": "packages/solid-crs-webid"
+    },
+    {
       "name": "semcom-node",
       "path": "packages/solid-crs-semcom-node"
     },

@@ -14,6 +14,7 @@ jobs:
       image_semcom_components: ${{ steps.vars.outputs.image_semcom_components }}
       image_pods: ${{ steps.vars.outputs.image_pods }}
       image_id_proxy: ${{ steps.vars.outputs.image_id_proxy }}
+      image_webid: ${{ steps.vars.outputs.image_webid }}
     steps:
       - name: Set variables
         id: vars
@@ -25,6 +26,7 @@ jobs:
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
           echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
           echo "::set-output name=image_id_proxy::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-id-proxy"
+          echo "::set-output name=image_webid::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-webid"
 
   test:
     name: Run tests
@@ -208,6 +210,17 @@ jobs:
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
+      - name: Build and push webid
+        uses: docker/build-push-action@v2
+        with:
+          context: packages/solid-crs-webid/
+          push: true
+          tags: |
+            ${{ needs.variables.outputs.image_webid }}:latest
+            ${{ needs.variables.outputs.image_webid }}:${{ needs.variables.outputs.tag }}
+          build-args: |
+            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
+
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
@@ -224,6 +237,7 @@ jobs:
           kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image statefulset/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image statefulset/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image statefulset/solid-crs-webid app=${{ needs.variables.outputs.image_webid }}:${{ needs.variables.outputs.tag }} --record
 
       - name: Verify deployment
         run: |
@@ -233,3 +247,4 @@ jobs:
           kubectl rollout status deployment/solid-crs-semcom-components
           kubectl rollout status statefulset/solid-crs-pods
           kubectl rollout status statefulset/solid-crs-id-proxy
+          kubectl rollout status statefulset/solid-crs-webid
