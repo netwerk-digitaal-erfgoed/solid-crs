@@ -29,7 +29,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   @internalProperty()
   issuers: Issuer[] = [ {
-    uri: 'https://auth.netwerkdigitaalerfgoed.nl/',
+    uri: process.env.VITE_ID_PROXY_URI,
     description: 'Log in met je NDE account',
     icon: '',
   } ];
