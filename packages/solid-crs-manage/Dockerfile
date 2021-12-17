@@ -1,6 +1,7 @@
 FROM node:14-alpine AS build
 ARG NPM_TOKEN
 WORKDIR /usr/src/app
+COPY nginx.conf ./
 COPY package*.json ./
 COPY .npmrc ./
 RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
@@ -12,5 +13,6 @@ RUN npm run build
 FROM nginx:stable-alpine
 LABEL org.opencontainers.image.source=https://github.com/netwerk-digitaal-erfgoed/solid-crs
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+COPY --from=build /usr/src/app/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
