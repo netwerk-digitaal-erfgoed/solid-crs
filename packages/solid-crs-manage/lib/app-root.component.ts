@@ -8,7 +8,7 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Client, Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
@@ -83,7 +83,10 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<FormEvent>;
 
-  constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem')) {
+  constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
+    clientName: 'Collectiebeheersysteem',
+    clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
+  } })) {
 
     super();
 
