@@ -235,8 +235,8 @@ jobs:
           kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image statefulset/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image statefulset/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:${{ needs.variables.outputs.tag }} --record
           kubectl set image statefulset/solid-crs-webid app=${{ needs.variables.outputs.image_webid }}:${{ needs.variables.outputs.tag }} --record
 
       - name: Verify deployment
@@ -245,6 +245,6 @@ jobs:
           kubectl rollout status deployment/solid-crs-presentation
           kubectl rollout status deployment/solid-crs-semcom-node
           kubectl rollout status deployment/solid-crs-semcom-components
+          kubectl rollout status deployment/solid-crs-id-proxy
           kubectl rollout status statefulset/solid-crs-pods
-          kubectl rollout status statefulset/solid-crs-id-proxy
           kubectl rollout status statefulset/solid-crs-webid
