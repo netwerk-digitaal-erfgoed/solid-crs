@@ -5,10 +5,10 @@
   "author": "digita.ai",
   "scripts": {
     "start": "dgt-id-proxy",
-    "start:watch": "npm run start -- -u http://localhost:3003/ -U https://nde.eu.auth0.com/ -m . -c config/local-config.json -o assets/openid-configuration.json -j assets/jwks.json",
+    "start:watch": "npm run start -- -u http://localhost:3006/ -U https://nde.eu.auth0.com/ -m . -c config/local-config.json -o assets/openid-configuration.json -j assets/jwks.json",
     "build": "shx rm -rf assets && shx mkdir assets && npm run generate:oidc && npm run generate:keys",
     "lint:staged": "lint-staged",
-    "generate:oidc": "node scripts/generate-openid-configuration.js https://nde.eu.auth0.com/ http://localhost:3003/ assets/openid-configuration.json local",
+    "generate:oidc": "node scripts/generate-openid-configuration.js https://nde.eu.auth0.com/ http://localhost:3006/ assets/openid-configuration.json local",
     "generate:keys": "node scripts/generate-keys.js assets/jwks.json"
   },
   "main": "./dist/index.js",

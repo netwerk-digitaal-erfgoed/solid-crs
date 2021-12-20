@@ -110,7 +110,7 @@
       {
         "@id": "urn:dgt-id-proxy:default:SingleClaimWebIdFactory",
         "@type": "SingleClaimWebIdFactory",
-        "webIdPattern": "https://pods.netwerkdigitaalerfgoed.nl/:customclaim",
+        "webIdPattern": "https://webid.netwerkdigitaalerfgoed.nl/:customclaim",
         "claim": "https://netwerkdigitaalerfgoed.nl/username"
       },
       {
@@ -385,12 +385,12 @@
             {
               "@id": "urn:dgt-id-proxy:default:WebIdProfileHandler",
               "@type": "WebIdProfileHandler",
-              "webId": "https://pods.netwerkdigitaalerfgoed.nl/id-proxy/profile/card#me",
+              "webId": "https://webid.netwerkdigitaalerfgoed.nl/dgt-id-proxy/card#me",
               "idp": "https://auth.netwerkdigitaalerfgoed.nl/",
               "pathToJwks": {
                 "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
               },
-              "webIdPattern": "https://pods.netwerkdigitaalerfgoed.nl/:customclaim/profile/card#me",
+              "webIdPattern": "https://webid.netwerkdigitaalerfgoed.nl/:customclaim",
               "predicates": [
                 [ "urn:example:sub", [ "sub" ] ]
               ]
