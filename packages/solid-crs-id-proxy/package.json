@@ -4,7 +4,7 @@
   "description": "Solid CRS identity proxy",
   "author": "digita.ai",
   "scripts": {
-    "start": "dgt-id-proxy -u http://localhost:3006/ -U https://nde.eu.auth0.com/ -m . -c config/local-config.json -o assets/openid-configuration.json -j assets/jwks.json",
+    "start": "dgt-id-proxy",
     "start:watch": "npm run start -- -u http://localhost:3006/ -U https://nde.eu.auth0.com/ -m . -c config/local-config.json -o assets/openid-configuration.json -j assets/jwks.json",
     "build": "shx rm -rf assets && shx mkdir assets && npm run generate:oidc && npm run generate:keys",
     "lint:staged": "lint-staged",
