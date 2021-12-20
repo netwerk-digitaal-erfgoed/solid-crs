@@ -17,7 +17,7 @@
           },
           {
             "StaticAssetHandler:_assets_key": "/.well_known/css/fonts/",
-            "StaticAssetHandler:_assets_value": "/assets/fonts/"
+            "StaticAssetHandler:_assets_value": "./assets/fonts/"
           },
           {
             "StaticAssetHandler:_assets_key": "/.well_known/css/images/",
