@@ -121,7 +121,7 @@
       "@id": "urn:dgt-id-proxy:default:ClientIdStaticAuthRequestHandler",
       "@type": "ClientIdStaticAuthRequestHandler",
       "clientId": "VUXJUOJG4ubzsNtPMXFADjCQ1jpK5EPx",
-      "redirectUri": "http://localhost:3003/redirect",
+      "redirectUri": "http://localhost:3006/redirect",
       "keyValueStore": {
         "@id": "urn:dgt-id-proxy:default:StaticAuthStore"
       }
@@ -141,7 +141,7 @@
       },
       "clientId": "VUXJUOJG4ubzsNtPMXFADjCQ1jpK5EPx",
       "clientSecret": "fBV0486gO-fytTNe-4QeQGv4QabENuZkTyO7T6ugOK-xpMnGzVazVHN6RMlSsioo",
-      "redirectUri": "http://localhost:3003/redirect"
+      "redirectUri": "http://localhost:3006/redirect"
     },
     {
       "@id": "urn:dgt-id-proxy:default:StateStore",
@@ -215,7 +215,7 @@
       "keyValueStore": {
         "@type": "InMemoryStore"
       },
-      "proxyTokenUrl": "http://localhost:3003/oauth/token",
+      "proxyTokenUrl": "http://localhost:3006/oauth/token",
       "clockTolerance": 15,
       "maxDpopProofTokenAge": 90
     },
@@ -386,7 +386,7 @@
             "@id": "urn:dgt-id-proxy:default:WebIdProfileHandler",
             "@type": "WebIdProfileHandler",
             "webId": "http://localhost:3000/clientapp/card#me",
-            "idp": "http://localhost:3003",
+            "idp": "http://localhost:3006",
             "pathToJwks": {
               "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
             },
