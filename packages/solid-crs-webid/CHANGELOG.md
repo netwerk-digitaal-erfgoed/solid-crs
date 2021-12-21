@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.15.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.0...v0.15.1) (2021-12-21)
+
+
+### **Bug Fixes**
+
+* merge errors in webid data ([0393e60](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0393e60a2ef54480da0f6a1c771cfec87a244006))
+
+
+
 ## [0.15.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.14.1...v0.15.0) (2021-12-21)
 
 
