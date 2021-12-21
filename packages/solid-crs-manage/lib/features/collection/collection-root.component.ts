@@ -236,7 +236,7 @@ export class CollectionRootComponent extends RxLitElement {
 }
       ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state?.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.PRESENTATION}${encodeURIComponent(this.state?.context.webId)}/collection/${encodeURIComponent(this.collection.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
+      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/collection/${encodeURIComponent(this.collection.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
