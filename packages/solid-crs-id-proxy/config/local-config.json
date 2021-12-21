@@ -110,7 +110,7 @@
     {
       "@id": "urn:dgt-id-proxy:default:SingleClaimWebIdFactory",
       "@type": "SingleClaimWebIdFactory",
-      "webIdPattern": "http://localhost:3000/:customclaim",
+      "webIdPattern": "http://localhost:3007/:customclaim",
       "claim": "https://netwerkdigitaalerfgoed.nl/username"
     },
     {
@@ -385,15 +385,12 @@
           {
             "@id": "urn:dgt-id-proxy:default:WebIdProfileHandler",
             "@type": "WebIdProfileHandler",
-            "webId": "http://localhost:3000/clientapp/card#me",
-            "idp": "http://localhost:3006",
+            "webId": "http://localhost:3007/dgt-id-proxy/card#me",
+            "idp": "http://localhost:3006/",
             "pathToJwks": {
               "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
             },
-            "webIdPattern": "http://localhost:3000/:customclaim/profile/card#me",
-            "predicates": [
-              [ "urn:example:sub", [ "sub" ] ]
-            ]
+            "webIdPattern": "http://localhost:3007/:customclaim"
           },
           {
             "@id": "urn:dgt-id-proxy:default:JwtEncodeResponseHandler"
@@ -438,7 +435,7 @@
           "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
         }
       },
-      "path": "/jwks"
+      "path": "/.well-known/jwks.json"
     },
     {
       "@id": "urn:dgt-id-proxy:default:RegistrationEndpoint",

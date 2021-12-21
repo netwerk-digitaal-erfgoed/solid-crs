@@ -8,9 +8,18 @@ describe('SolidStore', () => {
 
   let service: SolidStore<Collection>;
 
+  const solidService = {
+    getDefaultSession: jest.fn(() => ({
+      info: {
+        webId: 'https://example.com/profile/card#me',
+      },
+      fetch,
+    })),
+  } as any;
+
   beforeEach(() => {
 
-    service = new SolidStore();
+    service = new SolidStore(solidService);
 
     jest.clearAllMocks();
 
@@ -405,9 +414,11 @@ describe('SolidStore', () => {
 
     it('should error when server returned error for access resource', async () => {
 
-      (client.access.getPublicAccess as any) = jest.fn(async () => Promise.reject({ response: { status: 500 } }));
+      const errResponse = { response: { status: 500 } };
 
-      await expect(service.setPublicAccess('https://test.uri/')).rejects.toThrow();
+      (client.access.getPublicAccess as any) = jest.fn(async () => Promise.reject(errResponse));
+
+      await expect(service.setPublicAccess('https://test.uri/')).rejects.toEqual(errResponse);
 
     });
 

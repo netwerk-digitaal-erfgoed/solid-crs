@@ -1,4 +1,5 @@
-import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, fetch, getDefaultSession, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale, addStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale, addStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionStore } from '../collections/collection-store';
@@ -11,9 +12,9 @@ import { SolidStore } from './solid-store';
  */
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
-  constructor(public webId?: string) {
+  constructor(protected solidService: SolidSDKService, public webId?: string) {
 
-    super();
+    super(solidService);
 
   }
 
@@ -23,7 +24,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
    */
   async all(): Promise<Collection[]> {
 
-    const webId = this.webId || getDefaultSession()?.info?.webId;
+    const webId = this.webId || this.solidService.getDefaultSession()?.info?.webId;
 
     if (!webId) {
 
@@ -41,15 +42,13 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
-    const catalogDataset = await getSolidDataset(catalogUri, { fetch }).catch(
-      async (err) => {
+    const catalogDataset = await getSolidDataset(catalogUri, { fetch: this.getSession().fetch }).catch(async () => {
 
-        await this.createCatalog(catalogUri);
+      await this.createCatalog(catalogUri);
 
-        return await getSolidDataset(catalogUri, { fetch });
+      return await getSolidDataset(catalogUri, { fetch: this.getSession().fetch });
 
-      }
-    );
+    });
 
     const catalog = getThing(catalogDataset, catalogUri);
 
@@ -80,7 +79,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collection.uri, { fetch });
+    const catalogDataset = await getSolidDataset(collection.uri, { fetch: this.getSession().fetch });
     const catalogThing = getThing(catalogDataset, collection.uri.split('#')[0]);
 
     if (!catalogThing) {
@@ -114,10 +113,10 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     updatedDataset = removeThing(updatedDataset, distributionUri);
 
     // replace existing dataset with updated
-    await saveSolidDatasetAt(collection.uri, updatedDataset, { fetch });
+    await saveSolidDatasetAt(collection.uri, updatedDataset, { fetch: this.getSession().fetch });
 
     // delete collection objects file
-    await deleteFile(collection.objectsUri, { fetch });
+    await deleteFile(collection.objectsUri, { fetch: this.getSession().fetch });
 
     return collection;
 
@@ -137,7 +136,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve base urls for storage and catalogs (https://leapeeters.nl/ or https://leapeeters.nl/catalog)
-    const webId = getDefaultSession()?.info?.webId;
+    const webId = this.solidService.getDefaultSession()?.info?.webId;
 
     if (!webId) {
 
@@ -176,7 +175,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = collection.objectsUri || new URL(`heritage-objects/data-${v4()}`, storage).toString();
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collectionUri, { fetch });
+    const catalogDataset = await getSolidDataset(collectionUri, { fetch: this.getSession().fetch });
     const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
 
     if (!catalogThing) {
@@ -208,18 +207,18 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     updatedDataset = setThing(updatedDataset, distributionThing);
 
     // replace existing dataset with updated
-    await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch });
+    await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch: this.getSession().fetch });
     // set public read access for collection
     await this.setPublicAccess(collectionUri);
     // set public read access for parent folder
     await this.setPublicAccess(`${new URL(collectionUri).origin}${new URL(collectionUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
-    const result = await fetch(objectsUri, { method: 'head' });
+    const result = await this.getSession().fetch(objectsUri, { method: 'head' });
 
     if (!result.ok) {
 
       // create an empty file at objectsUri, where the collection objects will be stored
-      await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch });
+      await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
 
     }
 
@@ -241,7 +240,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     }
 
     // retrieve collection
-    const dataset = await getSolidDataset(uri, { fetch });
+    const dataset = await getSolidDataset(uri, { fetch: this.getSession().fetch });
     const collectionThing = getThing(dataset, uri);
 
     if (!collectionThing) {
@@ -294,7 +293,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
    */
   async createCatalog(uri: string): Promise<void> {
 
-    const webId = getDefaultSession()?.info?.webId;
+    const webId = this.solidService.getDefaultSession()?.info?.webId;
 
     if (!webId) {
 
@@ -324,7 +323,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       rdf:type schema:DataCatalog ;
       schema:name "Datacatalogus van ${name}"@nl ;
       schema:publisher <${webId}> .
-    ` ], { type: 'text/turtle' }), { fetch });
+    ` ], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
 
   }
 

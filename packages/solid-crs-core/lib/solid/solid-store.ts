@@ -1,10 +1,14 @@
-import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, fetch, overwriteFile, access, getResourceAcl, getSolidDatasetWithAcl, hasResourceAcl, saveAclFor, createAclFromFallbackAcl, hasAccessibleAcl, hasFallbackAcl, setPublicResourceAccess, getPublicAccess, setAgentResourceAccess, getDefaultSession } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { getDefaultSession } from '@digita-ai/inrupt-solid-client';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
 import { Store } from '../stores/store';
 
 export class SolidStore<T extends Resource> implements Store<T> {
+
+  constructor(protected solidService: SolidSDKService) { }
 
   async all(): Promise<T[]> {
 
@@ -54,7 +58,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     }
 
-    const profileDataset = await getSolidDataset(webId, { fetch });
+    const profileDataset = await getSolidDataset(webId, { fetch: this.getSession().fetch });
     const profile = getThing(profileDataset, webId);
 
     if (!profile) {
@@ -71,7 +75,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     }
 
-    const publicTypeIndexDataset = await getSolidDataset(publicTypeIndexUrl, { fetch });
+    const publicTypeIndexDataset = await getSolidDataset(publicTypeIndexUrl, { fetch: this.getSession().fetch });
 
     const typeRegistration = getThingAll(publicTypeIndexDataset).find((typeIndex: Thing) =>
       getUrl(typeIndex, 'http://www.w3.org/ns/solid/terms#forClass') === forClass);
@@ -141,7 +145,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const instance =  new URL(location, storage).toString(); // https://leapeeters.be/ + /heritage-collections/catalog
 
-    const publicTypeIndexDataset = await getSolidDataset(typeIndexUrl, { fetch });
+    const publicTypeIndexDataset = await getSolidDataset(typeIndexUrl, { fetch: this.getSession().fetch });
 
     const typeRegistration = getThingAll(publicTypeIndexDataset).find((typeIndex: Thing) =>
       getUrl(typeIndex, 'http://www.w3.org/ns/solid/terms#forClass') === forClass &&
@@ -159,7 +163,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
       registration = addUrl(registration, 'http://www.w3.org/ns/solid/terms#instance', instance);
       const updatedDataset = setThing(publicTypeIndexDataset, registration);
 
-      await saveSolidDatasetAt(typeIndexUrl, updatedDataset, { fetch });
+      await saveSolidDatasetAt(typeIndexUrl, updatedDataset, { fetch: this.getSession().fetch });
 
     }
 
@@ -204,14 +208,14 @@ export class SolidStore<T extends Resource> implements Store<T> {
       <>
         a solid:TypeIndex ;
         a solid:UnlistedDocument.`,
-    ], { type: 'text/turtle' }), { fetch });
+    ], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
 
     await overwriteFile(`${publicTypeIndex}`, new Blob([
       `@prefix solid: <http://www.w3.org/ns/solid/terms#>.
       <>
         a solid:TypeIndex ;
         a solid:ListedDocument.`,
-    ], { type: 'text/turtle' }), { fetch });
+    ], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
 
     // add type index references to user profile
     let updatedProfile = addUrl(profile, 'http://www.w3.org/ns/solid/terms#privateTypeIndex', privateTypeIndex);
@@ -219,7 +223,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
     updatedProfile = addUrl(updatedProfile, 'http://www.w3.org/ns/pim/space#storage', webIdSplit[0]);
 
     const updatedDataset = setThing(profileDataset, updatedProfile);
-    await saveSolidDatasetAt(webId, updatedDataset, { fetch });
+    await saveSolidDatasetAt(webId, updatedDataset, { fetch: this.getSession().fetch });
 
     // make public type index public
     await this.setPublicAccess(publicTypeIndex);
@@ -238,13 +242,13 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const currentAccess = await access.getPublicAccess(
       resourceUri,
-      { fetch }
-    ).catch(async (err) => {
+      { fetch: this.getSession().fetch }
+    ).catch(async (err: { response: Response }) => {
 
       // create the .acl file if it doesn't exist
       if (err.response.status === 404) {
 
-        const webId = getDefaultSession()?.info?.webId;
+        const webId = this.solidService.getDefaultSession().info?.webId;
         const url = new URL(resourceUri);
         const target = url.origin + url.pathname;
 
@@ -265,7 +269,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
             acl:accessTo <${target}>;
             acl:mode acl:Read, acl:Write, acl:Control.`;
 
-        await fetch(`${target}.acl`, {
+        await this.getSession().fetch(`${target}.acl`, {
           method: 'PUT',
           body,
           headers: { 'Content-Type': 'text/turtle' },
@@ -274,12 +278,12 @@ export class SolidStore<T extends Resource> implements Store<T> {
         // try again
         return await access.getPublicAccess(
           resourceUri,
-          { fetch }
+          { fetch: this.getSession().fetch }
         );
 
       } else {
 
-        throw Error(err);
+        return Promise.reject(err);
 
       }
 
@@ -290,10 +294,19 @@ export class SolidStore<T extends Resource> implements Store<T> {
       await access.setPublicAccess(
         resourceUri,
         { read: true },
-        { fetch }
+        { fetch: this.getSession().fetch }
       );
 
     }
+
+  }
+
+  /**
+   * @returns The current session
+   */
+  getSession(): ReturnType<typeof getDefaultSession> {
+
+    return this.solidService.getDefaultSession();
 
   }
 

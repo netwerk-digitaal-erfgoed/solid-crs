@@ -2,12 +2,12 @@ import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderCo
 import { inspect } from '@xstate/inspect';
 import { SearchRootComponent } from './features/search/search-root.component';
 import { AppRootComponent } from './app-root.component';
-import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { CollectionRootComponent } from './features/collection/collection-root.component';
 import { ObjectRootComponent } from './features/object/object-root.component';
 import { TermSearchComponent } from './features/object/terms/term-search.component';
 import './index';
 import { AuthenticateSetupComponent } from './features/authenticate/authenticate-setup.component';
+import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 
 /**
  * Starts the xstate devtools
@@ -27,7 +27,6 @@ if (process.env.MODE === 'DEV') {
  */
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
-customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-authenticate-setup', AuthenticateSetupComponent);
 customElements.define('nde-object-root', ObjectRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);

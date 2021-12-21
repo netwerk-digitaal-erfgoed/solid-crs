@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.14.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.14.0...v0.14.1) (2021-12-20)
+
+
+### **Bug Fixes**
+
+* roll out solid-crs-id-proxy as deployment ([#544](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/544)) ([8c37c9b](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/8c37c9b0b0623f7e0c64db1d0f82a89e2a6efbf8))
+
+
+
 ## [0.14.0](https://github.com/netwerk-digitaal-erfgoed/solid-cbs/compare/v0.13.1...v0.14.0) (2021-12-20)
 
 

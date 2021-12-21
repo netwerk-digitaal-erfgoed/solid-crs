@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Polyfill for encoding which isn't present globally in jsdom
 // eslint-disable-next-line import/order, @typescript-eslint/no-var-requires
 const crypto = require('crypto');
@@ -13,7 +14,7 @@ Object.defineProperty(window.self, 'crypto', {
 });
 
 import * as core from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderComponent, FormElementComponent, ObjectCardComponent, SidebarComponent, ProgressBarComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import fetchMock from 'jest-fetch-mock';
 import { ROUTER, RouterStates } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { TermSearchComponent } from '../lib/features/object/terms/term-search.component';
@@ -26,7 +27,7 @@ import { AuthenticateRootComponent } from '../lib/features/authenticate/authenti
 
 // mock router function and state config
 // essentially disables the router in tests
-core.urlVariables = () => ({
+(core.urlVariables as any) = () => ({
   searchParams: {
     get: jest.fn(() => ''),
   },
@@ -35,12 +36,12 @@ core.urlVariables = () => ({
   },
 });
 
-core.activeRoute = () => ({
+(core.activeRoute as any) = () => ({
   path: undefined, targets: [],
   ...core.urlVariables(undefined),
 });
 
-core.routerStateConfig = () => ({
+(core.routerStateConfig as any) = () => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {
@@ -81,7 +82,6 @@ customElements.define('nde-object-card', ObjectCardComponent);
 customElements.define('nde-card', CardComponent);
 customElements.define('nde-app-root', AppRootComponent);
 customElements.define('nde-alert', AlertComponent);
-customElements.define('nde-authenticate-root', AuthenticateRootComponent);
 customElements.define('nde-authenticate-setup', AuthenticateSetupComponent);
 customElements.define('nde-form-element', FormElementComponent);
 customElements.define('nde-progress-bar', ProgressBarComponent);

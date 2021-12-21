@@ -390,10 +390,7 @@
               "pathToJwks": {
                 "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
               },
-              "webIdPattern": "https://webid.netwerkdigitaalerfgoed.nl/:customclaim",
-              "predicates": [
-                [ "urn:example:sub", [ "sub" ] ]
-              ]
+              "webIdPattern": "https://webid.netwerkdigitaalerfgoed.nl/:customclaim"
             },
             {
               "@id": "urn:dgt-id-proxy:default:JwtEncodeResponseHandler"
@@ -438,7 +435,7 @@
             "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
           }
         },
-        "path": "/jwks"
+        "path": "/.well-known/jwks.json"
       },
       {
         "@id": "urn:dgt-id-proxy:default:RegistrationEndpoint",
