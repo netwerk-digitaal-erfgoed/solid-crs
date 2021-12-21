@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.14.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.14.0...v0.14.1) (2021-12-20)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
+
+
+
+
+
+## [0.14.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.13.1...v0.14.0) (2021-12-20)
+
+
+### **Bug Fixes**
+
+* add nginx SPA config to Dockerfile for manage ([#543](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/543)) ([565f7a7](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/565f7a7b1cebf75182d6d03006e89e4c65d305de))
+
+
+
 ### [0.13.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.13.0...v0.13.1) (2021-12-15)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-manage
