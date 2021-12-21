@@ -1,0 +1,16 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#minter-append-webids>
+    a acl:Authorization;
+    acl:agent <http://localhost:3007/dgt-id-proxy/card#me>;
+    acl:accessTo <./>;
+    acl:mode
+        acl:Read, acl:Append.
+
+<#minter-control-webids>
+    a acl:Authorization;
+    acl:agent <http://localhost:3007/dgt-id-proxy/card#me>;
+    acl:default <./>;
+    acl:mode
+        acl:Read, acl:Write, acl:Control.

@@ -16,9 +16,25 @@ describe('CollectionSolidStore', () => {
 
   let mockCollection;
 
+  const solidService = {
+    getDefaultSession: jest.fn(() => ({
+      info: {
+        webId: 'https://example.com/profile/card#me',
+      },
+      fetch,
+    })),
+  } as any;
+
   beforeEach(() => {
 
-    service = new CollectionSolidStore();
+    service = new CollectionSolidStore(solidService);
+
+    (service.getSession as any) = jest.fn(() => ({
+      info: {
+        webId: 'https://example.com/profile/card#me',
+      },
+      fetch,
+    }));
 
     jest.clearAllMocks();
 
@@ -42,7 +58,7 @@ describe('CollectionSolidStore', () => {
 
     it('should error when no webid could be found', async () => {
 
-      (client.getDefaultSession as any) = jest.fn(() => undefined);
+      (solidService.getDefaultSession as any) = jest.fn(() => undefined);
 
       await expect(service.all()).rejects.toThrow('Argument WebID should be set');
 
@@ -50,7 +66,7 @@ describe('CollectionSolidStore', () => {
 
     it('should error when no type registration could be found', async () => {
 
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
       (service.getInstanceForClass as any) = jest.fn(async () => undefined);
       (service.saveInstanceForClass as any) = jest.fn(async () => undefined);
 
@@ -61,7 +77,7 @@ describe('CollectionSolidStore', () => {
     it('should return empty list when no collections in catalog', async () => {
 
       (service.getInstanceForClass as any) = jest.fn(async () => 'test-instance');
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.getUrlAll as any) = jest.fn(() => [ ]);
@@ -74,7 +90,7 @@ describe('CollectionSolidStore', () => {
 
       (service.getInstanceForClass as any) = jest.fn(async () => 'test-instance');
       (service.get as any) = jest.fn(async () => mockCollection);
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.getUrlAll as any) = jest.fn(() => [ 'test-thing ' ]);
@@ -85,7 +101,7 @@ describe('CollectionSolidStore', () => {
 
     it('should create new catalog when none was found', async (done) => {
 
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
       (service.getInstanceForClass as any) = jest.fn(async () => 'test-instance');
       (service.get as any) = jest.fn(async () => mockCollection);
       (client.getSolidDataset as any) = jest.fn(async () => { throw new Error(); });
@@ -155,7 +171,6 @@ describe('CollectionSolidStore', () => {
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.overwriteFile as any) = jest.fn(async () => 'test-file');
-      (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
       await expect(service.save(mockCollection)).resolves.toEqual(mockCollection);
 
@@ -175,7 +190,6 @@ describe('CollectionSolidStore', () => {
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
       (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
-      (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
       const result = await service.save(mockCollection);
 
@@ -198,7 +212,6 @@ describe('CollectionSolidStore', () => {
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
       (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
-      (client.fetch as any) = jest.fn(async () => ({ ok: true }));
 
       const result = await service.save(mockCollection);
 
@@ -221,8 +234,6 @@ describe('CollectionSolidStore', () => {
       (client.addStringWithLocale as any) = jest.fn(() => 'test-thing');
       (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
-      (client.fetch as any) = jest.fn(async () => ({ ok: true }));
-
       const result = await service.save(mockCollection);
 
       expect(result).toEqual(expect.objectContaining({ ...mockCollection }));
@@ -242,10 +253,16 @@ describe('CollectionSolidStore', () => {
       (client.addStringNoLocale as any) = jest.fn(() => 'test-thing');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-dataset');
       (client.overwriteFile as any) = jest.fn(async () => 'test-file');
-      (client.fetch as any) = jest.fn(async () => ({ ok: false }));
+
+      (service.getSession as any) = jest.fn(() => ({
+        info: {
+          webId: 'https://example.com/profile/card#me',
+        },
+        fetch: jest.fn(async () => ({ ok: false })),
+      }));
 
       const result = await service.save(mockCollection);
-      await expect(result).toEqual(mockCollection);
+      expect(result).toEqual(mockCollection);
       expect(client.overwriteFile).toHaveBeenCalledTimes(1);
 
     });
@@ -295,7 +312,7 @@ describe('CollectionSolidStore', () => {
 
     it('should error when webId could be found', async () => {
 
-      (client.getDefaultSession as any) = jest.fn(() => undefined);
+      (solidService.getDefaultSession as any) = jest.fn(() => undefined);
 
       await expect(service.createCatalog('test.uri')).rejects.toThrow('Not logged in');
 
@@ -303,7 +320,7 @@ describe('CollectionSolidStore', () => {
 
     it('should call overwriteFile', async (done) => {
 
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
@@ -317,7 +334,7 @@ describe('CollectionSolidStore', () => {
 
     it('should use schema:name by default', async () => {
 
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
@@ -333,7 +350,7 @@ describe('CollectionSolidStore', () => {
 
     it('should use foaf:name when schema:name was not found', async (done) => {
 
-      (client.getDefaultSession as any) = jest.fn(() => mockSession);
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');

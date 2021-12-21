@@ -23,7 +23,7 @@
     "directory": "packages/solid-crs-semcom-node"
   },
   "dependencies": {
-    "@digita-ai/dgt-components": "^0.8.5",
+    "@digita-ai/dgt-components": "0.10.0",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.14.1",
     "@netwerk-digitaal-erfgoed/solid-crs-components": "0.14.1",
     "@netwerk-digitaal-erfgoed/solid-crs-core": "0.14.1",
@@ -85,6 +85,6 @@
         "tsconfig": "<rootDir>/tsconfig.spec.json"
       }
     },
-    "maxWorkers": 6
+    "maxWorkers": 4
   }
 }

@@ -12,9 +12,18 @@ describe('CollectionObjectSolidStore', () => {
   let mockCollection: Collection;
   let mockObject: CollectionObject;
 
+  const solidService = {
+    getDefaultSession: jest.fn(() => ({
+      info: {
+        webId: 'https://example.com/profile/card#me',
+      },
+      fetch,
+    })),
+  } as any;
+
   beforeEach(() => {
 
-    service = new CollectionObjectSolidStore();
+    service = new CollectionObjectSolidStore(solidService);
 
     jest.resetAllMocks();
     jest.clearAllMocks();
@@ -54,6 +63,13 @@ describe('CollectionObjectSolidStore', () => {
     };
 
     (service.uploadImage as any) = jest.fn(async () => 'http://test.image');
+
+    (service.getSession as any) = jest.fn(() => ({
+      info: {
+        webId: 'https://example.com/profile/card#me',
+      },
+      fetch,
+    }));
 
   });
 
@@ -841,7 +857,14 @@ describe('CollectionObjectSolidStore', () => {
     beforeEach(() => {
 
       // reset mocked uploadImage
-      service = new CollectionObjectSolidStore();
+      service = new CollectionObjectSolidStore(solidService);
+
+      (service.getSession as any) = jest.fn(() => ({
+        info: {
+          webId: 'https://example.com/profile/card#me',
+        },
+        fetch,
+      }));
 
       (client.saveFileInContainer as any) = jest.fn(async (): Promise<WithResourceInfo> => ({
         internal_resourceInfo: {

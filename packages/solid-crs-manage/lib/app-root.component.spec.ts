@@ -1,11 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import fetchMock from 'jest-fetch-mock';
 import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+const solidService = {
+  getProfile: jest.fn(async () => ({
+    uri: 'https://example.com/profile',
+  })),
+  getSession: jest.fn(async () => ({
+    info: {
+      webId: 'https://example.com/profile',
+    },
+  })),
+} as any;
 
 describe('AppRootComponent', () => {
 
@@ -49,7 +60,7 @@ describe('AppRootComponent', () => {
 
   beforeEach(() => {
 
-    machine = interpret(appMachine(solid,
+    machine = interpret(appMachine(solidService,
       new CollectionMemoryStore([
         collection2,
         collection3,
@@ -64,7 +75,7 @@ describe('AppRootComponent', () => {
         session: { webId: 'lorem' },
       }));
 
-    component = window.document.createElement('nde-app-root') as AppRootComponent;
+    component = new AppRootComponent(solidService);
 
     component.actor = machine;
 
@@ -148,8 +159,6 @@ describe('AppRootComponent', () => {
 
   it('should throw error when dismissing without event', async () => {
 
-    machine.start();
-
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -221,7 +230,7 @@ describe('AppRootComponent', () => {
   it('should add collection when store contains none', async (done) => {
 
     // start without collection
-    machine = interpret(appMachine(solid,
+    machine = interpret(appMachine(solidService,
       new CollectionMemoryStore([]),
       new CollectionObjectMemoryStore([]),
       collection1,

@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormContext } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, CollectionObjectSolidStore, CollectionObjectStore, CollectionSolidStore, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { addAlert, CollectionEvents, SelectedCollectionEvent } from './collection.events';
 import { CollectionContext, collectionMachine, CollectionStates, validateCollectionForm } from './collection.machine';
+
+const solidService = { } as any;
 
 describe('CollectionMachine', () => {
 
@@ -53,7 +56,7 @@ describe('CollectionMachine', () => {
       }));
 
     machine.parent = interpret(appMachine(
-      new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
+      solidService,
       collectionStore,
       objectStore,
       collection1,
@@ -61,6 +64,15 @@ describe('CollectionMachine', () => {
     ).withContext({
       alerts: [],
     }));
+
+    const session = {
+      info: {
+        webId: 'https://test.webid',
+      },
+    };
+
+    ((objectStore as any).getSession as any) = jest.fn(() => session);
+    ((objectStore as any).getSession as any) = jest.fn(() => session);
 
   });
 
@@ -158,26 +170,6 @@ describe('CollectionMachine', () => {
     machine.start();
 
     machine.send({ type: CollectionEvents.SELECTED_COLLECTION, collection: collection2 } as SelectedCollectionEvent);
-
-  });
-
-  it('should send error event to parent when loading failed', async(done) => {
-
-    objectStore.getObjectsForCollection = jest.fn().mockRejectedValue(undefined);
-
-    machine.parent.onEvent((event) => {
-
-      if(event && event.type === AppEvents.ERROR) {
-
-        done();
-
-      }
-
-    });
-
-    machine.start();
-
-    machine.parent.start();
 
   });
 

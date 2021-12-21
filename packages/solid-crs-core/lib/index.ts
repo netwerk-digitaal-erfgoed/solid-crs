@@ -33,4 +33,5 @@ export * from './solid/solid-session';
 export * from './solid/solid.service';
 export * from './solid/collection-object-solid-store';
 export * from './solid/collection-solid-store';
+export * from './solid/validate-webid';
 export * from './router/router';

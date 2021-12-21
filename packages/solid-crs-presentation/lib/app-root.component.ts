@@ -1,12 +1,13 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSResult, TemplateResult } from 'lit-element';
-import { ActorRef, interpret, Interpreter, State } from 'xstate';
+import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, SolidSDKService, Translator, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, Translator, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
@@ -47,14 +48,7 @@ export class AppRootComponent extends RxLitElement {
    * this is an interpreted machine given an initial context.
    */
   @internalProperty()
-  actor = interpret(
-    appMachine(
-      new SolidSDKService(this.logger),
-      new CollectionSolidStore(),
-      new CollectionObjectSolidStore()
-    ).withContext({ alerts: [] }),
-    { devTools: process.env.MODE === 'DEV' }
-  );
+  actor: Interpreter<AppContext, any, EventObject>;
 
   /**
    * The state of this component.
@@ -104,6 +98,11 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   lastSearchTerm: string;
 
+  /**
+   * The solid service used throughout the application
+   */
+  private solidService = new SolidSDKService('Presentatiemodule');
+
   async connectedCallback(): Promise<void> {
 
     const language = new URL(window.location.href).searchParams.get('lang');
@@ -113,9 +112,9 @@ export class AppRootComponent extends RxLitElement {
 
     this.actor = interpret(
       appMachine(
-        new SolidSDKService(this.logger),
-        new CollectionSolidStore(),
-        new CollectionObjectSolidStore()
+        this.solidService,
+        new CollectionSolidStore(this.solidService),
+        new CollectionObjectSolidStore(this.solidService)
       ).withContext({ alerts: [] }),
       { devTools: process.env.MODE === 'DEV' }
     );

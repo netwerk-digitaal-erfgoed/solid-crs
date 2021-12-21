@@ -544,7 +544,7 @@ export class ObjectRootComponent extends RxLitElement {
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.PRESENTATION}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
+      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 

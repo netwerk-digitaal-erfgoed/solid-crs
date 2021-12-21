@@ -1,4 +1,5 @@
-import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, fetch, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, saveFileInContainer } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, saveFileInContainer } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
@@ -9,6 +10,12 @@ import { fulltextMatch } from '../utils/fulltext-match';
 import { SolidStore } from './solid-store';
 
 export class CollectionObjectSolidStore extends SolidStore<CollectionObject> implements CollectionObjectStore {
+
+  constructor(protected solidService: SolidSDKService) {
+
+    super(solidService);
+
+  }
 
   /**
    * Retrieves all objects for a specific collection.
@@ -23,7 +30,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     }
 
-    const dataset = await getSolidDataset(collection.objectsUri, { fetch });
+    const dataset = await getSolidDataset(collection.objectsUri, { fetch: this.getSession().fetch });
 
     if (!dataset) {
 
@@ -78,7 +85,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     }
 
-    const dataset = await getSolidDataset(uri, { fetch });
+    const dataset = await getSolidDataset(uri, { fetch: this.getSession().fetch });
 
     const objectThing = getThing(dataset, uri);
 
@@ -133,7 +140,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     }
 
     // retrieve the objects dataset
-    const objectDataset = await getSolidDataset(object.uri, { fetch });
+    const objectDataset = await getSolidDataset(object.uri, { fetch: this.getSession().fetch });
     // remove things from objects dataset
     let updatedDataset = removeThing(objectDataset, object.uri);
     updatedDataset = removeThing(updatedDataset, CollectionObjectSolidStore.getDigitalObjectUri(object.uri));
@@ -163,7 +170,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     }, updatedDataset);
 
     // save the dataset
-    await saveSolidDatasetAt(object.uri, updatedDataset, { fetch });
+    await saveSolidDatasetAt(object.uri, updatedDataset, { fetch: this.getSession().fetch });
 
     return object;
 
@@ -189,7 +196,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     }
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(object.collection, { fetch });
+    const catalogDataset = await getSolidDataset(object.collection, { fetch: this.getSession().fetch });
 
     // find out where to save this object based on its collection
     const collectionThing = getThing(catalogDataset, object.collection);
@@ -239,7 +246,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
       objectUri = new URL(`#object-${v4()}`, contentUrl).toString();
 
       // -> delete object from old contentUrl
-      const oldDataset = await getSolidDataset(object.uri, { fetch });
+      const oldDataset = await getSolidDataset(object.uri, { fetch: this.getSession().fetch });
       const oldObjectThing = getThing(oldDataset, object.uri);
 
       if (!oldObjectThing) {
@@ -287,12 +294,12 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
       }, updatedOldObjectsDataset);
 
-      await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch });
+      await saveSolidDatasetAt(object.uri, updatedOldObjectsDataset, { fetch: this.getSession().fetch });
 
     }
 
     // transform and save the object to the dataset of objects
-    const objectsDataset = await getSolidDataset(objectUri, { fetch });
+    const objectsDataset = await getSolidDataset(objectUri, { fetch: this.getSession().fetch });
 
     // Prepare own/local terms
     [ 'additionalType',
@@ -372,7 +379,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     });
 
-    await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch });
+    await saveSolidDatasetAt(objectUri, updatedObjectsDataset, { fetch: this.getSession().fetch });
 
     // set public read access for object
     await this.setPublicAccess(objectUri);
@@ -722,7 +729,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     const savedFile = await saveFileInContainer(
       `${new URL(objectUri).origin}${new URL(objectUri).pathname.split('/').slice(0, -1).join('/')}/`,
       imageFile,
-      { slug: `${v4().split('-')[0]}-${imageFile.name}`, contentType: imageFile.type, fetch }
+      { slug: `${v4().split('-')[0]}-${imageFile.name}`, contentType: imageFile.type, fetch: this.getSession().fetch }
     );
 
     const imageUri = savedFile.internal_resourceInfo.sourceIri;

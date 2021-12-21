@@ -59,6 +59,8 @@
   },
   "dependencies": {
     "@appnest/lit-translate": "^1.1.18",
+    "@digita-ai/inrupt-solid-service": "^0.11.0",
+    "@digita-ai/inrupt-solid-client": "^0.11.0",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.14.1",
     "moment": "^2.29.1",
     "rxjs": "^7.4.0",
@@ -67,17 +69,17 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@appnest/lit-translate|lit-html)/)"
+      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client)/)"
     ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 92.23,
-        "statements": 97.46,
-        "lines": 97.34,
-        "functions": 99.39
+        "branches": 92.43,
+        "statements": 97.56,
+        "lines": 97.44,
+        "functions": 99.41
       }
     },
     "automock": false,
@@ -100,6 +102,6 @@
     },
     "displayName": "core",
     "preset": "@digita-ai/jest-config",
-    "maxWorkers": 6
+    "maxWorkers": 4
   }
 }
