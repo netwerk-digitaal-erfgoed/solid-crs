@@ -179,9 +179,7 @@
         "pathToJwks": {
           "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
         },
-        "proxyUrl": {
-          "@id": "urn:dgt-id-proxy:variables:proxyUri"
-        }
+        "proxyUrl": "https://auth.netwerkdigitaalerfgoed.nl/"
       },
       {
         "@id": "urn:dgt-id-proxy:default:JwtDecodeResponseHandler",
