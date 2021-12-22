@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.15.4](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.3...v0.15.4) (2021-12-22)
+
+
+### **Bug Fixes**
+
+* correct proxy url for token signing ([#546](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/546)) ([19893b8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/19893b8fd82489e510d8f886e64ff51134cd2107))
+
+
+
 ### [0.15.3](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.2...v0.15.3) (2021-12-21)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-id-proxy
