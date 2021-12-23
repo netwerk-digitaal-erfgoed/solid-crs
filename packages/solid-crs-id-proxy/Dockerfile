@@ -9,8 +9,8 @@ COPY .npmrc ./
 RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
     npm install && \
     rm -f .npmrc
-RUN node ./scripts/generate-keys.js /usr/src/id-proxy/jwks.json
 COPY . .
+RUN node ./scripts/generate-keys.js /usr/src/id-proxy/jwks.json
 EXPOSE 80
 ENTRYPOINT node ./scripts/generate-openid-configuration.js $UPSTREAM_URL $PROXY_URL /usr/src/id-proxy/openid-configuration.json && \
 npm run start -- -u http://0.0.0.0 -U $UPSTREAM_URL -m . -c config/proxy-config.json -o ./openid-configuration.json -j ./jwks.json
