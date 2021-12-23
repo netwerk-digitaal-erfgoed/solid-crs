@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-components",
-  "version": "0.15.5",
+  "version": "0.15.6",
   "description": "Collection of Semantic Components for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-components.umd.js",
@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@digita-ai/semcom-core": "0.3.4",
-    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.15.5",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.15.5",
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.15.6",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.15.6",
     "debounce": "^1.2.1",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",

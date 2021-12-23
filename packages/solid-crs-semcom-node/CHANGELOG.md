@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.15.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.5...v0.15.6) (2021-12-23)
+
+**Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-node
+
+
+
+
+
 ### [0.15.5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.4...v0.15.5) (2021-12-23)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-node

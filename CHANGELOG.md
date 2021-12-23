@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.15.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.5...v0.15.6) (2021-12-23)
+
+
+### **Bug Fixes**
+
+* type in dockerfile ([f63a214](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/f63a21437f2f35dcdccb693b0eec7b2b3fe14e7f))
+
+
+
 ### [0.15.5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.4...v0.15.5) (2021-12-23)
 
 **Note:** Version bump only for package root
