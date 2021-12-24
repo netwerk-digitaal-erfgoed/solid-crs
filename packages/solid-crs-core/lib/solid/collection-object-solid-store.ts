@@ -498,52 +498,48 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     // dimensions
     let heightThing = createThing({ url: `${object.uri}-height` });
-    heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
 
     if (object.height && object.height > 0) {
 
+      heightThing = object.heightUnit ? addStringNoLocale(heightThing, 'http://schema.org/unitCode', object.heightUnit) : heightThing;
       heightThing = addUrl(heightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       heightThing = addDecimal(heightThing, 'http://schema.org/value', object.height);
+      objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
 
     }
 
-    objectThing = addUrl(objectThing, 'http://schema.org/height', asUrl(heightThing));
-
     let widthThing = createThing({ url: `${object.uri}-width` });
-    widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
 
     if (object.width && object.width > 0) {
 
+      widthThing = object.widthUnit ? addStringNoLocale(widthThing, 'http://schema.org/unitCode', object.widthUnit) : widthThing;
       widthThing = addUrl(widthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       widthThing = addDecimal(widthThing, 'http://schema.org/value', object.width);
+      objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
 
     }
 
-    objectThing = addUrl(objectThing, 'http://schema.org/width', asUrl(widthThing));
-
     let depthThing = createThing({ url: `${object.uri}-depth` });
-    depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
 
     if (object.depth && object.depth > 0) {
 
+      depthThing = object.depthUnit ? addStringNoLocale(depthThing, 'http://schema.org/unitCode', object.depthUnit) : depthThing;
       depthThing = addUrl(depthThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       depthThing = addDecimal(depthThing, 'http://schema.org/value', object.depth);
+      objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
 
     }
 
-    objectThing = addUrl(objectThing, 'http://schema.org/depth', asUrl(depthThing));
-
     let weightThing = createThing({ url: `${object.uri}-weight` });
-    weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
 
     if (object.weight && object.weight > 0) {
 
+      weightThing = object.weightUnit ? addStringNoLocale(weightThing, 'http://schema.org/unitCode', object.weightUnit) : weightThing;
       weightThing = addUrl(weightThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/QuantitativeValue');
       weightThing = addDecimal(weightThing, 'http://schema.org/value', object.weight);
+      objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
     }
-
-    objectThing = addUrl(objectThing, 'http://schema.org/weight', asUrl(weightThing));
 
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
