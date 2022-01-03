@@ -1,4 +1,4 @@
-import { html, property, unsafeCSS, css, TemplateResult, CSSResult, PropertyValues, internalProperty } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult, internalProperty } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Interpreter, State } from 'xstate';
@@ -40,7 +40,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
   @internalProperty()
   state: State<AppContext>;
 
-  protected firstUpdated(_changedProperties: PropertyValues): void {
+  protected firstUpdated(): void {
 
     this.subscribe('state', from(this.actor));
 

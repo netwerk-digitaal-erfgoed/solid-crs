@@ -12,6 +12,7 @@ const solidService = {
     uri: 'https://example.com/profile',
   })),
   logout: jest.fn(async() => undefined),
+  getStorages: jest.fn(async () => [ 'https://storage.uri/' ]),
 } as any;
 
 describe('AppMachine', () => {

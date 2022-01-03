@@ -1,6 +1,6 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { createMachine, DoneInvokeEvent } from 'xstate';
+import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
@@ -454,9 +454,9 @@ export const appMachine = (
               onDone: {
                 target: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
               },
-              // onError: {
-
-              // },
+              onError: {
+                actions: send((c, event) => event),
+              },
             },
           },
           /**
