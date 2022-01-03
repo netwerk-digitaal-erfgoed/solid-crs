@@ -8,8 +8,8 @@ import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { Client, Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
-import { AppActors, AppAuthenticateStates, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
+import { Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
@@ -175,7 +175,8 @@ export class AppRootComponent extends RxLitElement {
       )).withContext({
         alerts: [],
       }), { devTools: process.env.MODE === 'DEV' },
-    );
+    // eslint-disable-next-line no-console
+    ).onTransition((state) => { if (process.env.MODE === 'DEV') console.log(state.value); });
 
     this.subscribe('state', from(this.actor));
 
@@ -260,11 +261,9 @@ export class AppRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
-    const showLoading = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.CREATING })
-      || this.state?.matches({ [AppRootStates.DATA]: AppDataStates.REFRESHING });
+    const showLoading = this.state?.hasTag('loading');
 
-    const hideSidebar = this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })
-      || this.state?.matches({ [AppRootStates.DATA]: AppDataStates.CHECKING_TYPE_REGISTRATIONS })
+    const hideSidebar = this.state?.hasTag('setup')
       || !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED });
 
     return html`
@@ -313,7 +312,7 @@ export class AppRootComponent extends RxLitElement {
     .solidService="${this.solidService}"
     .translator="${this.translator}"
     ></nde-authenticate-root>`: ''}   
-    ${ this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE }) ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
+    ${ this.state?.hasTag('setup') ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }

@@ -20,9 +20,9 @@
     schema:url <https://www.hetlageland.org> ; # Optional
 
     solid:oidcIssuer <http://localhost:3000/>;
-    solid:oidcIssuerRegistrationToken "7e552c3b-eb88-47a4-855a-189a17d24c3e";
-    solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;
-    space:storage <http://localhost:3000/hetlageland/>.
+    solid:oidcIssuerRegistrationToken "7e552c3b-eb88-47a4-855a-189a17d24c3e". 
+    # solid:publicTypeIndex <http://localhost:3000/hetlageland/settings/publicTypeIndex.ttl>;
+    # space:storage <http://localhost:3000/hetlageland/>.
 
 <http://localhost:3000/hetlageland/profile/card#contactPoint>
     a schema:ContactPoint;

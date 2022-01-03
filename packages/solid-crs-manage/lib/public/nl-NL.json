@@ -224,7 +224,15 @@
                 "separator": "of",
                 "create-webid": "Nog geen WebID? Klik <a href=\"https://signup.pod.inrupt.com\">hier</a>."
             },
-
+            "no-pod": {
+                "title": "Je hebt nog geen pod.",
+                "subtitle": {
+                    "no-storage": "We konden geen opslagplaats vinden in je WebID.",
+                    "add-storage": "Voeg <a href=\"https://github.com/\" target=\"_blank\" rel=\"noopener noreferrer\">handmatig een opslagplaats toe</a> of maak een pod aan bij NDE."
+                },
+                "button-create-pod": "Maak een pod aan bij NDE",
+                "button-cancel": "Annuleren"
+            },
             "setup": {
                 "title": "Hoe wil je deze pod gebruiken?",
                 "button-administrator": {

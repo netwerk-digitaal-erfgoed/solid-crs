@@ -1,7 +1,6 @@
 button {
   border: none;
   background-color: var(--colors-primary-dark);
-  text-transform: uppercase;
   padding: var(--gap-small);
   color: var(--colors-foreground-inverse);
   cursor: pointer;
