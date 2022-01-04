@@ -101,6 +101,7 @@
     },
     "displayName": "core",
     "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jsdom",
     "maxWorkers": 4
   }
 }

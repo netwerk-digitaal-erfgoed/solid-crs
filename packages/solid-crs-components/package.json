@@ -69,6 +69,7 @@
   "jest": {
     "displayName": "components",
     "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],

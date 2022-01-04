@@ -53,7 +53,7 @@
     "crypto": "^1.0.1",
     "eslint": "^7.16.0",
     "http-server": "^0.12.3",
-    "jest": "26.6.3",
+    "jest": "^27.4.5",
     "jest-coverage-thresholds-bumper": "0.0.4",
     "jest-fetch-mock": "3.0.3",
     "rdf-js": "^4.0.2",
