@@ -79,6 +79,7 @@
   "jest": {
     "displayName": "presentation",
     "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
@@ -88,7 +89,7 @@
     "coverageThreshold": {
       "global": {
         "statements": 84.75,
-        "branches": 83.59,
+        "branches": 82.97,
         "lines": 86.38,
         "functions": 70.87
       }
