@@ -1,17 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Alert, FormActors, FormUpdatedEvent, FormValidatedEvent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Term } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { interpret, Interpreter } from 'xstate';
+import { interpret } from 'xstate';
 import { AppEvents } from '../../../app.events';
 import { ClickedCancelTermEvent } from '../object.events';
 import { TermSearchComponent } from './term-search.component';
 import { ClickedSubmitEvent, ClickedTermEvent, QueryUpdatedEvent } from './term.events';
-import { TermContext, termMachine, TermStates } from './term.machine';
+import { termMachine, TermStates } from './term.machine';
 
 describe('TermSearchComponent', () => {
 
   let component: TermSearchComponent;
-  let machine: Interpreter<TermContext>;
-  let formMachine: Interpreter<TermContext>;
+  let machine;
+  let formMachine;
   let termService;
 
   const term: Term = {
@@ -50,7 +51,7 @@ describe('TermSearchComponent', () => {
 
     component.translator = {
       translate: jest.fn((key) => key),
-    };
+    } as any;
 
   });
 
@@ -84,86 +85,61 @@ describe('TermSearchComponent', () => {
 
   });
 
-  it('should send QueryUpdatedEvent when formActor receives FormValidatedEvent', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof QueryUpdatedEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send QueryUpdatedEvent when formActor receives FormValidatedEvent', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    if (machine.state.matches(TermStates.IDLE)) {
+    component.sources = [ termSource ];
+    await component.updateComplete;
+    component.sourceCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = true);
+    (formMachine as any) = machine.children.get(FormActors.FORM_MACHINE);
+    (component.formActor as any) = formMachine;
+    formMachine.send(new FormUpdatedEvent('', ''));
 
-      component.sources = [ termSource ];
-      await component.updateComplete;
-      component.sourceCheckboxes.forEach((checkbox) => (checkbox as HTMLInputElement).checked = true);
-      formMachine = machine.children.get(FormActors.FORM_MACHINE);
-      component.formActor = formMachine;
-      formMachine.send(new FormUpdatedEvent('', ''));
-      formMachine.send(new FormValidatedEvent([]));
-
-    }
+    machine.send = jest.fn();
+    formMachine.send(new FormValidatedEvent([]));
+    expect(machine.send).toHaveBeenCalledWith(new QueryUpdatedEvent('', expect.any(Array)));
 
   });
 
-  it('should send ClickedSubmitEvent when "Bevestigen" button is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof ClickedSubmitEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send ClickedSubmitEvent when "Bevestigen" button is clicked', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    if (machine.state.matches(TermStates.IDLE)) {
+    component.sources = [ termSource ];
+    await component.updateComplete;
+    const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.confirm') as HTMLButtonElement;
+    expect(button).toBeTruthy();
 
-      component.sources = [ termSource ];
-      await component.updateComplete;
-      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.confirm') as HTMLButtonElement;
-      expect(button).toBeTruthy();
-      button.click();
-
-    }
+    machine.send = jest.fn();
+    button.click();
+    expect(machine.send).toHaveBeenCalledWith(new ClickedSubmitEvent());
 
   });
 
-  it('should send ClickedCancelTermEvent when "Annuleren" button is clicked', async (done) => {
-
-    machine.start();
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+  it('should send ClickedCancelTermEvent when "Annuleren" button is clicked', async () => {
 
     machine.parent = {
       send: jest.fn(),
-    } as any;
+      parent: Promise.resolve(),
+    };
 
-    if (machine.state.matches(TermStates.IDLE)) {
+    machine.start();
 
-      component.sources = [ termSource ];
-      await component.updateComplete;
-      const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.cancel') as HTMLButtonElement;
-      expect(button).toBeTruthy();
-      button.click();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
-    }
+    component.sources = [ termSource ];
+    await component.updateComplete;
+    const button = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelector('.cancel') as HTMLButtonElement;
+    expect(button).toBeTruthy();
 
+    button.click();
     expect(machine.parent.send).toHaveBeenCalledWith(new ClickedCancelTermEvent());
-    done();
 
   });
 
@@ -173,45 +149,30 @@ describe('TermSearchComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    if (machine.state.matches(TermStates.IDLE)) {
-
-      component.sources = [ termSource ];
-      component.selectedTerms = [ term, term, term ];
-      await component.updateComplete;
-      const selectedTermCards = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:first-of-type nde-large-card');
-      expect(selectedTermCards).toBeTruthy();
-      expect(selectedTermCards.length).toEqual(component.selectedTerms.length);
-
-    }
+    component.sources = [ termSource ];
+    component.selectedTerms = [ term, term, term ];
+    await component.updateComplete;
+    const selectedTermCards = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:first-of-type nde-large-card');
+    expect(selectedTermCards).toBeTruthy();
+    expect(selectedTermCards.length).toEqual(component.selectedTerms.length);
 
   });
 
-  it('should send ClickedTermEvent when a selected term is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof ClickedTermEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send ClickedTermEvent when a selected term is clicked', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    if (machine.state.matches(TermStates.IDLE)) {
+    component.sources = [ termSource ];
+    component.selectedTerms = [ term, term, term ];
+    await component.updateComplete;
+    const selectedTermCards: NodeListOf<HTMLElement> = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:first-of-type nde-large-card');
+    expect(selectedTermCards).toBeTruthy();
 
-      component.sources = [ termSource ];
-      component.selectedTerms = [ term, term, term ];
-      await component.updateComplete;
-      const selectedTermCards: NodeListOf<HTMLElement> = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:first-of-type nde-large-card');
-      expect(selectedTermCards).toBeTruthy();
-      selectedTermCards[0].click();
-
-    }
+    machine.send = jest.fn();
+    selectedTermCards[0].click();
+    expect(machine.send).toHaveBeenCalledWith(new ClickedTermEvent(term));
 
   });
 
@@ -234,32 +195,21 @@ describe('TermSearchComponent', () => {
 
   });
 
-  it('should send ClickedTermEvent when a search result is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof ClickedTermEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send ClickedTermEvent when a search result is clicked', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    if (machine.state.matches(TermStates.IDLE)) {
+    component.sources = [ termSource ];
+    component.searchResultsMap = { [term.source]: [ term, term, term ] };
+    await component.updateComplete;
+    const searchResultCards: NodeListOf<HTMLElement> = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:nth-of-type(1) nde-large-card');
+    expect(searchResultCards).toBeTruthy();
 
-      component.sources = [ termSource ];
-      component.searchResultsMap = { [term.source]: [ term, term, term ] };
-      await component.updateComplete;
-      const searchResultCards: NodeListOf<HTMLElement> = window.document.body.getElementsByTagName('nde-term-search')[0].shadowRoot.querySelectorAll('.term-list:nth-of-type(1) nde-large-card');
-      expect(searchResultCards).toBeTruthy();
-      searchResultCards[0].click();
-
-    }
+    machine.send = jest.fn();
+    searchResultCards[0].click();
+    expect(machine.send).toHaveBeenCalledWith(new ClickedTermEvent(term));
 
   });
 

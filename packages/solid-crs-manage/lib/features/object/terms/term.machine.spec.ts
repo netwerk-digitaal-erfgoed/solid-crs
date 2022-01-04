@@ -34,13 +34,14 @@ describe('TermMachine', () => {
 
   });
 
-  it('should transition to QUERYING when QUERY_UPDATED was fired', async (done) => {
+  it('should transition to QUERYING when QUERY_UPDATED was fired', (done) => {
 
     machine.onTransition((state) => {
 
       if(state.matches(TermStates.QUERYING)) {
 
         done();
+        machine.stop();
 
       }
 
@@ -60,7 +61,7 @@ describe('TermMachine', () => {
 
   });
 
-  it('should transition to SUBMITTED when CLICKED_SUBMIT was fired', async (done) => {
+  it('should transition to SUBMITTED when CLICKED_SUBMIT was fired', (done) => {
 
     machine.onStop(() => {
 
@@ -82,7 +83,7 @@ describe('TermMachine', () => {
 
   });
 
-  it('should add term when CLICKED_TERM was fired for the first time', async (done) => {
+  it('should add term when CLICKED_TERM was fired for the first time', (done) => {
 
     machine = interpret(termMachine()
       .withContext({
@@ -112,7 +113,7 @@ describe('TermMachine', () => {
 
   });
 
-  it('should remove term when CLICKED_TERM was fired for the second time', async (done) => {
+  it('should remove term when CLICKED_TERM was fired for the second time', (done) => {
 
     let clickedOnce = false;
 
@@ -139,7 +140,7 @@ describe('TermMachine', () => {
 
   });
 
-  it('should transition back to IDLE when ClickedTermEvent is fired when CREATING', async (done) => {
+  it('should transition back to IDLE when ClickedTermEvent is fired when CREATING', (done) => {
 
     let clickedOnce = false;
 
