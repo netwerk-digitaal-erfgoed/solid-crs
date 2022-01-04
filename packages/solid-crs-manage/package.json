@@ -45,7 +45,7 @@
     "rxjs": "^7.4.0",
     "uuid": "^8.3.2",
     "xstate": "^4.26.0",
-    "xstate-codegen": "0.1.0-next.8"
+    "xstate-codegen": "0.3.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
@@ -57,7 +57,6 @@
     "http-server": "^0.12.3",
     "jest": "26.6.3",
     "jest-coverage-thresholds-bumper": "0.0.4",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
     "rdf-js": "^4.0.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
@@ -82,7 +81,6 @@
   "jest": {
     "displayName": "manage",
     "preset": "@digita-ai/jest-config",
-    "testEnvironment": "jest-environment-jsdom-sixteen",
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
