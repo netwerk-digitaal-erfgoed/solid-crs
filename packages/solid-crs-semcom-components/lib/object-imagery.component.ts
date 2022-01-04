@@ -3,7 +3,7 @@ import { CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/
 import { FormEvent, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ActorRef } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Image, Open, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Image, Expand, Cross } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SeparatorComponent } from '@digita-ai/dgt-components';
 
@@ -123,7 +123,7 @@ export class ObjectImageryComponent extends RxLitElement {
       <div slot="content">
 
         <div class="overlay" @click="${ () => toggleImage() }">
-            ${ unsafeSVG(Open) }
+            ${ unsafeSVG(Expand) }
             <img slot="image" src="${this.object.image}"/>
         </div>
 
