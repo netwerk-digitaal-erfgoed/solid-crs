@@ -1,10 +1,10 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SearchRootComponent } from './search-root.component';
-import { SearchEvents, SearchUpdatedEvent } from './search.events';
+import { SearchUpdatedEvent } from './search.events';
 import { SearchContext, searchMachine } from './search.machine';
 
 describe('SearchRootComponent', () => {
@@ -219,10 +219,10 @@ describe('SearchRootComponent', () => {
     it('should send dismiss alert event to parent', async () => {
 
       machine.start();
-      
+
       window.document.body.appendChild(component);
       await component.updateComplete;
-      
+
       machine.parent.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
       expect(machine.parent.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));

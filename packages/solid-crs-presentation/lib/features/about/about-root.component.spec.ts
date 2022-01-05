@@ -1,9 +1,9 @@
 import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { AppContext, appMachine } from '../../app.machine';
-import { CollectionEvents, SelectedCollectionEvent } from '../collection/collection.events';
+import { SelectedCollectionEvent } from '../collection/collection.events';
 import { AboutRootComponent } from './about-root.component';
 
 describe('AboutRootComponent', () => {
@@ -125,16 +125,14 @@ describe('AboutRootComponent', () => {
 
     it('should send dismiss alert event to machine', async () => {
 
-      
       machine.start();
-      
+
       window.document.body.appendChild(component);
       await component.updateComplete;
-      
+
       machine.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
       expect(machine.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
-      
 
     });
 

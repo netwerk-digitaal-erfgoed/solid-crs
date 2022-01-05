@@ -1,10 +1,10 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import fetchMock from 'jest-fetch-mock';
 import { DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
-import fetchMock from 'jest-fetch-mock';
 
 const solidService = {
   getProfile: jest.fn(async () => ({
@@ -55,7 +55,8 @@ describe('AppRootComponent', () => {
       ]),
       new CollectionObjectMemoryStore([
         object1,
-      ]))
+      ])
+    )
       .withContext({
         alerts: [],
         session: { webId: 'lorem' },

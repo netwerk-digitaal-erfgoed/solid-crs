@@ -178,10 +178,10 @@ describe('ObjectRootComponent', () => {
     it('should send dismiss alert event to parent', async () => {
 
       machine.start();
-      
+
       window.document.body.appendChild(component);
       await component.updateComplete;
-      
+
       machine.parent.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
       expect(machine.parent.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
@@ -297,7 +297,6 @@ describe('ObjectRootComponent', () => {
   });
 
   it('should send SelectedCollectionEvent to parent when collection is clicked', async () => {
-
 
     machine.start();
     machine.parent.start();

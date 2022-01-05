@@ -11,7 +11,7 @@ import { DismissAlertEvent } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
-import { SearchEvents, SearchUpdatedEvent } from './search.events';
+import { SearchUpdatedEvent } from './search.events';
 
 /**
  * The root page of the search feature.

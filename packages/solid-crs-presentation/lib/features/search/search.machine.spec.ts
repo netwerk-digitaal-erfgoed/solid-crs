@@ -1,5 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
-/* eslint-disable jest/expect-expect */
 import { CollectionMemoryStore, CollectionObjectMemoryStore, CollectionObjectStore, CollectionStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { appMachine } from '../../app.machine';
