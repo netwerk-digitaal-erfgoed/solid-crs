@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
@@ -544,7 +544,7 @@ export class ObjectRootComponent extends RxLitElement {
 
       ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
+      <div slot="actions"><a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Open)}</a></div>
       <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
     </nde-content-header>
 
@@ -694,6 +694,7 @@ export class ObjectRootComponent extends RxLitElement {
           width: 20px;
           height: 20px;
           fill: var(--colors-primary-light);
+          stroke: var(--colors-primary-light);
         }
       `,
     ];

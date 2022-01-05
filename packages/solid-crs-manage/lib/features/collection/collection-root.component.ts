@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Connect, Cross, Empty, Object as ObjectIcon, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Collection as CollectionIcon, Connect, Cross, Empty, Object as ObjectIcon, Open, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
@@ -236,7 +236,7 @@ export class CollectionRootComponent extends RxLitElement {
 }
       ${ this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => this.formActor.send(FormEvents.FORM_SUBMITTED)}" ?disabled="${this.isSubmitting}">${unsafeSVG(Save)}</button></div>` : '' }
       ${ this.state?.matches(CollectionStates.EDITING) ? html`<div slot="actions"><button class="no-padding inverse cancel" @click="${() => this.actor.send(CollectionEvents.CANCELLED_EDIT)}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><a @click=${(event: Event) => event.stopPropagation()} href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/collection/${encodeURIComponent(this.collection.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Connect)}</a></div>
+      <div slot="actions"><a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/collection/${encodeURIComponent(this.collection.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Open)}</a></div>
       <div slot="actions"><button class="no-padding inverse create" @click="${() => this.actor.send(CollectionEvents.CLICKED_CREATE_OBJECT)}">${unsafeSVG(Plus)}</button></div>
       ${this.showDelete ? html`<div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>` : '' }
     </nde-content-header>
@@ -439,6 +439,7 @@ export class CollectionRootComponent extends RxLitElement {
           width: 20px;
           height: 20px;
           fill: var(--colors-primary-light);
+          stroke: var(--colors-primary-light);
         }
       `,
     ];

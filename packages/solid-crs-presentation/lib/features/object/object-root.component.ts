@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Connect, Dots, Identity, Image, Object as ObjectIcon, Theme, Cross, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Connect, Dots, Identity, Image, Object as ObjectIcon, Theme, Cross, Expand } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { fetch as solidFetch } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
@@ -194,7 +194,7 @@ export class ObjectRootComponent extends RxLitElement {
         </div>
         <div slot="content">
           <div class="overlay" @click="${ () => toggleImage() }">
-            ${ unsafeSVG(Open) }
+            ${ unsafeSVG(Expand) }
             <img src="${this.object.image}"/>
           </div>
           <div class="object-property" ?hidden="${ !this.object.license || this.object.license?.length < 1 }">
