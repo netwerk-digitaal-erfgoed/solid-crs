@@ -97,7 +97,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send error event when sending addAlert without payload', async (done) => {
+  it('should send error event when sending addAlert without payload', (done) => {
 
     machine.start();
 
@@ -147,7 +147,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send error event when sending dismissAlert without payload', async (done) => {
+  it('should send error event when sending dismissAlert without payload', (done) => {
 
     machine.start();
 
@@ -165,7 +165,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send add alert event when error event is sent', async (done) => {
+  it('should send add alert event when error event is sent', (done) => {
 
     machine.start();
 
@@ -183,7 +183,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should start in initializing state', async (done) => {
+  it('should start in initializing state', (done) => {
 
     machine.onTransition((state) => {
 
@@ -212,6 +212,7 @@ describe('AppMachine', () => {
       if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH })) {
 
         done();
+        machine.stop();
 
       }
 

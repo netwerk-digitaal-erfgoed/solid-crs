@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-shadow */
 // Polyfill for encoding which isn't present globally in jsdom
 // eslint-disable-next-line import/order, @typescript-eslint/no-var-requires
 const crypto = require('crypto');
@@ -8,7 +12,7 @@ global.TextDecoder = TextDecoder as any;
 
 Object.defineProperty(window.self, 'crypto', {
   value: {
-    getRandomValues: (arr: any) => crypto.randomBytes(arr.length),
+    getRandomValues: (arr) => crypto.randomBytes(arr.length),
   },
 });
 
@@ -25,7 +29,7 @@ import { AppRootComponent } from '../lib/app-root.component';
 // mock router function and state config
 // essentially disables the router in tests
 
-core.urlVariables = () => ({
+(core.urlVariables as any) = () => ({
   searchParams: {
     get: jest.fn(() => ''),
   },
@@ -34,12 +38,12 @@ core.urlVariables = () => ({
   },
 });
 
-core.activeRoute = () => ({
+(core.activeRoute as any) = () => ({
   path: undefined, targets: [],
-  ...core.urlVariables(undefined),
+  ... core.urlVariables(undefined),
 });
 
-core.routerStateConfig = () => ({
+(core.routerStateConfig as any) = () => ({
   [ROUTER]: {
     initial: RouterStates.IDLE,
     states: {

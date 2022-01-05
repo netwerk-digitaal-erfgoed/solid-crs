@@ -4,9 +4,11 @@ import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semc
 import { interpret, Interpreter } from 'xstate';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
-import { CollectionEvents } from '../collection/collection.events';
+import { SelectedCollectionEvent } from '../collection/collection.events';
 import { ObjectRootComponent } from './object-root.component';
 import { ObjectContext, objectMachine } from './object.machine';
+
+URL.createObjectURL = jest.fn(() => 'https://mock.url/');
 
 describe('ObjectRootComponent', () => {
 
@@ -173,26 +175,16 @@ describe('ObjectRootComponent', () => {
 
     });
 
-    it('should send dismiss alert event to parent', async (done) => {
+    it('should send dismiss alert event to parent', async () => {
 
       machine.start();
-      machine.parent.start();
-
+      
       window.document.body.appendChild(component);
       await component.updateComplete;
-
-      machine.parent.onEvent((event) => {
-
-        if(event && event.type === AppEvents.DISMISS_ALERT) {
-
-          expect((event as DismissAlertEvent).alert).toEqual(alert);
-          done();
-
-        }
-
-      });
-
+      
+      machine.parent.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+      expect(machine.parent.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
     });
 
@@ -281,7 +273,7 @@ describe('ObjectRootComponent', () => {
 
   it('should copy url to clipboard when info menu item is clicked', async () => {
 
-    navigator.clipboard = {
+    (navigator.clipboard as any) = {
       writeText: jest.fn(async() => undefined),
     };
 
@@ -304,17 +296,8 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should send SelectedCollectionEvent to parent when collection is clicked', async (done) => {
+  it('should send SelectedCollectionEvent to parent when collection is clicked', async () => {
 
-    machine.parent.onEvent((event) => {
-
-      if (event.type === CollectionEvents.SELECTED_COLLECTION) {
-
-        done();
-
-      }
-
-    });
 
     machine.start();
     machine.parent.start();
@@ -324,7 +307,9 @@ describe('ObjectRootComponent', () => {
 
     const collectionAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLAnchorElement>('#collection-link');
 
+    machine.parent.send = jest.fn();
     collectionAnchor.click();
+    expect(machine.parent.send).toHaveBeenCalledWith(new SelectedCollectionEvent(undefined));
 
   });
 

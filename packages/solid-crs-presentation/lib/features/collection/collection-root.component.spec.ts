@@ -150,27 +150,16 @@ describe('CollectionRootComponent', () => {
 
     });
 
-    it('should send dismiss alert event to parent', async (done) => {
-
-      machine.parent.onEvent((event) => {
-
-        if(event && event.type === AppEvents.DISMISS_ALERT) {
-
-          const casted = event as DismissAlertEvent;
-          expect(casted.alert).toEqual(alert);
-          done();
-
-        }
-
-      });
+    it('should send dismiss alert event to parent', async () => {
 
       machine.start();
-      machine.parent.start();
-
+      
       window.document.body.appendChild(component);
       await component.updateComplete;
-
+      
+      machine.parent.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+      expect(machine.parent.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
     });
 

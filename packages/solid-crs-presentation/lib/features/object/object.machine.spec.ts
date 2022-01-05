@@ -80,7 +80,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should assign when selected object', async (done) => {
+  it('should assign when selected object', (done) => {
 
     machine.onChange((context) => {
 
