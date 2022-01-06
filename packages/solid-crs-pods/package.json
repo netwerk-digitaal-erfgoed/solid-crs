@@ -4,11 +4,24 @@
   "description": "Pods for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "dist",
+    "config",
+    ".componentsignore"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/. tmp/ && community-solid-server -c config/file.json --rootFilePath ./tmp -p 3000",
     "start:watch": "npm run start",
     "build": "npm run build:ts && npm run build:components",
-    "build:components": "componentsjs-generator -s lib -c dist/components -r scs -i .componentsignore --typeScopedContexts",
+    "build:components": "componentsjs-generator --typeScopedContexts -s lib -c dist/components -i .componentsignore",
     "build:ts": "tsc"
   },
   "dependencies": {
@@ -16,7 +29,7 @@
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.9",
-    "componentsjs-generator": "^2.6.0",
+    "componentsjs-generator": "^2.6.1",
     "shx": "^0.3.3",
     "typescript": "^4.3.4"
   },
@@ -29,7 +42,5 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@netwerk-digitaal-erfgoed/solid-crs-pods/^0.0.0/components/": "dist/components/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@netwerk-digitaal-erfgoed/solid-crs-pods/^0.0.0/config/": "config/",
     "https://linkedsoftwaredependencies.org/bundles/npm/@netwerk-digitaal-erfgoed/solid-crs-pods/^0.0.0/dist/": "dist/"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts"
+  }
 }
