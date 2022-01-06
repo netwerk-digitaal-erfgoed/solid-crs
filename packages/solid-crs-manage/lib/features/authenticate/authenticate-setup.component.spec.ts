@@ -35,7 +35,7 @@ describe('AuthenticateSetupComponent', () => {
     collection: 'collection-uri-1',
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
 
     solidService = {
       getStorages: jest.fn(async () => [ 'https://storage.uri/' ]),
@@ -65,9 +65,14 @@ describe('AuthenticateSetupComponent', () => {
         },
       }));
 
+    machine.onTransition(async () => await component.updateComplete);
+
     component = window.document.createElement('nde-authenticate-setup') as AuthenticateSetupComponent;
 
     component.actor = machine;
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
   });
 
@@ -94,16 +99,22 @@ describe('AuthenticateSetupComponent', () => {
 
     });
 
-    it('should show two buttons', async () => {
+    it('should show two buttons', (done) => {
+
+      machine.onTransition((state) => {
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
+
+          const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelector('div.form-container').children;
+          expect(buttons).toBeTruthy();
+          expect(buttons.length).toEqual(2);
+          done();
+
+        }
+
+      });
 
       machine.start();
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelector('div.form-container').children;
-
-      expect(buttons).toBeTruthy();
-      expect(buttons.length).toEqual(2);
 
     });
 
@@ -145,8 +156,7 @@ describe('AuthenticateSetupComponent', () => {
 
         if (state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
 
-          const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
-            .querySelector('div.form-container').children[1] as HTMLButtonElement;
+          const button = component.shadowRoot.querySelector('div.form-container').children[1] as HTMLButtonElement;
 
           button.click();
           expect(component.actor.send).toHaveBeenCalledWith(new ClickedInstitutionTypeEvent());
@@ -161,16 +171,50 @@ describe('AuthenticateSetupComponent', () => {
 
   describe('pod creation', () => {
 
-    it('should show two buttons', async () => {
+    beforeEach(async () => {
+
+      solidService.getStorages = jest.fn(async () => [ ]);
+
+      machine = interpret(appMachine(
+        solidService,
+        collectionStore,
+        new CollectionObjectMemoryStore([
+          object1,
+        ]),
+        collection1,
+        object1
+      )
+        .withContext({
+          alerts: [],
+          session: { webId: 'lorem' },
+          profile: {
+            name: 'Lea Peeters',
+            uri: 'https://web.id/',
+          },
+        }));
+
+      component.actor = machine;
 
       machine.start();
-      window.document.body.appendChild(component);
-      await component.updateComplete;
 
-      const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelectorAll('button');
+      machine.send(new SetProfileEvent());
 
-      expect(buttons).toBeTruthy();
-      expect(buttons.length).toEqual(2);
+    });
+
+    it('should show two buttons', async () => {
+
+      machine.onTransition(async (state) => {
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION })) {
+
+          await component.updateComplete;
+          const buttons = component.shadowRoot.querySelectorAll('button');
+          expect(buttons).toBeTruthy();
+          expect(buttons.length).toEqual(2);
+
+        }
+
+      });
 
     });
 
@@ -195,6 +239,21 @@ describe('AuthenticateSetupComponent', () => {
         expect(machine.send).toHaveBeenCalledWith(new ClickedLogoutEvent());
 
       });
+
+    });
+
+  });
+
+  it('should not render anything when between states', async () => {
+
+    // dont wait for getStorages to complete
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    [ ... component.shadowRoot.children ].forEach((child) => {
+
+      // component should only have style elements, no other elements
+      expect(child).toBeInstanceOf(HTMLStyleElement);
 
     });
 

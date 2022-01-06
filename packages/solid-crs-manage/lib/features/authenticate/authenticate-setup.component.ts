@@ -38,7 +38,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
    * The state of this component.
    */
   @internalProperty()
-  state: State<AppContext>;
+  state?: State<AppContext>;
 
   protected firstUpdated(): void {
 
@@ -101,7 +101,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
       </div>
     `
     // create pod buttons
-      : html`
+      : this.state?.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION }) ? html`
       
       <div class="title-container">
         <h1>${this.translator?.translate('authenticate.pages.no-pod.title')}</h1>
@@ -116,7 +116,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
         <button class="primary" @click="${this.onClickedCreatePod}">${this.translator?.translate('authenticate.pages.no-pod.button-create-pod')}</button>
         <button class="gray" @click="${this.onClickedCancel}">${this.translator?.translate('authenticate.pages.no-pod.button-cancel')}</button>
       </div>
-    `;
+    ` : html``;
 
   }
 
