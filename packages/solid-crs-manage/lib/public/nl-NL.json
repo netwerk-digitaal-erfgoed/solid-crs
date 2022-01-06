@@ -227,8 +227,8 @@
             "no-pod": {
                 "title": "Je hebt nog geen pod.",
                 "subtitle": {
-                    "no-storage": "We konden geen opslagplaats vinden in je WebID.",
-                    "add-storage": "Voeg <a href=\"https://github.com/\" target=\"_blank\" rel=\"noopener noreferrer\">handmatig een opslagplaats toe</a> of maak een pod aan bij NDE."
+                    "no-storage": "We konden geen pod vinden voor je WebID.",
+                    "add-storage": "Voeg <a href=\"#\" target=\"_blank\" rel=\"noopener noreferrer\">handmatig een pod toe</a> of maak een pod aan bij NDE."
                 },
                 "button-create-pod": "Maak een pod aan bij NDE",
                 "button-cancel": "Annuleren"
