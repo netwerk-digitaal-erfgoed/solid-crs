@@ -1,11 +1,17 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, ConsoleLogger, LoggerLevel, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, SolidMockService, MockTranslator, TranslationsLoadedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
+import fetchMock from 'jest-fetch-mock';
 import { DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+const solidService = {
+  getProfile: jest.fn(async () => ({
+    uri: 'https://example.com/profile',
+  })),
+  logout: jest.fn(async() => undefined),
+} as any;
 
 describe('AppRootComponent', () => {
 
@@ -41,14 +47,16 @@ describe('AppRootComponent', () => {
 
   beforeEach(() => {
 
-    machine = interpret(appMachine(solid,
+    machine = interpret(appMachine(
+      solidService,
       new CollectionMemoryStore([
         collection2,
         collection3,
       ]),
       new CollectionObjectMemoryStore([
         object1,
-      ]))
+      ])
+    )
       .withContext({
         alerts: [],
         session: { webId: 'lorem' },
@@ -57,6 +65,8 @@ describe('AppRootComponent', () => {
     component = window.document.createElement('nde-app-root') as AppRootComponent;
     component.translator = new MockTranslator('nl-NL');
     component.actor = machine;
+
+    fetchMock.mockIf('http://localhost/nl-NL.json', '{}');
 
   });
 
@@ -72,7 +82,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should show primary navigation', async (done) => {
+  it('should show primary navigation', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
@@ -82,8 +92,6 @@ describe('AppRootComponent', () => {
 
     expect(sidebar).toBeTruthy();
     expect(sidebar.length).toBe(1);
-
-    done();
 
   });
 

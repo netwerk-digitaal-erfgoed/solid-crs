@@ -82,7 +82,7 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should load objects when loading', async (done) => {
+  it('should load objects when loading', (done) => {
 
     objectStore.getObjectsForCollection = jest.fn().mockResolvedValue([
       {
@@ -125,7 +125,7 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should save collection when saving', async (done) => {
+  it('should save collection when saving', (done) => {
 
     collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
 
@@ -155,13 +155,14 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should assign when selected collection', async (done) => {
+  it('should assign when selected collection', (done) => {
 
     machine.onChange((context) => {
 
       if(context.collection?.uri === collection2.uri) {
 
         done();
+        machine.stop();
 
       }
 
@@ -225,7 +226,7 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should transition from IDLE to CREATING_OBJECT when CLICKED_CREATE_OBJECT', async (done) => {
+  it('should transition from IDLE to CREATING_OBJECT when CLICKED_CREATE_OBJECT', (done) => {
 
     collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);
 
@@ -240,6 +241,7 @@ describe('CollectionMachine', () => {
       if(state.matches(CollectionStates.CREATING_OBJECT)) {
 
         done();
+        machine.stop();
 
       }
 
@@ -249,7 +251,7 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should transition from IDLE to EDITING when CLICKED_EDIT', async (done) => {
+  it('should transition from IDLE to EDITING when CLICKED_EDIT', (done) => {
 
     machine.onTransition((state) => {
 

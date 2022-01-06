@@ -90,7 +90,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should submit when form is valid', async (done) => {
+  it('should submit when form is valid', (done) => {
 
     machine.start();
 
@@ -99,6 +99,7 @@ describe('FormMachine', () => {
       if(state.matches(FormSubmissionStates.NOT_SUBMITTED)){
 
         done();
+        machine.stop();
 
       }
 
@@ -119,7 +120,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should not be submitted if form is invalid', async (done) => {
+  it('should not be submitted if form is invalid', (done) => {
 
     machine.start();
 
@@ -143,7 +144,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should run submitter when submitting', async (done) => {
+  it('should run submitter when submitting', (done) => {
 
     const submitter = jest.fn().mockResolvedValue({ uri: 'bla', name: 'Test' });
 
@@ -177,7 +178,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should use default validator function when set', async (done) => {
+  it('should use default validator function when set', (done) => {
 
     machine = interpret<FormContext<Collection>, any, FormEvent>(
       formMachine<Collection>()
@@ -210,7 +211,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should accept string as TData', async (done) => {
+  it('should accept string as TData', (done) => {
 
     machine = interpret<FormContext<string>, any, FormEvent>(
       formMachine<string>()
@@ -243,7 +244,7 @@ describe('FormMachine', () => {
 
   });
 
-  it('should accept empty object as TData', async (done) => {
+  it('should accept empty object as TData', (done) => {
 
     machine = interpret<FormContext<undefined>, any, FormEvent>(
       formMachine<undefined>()

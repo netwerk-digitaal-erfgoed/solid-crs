@@ -1,4 +1,4 @@
-import { Alert, Event, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormSubmittedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject, SendAction, sendParent } from 'xstate';
 import { AppEvents } from '../../app.events';

@@ -91,7 +91,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to IDLE when clicked reset was emitted', async (done) => {
+  it('should transition to IDLE when clicked reset was emitted', (done) => {
 
     machine.onTransition((state) => {
 
@@ -108,7 +108,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to SAVING when CLICKED_SAVE is fired', async (done) => {
+  it('should transition to SAVING when CLICKED_SAVE is fired', (done) => {
 
     machine.onTransition((state) => {
 
@@ -121,6 +121,7 @@ describe('ObjectMachine', () => {
       if(state.matches(ObjectStates.SAVING)) {
 
         done();
+        machine.stop();
 
       }
 
@@ -130,7 +131,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to IDLE when term machine exits', async (done) => {
+  it('should transition to IDLE when term machine exits', (done) => {
 
     machine.onTransition((state) => {
 
@@ -199,7 +200,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to IDLE when CLICKED_SIDEBAR_ITEM', async (done) => {
+  it('should transition to IDLE when CLICKED_SIDEBAR_ITEM', (done) => {
 
     machine.onTransition((state) => {
 
@@ -227,7 +228,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to EDITING_FIELD when CLICKED_TERM_FIELD was fired', async (done) => {
+  it('should transition to EDITING_FIELD when CLICKED_TERM_FIELD was fired', (done) => {
 
     machine.onTransition((state) => {
 
@@ -249,7 +250,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should transition to deleting when clicked edit was emitted', async (done) => {
+  it('should transition to deleting when clicked edit was emitted', (done) => {
 
     machine.onTransition((state) => {
 
@@ -262,6 +263,7 @@ describe('ObjectMachine', () => {
       if(state.matches(ObjectStates.DELETING)) {
 
         done();
+        machine.stop();
 
       }
 
@@ -302,7 +304,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should save object when saving', async (done) => {
+  it('should save object when saving', (done) => {
 
     objectStore.save = jest.fn().mockResolvedValueOnce(object1);
 
@@ -373,7 +375,7 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should assign when selected object', async (done) => {
+  it('should assign when selected object', (done) => {
 
     machine.onChange((context) => {
 
