@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
@@ -275,30 +275,21 @@ describe('ObjectRootComponent', () => {
 
   });
 
-  it('should send ClickedTermFieldEvent when CLICKED_TERM_FIELD event is caught', async (done) => {
+  it('should send ClickedTermFieldEvent when CLICKED_TERM_FIELD event is caught', async () => {
 
     machine.start();
     machine.parent.start();
+    machine.send = jest.fn();
 
     window.document.body.appendChild(component);
     await component.updateComplete;
-
-    machine.onEvent((event) => {
-
-      if(event instanceof ClickedTermFieldEvent
-        && event.type === ObjectEvents.CLICKED_TERM_FIELD
-        && event.field === 'additionalType') {
-
-        done();
-
-      }
-
-    });
 
     component.dispatchEvent(new CustomEvent<{ field: string; terms: Term[] }>(
       'CLICKED_TERM_FIELD',
       { bubbles: true, composed: true, detail: { field: 'additionalType', terms: [] } }
     ));
+
+    expect(machine.send).toHaveBeenCalledWith(new ClickedTermFieldEvent('additionalType', []));
 
   });
 
@@ -475,7 +466,7 @@ describe('ObjectRootComponent', () => {
       const div = document.createElement('div');
       div.id = 'object.sidebar.image';
 
-      component.formCards = [ div ];
+      (component.formCards as any) = [ div ];
 
       component.updateSelected();
 
@@ -510,7 +501,7 @@ describe('ObjectRootComponent', () => {
 
     });
 
-    it('should send dismiss alert event to parent', async (done) => {
+    it('should send dismiss alert event to parent', async () => {
 
       machine.start();
       machine.parent.start();
@@ -518,18 +509,10 @@ describe('ObjectRootComponent', () => {
       window.document.body.appendChild(component);
       await component.updateComplete;
 
-      machine.parent.onEvent((event) => {
-
-        if(event && event.type === AppEvents.DISMISS_ALERT) {
-
-          expect((event as DismissAlertEvent).alert).toEqual(alert);
-          done();
-
-        }
-
-      });
+      machine.parent.send = jest.fn();
 
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+      expect(machine.parent.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
     });
 
@@ -571,7 +554,7 @@ describe('ObjectRootComponent', () => {
       const div = document.createElement('div');
       div.id = 'object.sidebar.image';
 
-      component.formCards = [ div ];
+      (component.formCards as any) = [ div ];
 
       const map = new Map<string, string>();
       map.set('actor', 'test');
@@ -638,16 +621,14 @@ describe('ObjectRootComponent', () => {
 
     });
 
-    it('should send FormUpdatedEvent to formactor', async (done) => {
-
-      component.formActor = {
-        send: done(),
-      } as any;
+    it('should send FormUpdatedEvent to formactor', async () => {
 
       window.document.body.appendChild(component);
       await component.updateComplete;
 
+      component.formActor.send = jest.fn();
       component['onImageSelected'](new CustomEvent('image-selected', { detail: imageFile }));
+      expect(component.formActor.send).toHaveBeenCalledWith(new FormUpdatedEvent('image', expect.any(String)));
 
     });
 

@@ -1,9 +1,9 @@
 import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { AppContext, appMachine } from '../../app.machine';
-import { CollectionEvents } from '../collection/collection.events';
+import { SelectedCollectionEvent } from '../collection/collection.events';
 import { AboutRootComponent } from './about-root.component';
 
 describe('AboutRootComponent', () => {
@@ -123,42 +123,22 @@ describe('AboutRootComponent', () => {
 
     });
 
-    it('should send dismiss alert event to machine', async (done) => {
-
-      machine.onEvent((event) => {
-
-        if(event && event.type === AppEvents.DISMISS_ALERT) {
-
-          const casted = event as DismissAlertEvent;
-          expect(casted.alert).toEqual(alert);
-          done();
-
-        }
-
-      });
+    it('should send dismiss alert event to machine', async () => {
 
       machine.start();
 
       window.document.body.appendChild(component);
       await component.updateComplete;
 
+      machine.send = jest.fn();
       component.handleDismiss({ detail: alert } as CustomEvent<Alert>);
+      expect(machine.send).toHaveBeenCalledWith(new DismissAlertEvent(alert));
 
     });
 
   });
 
-  it('should send SelectedCollectionEvent when collection is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event.type === CollectionEvents.SELECTED_COLLECTION) {
-
-        done();
-
-      }
-
-    });
+  it('should send SelectedCollectionEvent when collection is clicked', async () => {
 
     machine.start();
 
@@ -166,7 +146,10 @@ describe('AboutRootComponent', () => {
     await component.updateComplete;
 
     const largeCard = window.document.body.getElementsByTagName('nde-about-root')[0].shadowRoot.querySelector<LargeCardComponent>('nde-large-card.collection');
+
+    machine.send = jest.fn();
     largeCard.click();
+    expect(machine.send).toHaveBeenCalledWith(new SelectedCollectionEvent(collection1));
 
   });
 

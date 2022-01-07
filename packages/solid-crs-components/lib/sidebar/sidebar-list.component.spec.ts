@@ -46,7 +46,7 @@ describe('SidebarListComponent', () => {
 
     expect(el.hasAttribute('selected')).toBeFalsy();
 
-    const selectSpy = spyOn(component, 'select').and.callThrough();
+    const selectSpy = jest.spyOn(component, 'select');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -67,7 +67,7 @@ describe('SidebarListComponent', () => {
 
     expect(el.hasAttribute('selected')).toBeFalsy();
 
-    const selectSpy = spyOn(component, 'select').and.callThrough();
+    const selectSpy = jest.spyOn(component, 'select');
 
     window.document.body.appendChild(component);
     await component.updateComplete;
@@ -82,7 +82,7 @@ describe('SidebarListComponent', () => {
 
   it('should call select when select is clicked', async () => {
 
-    const selectSpy = spyOn(component, 'select');
+    const selectSpy = jest.spyOn(component, 'select');
 
     window.document.body.appendChild(component);
     await component.updateComplete;

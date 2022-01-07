@@ -96,17 +96,7 @@ describe('AuthenticateSetupComponent', () => {
 
   });
 
-  it('should send ClickedAdministratorTypeEvent when admin button is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof ClickedAdministratorTypeEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send ClickedAdministratorTypeEvent when admin button is clicked', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
@@ -115,21 +105,15 @@ describe('AuthenticateSetupComponent', () => {
     const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
       .querySelector('div.form-container').children[0] as HTMLButtonElement;
 
+    machine.send = jest.fn();
+
     button.click();
+
+    expect(machine.send).toHaveBeenCalledWith(new ClickedAdministratorTypeEvent());
 
   });
 
-  it('should send ClickedInstitutionTypeEvent when institution button is clicked', async (done) => {
-
-    machine.onEvent((event) => {
-
-      if (event instanceof ClickedInstitutionTypeEvent) {
-
-        done();
-
-      }
-
-    });
+  it('should send ClickedInstitutionTypeEvent when institution button is clicked', async () => {
 
     machine.start();
     window.document.body.appendChild(component);
@@ -138,7 +122,11 @@ describe('AuthenticateSetupComponent', () => {
     const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
       .querySelector('div.form-container').children[1] as HTMLButtonElement;
 
+    machine.send = jest.fn();
+
     button.click();
+
+    expect(machine.send).toHaveBeenCalledWith(new ClickedInstitutionTypeEvent());
 
   });
 

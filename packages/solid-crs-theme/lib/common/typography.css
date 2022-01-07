@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 :root {
   --font-size-small: 14px;
@@ -7,7 +7,7 @@
   --font-weight-bold: bold;
   --line-height-normal: 1.15;
   --line-height-large: 1.6;
-  --font-family: 'Poppins', sans-serif;
+  --font-family: "Poppins", sans-serif;
 }
 
 body {

@@ -63,7 +63,7 @@ describe('PaginatorComponent', () => {
 
   describe('onNext', () => {
 
-    it('should dispatch next CustomEvent', async (done) => {
+    it('should dispatch next CustomEvent', (done) => {
 
       component.addEventListener('next', () => done());
       component['onNext']();
@@ -74,7 +74,7 @@ describe('PaginatorComponent', () => {
 
   describe('onPrevious', () => {
 
-    it('should dispatch previous CustomEvent', async (done) => {
+    it('should dispatch previous CustomEvent', (done) => {
 
       component.addEventListener('previous', () => done());
       component['onPrevious']();

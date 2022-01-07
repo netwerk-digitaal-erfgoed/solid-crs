@@ -55,7 +55,7 @@ describe('SearchMachine', () => {
       collectionStore,
       objectStore,
       collection1,
-      object1
+      object1,
     ));
 
   });
@@ -66,18 +66,19 @@ describe('SearchMachine', () => {
 
   });
 
-  it('should start without errors', async (done) => {
+  it('should start without errors', () => new Promise((done) => {
 
     const objectStoreSearch = jest.spyOn(objectStore, 'search');
 
     machine.onTransition((state) => {
 
-      if(state.matches(SearchStates.IDLE)) {
+      if (state.matches(SearchStates.IDLE)) {
 
         expect(state.context?.objects).toEqual([ object1 ]);
         expect(objectStoreSearch).toHaveBeenCalledTimes(1);
         expect(objectStoreSearch).toHaveBeenCalledWith(searchTerm, [ object1 ]);
-        done();
+
+        done(true);
 
       }
 
@@ -85,19 +86,19 @@ describe('SearchMachine', () => {
 
     machine.start();
 
-  });
+  }));
 
-  it('should transition to searching when typing', async (done) => {
+  it('should transition to searching when typing', () => new Promise((done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(SearchStates.SEARCHING)) {
+      if (state.matches(SearchStates.SEARCHING)) {
 
-        done();
+        done(true);
 
       }
 
-      if(state.matches(SearchStates.IDLE)) {
+      if (state.matches(SearchStates.IDLE)) {
 
         machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: 'object' } as SearchUpdatedEvent);
 
@@ -107,19 +108,19 @@ describe('SearchMachine', () => {
 
     machine.start();
 
-  });
+  }));
 
-  it('should transition to dismissed when searchTerm was empty', async (done) => {
+  it('should transition to dismissed when searchTerm was empty', () => new Promise((done) => {
 
     machine.onTransition((state) => {
 
-      if(state.matches(SearchStates.DISMISSED)) {
+      if (state.matches(SearchStates.DISMISSED)) {
 
-        done();
+        done(true);
 
       }
 
-      if(state.matches(SearchStates.IDLE)) {
+      if (state.matches(SearchStates.IDLE)) {
 
         machine.send({ type: SearchEvents.SEARCH_UPDATED, searchTerm: '' } as SearchUpdatedEvent);
 
@@ -129,6 +130,6 @@ describe('SearchMachine', () => {
 
     machine.start();
 
-  });
+  }));
 
 });
