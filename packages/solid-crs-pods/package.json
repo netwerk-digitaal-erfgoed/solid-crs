@@ -17,8 +17,13 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netwerk-digitaal-erfgoed/solid-crs.git",
+    "directory": "packages/solid-crs-pods"
+  },
   "scripts": {
-    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/. tmp/ && community-solid-server -c config/file.json --rootFilePath ./tmp -p 3000",
+    "start": "shx rm -rf tmp/ && shx mkdir tmp && shx cp -r data/. tmp/ && community-solid-server -m . -c config/file.json --rootFilePath ./tmp -p 3000",
     "start:watch": "npm run start",
     "build": "npm run build:ts && npm run build:components",
     "build:components": "componentsjs-generator --typeScopedContexts -s lib -c dist/components -i .componentsignore",
