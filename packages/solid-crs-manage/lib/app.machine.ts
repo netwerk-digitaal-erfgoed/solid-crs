@@ -373,7 +373,7 @@ export const appMachine = (
             on: {
               [AppEvents.LOGGED_OUT]: {
                 target: AppAuthenticateStates.UNAUTHENTICATED,
-                actions: () => location.reload(),
+                // actions: () => location.reload(),
               },
             },
           },

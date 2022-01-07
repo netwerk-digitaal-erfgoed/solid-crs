@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Connect, Cross, Empty, Object as ObjectIcon, Open, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Collection as CollectionIcon, Cross, Empty, Object as ObjectIcon, Open, Plus, Save, Theme, Trash } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';

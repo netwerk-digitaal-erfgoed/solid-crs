@@ -311,6 +311,7 @@ export class AppRootComponent extends RxLitElement {
     @authenticated="${(event: CustomEvent<Session>) => this.actor.send(new LoggedInEvent(event.detail))}"
     .solidService="${this.solidService}"
     .translator="${this.translator}"
+    .appActor="${this.actor}"
     ></nde-authenticate-root>`: ''}   
     ${ this.state?.hasTag('setup') ? html`<nde-authenticate-setup .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-authenticate-setup>` : html`
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
