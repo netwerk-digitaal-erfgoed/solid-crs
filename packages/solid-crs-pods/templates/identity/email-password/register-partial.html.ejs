@@ -2,6 +2,7 @@
 <%
 const isBlankForm = !('prefilled' in locals);
 prefilled = locals.prefilled || {};
+console.log(prefilled)
 %>
 
 <h2>Jouw WebID</h2>
@@ -72,7 +73,7 @@ prefilled = locals.prefilled || {};
     </ol>
   </li>
 </ol>
-<h2>Jouw account</h2>
+<h2 hidden>Jouw account</h2>
 <div hidden>
   <p>
     Kies de inloggegevens die je wilt gebruiken om in de toekomst op deze server in te loggen.
@@ -97,6 +98,13 @@ prefilled = locals.prefilled || {};
 
 <!-- Assist the user with filling out the form by hiding irrelevant fields -->
 <script>
+
+// set prefilled values from query parameters
+const searchParams = new URLSearchParams(window.location.search);
+if (searchParams.has('webId')) document.getElementById('webId').value = decodeURIComponent(searchParams.get('webId'));
+if (searchParams.has('podName')) document.getElementById('podName').value = decodeURIComponent(searchParams.get('podName'));
+
+
 const elements = {};
 // Wires up the DOM element with the specified ID
 function registerElement(id) {
