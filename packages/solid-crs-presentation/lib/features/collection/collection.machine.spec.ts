@@ -80,7 +80,7 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should load objects when loading', async (done) => {
+  it('should load objects when loading', (done) => {
 
     objectStore.getObjectsForCollection = jest.fn().mockResolvedValue([
       {
@@ -123,13 +123,14 @@ describe('CollectionMachine', () => {
 
   });
 
-  it('should assign when selected collection', async (done) => {
+  it('should assign when selected collection', (done) => {
 
     machine.onChange((context) => {
 
       if(context.collection?.uri === collection2.uri) {
 
         done();
+        machine.stop();
 
       }
 

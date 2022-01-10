@@ -107,7 +107,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send error event when sending addAlert without payload', async (done) => {
+  it('should send error event when sending addAlert without payload', (done) => {
 
     machine.start();
 
@@ -159,7 +159,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send error event when sending dismissAlert without payload', async (done) => {
+  it('should send error event when sending dismissAlert without payload', (done) => {
 
     machine.start();
 
@@ -177,7 +177,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should send add alert event when error event is sent', async (done) => {
+  it('should send add alert event when error event is sent', (done) => {
 
     machine.start();
 
@@ -195,13 +195,14 @@ describe('AppMachine', () => {
 
   });
 
-  it('should assign session when logged in', async (done) => {
+  it('should assign session when logged in', (done) => {
 
     machine.onChange((context) => {
 
       if(context.session?.webId === 'lorem') {
 
         done();
+        machine.stop();
 
       }
 
@@ -213,7 +214,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should remove session when logged out', async (done) => {
+  it('should remove session when logged out', (done) => {
 
     const alert: Alert = { type: 'success', message: 'foo' };
 
@@ -236,6 +237,7 @@ describe('AppMachine', () => {
       if(!context.session) {
 
         done();
+        machine.stop();
 
       }
 
@@ -248,7 +250,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should emit selected collection after login', async (done) => {
+  it('should emit selected collection after login', (done) => {
 
     machine.onEvent((event) => {
 
@@ -279,6 +281,7 @@ describe('AppMachine', () => {
       if(state.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH })) {
 
         done();
+        machine.stop();
 
       }
 
@@ -290,7 +293,7 @@ describe('AppMachine', () => {
 
   });
 
-  it('should add alert when ClickedAdministratorType is fired', async (done) => {
+  it('should add alert when ClickedAdministratorType is fired', (done) => {
 
     machine = interpret<AppContext>(
       appMachine(solidService,
@@ -329,6 +332,7 @@ describe('AppMachine', () => {
       if(clicked && state.matches({ [AppRootStates.DATA]: AppDataStates.IDLE })) {
 
         done();
+        machine.stop();
 
       }
 

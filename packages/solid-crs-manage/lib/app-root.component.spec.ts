@@ -3,7 +3,7 @@ import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import fetchMock from 'jest-fetch-mock';
-import { AppEvents, DismissAlertEvent, LoggedInEvent } from './app.events';
+import { ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { AppAuthenticateStates, AppContext, AppDataStates, appMachine, AppRootStates } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
@@ -95,7 +95,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should show primary navigation when authenticated', async (done) => {
+  it('should show primary navigation when authenticated', async () => {
 
     machine.onTransition(async (state) => {
 
@@ -106,8 +106,6 @@ describe('AppRootComponent', () => {
 
         expect(sidebar).toBeTruthy();
 
-        done();
-
       }
 
     });
@@ -117,11 +115,11 @@ describe('AppRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
+    machine.send(new LoggedInEvent({ webId: 'test' }));
 
   });
 
-  it('should not show primary navigation when unauthenticated', async (done) => {
+  it('should not show primary navigation when unauthenticated', async () => {
 
     machine.onTransition(async (state) => {
 
@@ -131,8 +129,6 @@ describe('AppRootComponent', () => {
         const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelectorAll('nde-sidebar');
 
         expect(sidebar.length).toBe(0);
-
-        done();
 
       }
 
@@ -167,7 +163,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should send create event when sidebar list action is clicked', async (done) => {
+  it('should send create event when sidebar list action is clicked', async () => {
 
     machine.onTransition(async (state) => {
 
@@ -175,8 +171,6 @@ describe('AppRootComponent', () => {
         state.matches({
           [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED,
         })){
-
-        done();
 
         await component.updateComplete;
         const sidebar = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelector('nde-sidebar');
@@ -188,17 +182,9 @@ describe('AppRootComponent', () => {
         const action = listItem.querySelector('div[slot="actions"]') as HTMLElement;
         expect(action).toBeTruthy();
 
+        machine.send = jest.fn();
         action.click();
-
-      }
-
-    });
-
-    machine.onEvent((event) => {
-
-      if(event.type === AppEvents.CLICKED_CREATE_COLLECTION){
-
-        done();
+        expect(machine.send).toHaveBeenCalledWith(new ClickedCreateCollectionEvent());
 
       }
 
@@ -212,7 +198,7 @@ describe('AppRootComponent', () => {
           [AppRootStates.DATA]: AppDataStates.IDLE,
         })) {
 
-        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } } as LoggedInEvent);
+        machine.send(new LoggedInEvent({ webId: 'test' }));
         await component.updateComplete;
 
       }
@@ -227,7 +213,7 @@ describe('AppRootComponent', () => {
 
   });
 
-  it('should add collection when store contains none', async (done) => {
+  it('should add collection when store contains none', async () => {
 
     // start without collection
     machine = interpret(appMachine(solidService,
@@ -243,11 +229,7 @@ describe('AppRootComponent', () => {
 
     machine.onTransition(async (state) => {
 
-      if(state.context?.collections?.length === 1){
-
-        done();
-
-      }
+      expect(state.context?.collections?.length).toEqual(1);
 
     });
 
@@ -259,8 +241,7 @@ describe('AppRootComponent', () => {
           [AppRootStates.DATA]: AppDataStates.IDLE,
         })) {
 
-        done();
-        machine.send({ type: AppEvents.LOGGED_IN, session: { webId: 'test' } } as LoggedInEvent);
+        machine.send(new LoggedInEvent({ webId: 'test' }));
         await component.updateComplete;
 
       }
@@ -272,7 +253,7 @@ describe('AppRootComponent', () => {
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    machine.send({ type: AppEvents.LOGGED_IN, session: { webId:'test' } } as LoggedInEvent);
+    machine.send(new LoggedInEvent({ webId: 'test' }));
 
   });
 

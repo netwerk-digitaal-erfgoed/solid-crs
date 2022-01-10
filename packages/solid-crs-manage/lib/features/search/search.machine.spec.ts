@@ -66,7 +66,7 @@ describe('SearchMachine', () => {
 
   });
 
-  it('should start without errors', async (done) => {
+  it('should start without errors', (done) => {
 
     const objectStoreSearch = jest.spyOn(objectStore, 'search');
 
@@ -87,7 +87,7 @@ describe('SearchMachine', () => {
 
   });
 
-  it('should transition to searching when typing', async (done) => {
+  it('should transition to searching when typing', (done) => {
 
     machine.onTransition((state) => {
 
@@ -109,7 +109,7 @@ describe('SearchMachine', () => {
 
   });
 
-  it('should transition to dismissed when searchTerm was empty', async (done) => {
+  it('should transition to dismissed when searchTerm was empty', (done) => {
 
     machine.onTransition((state) => {
 

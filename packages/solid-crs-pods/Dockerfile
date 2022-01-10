@@ -18,6 +18,7 @@ WORKDIR /community-server
 ARG NPM_TOKEN
 COPY package.json /community-server/
 RUN npm install  --unsafe-perm
+RUN npm run build
 
 # Bundle app source
 COPY . /community-server
@@ -28,4 +29,4 @@ COPY data/hetlageland/ /tmp/css/hetlageland/
 
 # Expose ports.
 EXPOSE 80
-CMD node ./node_modules/.bin/community-solid-server -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css
+CMD node ./node_modules/.bin/community-solid-server -m . -b ${BASE_URL} -p ${PORT} -c ${CONFIG} --rootFilePath /tmp/css

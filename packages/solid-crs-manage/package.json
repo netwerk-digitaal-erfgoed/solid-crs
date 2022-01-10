@@ -45,7 +45,7 @@
     "rxjs": "^7.4.0",
     "uuid": "^8.3.2",
     "xstate": "^4.26.0",
-    "xstate-codegen": "0.1.0-next.8"
+    "xstate-codegen": "0.3.0"
   },
   "devDependencies": {
     "@digita-ai/typescript-config": "^0.3.3",
@@ -55,9 +55,8 @@
     "crypto": "^1.0.1",
     "eslint": "^7.16.0",
     "http-server": "^0.12.3",
-    "jest": "26.6.3",
+    "jest": "^27.4.5",
     "jest-coverage-thresholds-bumper": "0.0.4",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
     "rdf-js": "^4.0.2",
     "rollup-plugin-node-polyfills": "^0.2.1",
@@ -80,9 +79,10 @@
     "url": "https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues"
   },
   "jest": {
+    "testRunner": "jest-circus/runner",
     "displayName": "manage",
     "preset": "@digita-ai/jest-config",
-    "testEnvironment": "jest-environment-jsdom-sixteen",
+    "testEnvironment": "jsdom",
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
@@ -91,10 +91,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 86.35,
-        "branches": 83.73,
-        "lines": 87.57,
-        "functions": 73.94
+        "statements": 84.98,
+        "branches": 85.14,
+        "lines": 86.1,
+        "functions": 71.25
       }
     },
     "automock": false,

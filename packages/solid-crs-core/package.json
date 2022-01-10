@@ -34,9 +34,8 @@
     "@types/uuid": "8.3.0",
     "crypto": "^1.0.1",
     "eslint": "^7.16.0",
-    "jest": "^26.6.3",
+    "jest": "^27.4.5",
     "jest-coverage-thresholds-bumper": "0.0.4",
-    "jest-environment-jsdom-sixteen": "^1.0.3",
     "jest-fetch-mock": "3.0.3",
     "lint-staged": "^10.5.4",
     "rollup-plugin-node-polyfills": "^0.2.1",
@@ -76,10 +75,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 91.79,
-        "statements": 97.56,
-        "lines": 97.44,
-        "functions": 99.41
+        "branches": 90.14,
+        "statements": 97.55,
+        "lines": 97.43,
+        "functions": 99.4
       }
     },
     "automock": false,
@@ -102,6 +101,7 @@
     },
     "displayName": "core",
     "preset": "@digita-ai/jest-config",
+    "testEnvironment": "jsdom",
     "maxWorkers": 4
   }
 }

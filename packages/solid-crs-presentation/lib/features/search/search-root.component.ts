@@ -11,7 +11,7 @@ import { DismissAlertEvent } from '../../app.events';
 import { CollectionEvents } from '../collection/collection.events';
 import { ObjectEvents } from '../object/object.events';
 import { SearchContext, SearchStates } from './search.machine';
-import { SearchEvents } from './search.events';
+import { SearchUpdatedEvent } from './search.events';
 
 /**
  * The root page of the search feature.
@@ -137,7 +137,7 @@ export class SearchRootComponent extends RxLitElement {
         <div slot="icon">${ unsafeSVG(Search) }</div>
         <div slot="title">${this.translator?.translate('search.header.search-results-for')} "${this.searchTerm}"</div>
         <div slot="subtitle">${this.translator?.translate('search.header.subtitle')}</div>
-        <div slot="actions" @click="${() => this.actor.send(SearchEvents.SEARCH_UPDATED, { searchTerm: '' })}">${ unsafeSVG(Cross) }</div>
+        <div slot="actions" @click="${() => this.actor.send(new SearchUpdatedEvent(''))}">${ unsafeSVG(Cross) }</div>
       </nde-content-header>
 
       <div class="content">

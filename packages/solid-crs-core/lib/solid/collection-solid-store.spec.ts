@@ -99,7 +99,7 @@ describe('CollectionSolidStore', () => {
 
     });
 
-    it('should create new catalog when none was found', async (done) => {
+    it('should create new catalog when none was found', () => new Promise((done) => {
 
       (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
       (service.getInstanceForClass as any) = jest.fn(async () => 'test-instance');
@@ -110,13 +110,13 @@ describe('CollectionSolidStore', () => {
 
       (service.createCatalog as any) = jest.fn(async () => {
 
-        done();
+        done(true);
 
       });
 
-      await service.all();
+      service.all();
 
-    });
+    }));
 
   });
 
@@ -318,19 +318,18 @@ describe('CollectionSolidStore', () => {
 
     });
 
-    it('should call overwriteFile', async (done) => {
+    it('should call overwriteFile', () => new Promise((done) => {
 
       (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
-
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.getStringWithLocale as any) = jest.fn(() => 'test-string');
       (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
 
-      (client.overwriteFile as any) = jest.fn(() => done());
-      await service.createCatalog('test.uri');
+      (client.overwriteFile as any) = jest.fn(() => done(true));
+      service.createCatalog('test.uri');
 
-    });
+    }));
 
     it('should use schema:name by default', async () => {
 
@@ -348,19 +347,19 @@ describe('CollectionSolidStore', () => {
 
     });
 
-    it('should use foaf:name when schema:name was not found', async (done) => {
+    it('should use foaf:name when schema:name was not found', () => new Promise((done) => {
 
       (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.getStringWithLocale as any) = jest.fn(() => null);
-      (client.getStringNoLocale as any) = jest.fn(() => done());
+      (client.getStringNoLocale as any) = jest.fn(() => done(true));
       (client.overwriteFile as any) = jest.fn(() => 'test-file');
 
-      await service.createCatalog('test.uri');
+      service.createCatalog('test.uri');
 
-    });
+    }));
 
   });
 

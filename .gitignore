@@ -120,3 +120,6 @@ coverage-summary.json
 
 # id-proxy assets
 assets
+
+# componentsjs error output
+componentsjs-error-state.json

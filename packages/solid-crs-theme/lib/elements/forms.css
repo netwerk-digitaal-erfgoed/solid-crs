@@ -1,3 +1,4 @@
+/* stylelint-disable property-no-vendor-prefix */
 form {
   display: flex;
   flex-direction: column;
@@ -186,5 +187,5 @@ input[type="checkbox"]:checked {
   padding: 0;
   content: none;
   border: none;
-  background: url(../icons/CheckboxChecked.svg);
+  background: url("../icons/CheckboxChecked.svg");
 }
