@@ -233,7 +233,6 @@ export class AuthenticateRootComponent extends RxLitElement {
           --colors-foreground-light: white;
           width: 75%;
         }
-
         authenticate-component::part(webid-button) {
           border: none;
           background-color: var(--colors-primary-light);
@@ -247,14 +246,16 @@ export class AuthenticateRootComponent extends RxLitElement {
           height: var(--gap-large);
           width: 60px;
         }
-
         authenticate-component::part(alert) {
           height: var(--gap-small);
           font-size: var(--font-size-small);
         }
-
         authenticate-component::part(loading) {
           --colors-foreground-normal: var(--colors-foreground-light);
+        }
+
+        authenticate-component::part(provider-logo) {
+          display: none;
         }
         nde-form-element label {
           color: white;

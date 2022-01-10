@@ -306,7 +306,7 @@ export class AppRootComponent extends RxLitElement {
       </nde-sidebar-item>
     </nde-sidebar>
     ` : '' }  
-    ${ !this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED })
+    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.UNAUTHENTICATED })
     ? html`<nde-authenticate-root
     @authenticated="${(event: CustomEvent<Session>) => this.actor.send(new LoggedInEvent(event.detail))}"
     .solidService="${this.solidService}"

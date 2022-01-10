@@ -367,7 +367,10 @@ export const appMachine = (
                */
               src: () => solid.logout(),
               onDone: {
-                actions: send(new LoggedOutEvent()),
+                actions: [
+                  send(new LoggedOutEvent()),
+                  () => window.localStorage.removeItem('solidClientAuthn:currentSession'),
+                ],
               },
             },
             on: {
