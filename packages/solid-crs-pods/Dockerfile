@@ -16,7 +16,7 @@ WORKDIR /community-server
 
 # Install app dependencies
 ARG NPM_TOKEN
-COPY package.json /community-server/
+COPY . /community-server/
 RUN npm install  --unsafe-perm
 RUN npm run build
 
