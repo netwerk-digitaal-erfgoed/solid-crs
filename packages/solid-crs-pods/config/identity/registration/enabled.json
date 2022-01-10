@@ -1,15 +1,18 @@
 {
-    "@context": "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^2.0.0/components/context.jsonld",
-    "import": [
-      "./../config/identity/registration/route/registration.json"
-    ],
-    "@graph": [
-      {
-        "comment": "Enable registration by adding a registration handler to the list of interaction routes.",
-        "@id": "urn:solid-server:default:IdentityProviderHttpHandler",
-        "IdentityProviderHttpHandler:_args_interactionRoutes": [
-          { "@id": "urn:solid-server:auth:password:RegistrationRoute" }
-        ]
-      }
-    ]
-  }
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@netwerk-digitaal-erfgoed/solid-crs-pods/^0.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^2.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "./identity/registration/route/registration.json"
+  ],
+  "@graph": [
+    {
+      "comment": "Enable registration by adding a registration handler to the list of interaction routes.",
+      "@id": "urn:solid-server:default:IdentityProviderHttpHandler",
+      "IdentityProviderHttpHandler:_args_interactionRoutes": [
+        { "@id": "urn:solid-server:auth:password:RegistrationRoute" }
+      ]
+    }
+  ]
+}
