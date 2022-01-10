@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.16.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.6...v0.16.0) (2022-01-10)
+
+
+### **Bug Fixes**
+
+* dimension units are always stored ([#548](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/548)) ([b7300d6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/b7300d609d47e8b358fcc169275d7e5f62c1c4d6))
+
+
+
 ### [0.15.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.5...v0.15.6) (2021-12-23)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-core
