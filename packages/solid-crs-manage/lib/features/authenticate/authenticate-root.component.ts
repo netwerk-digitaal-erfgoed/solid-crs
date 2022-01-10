@@ -38,8 +38,8 @@ export class AuthenticateRootComponent extends RxLitElement {
   /**
    * The component's alerts.
    */
-  @property({ type: Array })
-  public alerts: Alert[];
+  @internalProperty()
+  alerts: Alert[];
 
   /**
    * List of predefined issuers.
@@ -64,7 +64,7 @@ export class AuthenticateRootComponent extends RxLitElement {
    */
   firstUpdated(changed: PropertyValues): void {
 
-    if(changed && changed.has('appActor')){
+    if(changed && changed.has('appActor') && !!changed.get('appActor')){
 
       this.subscribe('alerts', from(this.appActor)
         .pipe(map((state) => state.context?.alerts)));
