@@ -1,10 +1,15 @@
-import { Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+/* eslint-disable @typescript-eslint/dot-notation */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { ClickedAdministratorTypeEvent, ClickedInstitutionTypeEvent } from '../../app.events';
-import { AppContext, appMachine } from '../../app.machine';
+import { ClickedAdministratorTypeEvent, ClickedCreatePodEvent, ClickedInstitutionTypeEvent, ClickedLogoutEvent, SetProfileEvent } from '../../app.events';
+import { AppContext, AppDataStates, appMachine, AppRootStates } from '../../app.machine';
+import * as services from '../../app.services';
 import { AuthenticateSetupComponent } from './authenticate-setup.component';
 
-const solid = new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly));
+let solidService: SolidSDKService;
+let collectionStore: CollectionSolidStore;
 
 describe('AuthenticateSetupComponent', () => {
 
@@ -15,22 +20,6 @@ describe('AuthenticateSetupComponent', () => {
     uri: 'collection-uri-3',
     name: 'Collection 3',
     description: 'This is collection 3',
-    objectsUri: 'test-uri',
-    distribution: 'test-uri',
-  };
-
-  const collection2: Collection = {
-    uri: 'collection-uri-1',
-    name: 'Collection 1',
-    description: 'This is collection 1',
-    objectsUri: 'test-uri',
-    distribution: 'test-uri',
-  };
-
-  const collection3: Collection = {
-    uri: 'collection-uri-2',
-    name: 'Collection 2',
-    description: 'This is collection 2',
     objectsUri: 'test-uri',
     distribution: 'test-uri',
   };
@@ -46,14 +35,21 @@ describe('AuthenticateSetupComponent', () => {
     collection: 'collection-uri-1',
   };
 
-  beforeEach(() => {
+  beforeEach(async () => {
+
+    solidService = {
+      getStorages: jest.fn(async () => [ 'https://storage.uri/' ]),
+    } as any;
+
+    collectionStore = {
+      getInstanceForClass: jest.fn(async () => undefined),
+    } as any;
+
+    (services.createPod as any) = jest.fn(async () => ({}));
 
     machine = interpret(appMachine(
-      solid,
-      new CollectionMemoryStore([
-        collection2,
-        collection3,
-      ]),
+      solidService,
+      collectionStore,
       new CollectionObjectMemoryStore([
         object1,
       ]),
@@ -63,11 +59,20 @@ describe('AuthenticateSetupComponent', () => {
       .withContext({
         alerts: [],
         session: { webId: 'lorem' },
+        profile: {
+          name: 'Lea Peeters',
+          uri: 'https://web.id/',
+        },
       }));
+
+    machine.onTransition(async () => await component.updateComplete);
 
     component = window.document.createElement('nde-authenticate-setup') as AuthenticateSetupComponent;
 
     component.actor = machine;
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
 
   });
 
@@ -83,50 +88,174 @@ describe('AuthenticateSetupComponent', () => {
 
   });
 
-  it('should show two buttons', async () => {
+  describe('admin setup', () => {
 
-    machine.start();
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    beforeEach(() => {
 
-    const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelector('div.form-container').children;
+      // set correct data state ()
+      machine.start();
 
-    expect(buttons).toBeTruthy();
-    expect(buttons.length).toEqual(2);
+      machine.send(new SetProfileEvent());
+
+    });
+
+    it('should show two buttons', (done) => {
+
+      machine.onTransition((state) => {
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
+
+          const buttons = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot.querySelector('div.form-container').children;
+          expect(buttons).toBeTruthy();
+          expect(buttons.length).toEqual(2);
+          done();
+
+        }
+
+      });
+
+      machine.start();
+
+    });
+
+    it('should send ClickedAdministratorTypeEvent when admin button is clicked', async () => {
+
+      machine.send(new ClickedCreatePodEvent());
+      component.actor.send = jest.fn();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      machine.onTransition(async (state) => {
+
+        await component.updateComplete;
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
+
+          const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
+            .querySelector('div.form-container').children[0] as HTMLButtonElement;
+
+          button.click();
+          expect(component.actor.send).toHaveBeenCalledWith(new ClickedAdministratorTypeEvent());
+
+        }
+
+      });
+
+    });
+
+    it('should send ClickedInstitutionTypeEvent when institution button is clicked', async () => {
+
+      machine.send(new ClickedCreatePodEvent());
+      component.actor.send = jest.fn();
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      machine.onTransition(async (state) => {
+
+        await component.updateComplete;
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })) {
+
+          const button = component.shadowRoot.querySelector('div.form-container').children[1] as HTMLButtonElement;
+
+          button.click();
+          expect(component.actor.send).toHaveBeenCalledWith(new ClickedInstitutionTypeEvent());
+
+        }
+
+      });
+
+    });
 
   });
 
-  it('should send ClickedAdministratorTypeEvent when admin button is clicked', async () => {
+  describe('pod creation', () => {
 
-    machine.start();
-    window.document.body.appendChild(component);
-    await component.updateComplete;
+    beforeEach(async () => {
 
-    const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
-      .querySelector('div.form-container').children[0] as HTMLButtonElement;
+      solidService.getStorages = jest.fn(async () => [ ]);
 
-    machine.send = jest.fn();
+      machine = interpret(appMachine(
+        solidService,
+        collectionStore,
+        new CollectionObjectMemoryStore([
+          object1,
+        ]),
+        collection1,
+        object1
+      )
+        .withContext({
+          alerts: [],
+          session: { webId: 'lorem' },
+          profile: {
+            name: 'Lea Peeters',
+            uri: 'https://web.id/',
+          },
+        }));
 
-    button.click();
+      component.actor = machine;
 
-    expect(machine.send).toHaveBeenCalledWith(new ClickedAdministratorTypeEvent());
+      machine.start();
+
+      machine.send(new SetProfileEvent());
+
+    });
+
+    it('should show two buttons', async () => {
+
+      machine.onTransition(async (state) => {
+
+        if (state.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION })) {
+
+          await component.updateComplete;
+          const buttons = component.shadowRoot.querySelectorAll('button');
+          expect(buttons).toBeTruthy();
+          expect(buttons.length).toEqual(2);
+
+        }
+
+      });
+
+    });
 
   });
 
-  it('should send ClickedInstitutionTypeEvent when institution button is clicked', async () => {
+  describe('onClickedCreatePod', () => {
 
-    machine.start();
+    it('should send ClickedCreatePodEvent to machine', async () => {
+
+      machine.send = jest.fn();
+      component['onClickedCreatePod']();
+      expect(machine.send).toHaveBeenCalledWith(new ClickedCreatePodEvent());
+
+    });
+
+  });
+
+  describe('onClickedCancel', () => {
+
+    it('should send ClickedLogoutEvent to machine', async () => {
+
+      machine.send = jest.fn();
+      component['onClickedCancel']();
+      expect(machine.send).toHaveBeenCalledWith(new ClickedLogoutEvent());
+
+    });
+
+  });
+
+  it('should not render anything when between states', async () => {
+
+    // dont wait for getStorages to complete
     window.document.body.appendChild(component);
     await component.updateComplete;
 
-    const button = window.document.body.getElementsByTagName('nde-authenticate-setup')[0].shadowRoot
-      .querySelector('div.form-container').children[1] as HTMLButtonElement;
+    [ ... component.shadowRoot.children ].forEach((child) => {
 
-    machine.send = jest.fn();
+      // component should only have style elements, no other elements
+      expect(child).toBeInstanceOf(HTMLStyleElement);
 
-    button.click();
-
-    expect(machine.send).toHaveBeenCalledWith(new ClickedInstitutionTypeEvent());
+    });
 
   });
 

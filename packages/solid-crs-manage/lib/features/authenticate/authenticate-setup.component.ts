@@ -1,12 +1,13 @@
-import { html, property, unsafeCSS, css, TemplateResult, CSSResult } from 'lit-element';
+import { html, property, unsafeCSS, css, TemplateResult, CSSResult, internalProperty } from 'lit-element';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Interpreter } from 'xstate';
+import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { Theme, Identity } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ClickedAdministratorTypeEvent, ClickedInstitutionTypeEvent } from '../../app.events';
-import { AppContext } from '../../app.machine';
+import { from } from 'rxjs';
+import { ClickedAdministratorTypeEvent, ClickedCreatePodEvent, ClickedInstitutionTypeEvent, ClickedLogoutEvent } from '../../app.events';
+import { AppContext, AppDataStates, AppRootStates } from '../../app.machine';
 
 /**
  * The first time setup page of the authenticate process.
@@ -34,13 +35,39 @@ export class AuthenticateSetupComponent extends RxLitElement {
   public actor: Interpreter<AppContext>;
 
   /**
+   * The state of this component.
+   */
+  @internalProperty()
+  state?: State<AppContext>;
+
+  protected firstUpdated(): void {
+
+    this.subscribe('state', from(this.actor));
+
+  }
+
+  private onClickedCreatePod = () => {
+
+    this.actor.send(new ClickedCreatePodEvent());
+
+  };
+
+  private onClickedCancel = () => {
+
+    this.actor.send(new ClickedLogoutEvent());
+
+  };
+
+  /**
    * Renders the component as HTML.
    *
    * @returns The rendered HTML of the component.
    */
   render(): TemplateResult {
 
-    return html`
+    return this.state?.matches({ [AppRootStates.DATA]: AppDataStates.DETERMINING_POD_TYPE })
+      // admin - institution buttons
+      ? html`
       <div class="title-container">
         <h1>${this.translator?.translate('authenticate.pages.setup.title')}</h1>
       </div>
@@ -72,11 +99,24 @@ export class AuthenticateSetupComponent extends RxLitElement {
         </nde-large-card>
       
       </div>
-
-      <div class="webid-container">
-        <p> ${unsafeHTML(this.translator?.translate('authenticate.pages.login.create-webid'))}</p>
+    `
+    // create pod buttons
+      : this.state?.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION }) ? html`
+      
+      <div class="title-container">
+        <h1>${this.translator?.translate('authenticate.pages.no-pod.title')}</h1>
       </div>
-      `;
+
+      <div class="form-container">
+        <p>${this.translator?.translate('authenticate.pages.no-pod.subtitle.no-storage')}</p>
+        <p>${unsafeHTML(this.translator?.translate('authenticate.pages.no-pod.subtitle.add-storage'))}</p>
+      </div>
+
+      <div class="button-container">
+        <button class="primary" @click="${this.onClickedCreatePod}">${this.translator?.translate('authenticate.pages.no-pod.button-create-pod')}</button>
+        <button class="gray" @click="${this.onClickedCancel}">${this.translator?.translate('authenticate.pages.no-pod.button-cancel')}</button>
+      </div>
+    ` : html``;
 
   }
 
@@ -94,11 +134,12 @@ export class AuthenticateSetupComponent extends RxLitElement {
           justify-content: center;
           align-items: center;
           background-color: var(--colors-primary-dark);
+          color: var(--colors-foreground-inverse);
+          gap: var(--gap-huge);
         }
         
         :host > * {
-          margin-bottom: var(--gap-large);
-          width: 50%;
+          width: 500px;
         }
 
         .title-container {
@@ -107,7 +148,6 @@ export class AuthenticateSetupComponent extends RxLitElement {
           flex-direction: row;
           justify-content: center;
           align-items: center;
-          color: var(--colors-foreground-inverse);
         }
         
         .title-container svg {
@@ -129,10 +169,14 @@ export class AuthenticateSetupComponent extends RxLitElement {
           flex-direction: column;
           justify-content: center;
           align-items: stretch;
+          gap: var(--gap-normal);
         }
 
-        .form-container > * {
-          margin-bottom: var(--gap-large);
+        .button-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: var(--gap-normal);
         }
 
         nde-large-card {
@@ -141,6 +185,12 @@ export class AuthenticateSetupComponent extends RxLitElement {
 
         svg {
           stroke: var(--colors-foreground-light) !important;
+        }
+
+        p {
+          text-align: center;
+          font-size: var(--font-size-small);
+          margin: 0;
         }
         `,
     ];

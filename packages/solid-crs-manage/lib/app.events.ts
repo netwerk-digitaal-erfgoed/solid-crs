@@ -22,6 +22,7 @@ export enum AppEvents {
   CLICKED_ADMINISTRATOR_TYPE = '[AppEvent: Clicked Admin Pod Type]',
   CLICKED_INSTITUTION_TYPE = '[AppEvent: Clicked Institution Pod Type]',
   SET_PROFILE = '[AppEvent: Set Profile]',
+  CLICKED_CREATE_POD = '[AppEvent: Clicked Create Pod]',
 }
 
 /**
@@ -70,7 +71,7 @@ export class LoggedOutEvent implements EventObject {
 /**
  * An event which is dispatched when an error occurs.
  */
-export class LoggingOutEvent implements EventObject {
+export class ClickedLogoutEvent implements EventObject {
 
   public type: AppEvents.CLICKED_LOGOUT = AppEvents.CLICKED_LOGOUT;
 
@@ -123,12 +124,21 @@ export class SetProfileEvent implements EventObject {
 }
 
 /**
+ * An event which is dispatched when an error occurs.
+ */
+export class ClickedCreatePodEvent implements EventObject {
+
+  public type: AppEvents.CLICKED_CREATE_POD = AppEvents.CLICKED_CREATE_POD;
+
+}
+
+/**
  * Union type of app events.
  */
 export type AppEvent =
   | RouterEvent
   | LoggedInEvent
-  | LoggingOutEvent
+  | ClickedLogoutEvent
   | LoggedOutEvent
   | ErrorEvent
   | DismissAlertEvent
@@ -142,7 +152,8 @@ export type AppEvent =
   | ClickedDeleteObjectEvent
   | ClickedInstitutionTypeEvent
   | ClickedAdministratorTypeEvent
-  | SetProfileEvent;
+  | SetProfileEvent
+  | ClickedCreatePodEvent;
 
 /**
  * Actions for the alerts component.

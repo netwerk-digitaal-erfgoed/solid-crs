@@ -390,7 +390,11 @@
             "pathToJwks": {
               "@id": "urn:dgt-id-proxy:variables:jwksFilePath"
             },
-            "webIdPattern": "http://localhost:3007/:customclaim"
+            "webIdPattern": "http://localhost:3007/:customclaim",
+            "predicates": [
+              [ "http://schema.org/name", [ "https://netwerkdigitaalerfgoed.nl/username" ] ],
+              [ "http://xmlns.com/foaf/0.1/name", [ "https://netwerkdigitaalerfgoed.nl/username" ] ]
+            ]
           },
           {
             "@id": "urn:dgt-id-proxy:default:JwtEncodeResponseHandler"

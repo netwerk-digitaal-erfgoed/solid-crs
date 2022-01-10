@@ -29,7 +29,7 @@
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
   },
   "dependencies": {
-    "@digita-ai/dgt-components": "0.10.0",
+    "@digita-ai/dgt-components": " 0.11.1",
     "@digita-ai/inrupt-solid-service": "^0.11.0",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
@@ -91,10 +91,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 84.98,
-        "branches": 85.21,
-        "lines": 86.1,
-        "functions": 71.25
+        "statements": 85.67,
+        "branches": 85.14,
+        "lines": 86.9,
+        "functions": 71.75
       }
     },
     "automock": false,
