@@ -218,27 +218,27 @@ describe('AuthenticateSetupComponent', () => {
 
     });
 
-    describe('onClickedCreatePod', () => {
+  });
 
-      it('should send ClickedCreatePodEvent to machine', async () => {
+  describe('onClickedCreatePod', () => {
 
-        machine.send = jest.fn();
-        component['onClickedCreatePod']();
-        expect(machine.send).toHaveBeenCalledWith(new ClickedCreatePodEvent());
+    it('should send ClickedCreatePodEvent to machine', async () => {
 
-      });
+      machine.send = jest.fn();
+      component['onClickedCreatePod']();
+      expect(machine.send).toHaveBeenCalledWith(new ClickedCreatePodEvent());
 
     });
 
-    describe('onClickedCancel', () => {
+  });
 
-      it('should send ClickedLogoutEvent to machine', async () => {
+  describe('onClickedCancel', () => {
 
-        machine.send = jest.fn();
-        component['onClickedCancel']();
-        expect(machine.send).toHaveBeenCalledWith(new ClickedLogoutEvent());
+    it('should send ClickedLogoutEvent to machine', async () => {
 
-      });
+      machine.send = jest.fn();
+      component['onClickedCancel']();
+      expect(machine.send).toHaveBeenCalledWith(new ClickedLogoutEvent());
 
     });
 
