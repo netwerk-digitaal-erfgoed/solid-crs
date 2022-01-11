@@ -1,7 +1,7 @@
 {
   "@context": "https://www.w3.org/ns/solid/oidc-context.jsonld",
   "client_id" : "http://localhost:3007/collectiebeheersysteem",
-  "redirect_uris" : ["http://localhost:3002/"],
+  "redirect_uris" : ["http://localhost:3002/", "http://localhost:3002/login"],
   "client_name" : "Collectiebeheersysteem", 
   "scope" : "openid offline_access",
   "grant_types" : ["refresh_token","authorization_code"],
