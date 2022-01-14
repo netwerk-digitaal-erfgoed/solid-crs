@@ -31,9 +31,6 @@ export const createPod = async (solidService: SolidSDKService): Promise<string> 
         webId,
         createPod: 'on',
         podName: v5(webId, 'a2e08b56-67b9-49b9-894f-696052dbef9a'),
-        email: `${v5(webId, 'a2e08b56-67b9-49b9-894f-696052dbef9a')}@digita.ai`,
-        password: 'a',
-        confirmPassword: 'a',
       }),
     }
   );
