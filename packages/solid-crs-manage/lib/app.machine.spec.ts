@@ -125,27 +125,40 @@ describe('AppMachine', () => {
 
   });
 
-  it('should dismiss alert in context when sending dismissAlert', () => {
+  it('should dismiss alert in context when sending DismissAlertEvent', () => {
 
     const alert: Alert = { type: 'success', message: 'foo' };
 
-    machine = interpret<AppContext>(
+    const machineWithAlerts = interpret<AppContext>(
       appMachine(
         solidService,
         new CollectionMemoryStore([ collection1, collection2 ]),
         new CollectionObjectMemoryStore([ object1 ]),
         collection1,
         object1
-      )
-        .withContext({
-          alerts: [ alert ],
-        }),
+      ).withContext({
+        alerts: [ alert ],
+      }),
     );
 
-    machine.start();
-    expect(machine.state.context.alerts.length).toBe(1);
-    machine.send(new DismissAlertEvent(alert));
-    expect(machine.state.context.alerts.length).toBe(0);
+    machineWithAlerts.start();
+
+    const first = true;
+
+    machineWithAlerts.onChange((context) => {
+
+      if (first) {
+
+        expect(context.alerts.length).toBe(1);
+        machineWithAlerts.send(new DismissAlertEvent(alert));
+
+      } else {
+
+        expect(context.alerts.length).toBe(0);
+
+      }
+
+    });
 
   });
 
