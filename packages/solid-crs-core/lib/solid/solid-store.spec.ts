@@ -349,6 +349,9 @@ describe('SolidStore', () => {
 
   describe('setPublicAccess', () => {
 
+    const resourceUri = 'https://test.uri/resource';
+    const containerUri = 'https://test.uri/container/';
+
     beforeEach(() => {
 
       (client.access.getPublicAccess as any) = jest.fn(async () => ({
@@ -365,7 +368,7 @@ describe('SolidStore', () => {
 
     it('should update existing acl when one is present', async () => {
 
-      await service.setPublicAccess('https://test.uri/');
+      await service.setPublicAccess(resourceUri);
       expect(client.access.setPublicAccess).toHaveBeenCalled();
 
     });
@@ -376,7 +379,7 @@ describe('SolidStore', () => {
         read: true,
       }));
 
-      await service.setPublicAccess('https://test.uri/');
+      await service.setPublicAccess(resourceUri);
       expect(client.access.setPublicAccess).not.toHaveBeenCalled();
 
     });
@@ -385,7 +388,11 @@ describe('SolidStore', () => {
 
       let aclCreated: boolean;
 
-      fetchMock.mockOnce(async () => {
+      fetchMock.mockOnce(async (req) => {
+
+        const body = await req.text();
+
+        expect(body).toContain(`acl:accessTo <${resourceUri}>`);
 
         aclCreated = true;
 
@@ -407,7 +414,43 @@ describe('SolidStore', () => {
 
       });
 
-      await service.setPublicAccess('https://test.uri/');
+      await service.setPublicAccess(resourceUri);
+      expect(client.access.setPublicAccess).toHaveBeenCalled();
+
+    });
+
+    it('should set default access for containers', async () => {
+
+      let aclCreated: boolean;
+
+      fetchMock.mockOnce(async (req) => {
+
+        const body = await req.text();
+
+        expect(body).toContain(`acl:accessTo <./>`);
+        expect(body).toContain(`acl:default <./>`);
+
+        aclCreated = true;
+
+        return { body: 'created', init: { status: 201 } };
+
+      });
+
+      (client.access.getPublicAccess as any) = jest.fn(async () => {
+
+        if (!aclCreated) {
+
+          return Promise.reject({ response: { status: 404 } });
+
+        }
+
+        return {
+          read: false,
+        };
+
+      });
+
+      await service.setPublicAccess(containerUri);
       expect(client.access.setPublicAccess).toHaveBeenCalled();
 
     });
@@ -418,7 +461,7 @@ describe('SolidStore', () => {
 
       (client.access.getPublicAccess as any) = jest.fn(async () => Promise.reject(errResponse));
 
-      await expect(service.setPublicAccess('https://test.uri/')).rejects.toEqual(errResponse);
+      await expect(service.setPublicAccess(resourceUri)).rejects.toEqual(errResponse);
 
     });
 

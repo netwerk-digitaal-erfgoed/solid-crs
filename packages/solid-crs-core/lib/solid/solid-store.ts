@@ -259,14 +259,16 @@ export class SolidStore<T extends Resource> implements Store<T> {
         <#public>
             a acl:Authorization;
             acl:agentClass foaf:Agent;
-            acl:accessTo <${target}>;
+            acl:accessTo <${target.endsWith('/') ? './' : target}>;
+            ${ target.endsWith('/') ? 'acl:default <./>;' : '' }
             acl:mode acl:Read.
     
         # The owner has full access to the entire directory.
         <#owner>
             a acl:Authorization;
             acl:agent <${webId}>;
-            acl:accessTo <${target}>;
+            acl:accessTo <${target.endsWith('/') ? './' : target}>;
+            ${ target.endsWith('/') ? 'acl:default <./>;' : '' }
             acl:mode acl:Read, acl:Write, acl:Control.`;
 
         await this.getSession().fetch(`${target}.acl`, {
