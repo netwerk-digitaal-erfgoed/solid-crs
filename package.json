@@ -21,7 +21,7 @@
     "release:antora": "echo \"$(yaml set docs/antora.yml version $(dot-json lerna.json version))\" > docs/antora.yml",
     "start": "lerna run start --parallel",
     "start:watch": "lerna run start:watch --parallel",
-    "test": "lerna run test --since HEAD",
+    "test": "lerna run test --since HEAD --stream --concurrency 1",
     "test:all": "lerna run test",
     "test:ci": "lerna run test:ci"
   },
