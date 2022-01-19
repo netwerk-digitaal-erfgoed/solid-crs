@@ -122,6 +122,13 @@ export class ObjectRootComponent extends RxLitElement {
 
   }
 
+  onClickedCopy(value: string): void {
+
+    navigator.clipboard.writeText(value).then(() =>
+      this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-url' })));
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -174,6 +181,9 @@ export class ObjectRootComponent extends RxLitElement {
               <a @click="${downloadRDF}">
                 ${this.translator.translate('object.root.menu.view-rdf')}
               </a>
+              <a @click="${() => this.onClickedCopy(this.object?.uri)}">
+                ${this.translator.translate('object.root.menu.copy-url')}
+              </a>
             </div>
           </nde-popup>
         </div>
@@ -204,8 +214,7 @@ export class ObjectRootComponent extends RxLitElement {
           <div class="object-property">
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
             <div>
-              <a target="_blank" rel="noopener noreferrer" @click="${ () => navigator.clipboard.writeText(this.object?.image)
-    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-image-url' })))}">
+              <a target="_blank" rel="noopener noreferrer" @click="${ () => this.onClickedCopy(this.object?.image)}">
               ${ this.translator.translate('object.root.menu.copy-url') }
               </a>
             </div>
@@ -381,6 +390,7 @@ export class ObjectRootComponent extends RxLitElement {
           width: 100%;
         }
         #info-popup {
+          z-index: 110;
           height: auto;
           width: auto;
           position: absolute;

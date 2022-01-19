@@ -182,7 +182,7 @@
             "KGM": "kg",
             "GRM": "g"
         },
-        "copied-image-url": "De URL van de afbeelding werd gekopieerd.",
+        "copied-url": "De URL werd gekopieerd.",
         "paginator": {
             "page-counter": "Pagina {CURRENT} van {TOTAL}"
         }

@@ -296,6 +296,28 @@ describe('ObjectRootComponent', () => {
 
   });
 
+  it('should copy value to clipboard when onClickedCopy is fired', async () => {
+
+    (navigator.clipboard as any) = {
+      writeText: jest.fn(async() => undefined),
+    };
+
+    machine.parent.onEvent((event) => {
+
+      if (event.type === AppEvents.ADD_ALERT) {
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.onClickedCopy('test');
+
+  });
+
   it('should send SelectedCollectionEvent to parent when collection is clicked', async () => {
 
     machine.start();
