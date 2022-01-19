@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.0...v0.16.1) (2022-01-19)
+
+
+### **Bug Fixes**
+
+* bug fixes ([#558](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/558)) ([a1724ff](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a1724ff7c22b0e5592d8e384dca8118a7a5e36cd))
+
+
+
 ## [0.16.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.15.6...v0.16.0) (2022-01-10)
 
 
