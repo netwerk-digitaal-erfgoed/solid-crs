@@ -213,7 +213,7 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property">
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
-            <div>
+            <div class="copy-image-url">
               <a target="_blank" rel="noopener noreferrer" @click="${ () => this.onClickedCopy(this.object?.image)}">
               ${ this.translator.translate('object.root.menu.copy-url') }
               </a>

@@ -271,6 +271,19 @@ describe('ObjectRootComponent', () => {
 
   });
 
+  it('should call onClickedCopy when copy image url is clicked', async () => {
+
+    component.onClickedCopy = jest.fn();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const copy = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.copy-image-url a');
+    console.log(copy);
+    copy.click();
+    expect(component.onClickedCopy).toHaveBeenCalledTimes(1);
+
+  });
+
   it('should copy url to clipboard when info menu item is clicked', async () => {
 
     (navigator.clipboard as any) = {
