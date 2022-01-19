@@ -62,6 +62,8 @@ import { AuthenticateRootComponent } from '../lib/features/authenticate/authenti
   },
 });
 
+(core.routerEventsConfig as any) = () => ({});
+
 /**
  * Enable mocks for fetch.
  */

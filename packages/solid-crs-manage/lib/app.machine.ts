@@ -385,6 +385,7 @@ export const appMachine = (
            * The user has not been authenticated.
            */
           [AppAuthenticateStates.UNAUTHENTICATED]: {
+            entry: send(() => new NavigatedEvent(`/login`)),
             on: {
               [AppEvents.LOGGED_IN]: {
                 target: AppAuthenticateStates.AUTHENTICATED,
