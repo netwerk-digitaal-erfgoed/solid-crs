@@ -278,7 +278,6 @@ describe('ObjectRootComponent', () => {
     await component.updateComplete;
 
     const copy = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.copy-image-url a');
-    console.log(copy);
     copy.click();
     expect(component.onClickedCopy).toHaveBeenCalledTimes(1);
 
