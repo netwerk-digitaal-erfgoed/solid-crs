@@ -91,7 +91,7 @@
         "statements": 86.93,
         "branches": 82.97,
         "lines": 88.29,
-        "functions": 72.91
+        "functions": 72.81
       }
     },
     "automock": false,
