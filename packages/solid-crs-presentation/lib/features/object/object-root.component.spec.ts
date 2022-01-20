@@ -2,6 +2,7 @@ import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-c
 import { ArgumentError, CollectionObjectMemoryStore, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
+import * as solidCrsClient from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SelectedCollectionEvent } from '../collection/collection.events';
@@ -280,6 +281,17 @@ describe('ObjectRootComponent', () => {
     const copy = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.copy-image-url a');
     copy.click();
     expect(component.onClickedCopy).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should run the appropriate code when download-rdf a is clicked', async () => {
+
+    const spy = jest.spyOn(solidCrsClient, 'fetch');
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    const rdf = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.download-rdf');
+    rdf.click();
+    expect(spy).toHaveBeenCalled();
 
   });
 

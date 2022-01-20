@@ -178,7 +178,7 @@ export class ObjectRootComponent extends RxLitElement {
           ${ unsafeSVG(Dots) }
           <nde-popup id="info-popup">
             <div slot="content">
-              <a @click="${downloadRDF}">
+              <a @click="${downloadRDF}" class="download-rdf">
                 ${this.translator.translate('object.root.menu.view-rdf')}
               </a>
               <a @click="${() => this.onClickedCopy(this.object?.uri)}">
