@@ -224,7 +224,7 @@ describe('Authorization Services', () => {
       (sdk.overwriteFile as unknown) = jest.fn(async () => true);
 
       await expect(createPod(solidService)).resolves.toEqual(solidService.getDefaultSession().info.webId);
-      expect(sdk.overwriteFile).toHaveBeenCalledTimes(1);
+      expect(sdk.overwriteFile).toHaveBeenCalledTimes(2);
 
     });
 
