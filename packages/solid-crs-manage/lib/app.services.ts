@@ -128,6 +128,25 @@ export const createPod = async (solidService: SolidSDKService): Promise<string> 
  a solid:ListedDocument.`,
         ], { type: 'text/turtle' }), { fetch: session.fetch });
 
+        await overwriteFile(`${podBaseUrl}settings/publicTypeIndex.acl`, new Blob([
+          `@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# The directory is readable by the public.
+<#public>
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;
+    acl:accessTo <./publicTypeIndex>;
+    acl:mode acl:Read.
+
+# The owner has full access to the entire directory.
+<#owner>
+    a acl:Authorization;
+    acl:agent <${session?.info?.webId}>;
+    acl:accessTo <./publicTypeIndex>;
+    acl:mode acl:Read, acl:Write, acl:Control.`,
+        ], { type: 'text/turtle' }), { fetch: session.fetch });
+
       }
 
     });
