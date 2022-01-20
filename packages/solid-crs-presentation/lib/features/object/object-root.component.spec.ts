@@ -274,7 +274,7 @@ describe('ObjectRootComponent', () => {
 
   it('should call onClickedCopy when copy image url is clicked', async () => {
 
-    component.onClickedCopy = jest.fn();
+    component.onClickedCopy = jest.fn().mockResolvedValueOnce(void 0);
     window.document.body.appendChild(component);
     await component.updateComplete;
 

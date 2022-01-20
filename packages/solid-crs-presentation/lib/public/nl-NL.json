@@ -53,6 +53,7 @@
             },
             "menu": {
                 "view-rdf": "RDF bekijken",
+                "copy-uri": "URI kopiëren",
                 "copy-url": "URL kopiëren"
             }
         },
@@ -183,6 +184,7 @@
             "GRM": "g"
         },
         "copied-url": "De URL werd gekopieerd.",
+        "copied-uri": "De URI werd gekopieerd.",
         "paginator": {
             "page-counter": "Pagina {CURRENT} van {TOTAL}"
         }
