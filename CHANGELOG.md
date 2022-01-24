@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.1...v0.16.2) (2022-01-24)
+
+
+### **Bug Fixes**
+
+* crashing presentation app with NDE pods ([#560](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/560)) ([0f2835f](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/0f2835ff64b7e87459dc46e096bdb060e523badb))
+
+
+
 ### [0.16.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.0...v0.16.1) (2022-01-19)
 
 
