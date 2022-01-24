@@ -122,6 +122,12 @@ export class ObjectRootComponent extends RxLitElement {
 
   }
 
+  onClickedCopy(value: string): Promise<void> {
+
+    return navigator.clipboard.writeText(value);
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -171,8 +177,11 @@ export class ObjectRootComponent extends RxLitElement {
           ${ unsafeSVG(Dots) }
           <nde-popup id="info-popup">
             <div slot="content">
-              <a @click="${downloadRDF}">
+              <a @click="${downloadRDF}" class="download-rdf">
                 ${this.translator.translate('object.root.menu.view-rdf')}
+              </a>
+              <a @click="${() => this.onClickedCopy(this.object?.uri).then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-uri' })))}">
+                ${this.translator.translate('object.root.menu.copy-uri')}
               </a>
             </div>
           </nde-popup>
@@ -203,9 +212,8 @@ export class ObjectRootComponent extends RxLitElement {
           </div>
           <div class="object-property">
             <div> ${ this.translator.translate('object.card.image.field.image-source') } </div>
-            <div>
-              <a target="_blank" rel="noopener noreferrer" @click="${ () => navigator.clipboard.writeText(this.object?.image)
-    .then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-image-url' })))}">
+            <div class="copy-image-url">
+              <a target="_blank" rel="noopener noreferrer" @click="${ () => this.onClickedCopy(this.object?.image).then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-url' })))}">
               ${ this.translator.translate('object.root.menu.copy-url') }
               </a>
             </div>
@@ -381,6 +389,7 @@ export class ObjectRootComponent extends RxLitElement {
           width: 100%;
         }
         #info-popup {
+          z-index: 110;
           height: auto;
           width: auto;
           position: absolute;

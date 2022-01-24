@@ -2,6 +2,7 @@ import { Alert, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-c
 import { ArgumentError, CollectionObjectMemoryStore, Collection, CollectionObject, CollectionMemoryStore, ConsoleLogger, LoggerLevel, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
+import * as solidCrsClient from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { SelectedCollectionEvent } from '../collection/collection.events';
@@ -271,6 +272,29 @@ describe('ObjectRootComponent', () => {
 
   });
 
+  it('should call onClickedCopy when copy image url is clicked', async () => {
+
+    component.onClickedCopy = jest.fn().mockResolvedValueOnce(void 0);
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const copy = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.copy-image-url a');
+    copy.click();
+    expect(component.onClickedCopy).toHaveBeenCalledTimes(1);
+
+  });
+
+  it('should run the appropriate code when download-rdf a is clicked', async () => {
+
+    const spy = jest.spyOn(solidCrsClient, 'fetch');
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    const rdf = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('.download-rdf');
+    rdf.click();
+    expect(spy).toHaveBeenCalled();
+
+  });
+
   it('should copy url to clipboard when info menu item is clicked', async () => {
 
     (navigator.clipboard as any) = {
@@ -293,6 +317,28 @@ describe('ObjectRootComponent', () => {
 
     const copyAnchor = window.document.body.getElementsByTagName('nde-object-root')[0].shadowRoot.querySelector<HTMLElement>('nde-content-header div[slot="actions"] div a:last-of-type');
     copyAnchor.click();
+
+  });
+
+  it('should copy value to clipboard when onClickedCopy is fired', async () => {
+
+    (navigator.clipboard as any) = {
+      writeText: jest.fn(async() => undefined),
+    };
+
+    machine.parent.onEvent((event) => {
+
+      if (event.type === AppEvents.ADD_ALERT) {
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.onClickedCopy('test');
 
   });
 
