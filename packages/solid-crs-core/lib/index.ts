@@ -8,6 +8,7 @@ export * from './collections/collection-object-memory-store';
 export * from './collections/collection-object-store';
 export * from './collections/collection-store';
 export * from './collections/collection-memory-store';
+export * from './loan/models/loan-request';
 export * from './errors/argument-error';
 export * from './errors/base-error';
 export * from './errors/not-implemented-error';
