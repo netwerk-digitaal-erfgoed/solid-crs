@@ -64,9 +64,9 @@ export class LoanRootComponent extends RxLitElement {
         <div slot="title"> ${this.translator?.translate('loan.root.header.title')} </div>
         <div slot="subtitle">
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)
-    ? this.translator?.translate('loan.root.header.subtitle-incoming') : ''}
+    ? this.translator?.translate('loan.overview.header.subtitle') : ''}
               ${this.state.matches(LoanStates.CREATING_LOAN_REQUEST)
-    ? this.translator?.translate('loan.root.header.subtitle-creation') : ''}
+    ? this.translator?.translate('loan.creation.header.subtitle') : ''}
         </div>
       </nde-content-header>
       <div id="page">
