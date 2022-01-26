@@ -65,7 +65,7 @@ export class LoanRootComponent extends RxLitElement {
         <div slot="subtitle">
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)
     ? this.translator?.translate('loan.overview.header.subtitle') : ''}
-              ${this.state.matches(LoanStates.CREATING_LOAN_REQUEST)
+              ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION)
     ? this.translator?.translate('loan.creation.header.subtitle') : ''}
         </div>
       </nde-content-header>
@@ -80,7 +80,7 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.send-request')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item" 
-                ?selected="${this.state.matches(LoanStates.CREATING_LOAN_REQUEST)}"
+                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_CREATION)}"
                 @click="${this.onNewLoanRequest}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.new-request')}</div>
@@ -110,7 +110,7 @@ export class LoanRootComponent extends RxLitElement {
 
         <div id="content">
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) ? html`<nde-loan-overview-component></nde-loan-overview-component>` : ''}
-          ${this.state.matches(LoanStates.CREATING_LOAN_REQUEST) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
           ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component></nde-loan-detail-component>` : ''}
         </div>
       </div>

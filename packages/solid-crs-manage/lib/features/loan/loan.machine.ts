@@ -24,9 +24,9 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     [LoanStates.LOAN_REQUEST_OVERVIEW]: {
       on: {
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
-          target: LoanStates.CREATING_LOAN_REQUEST,
+          target: LoanStates.LOAN_REQUEST_CREATION,
         },
-        [LoanEvents.CLICKED_LOAN_LOAN_REQUEST_DETAIL]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_DETAIL]: {
           actions: assign({ loanRequest: (context, event) => event.loanRequest }),
           target: LoanStates.LOAN_REQUEST_DETAIL,
         },
@@ -35,9 +35,9 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     [LoanStates.LOAN_REQUEST_DETAIL]: {
       on: {
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
-          target: LoanStates.CREATING_LOAN_REQUEST,
+          target: LoanStates.LOAN_REQUEST_CREATION,
         },
-        [LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         [LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST]: {
@@ -48,9 +48,9 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         },
       },
     },
-    [LoanStates.CREATING_LOAN_REQUEST]: {
+    [LoanStates.LOAN_REQUEST_CREATION]: {
       on: {
-        [LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         [LoanEvents.CLICKED_SEND_LOAN_REQUEST]: {

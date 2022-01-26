@@ -79,13 +79,13 @@ describe('loanMachine', () => {
 
   describe(`${LoanStates.LOAN_REQUEST_OVERVIEW}`, () => {
 
-    it(`should transition to ${LoanStates.CREATING_LOAN_REQUEST} on ${LoanEvents.CLICKED_NEW_LOAN_REQUEST}`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_CREATION} on ${LoanEvents.CLICKED_NEW_LOAN_REQUEST}`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return resolve();
+          if(state.matches(LoanStates.LOAN_REQUEST_CREATION)) return resolve();
 
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
           if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
@@ -100,7 +100,7 @@ describe('loanMachine', () => {
 
     });
 
-    it(`should transition to ${LoanStates.LOAN_REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOAN_LOAN_REQUEST_DETAIL} and assign loanRequest`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOAN_REQUEST_DETAIL} and assign loanRequest`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
@@ -127,8 +127,8 @@ describe('loanMachine', () => {
   describe(`${LoanStates.LOAN_REQUEST_DETAIL}`, () => {
 
     it.each([
-      [ LoanStates.CREATING_LOAN_REQUEST, LoanEvents.CLICKED_NEW_LOAN_REQUEST, new ClickedNewLoanRequestEvent() ],
-      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.LOAN_REQUEST_CREATION, LoanEvents.CLICKED_NEW_LOAN_REQUEST, new ClickedNewLoanRequestEvent() ],
+      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
       [ LoanStates.ACCEPTING_LOAN_REQUEST, LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST, new ClickedAcceptedLoanRequestEvent(mockLoanRequest) ],
       [ LoanStates.REJECTING_LOAN_REQUEST, LoanEvents.CLICKED_REJECTED_LOAN_REQUEST, new ClickedRejectedLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
@@ -155,10 +155,10 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.CREATING_LOAN_REQUEST}`, () => {
+  describe(`${LoanStates.LOAN_REQUEST_CREATION}`, () => {
 
     it.each([
-      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
       [ LoanStates.SENDING_LOAN_REQUEST, LoanEvents.CLICKED_SEND_LOAN_REQUEST, new ClickedSendLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
 
@@ -169,7 +169,7 @@ describe('loanMachine', () => {
           if(state.matches(desiredState)) return resolve();
 
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
-          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return machine.send(event);
+          if(state.matches(LoanStates.LOAN_REQUEST_CREATION)) return machine.send(event);
           if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
@@ -196,7 +196,7 @@ describe('loanMachine', () => {
 
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
 
-          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return machine.send(new ClickedSendLoanRequestEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_CREATION)) return machine.send(new ClickedSendLoanRequestEvent(mockLoanRequest));
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) initialOverviewLoaded = true;
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
           if(state.matches(LoanStates.SENDING_LOAN_REQUEST)) return;

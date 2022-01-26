@@ -89,7 +89,7 @@ describe('LoanRootComponent', () => {
 
     });
 
-    it(`should render loan-creation-component when ${LoanStates.CREATING_LOAN_REQUEST}`, async () => {
+    it(`should render loan-creation-component when ${LoanStates.LOAN_REQUEST_CREATION}`, async () => {
 
       component['actor'].send(new ClickedNewLoanRequestEvent());
 

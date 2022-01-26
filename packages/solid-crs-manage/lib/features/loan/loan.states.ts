@@ -17,7 +17,7 @@ export enum LoanStates {
   /**
    * The user is creating a new loan request
    */
-  CREATING_LOAN_REQUEST = '[LoanState: Creating Loan Request]',
+  LOAN_REQUEST_CREATION = '[LoanState: Loan Request Creation]',
   /**
    * A request is being sent
    */
@@ -41,7 +41,7 @@ export type LoanState = {
   | LoanStates.LOAN_REQUEST_OVERVIEW
   | LoanStates.ACCEPTING_LOAN_REQUEST
   | LoanStates.REJECTING_LOAN_REQUEST
-  | LoanStates.CREATING_LOAN_REQUEST
+  | LoanStates.LOAN_REQUEST_CREATION
   | LoanStates.SENDING_LOAN_REQUEST;
   context: LoanContext & WithRequests;
 } | {
