@@ -53,16 +53,16 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.LOADING_REQUESTS}`, () => {
+  describe(`${LoanStates.LOADING_LOAN_REQUESTS}`, () => {
 
-    it(`should transition to ${LoanStates.REQUEST_OVERVIEW} and invoke loadRequests`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_OVERVIEW} and invoke loadRequests`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return resolve();
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return resolve();
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -77,18 +77,18 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.REQUEST_OVERVIEW}`, () => {
+  describe(`${LoanStates.LOAN_REQUEST_OVERVIEW}`, () => {
 
-    it(`should transition to ${LoanStates.CREATING_REQUEST} on ${LoanEvents.CLICKED_NEW_LOAN_REQUEST}`, async () => {
+    it(`should transition to ${LoanStates.CREATING_LOAN_REQUEST} on ${LoanEvents.CLICKED_NEW_LOAN_REQUEST}`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.CREATING_REQUEST)) return resolve();
+          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -100,16 +100,16 @@ describe('loanMachine', () => {
 
     });
 
-    it(`should transition to ${LoanStates.REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOAN_REQUEST_DETAIL} and assign loanRequest`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOAN_LOAN_REQUEST_DETAIL} and assign loanRequest`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.REQUEST_DETAIL)) return resolve();
+          if(state.matches(LoanStates.LOAN_REQUEST_DETAIL)) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -124,13 +124,13 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.REQUEST_DETAIL}`, () => {
+  describe(`${LoanStates.LOAN_REQUEST_DETAIL}`, () => {
 
     it.each([
-      [ LoanStates.CREATING_REQUEST, LoanEvents.CLICKED_NEW_LOAN_REQUEST, new ClickedNewLoanRequestEvent() ],
-      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
-      [ LoanStates.ACCEPTING_REQUEST, LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST, new ClickedAcceptedLoanRequestEvent(mockLoanRequest) ],
-      [ LoanStates.REJECTING_REQUEST, LoanEvents.CLICKED_REJECTED_LOAN_REQUEST, new ClickedRejectedLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.CREATING_LOAN_REQUEST, LoanEvents.CLICKED_NEW_LOAN_REQUEST, new ClickedNewLoanRequestEvent() ],
+      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.ACCEPTING_LOAN_REQUEST, LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST, new ClickedAcceptedLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.REJECTING_LOAN_REQUEST, LoanEvents.CLICKED_REJECTED_LOAN_REQUEST, new ClickedRejectedLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
@@ -139,9 +139,9 @@ describe('loanMachine', () => {
 
           if(state.matches(desiredState)) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
-          if(state.matches(LoanStates.REQUEST_DETAIL)) return machine.send(event);
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_DETAIL)) return machine.send(event);
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -155,11 +155,11 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.CREATING_REQUEST}`, () => {
+  describe(`${LoanStates.CREATING_LOAN_REQUEST}`, () => {
 
     it.each([
-      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
-      [ LoanStates.SENDING_REQUEST, LoanEvents.CLICKED_SEND_LOAN_REQUEST, new ClickedSendLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.LOAN_REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.SENDING_LOAN_REQUEST, LoanEvents.CLICKED_SEND_LOAN_REQUEST, new ClickedSendLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
@@ -168,9 +168,9 @@ describe('loanMachine', () => {
 
           if(state.matches(desiredState)) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
-          if(state.matches(LoanStates.CREATING_REQUEST)) return machine.send(event);
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
+          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return machine.send(event);
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -184,9 +184,9 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.SENDING_REQUEST}`, () => {
+  describe(`${LoanStates.SENDING_LOAN_REQUEST}`, () => {
 
-    it(`should transition to ${LoanStates.REQUEST_OVERVIEW} and invoke createRequest`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_OVERVIEW} and invoke createRequest`, async () => {
 
       let initialOverviewLoaded = false;
 
@@ -194,13 +194,13 @@ describe('loanMachine', () => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
 
-          if(state.matches(LoanStates.CREATING_REQUEST)) return machine.send(new ClickedSendLoanRequestEvent(mockLoanRequest));
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) initialOverviewLoaded = true;
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
-          if(state.matches(LoanStates.SENDING_REQUEST)) return;
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.CREATING_LOAN_REQUEST)) return machine.send(new ClickedSendLoanRequestEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) initialOverviewLoaded = true;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
+          if(state.matches(LoanStates.SENDING_LOAN_REQUEST)) return;
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -215,9 +215,9 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.ACCEPTING_REQUEST}`, () => {
+  describe(`${LoanStates.ACCEPTING_LOAN_REQUEST}`, () => {
 
-    it(`should transition to ${LoanStates.REQUEST_OVERVIEW} and invoke acceptRequest`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_OVERVIEW} and invoke acceptRequest`, async () => {
 
       let initialOverviewLoaded = false;
 
@@ -225,13 +225,13 @@ describe('loanMachine', () => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_DETAIL)) return machine.send(new ClickedAcceptedLoanRequestEvent(mockLoanRequest));
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) initialOverviewLoaded = true;
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
-          if(state.matches(LoanStates.ACCEPTING_REQUEST)) return;
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_DETAIL)) return machine.send(new ClickedAcceptedLoanRequestEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) initialOverviewLoaded = true;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
+          if(state.matches(LoanStates.ACCEPTING_LOAN_REQUEST)) return;
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });
@@ -246,9 +246,9 @@ describe('loanMachine', () => {
 
   });
 
-  describe(`${LoanStates.REJECTING_REQUEST}`, () => {
+  describe(`${LoanStates.REJECTING_LOAN_REQUEST}`, () => {
 
-    it(`should transition to ${LoanStates.REQUEST_OVERVIEW} and invoke rejectRequest`, async () => {
+    it(`should transition to ${LoanStates.LOAN_REQUEST_OVERVIEW} and invoke rejectRequest`, async () => {
 
       let initialOverviewLoaded = false;
 
@@ -256,13 +256,13 @@ describe('loanMachine', () => {
 
         machine.onTransition((state) => {
 
-          if(state.matches(LoanStates.REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
 
-          if(state.matches(LoanStates.REQUEST_DETAIL)) return machine.send(new ClickedRejectedLoanRequestEvent(mockLoanRequest));
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) initialOverviewLoaded = true;
-          if(state.matches(LoanStates.REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
-          if(state.matches(LoanStates.REJECTING_REQUEST)) return;
-          if(state.matches(LoanStates.LOADING_REQUESTS)) return;
+          if(state.matches(LoanStates.LOAN_REQUEST_DETAIL)) return machine.send(new ClickedRejectedLoanRequestEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) initialOverviewLoaded = true;
+          if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedLoanRequestDetailEvent(mockLoanRequest));
+          if(state.matches(LoanStates.REJECTING_LOAN_REQUEST)) return;
+          if(state.matches(LoanStates.LOADING_LOAN_REQUESTS)) return;
           reject();
 
         });

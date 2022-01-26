@@ -63,9 +63,9 @@ export class LoanRootComponent extends RxLitElement {
         <div slot="icon"> ${unsafeSVG(Bruikleen)} </div>
         <div slot="title"> ${this.translator?.translate('loan.root.header.title')} </div>
         <div slot="subtitle">
-          ${this.state.matches(LoanStates.REQUEST_OVERVIEW)
+          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)
     ? this.translator?.translate('loan.root.header.subtitle-incoming') : ''}
-              ${this.state.matches(LoanStates.CREATING_REQUEST)
+              ${this.state.matches(LoanStates.CREATING_LOAN_REQUEST)
     ? this.translator?.translate('loan.root.header.subtitle-creation') : ''}
         </div>
       </nde-content-header>
@@ -80,7 +80,7 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.send-request')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item" 
-                ?selected="${this.state.matches(LoanStates.CREATING_REQUEST)}"
+                ?selected="${this.state.matches(LoanStates.CREATING_LOAN_REQUEST)}"
                 @click="${this.onNewLoanRequest}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.new-request')}</div>
@@ -99,7 +99,7 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.incoming-requests')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item"
-                ?selected="${this.state.matches(LoanStates.REQUEST_OVERVIEW)}"
+                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)}"
                 @click="${this.onLoanRequestOverview}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.all-incoming-requests')}</div>
@@ -109,9 +109,9 @@ export class LoanRootComponent extends RxLitElement {
         </nde-sidebar>
 
         <div id="content">
-          ${this.state.matches(LoanStates.REQUEST_OVERVIEW) ? html`<nde-loan-overview-component></nde-loan-overview-component>` : ''}
-          ${this.state.matches(LoanStates.CREATING_REQUEST) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
-          ${this.state.matches(LoanStates.REQUEST_DETAIL) ? html`<nde-loan-detail-component></nde-loan-detail-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) ? html`<nde-loan-overview-component></nde-loan-overview-component>` : ''}
+          ${this.state.matches(LoanStates.CREATING_LOAN_REQUEST) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component></nde-loan-detail-component>` : ''}
         </div>
       </div>
     `;

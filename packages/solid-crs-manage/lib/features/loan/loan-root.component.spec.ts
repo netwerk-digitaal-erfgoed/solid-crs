@@ -65,7 +65,7 @@ describe('LoanRootComponent', () => {
 
   describe('HTML', () => {
 
-    it(`should render loan-overview-component when ${LoanStates.REQUEST_OVERVIEW}`, async () => {
+    it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW}`, async () => {
 
       window.document.body.appendChild(component);
       await component.updateComplete;
@@ -76,7 +76,7 @@ describe('LoanRootComponent', () => {
 
     });
 
-    it(`should render loan-detail-component when ${LoanStates.REQUEST_DETAIL}`, async () => {
+    it(`should render loan-detail-component when ${LoanStates.LOAN_REQUEST_DETAIL}`, async () => {
 
       component['actor'].send(new ClickedLoanRequestDetailEvent({} as any));
 
@@ -89,7 +89,7 @@ describe('LoanRootComponent', () => {
 
     });
 
-    it(`should render loan-creation-component when ${LoanStates.CREATING_REQUEST}`, async () => {
+    it(`should render loan-creation-component when ${LoanStates.CREATING_LOAN_REQUEST}`, async () => {
 
       component['actor'].send(new ClickedNewLoanRequestEvent());
 

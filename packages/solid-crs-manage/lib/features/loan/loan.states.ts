@@ -5,47 +5,47 @@ export enum LoanStates {
   /**
    * Initial state: retrieving requests from main inbox
    */
-  LOADING_REQUESTS = '[LoanState: Loading Requests]',
+  LOADING_LOAN_REQUESTS = '[LoanState: Loading Loan Requests]',
   /**
    * The user is viewing all incoming requests
    */
-  REQUEST_OVERVIEW = '[LoanState: Request Overview]',
+  LOAN_REQUEST_OVERVIEW = '[LoanState: Loan Request Overview]',
   /**
    * The user is viewing a single incoming request
    */
-  REQUEST_DETAIL = '[LoanState: Request Detail]',
+  LOAN_REQUEST_DETAIL = '[LoanState: Loan Request Detail]',
   /**
    * The user is creating a new loan request
    */
-  CREATING_REQUEST = '[LoanState: Creating Request]',
+  CREATING_LOAN_REQUEST = '[LoanState: Creating Loan Request]',
   /**
    * A request is being sent
    */
-  SENDING_REQUEST = '[LoanState: Sending Request]',
+  SENDING_LOAN_REQUEST = '[LoanState: Sending Loan Request]',
   /**
    * The user has accepted a request and relevant code is being executed
    */
-  ACCEPTING_REQUEST = '[LoanState: Accepting Request]',
+  ACCEPTING_LOAN_REQUEST = '[LoanState: Accepting Loan Request]',
   /**
    * The user has rejected a request and the relevant code being executed
    */
-  REJECTING_REQUEST = '[LoanState: Rejecting Request]',
+  REJECTING_LOAN_REQUEST = '[LoanState: Rejecting Loan Request]',
 }
 
 export type LoanState = {
   // While loading no values are present in the context
-  value: LoanStates.LOADING_REQUESTS;
+  value: LoanStates.LOADING_LOAN_REQUESTS;
   context: LoanContext;
 } | {
   value:
-  | LoanStates.REQUEST_OVERVIEW
-  | LoanStates.ACCEPTING_REQUEST
-  | LoanStates.REJECTING_REQUEST
-  | LoanStates.CREATING_REQUEST
-  | LoanStates.SENDING_REQUEST;
+  | LoanStates.LOAN_REQUEST_OVERVIEW
+  | LoanStates.ACCEPTING_LOAN_REQUEST
+  | LoanStates.REJECTING_LOAN_REQUEST
+  | LoanStates.CREATING_LOAN_REQUEST
+  | LoanStates.SENDING_LOAN_REQUEST;
   context: LoanContext & WithRequests;
 } | {
-  value: LoanStates.REQUEST_DETAIL;
+  value: LoanStates.LOAN_REQUEST_DETAIL;
   context: LoanContext & WithRequests & WithRequest;
 };
 

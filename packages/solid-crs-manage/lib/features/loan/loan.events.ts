@@ -2,8 +2,8 @@ import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
 
 export enum LoanEvents {
-  CLICKED_LOAN_REQUEST_OVERVIEW = '[LoanEvent: Clicked Loan Request Overview]',
-  CLICKED_LOAN_REQUEST_DETAIL = '[LoanEvent: Clicked Loan Request Detail]',
+  CLICKED_LOAN_LOAN_REQUEST_OVERVIEW = '[LoanEvent: Clicked Loan Request Overview]',
+  CLICKED_LOAN_LOAN_REQUEST_DETAIL = '[LoanEvent: Clicked Loan Request Detail]',
   CLICKED_ACCEPTED_LOAN_REQUEST = '[LoanEvent: Clicked Accepted Loan Request]',
   CLICKED_REJECTED_LOAN_REQUEST = '[LoanEvent: Clicked Rejected Loan Request]',
   CLICKED_NEW_LOAN_REQUEST = '[LoanEvent: Clicked New Loan Request]',
@@ -15,7 +15,7 @@ export enum LoanEvents {
  */
 export class ClickedLoanRequestOverviewEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW = LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW;
+  public type: LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW = LoanEvents.CLICKED_LOAN_LOAN_REQUEST_OVERVIEW;
 
 }
 
@@ -24,7 +24,7 @@ export class ClickedLoanRequestOverviewEvent implements EventObject {
  */
 export class ClickedLoanRequestDetailEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_LOAN_REQUEST_DETAIL = LoanEvents.CLICKED_LOAN_REQUEST_DETAIL;
+  public type: LoanEvents.CLICKED_LOAN_LOAN_REQUEST_DETAIL = LoanEvents.CLICKED_LOAN_LOAN_REQUEST_DETAIL;
   constructor(public loanRequest: LoanRequest) {}
 
 }
