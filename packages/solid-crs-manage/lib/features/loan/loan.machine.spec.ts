@@ -79,7 +79,7 @@ describe('loanMachine', () => {
 
   describe(`${LoanStates.REQUEST_OVERVIEW}`, () => {
 
-    it(`should transition to ${LoanStates.CREATING_REQUEST} on ${LoanEvents.CLICKED_NEW_LOANREQUEST}`, async () => {
+    it(`should transition to ${LoanStates.CREATING_REQUEST} on ${LoanEvents.CLICKED_NEW_LOAN_REQUEST}`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
@@ -100,7 +100,7 @@ describe('loanMachine', () => {
 
     });
 
-    it(`should transition to ${LoanStates.REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOANREQUEST_DETAIL} and assign loanRequest`, async () => {
+    it(`should transition to ${LoanStates.REQUEST_DETAIL} on ${LoanEvents.CLICKED_LOAN_REQUEST_DETAIL} and assign loanRequest`, async () => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
 
@@ -127,10 +127,10 @@ describe('loanMachine', () => {
   describe(`${LoanStates.REQUEST_DETAIL}`, () => {
 
     it.each([
-      [ LoanStates.CREATING_REQUEST, LoanEvents.CLICKED_NEW_LOANREQUEST, new ClickedNewLoanRequestEvent() ],
-      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOANREQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
-      [ LoanStates.ACCEPTING_REQUEST, LoanEvents.CLICKED_ACCEPTED_LOANREQUEST, new ClickedAcceptedLoanRequestEvent(mockLoanRequest) ],
-      [ LoanStates.REJECTING_REQUEST, LoanEvents.CLICKED_REJECTED_LOANREQUEST, new ClickedRejectedLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.CREATING_REQUEST, LoanEvents.CLICKED_NEW_LOAN_REQUEST, new ClickedNewLoanRequestEvent() ],
+      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.ACCEPTING_REQUEST, LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST, new ClickedAcceptedLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.REJECTING_REQUEST, LoanEvents.CLICKED_REJECTED_LOAN_REQUEST, new ClickedRejectedLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {
@@ -158,8 +158,8 @@ describe('loanMachine', () => {
   describe(`${LoanStates.CREATING_REQUEST}`, () => {
 
     it.each([
-      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOANREQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
-      [ LoanStates.SENDING_REQUEST, LoanEvents.CLICKED_SEND_LOANREQUEST, new ClickedSendLoanRequestEvent(mockLoanRequest) ],
+      [ LoanStates.REQUEST_OVERVIEW, LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW, new ClickedLoanRequestOverviewEvent() ],
+      [ LoanStates.SENDING_REQUEST, LoanEvents.CLICKED_SEND_LOAN_REQUEST, new ClickedSendLoanRequestEvent(mockLoanRequest) ],
     ])('should transition to %s on %s', async (desiredState, e, event: LoanEvent) => {
 
       const transitionCheck = new Promise<void>((resolve, reject) => {

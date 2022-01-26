@@ -190,7 +190,7 @@ export const appMachine = (
             target: `#${AppFeatureStates.SEARCH}`,
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
           },
-          [LoanEvents.CLICKED_LOANREQUEST_OVERVIEW]: {
+          [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
             actions: assign({ selected: (context, event) => undefined }),
             target: `#${AppFeatureStates.LOAN}`,
           },

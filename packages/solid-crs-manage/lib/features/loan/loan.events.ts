@@ -2,12 +2,12 @@ import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
 
 export enum LoanEvents {
-  CLICKED_LOANREQUEST_OVERVIEW = '[LoanEvent: Clicked LoanRequest Overview]',
-  CLICKED_LOANREQUEST_DETAIL = '[LoanEvent: Clicked LoanRequest Detail]',
-  CLICKED_ACCEPTED_LOANREQUEST = '[LoanEvent: Clicked Accepted LoanRequest]',
-  CLICKED_REJECTED_LOANREQUEST = '[LoanEvent: Clicked Rejected LoanRequest]',
-  CLICKED_NEW_LOANREQUEST = '[LoanEvent: Clicked New LoanRequest]',
-  CLICKED_SEND_LOANREQUEST = '[LoanEvent: Clicked Send LoanRequest]',
+  CLICKED_LOAN_REQUEST_OVERVIEW = '[LoanEvent: Clicked Loan Request Overview]',
+  CLICKED_LOAN_REQUEST_DETAIL = '[LoanEvent: Clicked Loan Request Detail]',
+  CLICKED_ACCEPTED_LOAN_REQUEST = '[LoanEvent: Clicked Accepted Loan Request]',
+  CLICKED_REJECTED_LOAN_REQUEST = '[LoanEvent: Clicked Rejected Loan Request]',
+  CLICKED_NEW_LOAN_REQUEST = '[LoanEvent: Clicked New Loan Request]',
+  CLICKED_SEND_LOAN_REQUEST = '[LoanEvent: Clicked Send Loan Request]',
 }
 
 /**
@@ -15,7 +15,7 @@ export enum LoanEvents {
  */
 export class ClickedLoanRequestOverviewEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_LOANREQUEST_OVERVIEW = LoanEvents.CLICKED_LOANREQUEST_OVERVIEW;
+  public type: LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW = LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW;
 
 }
 
@@ -24,7 +24,7 @@ export class ClickedLoanRequestOverviewEvent implements EventObject {
  */
 export class ClickedLoanRequestDetailEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_LOANREQUEST_DETAIL = LoanEvents.CLICKED_LOANREQUEST_DETAIL;
+  public type: LoanEvents.CLICKED_LOAN_REQUEST_DETAIL = LoanEvents.CLICKED_LOAN_REQUEST_DETAIL;
   constructor(public loanRequest: LoanRequest) {}
 
 }
@@ -34,7 +34,7 @@ export class ClickedLoanRequestDetailEvent implements EventObject {
  */
 export class ClickedAcceptedLoanRequestEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_ACCEPTED_LOANREQUEST = LoanEvents.CLICKED_ACCEPTED_LOANREQUEST;
+  public type: LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST = LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST;
   constructor(public loanRequest: LoanRequest) {}
 
 }
@@ -44,7 +44,7 @@ export class ClickedAcceptedLoanRequestEvent implements EventObject {
  */
 export class ClickedRejectedLoanRequestEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_REJECTED_LOANREQUEST = LoanEvents.CLICKED_REJECTED_LOANREQUEST;
+  public type: LoanEvents.CLICKED_REJECTED_LOAN_REQUEST = LoanEvents.CLICKED_REJECTED_LOAN_REQUEST;
   constructor(public loanRequest: LoanRequest) {}
 
 }
@@ -54,7 +54,7 @@ export class ClickedRejectedLoanRequestEvent implements EventObject {
  */
 export class ClickedNewLoanRequestEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_NEW_LOANREQUEST = LoanEvents.CLICKED_NEW_LOANREQUEST;
+  public type: LoanEvents.CLICKED_NEW_LOAN_REQUEST = LoanEvents.CLICKED_NEW_LOAN_REQUEST;
 
 }
 
@@ -63,7 +63,7 @@ export class ClickedNewLoanRequestEvent implements EventObject {
  */
 export class ClickedSendLoanRequestEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_SEND_LOANREQUEST = LoanEvents.CLICKED_SEND_LOANREQUEST;
+  public type: LoanEvents.CLICKED_SEND_LOAN_REQUEST = LoanEvents.CLICKED_SEND_LOAN_REQUEST;
   constructor(public loanRequest: LoanRequest) {}
 
 }

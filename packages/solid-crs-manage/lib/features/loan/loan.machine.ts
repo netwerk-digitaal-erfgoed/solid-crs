@@ -23,10 +23,10 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.REQUEST_OVERVIEW]: {
       on: {
-        [LoanEvents.CLICKED_NEW_LOANREQUEST]: {
+        [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.CREATING_REQUEST,
         },
-        [LoanEvents.CLICKED_LOANREQUEST_DETAIL]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_DETAIL]: {
           actions: assign({ loanRequest: (context, event) => event.loanRequest }),
           target: LoanStates.REQUEST_DETAIL,
         },
@@ -34,26 +34,26 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.REQUEST_DETAIL]: {
       on: {
-        [LoanEvents.CLICKED_NEW_LOANREQUEST]: {
+        [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.CREATING_REQUEST,
         },
-        [LoanEvents.CLICKED_LOANREQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
           target: LoanStates.REQUEST_OVERVIEW,
         },
-        [LoanEvents.CLICKED_ACCEPTED_LOANREQUEST]: {
+        [LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST]: {
           target: LoanStates.ACCEPTING_REQUEST,
         },
-        [LoanEvents.CLICKED_REJECTED_LOANREQUEST]: {
+        [LoanEvents.CLICKED_REJECTED_LOAN_REQUEST]: {
           target: LoanStates.REJECTING_REQUEST,
         },
       },
     },
     [LoanStates.CREATING_REQUEST]: {
       on: {
-        [LoanEvents.CLICKED_LOANREQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
           target: LoanStates.REQUEST_OVERVIEW,
         },
-        [LoanEvents.CLICKED_SEND_LOANREQUEST]: {
+        [LoanEvents.CLICKED_SEND_LOAN_REQUEST]: {
           target: LoanStates.SENDING_REQUEST,
         },
       },
