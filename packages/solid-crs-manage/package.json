@@ -23,7 +23,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:staged": "lint-staged",
-    "test": "node --trace-warnings node_modules/.bin/jest",
+    "test": "jest",
     "test:ci": "jest --silent --runInBand --passWithNoTests",
     "test:watch": "jest --watch --no-coverage",
     "posttest": "jest-coverage-thresholds-bumper --silent --coverage-summary-path coverage-summary.json"
