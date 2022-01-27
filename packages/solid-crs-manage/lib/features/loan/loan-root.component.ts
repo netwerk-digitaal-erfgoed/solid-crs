@@ -28,14 +28,14 @@ export class LoanRootComponent extends RxLitElement {
 
     super();
 
-    define('nde-loan-overview-component', hydrate(LoanOverviewComponent)(this.translator, this.logger));
-    define('nde-loan-detail-component', hydrate(LoanDetailComponent)(this.translator, this.logger));
-    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.translator, this.logger));
-
     this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({});
     this.actor = interpret(this.machine, { devTools: true });
     this.subscribe('state', from(this.actor));
     this.actor.start();
+
+    define('nde-loan-overview-component', hydrate(LoanOverviewComponent)(this.actor, this.translator, this.logger));
+    define('nde-loan-detail-component', hydrate(LoanDetailComponent)(this.translator, this.logger));
+    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.translator, this.logger));
 
   }
 
@@ -72,8 +72,6 @@ export class LoanRootComponent extends RxLitElement {
       <div id="page">
         
         <nde-sidebar>
-          <nde-sidebar-item .padding="${false}">
-          </nde-sidebar-item>
           <nde-sidebar-item .padding="${false}">
             <nde-sidebar-list slot="content">
               <nde-sidebar-list-item slot="title" isTitle>
@@ -133,16 +131,23 @@ export class LoanRootComponent extends RxLitElement {
 
         nde-content-header {
           flex: 0 0;
+          z-index: 2;
         }
 
         #page {
           display: flex;
           flex-direction: row;
           flex: 1 0;
+          overflow: auto;
         }
 
         #content {
           flex: 1 0;
+          padding: var(--gap-large) var(--gap-large) 0;
+          overflow: auto;
+        }
+        #content > * {
+          padding-bottom: var(--gap-large);
         }
       `,
     ];
