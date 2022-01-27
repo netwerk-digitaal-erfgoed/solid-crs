@@ -13,7 +13,8 @@
         },
         "collections":{
             "title": "Collecties"
-        }
+        },
+        "loan": "Bruikleen"
     },
     "collections": {
         "new-collection-name": "Nieuwe collectie",
@@ -279,6 +280,39 @@
         "header": {
             "search-results-for": "Zoekresultaten voor",
             "subtitle": "We hebben dit gevonden"
+        }
+    },
+    "loan": {
+        "root": {
+            "header": {
+                "title": "Bruikleen"
+            },
+            "sidebar": {
+                "send-request": "Aanvraag verzenden",
+                "new-request": "Nieuwe aanvraag",
+                "pending-requests": "In behandeling",
+                "approved-requests": "Goedgekeurd",
+                "incoming-requests": "Inkomende aanvragen",
+                "all-incoming-requests": "Alle"
+            }
+        },
+        "overview": {
+            "header": {
+                "subtitle": "Goedkeuren van aanvragen tot bruikleen"
+            }
+        },
+        "detail": {
+
+        },
+        "creation": {
+            "header": {
+                "subtitle": "Nieuwe aanvraag tot bruikleen"
+            }
+        },
+        "accepted": {
+            "header": {
+                "subtitle": "Overzicht van goedgekeurde aanvragen"
+            }
         }
     },
     "term": {

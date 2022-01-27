@@ -40,7 +40,7 @@
     "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.16.2",
     "@xstate/inspect": "^0.4.1",
     "edtf": "^3.1.0",
-    "lit-element": "2.4.0",
+    "lit-element": "2.5.1",
     "rx-lit": "1.0.1",
     "rxjs": "^7.4.0",
     "uuid": "^8.3.2",
@@ -91,10 +91,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 85.49,
-        "branches": 85.14,
-        "lines": 86.7,
-        "functions": 71.26
+        "statements": 86.8,
+        "branches": 85.45,
+        "lines": 87.92,
+        "functions": 73.07
       }
     },
     "automock": false,

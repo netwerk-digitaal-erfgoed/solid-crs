@@ -11,6 +11,7 @@ import { SearchEvents, SearchUpdatedEvent } from './features/search/search.event
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
 import { createPod } from './app.services';
+import { LoanEvents } from './features/loan/loan.events';
 
 /**
  * The root context of the application.
@@ -82,6 +83,7 @@ export enum AppFeatureStates {
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',
   IDLE = '[AppFeatureState: Idle]',
+  LOAN = '[AppFeatureState: Loan]',
 }
 
 /**
@@ -187,6 +189,10 @@ export const appMachine = (
             ],
             target: `#${AppFeatureStates.SEARCH}`,
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+          },
+          [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
+            actions: assign({ selected: (context, event) => undefined }),
+            target: `#${AppFeatureStates.LOAN}`,
           },
           [RouterEvents.NAVIGATED]: {
             // this overwrites default behavior as defined in the routerStateConfig
@@ -314,6 +320,15 @@ export const appMachine = (
                 },
               },
             ],
+          },
+          [AppFeatureStates.LOAN]: {
+            id: AppFeatureStates.LOAN,
+            on: {
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: send((c, event) => event),
+              },
+            },
           },
         },
       },
