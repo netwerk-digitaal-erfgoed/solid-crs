@@ -299,6 +299,10 @@
         "overview": {
             "header": {
                 "subtitle": "Goedkeuren van aanvragen tot bruikleen"
+            },
+            "card": {
+                "title": "Aanvraag tot bruikleen",
+                "hover-title": "Klik voor meer details ..."
             }
         },
         "detail": {

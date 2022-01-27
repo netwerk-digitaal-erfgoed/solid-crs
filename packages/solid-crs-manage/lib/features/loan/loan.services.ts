@@ -23,7 +23,29 @@ export const loadRequests = async (): Promise<LoanRequest[]> => {
   // eslint-disable-next-line no-console
   console.log('Loading Requests');
 
-  return [];
+  const mockLoanRequest1: LoanRequest = {
+    uri: 'https://loan.uri.one',
+    from: 'https://send.webid.one',
+    to: 'https://receiver.webid.one',
+    createdAt: Date.now().toString(),
+    collection: 'https://collection.uri.one',
+  };
+
+  const mockLoanRequest2: LoanRequest = {
+    uri: 'https://loan.uri.two',
+    from: 'https://send.webid.two',
+    to: 'https://receiver.webid.two',
+    createdAt: Date.now().toString(),
+    collection: 'https://collection.uri.two',
+  };
+
+  return [ mockLoanRequest1,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest1 ];
 
 };
 
