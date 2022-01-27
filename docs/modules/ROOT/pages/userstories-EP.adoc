@@ -1,0 +1,20 @@
+= User stories Solid CRS-EP
+:description: The user stories for Solid CRS: the Erfgoedpod project.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:page-tags: nde-erfgoed
+:imagesdir: ../images
+:sectnums:
+
+As an admin of a heritage institution, I want to apply for certain collections/objects that I want to digitally lend from another heritage institution, so that I can display them in our own catalog even though we are not the owner .
+As an admin of a heritage institution, I want to approve or dismiss the loan request from another heritage institution, so that I have control over the collections and objects of our institution that are lent. 
+As a user of Solid CRS, I want to copy the unique URL of an object or collection, so that I can refer to the exact object/collection when pasting the URL.
+As an admin of a heritage institution, I want to have an overview of the requests that I sent out, so I don’t request the same objects/collections twice.
+As an admin of a heritage institution, I want to be informed when my loan request gets approved, so I know when the requested loan items are added to our heritage page in Solid CRS.
+As an admin of a heritage institution, I want to be able to see the details of my requests, so I know which specific objects I requested and when I requested them.
+As an admin of a heritage institution, I want to be able to add a comment to my loan request, so the approving institution can understand the reason why we request these items.
+As a borrowing heritage institution, I want to be able to change and add information on the object detail page of a loaned object and save it on my own pod, so the information can be more complete but doesn’t the information on the lending institution’s page remains untouched. 
+As a lending heritage institution, I want to be informed when a borrowing heritage institution adds or corrects information on the object detail page of an object I own, so I know in time when they correct or add info.
+As a lending heritage institution, I want to be able to approve or dismiss the new information on an object’s detail page by the borrowing institution, so I can add this information to my own object.
+As a user of Solid CRS, I want to see it on the object detail page when an object is lent or borrowed, so I can go check it out at the other heritage institution as well.
+
