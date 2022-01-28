@@ -285,7 +285,7 @@
     "loan": {
         "root": {
             "header": {
-                "title": "Bruikleen"
+                "title-default": "Bruikleen"
             },
             "sidebar": {
                 "send-request": "Aanvraag verzenden",
@@ -306,7 +306,16 @@
             }
         },
         "detail": {
-
+            "header": {
+                "title": "Aanvraag tot bruikleen",
+                "subtitle": "{{institution}}"
+            },
+            "card": {
+                "title": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "description": "Opmerkingen",
+                "accept": "Goedkeuren",
+                "reject": "Afwijzen"
+            }
         },
         "creation": {
             "header": {

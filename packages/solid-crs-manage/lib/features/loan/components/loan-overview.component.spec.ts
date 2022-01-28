@@ -2,10 +2,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
 import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Interpreter } from 'xstate';
-import { LoanContext } from '../loan.context';
-import { ClickedLoanRequestDetailEvent, LoanEvent } from '../loan.events';
-import { LoanState, LoanStateSchema } from '../loan.states';
+import { ClickedLoanRequestDetailEvent } from '../loan.events';
 import { LoanOverviewComponent } from './loan-overview.component';
 
 describe('LoanOverviewComponent', () => {

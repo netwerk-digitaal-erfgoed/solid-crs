@@ -29,6 +29,7 @@ export const loadRequests = async (): Promise<LoanRequest[]> => {
     to: 'https://receiver.webid.one',
     createdAt: Date.now().toString(),
     collection: 'https://collection.uri.one',
+    description: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
   };
 
   const mockLoanRequest2: LoanRequest = {
