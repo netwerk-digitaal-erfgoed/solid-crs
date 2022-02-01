@@ -320,6 +320,16 @@
         "creation": {
             "header": {
                 "subtitle": "Nieuwe aanvraag tot bruikleen"
+            },
+            "card": {
+                "description": "Opmerkingen",
+                "enter-collection": "Geef de url van een collectie in",
+                "cancel": "Annuleren",
+                "confirm": "Bevestigen",
+                "form": {
+                    "description-too-long": "Uw opmerking mag maximaal 500 tekens bevatten",
+                    "invalid-url": "Geef een geldige URL in"
+                }
             }
         },
         "accepted": {
