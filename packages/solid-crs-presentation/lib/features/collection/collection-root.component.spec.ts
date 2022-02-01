@@ -1,7 +1,7 @@
 import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionMemoryStore, CollectionObject, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, MockTranslator, SolidMockService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
-import { DismissAlertEvent } from '../../app.events';
+import { AppEvents, DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { CollectionRootComponent } from './collection-root.component';
 import { CollectionContext, collectionMachine } from './collection.machine';
@@ -119,6 +119,28 @@ describe('CollectionRootComponent', () => {
 
     expect(alerts).toBeTruthy();
     expect(alerts.length).toBe(0);
+
+  });
+
+  it('should copy value to clipboard when onClickedCopy is fired', async () => {
+
+    (navigator.clipboard as any) = {
+      writeText: jest.fn(async() => undefined),
+    };
+
+    machine.parent.onEvent((event) => {
+
+      if (event.type === AppEvents.ADD_ALERT) {
+
+        expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+
+      }
+
+    });
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.onClickedCopy('test');
 
   });
 
