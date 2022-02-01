@@ -2,16 +2,13 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
 import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Interpreter } from 'xstate';
-import { LoanContext } from '../loan.context';
-import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestDetailEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
-import { LoanState, LoanStateSchema } from '../loan.states';
+import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent } from '../loan.events';
 import { LoanDetailComponent } from './loan-detail.component';
 
 describe('LoanDetailComponent', () => {
 
   let component: LoanDetailComponent;
-  const tag = 'nde-loan-overview';
+  const tag = 'nde-loan-detail';
   const translator = { translate: (input: string) => input };
   const logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
@@ -30,6 +27,7 @@ describe('LoanDetailComponent', () => {
     jest.clearAllMocks();
     define(tag, hydrate(LoanDetailComponent)(actor, translator, logger));
     component = document.createElement(tag) as LoanDetailComponent;
+    component['actor'].send = jest.fn();
 
   });
 
@@ -48,18 +46,14 @@ describe('LoanDetailComponent', () => {
     it('should send ClickedLoanRequestDetailEvent', () => {
 
       component.loanRequest = mockLoanRequest;
-      component['actor'].send = jest.fn();
       component['onRejectLoanRequest']();
-
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedRejectedLoanRequestEvent(mockLoanRequest));
 
     });
 
     it('should not send ClickedLoanRequestDetailEvent when this.loanRequest is undefined', () => {
 
-      component['actor'].send = jest.fn();
       component['onRejectLoanRequest']();
-
       expect(component['actor'].send).not.toHaveBeenCalled();
 
     });
@@ -71,18 +65,14 @@ describe('LoanDetailComponent', () => {
     it('should send ClickedLoanRequestDetailEvent', () => {
 
       component.loanRequest = mockLoanRequest;
-      component['actor'].send = jest.fn();
       component['onAcceptLoanRequest']();
-
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedAcceptedLoanRequestEvent(mockLoanRequest));
 
     });
 
     it('should not send ClickedLoanRequestDetailEvent when this.loanRequest is undefined', () => {
 
-      component['actor'].send = jest.fn();
       component['onAcceptLoanRequest']();
-
       expect(component['actor'].send).not.toHaveBeenCalled();
 
     });

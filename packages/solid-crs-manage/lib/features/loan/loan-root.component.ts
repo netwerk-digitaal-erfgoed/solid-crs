@@ -41,7 +41,7 @@ export class LoanRootComponent extends RxLitElement {
 
     define('nde-loan-overview-component', hydrate(LoanOverviewComponent)(this.actor, this.translator, this.logger));
     define('nde-loan-detail-component', hydrate(LoanDetailComponent)(this.actor, this.translator, this.logger));
-    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.translator, this.logger));
+    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.actor, this.translator, this.logger));
 
   }
 
@@ -110,7 +110,7 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.incoming-requests')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item"
-                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)}"
+                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) || this.state.matches(LoanStates.LOAN_REQUEST_DETAIL)}"
                 @click="${this.onLoanRequestOverview}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.all-incoming-requests')}</div>

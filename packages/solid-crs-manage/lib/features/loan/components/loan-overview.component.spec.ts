@@ -27,6 +27,7 @@ describe('LoanOverviewComponent', () => {
     jest.clearAllMocks();
     define(tag, hydrate(LoanOverviewComponent)(actor, translator, logger));
     component = document.createElement(tag) as LoanOverviewComponent;
+    component['actor'].send = jest.fn();
 
   });
 
@@ -44,9 +45,7 @@ describe('LoanOverviewComponent', () => {
 
     it('should send ClickedLoanRequestDetailEvent', () => {
 
-      component['actor'].send = jest.fn();
       component['onLoanRequestClicked'](mockLoanRequest);
-
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestDetailEvent(mockLoanRequest));
 
     });

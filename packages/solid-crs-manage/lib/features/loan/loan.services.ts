@@ -1,4 +1,5 @@
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
 /**
  * Sends a new LoanRequest as LDN to a heritage institution
@@ -6,12 +7,14 @@ import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
  * @param loanRequest the loanRequest to create / send
  * @returns the given loanRequest when creation was successful
  */
-export const createRequest = async (loanRequest: LoanRequest): Promise<LoanRequest> => {
+export const createRequest = async (loanRequestCreationArgs: LoanRequestCreationArgs): Promise<LoanRequest> => {
 
   // eslint-disable-next-line no-console
   console.log('Creating Request');
 
-  return loanRequest;
+  return {
+    ...loanRequestCreationArgs,
+  } as any;
 
 };
 
