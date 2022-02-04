@@ -39,6 +39,9 @@
                 "title": "Ben je zeker dat je deze collectie wil verwijderen?",
                 "confirm": "Verwijderen",
                 "cancel": "Annuleren"
+            },
+            "menu": {
+                "copy-uri": "URI kopiëren"
             }
         }
     },
