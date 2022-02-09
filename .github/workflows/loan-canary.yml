@@ -25,7 +25,6 @@ jobs:
       - name: Set variables
         id: vars
         run: |
-          echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
           echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
           echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-presentation"
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
@@ -40,39 +39,47 @@ jobs:
 
   publish-npm:
 
-    name: Publish NPM packages
+    name: Publish npm packages
+    needs: perform-checks
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'feat/loan' }}
-    needs: [variables, release]
-    steps:
-      - uses: actions/checkout@v2
+    if: github.event.pull_request.merged == true
+    outputs:
+      version: ${{ steps.publish-packages.outputs.version }}
 
-      - uses: actions/setup-node@v1
+    steps:
+    
+      - name: Checkout ref
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Fetch more tags
+        run: git fetch --tags
+      
+      - name: Set up node
+        uses: actions/setup-node@v2
         with:
           node-version: 14
-          registry-url: https://npm.pkg.github.com/
-
-      - run: npm run bootstrap
+          registry-url: https://npm.pkg.github.com
+  
+      - name: Install dependencies
+        run: npm run bootstrap
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
-      - run: npm run build:all
+      - name: Build packages
+        run: npm run build:all
 
-      - run: npm publish packages/solid-crs-theme
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-      - run: npm publish packages/solid-crs-core
+          
+      - name: Publish packages
+        id: publish-packages
+        run: |
+          npx lerna publish --canary minor --no-verify-access --preid loan --dist-tag loan --yes > .git/canary-release-output
+          cat .git/canary-release-output | grep '=>' | head -n 1 | cut -f 5 -d ' ' | cut -f 1 -d '+' | xargs echo name=version::v | tr -d '[:blank:]' | xargs echo ::set-output
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - run: npm publish packages/solid-crs-components
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - run: npm publish packages/solid-crs-semcom-components
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
   publish-docker:
 
@@ -103,7 +110,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_manage }}:latest
-            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_manage }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -114,7 +121,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_presentation }}:latest
-            ${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_presentation }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -125,7 +132,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_node }}:latest
-            ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -136,7 +143,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_components }}:latest
-            ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -150,10 +157,10 @@ jobs:
       # See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
       - name: Update deployment
         run: |
-          kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.publish-npm.outputs.version }} --record
+          kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.publish-npm.outputs.version }} --record
+          kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.publish-npm.outputs.version }} --record
+          kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.publish-npm.outputs.version }} --record
 
       - name: Verify deployment
         run: |
