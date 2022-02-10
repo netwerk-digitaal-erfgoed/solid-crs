@@ -27,7 +27,6 @@ export class LoanCreationComponent extends RxLitElement {
   ) {
 
     super();
-    define('nde-large-card', LargeCardComponent);
     this.initFormMachine();
     define('nde-form-element', hydrate(FormElementComponent)(this.formActor));
 
@@ -85,21 +84,17 @@ export class LoanCreationComponent extends RxLitElement {
 
     }
 
-    // collection checks
-    if (updatedField === 'collection') {
+    // Always check collection as it is a required field
+    // clear existing validation results for collection
+    results = results.filter((result) => result.field !== 'collection');
 
-      // clear existing validation results for collection
-      results = results.filter((result) => result.field !== 'collection');
+    try {
 
-      try {
+      new URL(collection);
 
-        new URL(collection);
+    } catch {
 
-      } catch {
-
-        results.push({ message: 'loan.creation.card.form.invalid-url', field: 'collection' });
-
-      }
+      results.push({ message: 'loan.creation.card.form.invalid-url', field: 'collection' });
 
     }
 
@@ -127,47 +122,43 @@ export class LoanCreationComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      <nde-large-card .showHeader="${false}" .showImage="${false}">
-        <div slot="content">
-          <nde-form-element
-            .showLabel="${true}"
-            .showValidation="${true}"
-            field="collection"
-            .translator="${this.translator}"
-            .actor="${this.formActor}"
-          >
-            <label slot="label">
-              ${this.translator?.translate('loan.creation.card.enter-collection')}
-            </label>
-            <input slot="input" name="collection">
-          </nde-form-element>
+      <nde-form-element
+        .showLabel="${true}"
+        .showValidation="${true}"
+        field="collection"
+        .translator="${this.translator}"
+        .actor="${this.formActor}"
+      >
+        <label slot="label">
+          ${this.translator?.translate('loan.creation.card.enter-collection')}
+        </label>
+        <input slot="input" name="collection">
+      </nde-form-element>
 
-          <nde-form-element
-            .showLabel="${true}"
-            .showValidation="${false}"
-            field="description"
-            .translator="${this.translator}"
-            .actor="${this.formActor}"
-          >
-            <label slot="label">
-              ${this.translator?.translate('loan.creation.card.description')}
-            </label>
-            <textarea slot="input"></textarea>
-          </nde-form-element> 
+      <nde-form-element
+        .showLabel="${true}"
+        .showValidation="${false}"
+        field="description"
+        .translator="${this.translator}"
+        .actor="${this.formActor}"
+      >
+        <label slot="label">
+          ${this.translator?.translate('loan.creation.card.description')}
+        </label>
+        <textarea slot="input"></textarea>
+      </nde-form-element> 
 
-          <div id="button-container">
-            <button class="gray" @click="${() => this.onCancelLoanRequestCreation()}">
-              ${this.translator?.translate('loan.creation.card.cancel')}
-            </button>
-            <button class="primary"
-              @click="${() => this.onConfirmLoanRequestCreation()}"
-              ?disabled="${!this.validForm}"
-            >
-              ${this.translator?.translate('loan.creation.card.confirm')}
-            </button>
-          </div>
-        </div>
-      </nde-large-card>
+      <div id="button-container">
+        <button class="gray" @click="${() => this.onCancelLoanRequestCreation()}">
+          ${this.translator?.translate('loan.creation.card.cancel')}
+        </button>
+        <button class="primary"
+          @click="${() => this.onConfirmLoanRequestCreation()}"
+          ?disabled="${!this.validForm}"
+        >
+          ${this.translator?.translate('loan.creation.card.confirm')}
+        </button>
+      </div>
     `;
 
   }
@@ -180,7 +171,7 @@ export class LoanCreationComponent extends RxLitElement {
     return [
       unsafeCSS(Theme),
       css`
-        div[slot="content"] {
+        :host {
           display: flex;
           flex-direction: column;
           gap: var(--gap-large);

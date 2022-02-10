@@ -149,15 +149,6 @@ describe('LoanCreationComponent', () => {
 
   describe('HTML', () => {
 
-    it(`should render an nde-large-card`, async () => {
-
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      expect(component.shadowRoot.querySelectorAll('nde-large-card')).toHaveLength(1);
-
-    });
-
     it('should call this.onCancelLoanRequestCreation() when the cancel button is clicked', async () => {
 
       window.document.body.appendChild(component);
