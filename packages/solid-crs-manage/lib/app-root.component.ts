@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED, InboxService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -85,6 +85,9 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<FormEvent>;
 
+  @internalProperty()
+  inboxService = new InboxService(this.solidService);
+
   constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
     clientName: 'Collectiebeheersysteem',
     clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
@@ -93,7 +96,7 @@ export class AppRootComponent extends RxLitElement {
     super();
 
     define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
-    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger));
+    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger, this.inboxService));
 
   }
 
@@ -147,7 +150,7 @@ export class AppRootComponent extends RxLitElement {
     this.actor = interpret(
       (appMachine(
         this.solidService,
-        new CollectionSolidStore(this.solidService),
+        new CollectionSolidStore(this.solidService, this.inboxService),
         new CollectionObjectSolidStore(this.solidService),
         {
           uri: undefined,

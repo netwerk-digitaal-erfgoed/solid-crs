@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionStore } from '../collections/collection-store';
 import { ArgumentError } from '../errors/argument-error';
+import { InboxService } from '../inbox/inbox.service';
 import { fulltextMatch } from '../utils/fulltext-match';
 import { SolidStore } from './solid-store';
 
@@ -12,7 +13,11 @@ import { SolidStore } from './solid-store';
  */
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
-  constructor(protected solidService: SolidSDKService, public webId?: string) {
+  constructor(
+    protected solidService: SolidSDKService,
+    private inboxService: InboxService,
+    public webId?: string,
+  ) {
 
     super(solidService);
 
@@ -196,6 +201,41 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
     collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
 
+    try {
+
+      let inboxUri = collection.inbox;
+
+      // set inbox for collection
+      if (!inboxUri) {
+
+        // no inbox uri exists, create one in the same folder as the catalog
+        const catalogContainerUri = `${new URL(catalogUri).origin}${new URL(catalogUri).pathname.split('/').slice(0, -1).join('/')}/`;
+        inboxUri = `${catalogContainerUri}inbox/`;
+
+        // create the inbox if it doesn't exist
+        await this.getSession().fetch(inboxUri, {
+          method: 'HEAD',
+        }).then(async (res) => {
+
+          if (res.status === 404) {
+
+            inboxUri = await this.inboxService.createInbox(catalogContainerUri);
+
+          }
+
+        });
+
+      }
+
+      collectionThing = addUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox', inboxUri);
+
+    } catch (error) {
+
+      // eslint-disable-next-line no-console
+      console.error(error);
+
+    }
+
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
     distributionThing = addUrl(distributionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/DataDownload');
@@ -269,6 +309,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = getUrl(distributionThing, 'http://schema.org/contentUrl');
     const name = getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl');
     const description = getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl');
+    const inbox = getUrl(distributionThing, 'http://www.w3.org/ns/ldp#inbox') ?? '';
 
     if (!objectsUri || !name || !description) {
 
@@ -282,6 +323,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       description,
       objectsUri,
       distribution: distributionUri,
+      inbox,
     };
 
   }
