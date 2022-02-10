@@ -1,11 +1,12 @@
 import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { LoanRequest, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormElementComponent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { from, map } from 'rxjs';
 import { define } from '@digita-ai/dgt-components';
 import { Interpreter } from 'xstate';
+import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { LoanContext } from '../loan.context';
 import { LoanState, LoanStateSchema } from '../loan.states';
 import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
@@ -50,14 +51,17 @@ export class LoanDetailComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      <nde-large-card .showImage="${false}">
-        <div slot="title">
-          ${ this.translator?.translate('loan.detail.card.title')
-    .replace('{{institution}}', this.loanRequest?.from)}
-        </div>
+      <nde-large-card .showImage="${false}" .showHeader="${false}">
         <div slot="content">
-          <!-- TODO what needs to be displayed about the collection, and how ? -->
-          <p>Small overview of the collection? TODO</p>
+          <h3>
+            ${ this.translator?.translate('loan.detail.card.title')
+    .replace('{{institution}}', this.loanRequest?.from)}
+          </h3>
+          
+          <div id="collection-container">
+            <div>${unsafeSVG(Collection)}</div>
+            <a href="${this.loanRequest?.collection}">${this.loanRequest?.collection}</a>
+          </div>
 
           <nde-form-element .showLabel="${true}" .showValidation="${false}" field="description">
             <label slot="label">
@@ -100,6 +104,19 @@ export class LoanDetailComponent extends RxLitElement {
         }
         #button-container > button {
           flex: 1 0;
+        }
+        #collection-container {
+          display: flex;
+          gap: var(--gap-normal);
+          align-items: center;
+          justify-content: start;
+          padding: var(--gap-small) var(--gap-normal);
+        }
+        #collection-container a {
+          color: var(--colors-primary-light);
+        }
+        h3 {
+          margin: 0;
         }
       `,
     ];
