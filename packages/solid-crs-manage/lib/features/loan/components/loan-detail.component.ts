@@ -53,10 +53,10 @@ export class LoanDetailComponent extends RxLitElement {
     return html`
       <nde-large-card .showImage="${false}" .showHeader="${false}">
         <div slot="content">
-          <h3>
+          <p>
             ${ this.translator?.translate('loan.detail.card.title')
     .replace('{{institution}}', this.loanRequest?.from)}
-          </h3>
+          </p>
           
           <div id="collection-container">
             <div>${unsafeSVG(Collection)}</div>
@@ -115,7 +115,10 @@ export class LoanDetailComponent extends RxLitElement {
         #collection-container a {
           color: var(--colors-primary-light);
         }
-        h3 {
+        #collection-container svg {
+          fill: var(--colors-primary-dark);
+        }
+        p {
           margin: 0;
         }
       `,
