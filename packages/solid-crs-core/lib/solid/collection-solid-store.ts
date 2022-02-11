@@ -197,9 +197,9 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Dataset');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/name', collection.name, 'nl');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
-    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', webId);
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
     collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
+    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', collection.publisher ?? webId);
 
     try {
 
@@ -232,7 +232,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     } catch (error) {
 
       // eslint-disable-next-line no-console
-      console.error(error);
+      console.error('Error while creating inbox', error);
 
     }
 
@@ -310,6 +310,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const name = getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl');
     const description = getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl');
     const inbox = getUrl(distributionThing, 'http://www.w3.org/ns/ldp#inbox') ?? '';
+    const publisher = getUrl(distributionThing, 'http://schema.org/publisher') ?? '';
 
     if (!objectsUri || !name || !description) {
 
@@ -324,6 +325,7 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       objectsUri,
       distribution: distributionUri,
       inbox,
+      publisher,
     };
 
   }

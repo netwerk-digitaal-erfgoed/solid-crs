@@ -1,11 +1,11 @@
 import { asUrl, getSolidDataset, getThingAll, getUrl, Thing } from '@digita-ai/inrupt-solid-client';
-import { LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { LoanContext } from './loan.context';
 import { ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 
 /**
- * Sends a new LoanRequest as LDN to a heritage institution
+ * Sends a new loan request LDN to a heritage institution
  *
  * @param loanRequest the loanRequest to create / send
  * @returns the given loanRequest when creation was successful
@@ -21,19 +21,23 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
   // eslint-disable-next-line no-console
   console.log('Sending new loan request');
 
-  // TODO get collection
-  const collection: Collection = {};
+  // retrieve necessary collection information
+  const {
+    uri: collectionUri,
+    inbox: targetInbox,
+    publisher: target,
+  } = await context.collectionStore.get(event.loanRequest.collection);
 
-  const targetInbox = collection.inbox;
+  //
 
   const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
 
 <${targetInbox}>
   a as:Offer ;
   as:summary "Bruikleen aanvraag" ;
-  as:actor <${event.loanRequest.from ?? context.solidService.getDefaultSession().info.webId}> ;
-  as:target <${event.loanRequest.to}> ;
-  as:object <${event.loanRequest.collection}> ;
+  as:actor <${context.solidService.getDefaultSession().info.webId}> ;
+  as:target <${target}> ;
+  as:object <${collectionUri}> ;
   as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
 `;
 

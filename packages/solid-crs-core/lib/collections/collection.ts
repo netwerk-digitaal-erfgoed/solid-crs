@@ -28,4 +28,9 @@ export interface Collection extends Resource {
    * The inbox URI of this collection
    */
   inbox: string;
+
+  /**
+   * The WebID of the publisher of this collection
+   */
+  publisher: string;
 }
