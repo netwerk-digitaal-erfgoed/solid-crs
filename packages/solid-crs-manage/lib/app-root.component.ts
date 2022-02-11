@@ -88,15 +88,23 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   inboxService = new InboxService(this.solidService);
 
-  constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
-    clientName: 'Collectiebeheersysteem',
-    clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
-  } })) {
+  @internalProperty()
+  collectionStore = CollectionSolidStore(this.solidService, this.inboxService);
+
+  @internalProperty()
+  collectionObjectStore = CollectionObjectSolidStore(this.solidService);
+
+  constructor(
+    private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
+      clientName: 'Collectiebeheersysteem',
+      clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
+    } }),
+  ) {
 
     super();
 
     define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
-    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger, this.inboxService));
+    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger, this.solidService, this.collectionStore));
 
   }
 
@@ -150,8 +158,8 @@ export class AppRootComponent extends RxLitElement {
     this.actor = interpret(
       (appMachine(
         this.solidService,
-        new CollectionSolidStore(this.solidService, this.inboxService),
-        new CollectionObjectSolidStore(this.solidService),
+        this.collectionStore,
+        this.collectionObjectStore,
         {
           uri: undefined,
           name: this.translator.translate('collections.new-collection-name'),

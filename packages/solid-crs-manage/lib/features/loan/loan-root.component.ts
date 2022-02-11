@@ -4,8 +4,9 @@ import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
 import { from } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
 import { LoanState, LoanStates, LoanStateSchema } from './loan.states';
 import { ClickedLoanRequestOverviewEvent, ClickedNewLoanRequestEvent, LoanEvent } from './loan.events';
@@ -24,11 +25,17 @@ export class LoanRootComponent extends RxLitElement {
   constructor(
     public translator: Translator,
     public logger: Logger,
+    public solidService: SolidSDKService,
+    public collectionStore: CollectionStore,
   ) {
 
     super();
 
-    this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({});
+    this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({
+      solidService: this.solidService,
+      collectionStore: this.collectionStore,
+    });
+
     this.actor = interpret(this.machine, { devTools: true });
     this.subscribe('state', from(this.actor));
     this.actor.start();

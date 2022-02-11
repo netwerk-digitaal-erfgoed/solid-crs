@@ -1,4 +1,8 @@
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { asUrl, getSolidDataset, getThingAll, getUrl, Thing } from '@digita-ai/inrupt-solid-client';
+import { LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { v4 } from 'uuid';
+import { LoanContext } from './loan.context';
+import { ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 
 /**
  * Sends a new LoanRequest as LDN to a heritage institution
@@ -6,24 +10,92 @@ import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
  * @param loanRequest the loanRequest to create / send
  * @returns the given loanRequest when creation was successful
  */
-export const createRequest = async (loanRequest: LoanRequest): Promise<LoanRequest> => {
+export const createRequest = async (context: LoanContext, event: LoanEvent): Promise<LoanRequest> => {
+
+  if (!(event instanceof ClickedSendLoanRequestEvent)) {
+
+    throw new Error('event is not of type ClickedSendLoanRequestEvent');
+
+  }
 
   // eslint-disable-next-line no-console
-  console.log('Creating Request');
+  console.log('Sending new loan request');
 
-  return loanRequest;
+  // TODO get collection
+  const collection: Collection = {};
+
+  const targetInbox = collection.inbox;
+
+  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${targetInbox}>
+  a as:Offer ;
+  as:summary "Bruikleen aanvraag" ;
+  as:actor <${event.loanRequest.from ?? context.solidService.getDefaultSession().info.webId}> ;
+  as:target <${event.loanRequest.to}> ;
+  as:object <${event.loanRequest.collection}> ;
+  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
+`;
+
+  const response = await context.solidService.getDefaultSession().fetch(targetInbox, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/turtle',
+      'Slug': v4(),
+    },
+    body,
+  });
+
+  return {
+    ...event.loanRequest,
+    uri: response.headers.get('Location'),
+  };
 
 };
 
 /**
  * Loads and returns all incoming loan requests for a heritage institution
  */
-export const loadRequests = async (): Promise<LoanRequest[]> => {
+export const loadRequests = async (context: LoanContext, event: LoanEvent): Promise<LoanRequest[]> => {
 
   // eslint-disable-next-line no-console
   console.log('Loading Requests');
 
-  return [];
+  // get all unique inboxes
+  const inboxUris = [
+    ...new Set((await context.collectionStore.all()).map((collection) => collection.inbox)).values(),
+  ];
+
+  // retrieve notifications from all inboxes
+  const loanRequests: LoanRequest[] = [];
+
+  for (const uri of inboxUris) {
+
+    // get content of inbox
+    const dataset = await getSolidDataset(uri);
+    const notificationThings = getThingAll(dataset);
+
+    const loanRequestTypes: string[] = [
+      'https://www.w3.org/ns/activitystreams#Offer',
+    ];
+
+    // filter for loan requests
+    const loanRequestThings: Thing[] = notificationThings.filter((thing) =>
+      getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') in loanRequestTypes);
+
+    const parsedLoanRequests: LoanRequest[] = loanRequestThings.map((thing) => ({
+      uri: asUrl(thing) ?? undefined,
+      collection: getUrl(thing, 'https://www.w3.org/ns/activitystreams#object') ?? undefined,
+      to: getUrl(thing, 'https://www.w3.org/ns/activitystreams#target') ?? undefined,
+      from: getUrl(thing, 'https://www.w3.org/ns/activitystreams#actor') ?? undefined,
+      createdAt: '',
+    }));
+
+    loanRequests.push(... parsedLoanRequests);
+
+  }
+
+  return loanRequests;
 
 };
 
