@@ -45,7 +45,7 @@ export class LargeCardComponent extends LitElement {
 
         ${this.showContent
     ? html`
-          <div class="content${!this.showImage ? ' reduced-top-padding' : ''}">
+          <div class="content${(!this.showImage && this.showHeader) ? ' reduced-top-padding' : ''}">
             <slot name="content"></slot>
           </div>
         `

@@ -2,9 +2,9 @@ import { define, hydrate } from '@digita-ai/dgt-components';
 import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
-import { from } from 'rxjs';
+import { from, map } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator, CollectionStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore, LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
@@ -21,6 +21,7 @@ export class LoanRootComponent extends RxLitElement {
   private actor: Interpreter<LoanContext, LoanStateSchema, LoanEvent, LoanState>;
 
   @state() state?: State<LoanContext, LoanEvent, LoanStateSchema, LoanState>;
+  @state() loanRequest: LoanRequest;
 
   constructor(
     public translator: Translator,
@@ -38,11 +39,16 @@ export class LoanRootComponent extends RxLitElement {
 
     this.actor = interpret(this.machine, { devTools: true });
     this.subscribe('state', from(this.actor));
+
+    this.subscribe('loanRequest', from(this.actor).pipe(
+      map((stateMachine) => stateMachine.context.loanRequest),
+    ));
+
     this.actor.start();
 
     define('nde-loan-overview-component', hydrate(LoanOverviewComponent)(this.actor, this.translator, this.logger));
-    define('nde-loan-detail-component', hydrate(LoanDetailComponent)(this.translator, this.logger));
-    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.translator, this.logger));
+    define('nde-loan-detail-component', hydrate(LoanDetailComponent)(this.actor, this.translator, this.logger));
+    define('nde-loan-creation-component', hydrate(LoanCreationComponent)(this.actor, this.translator, this.logger));
 
   }
 
@@ -68,12 +74,19 @@ export class LoanRootComponent extends RxLitElement {
     return html`
       <nde-content-header inverse>
         <div slot="icon"> ${unsafeSVG(Bruikleen)} </div>
-        <div slot="title"> ${this.translator?.translate('loan.root.header.title')} </div>
+        <div slot="title">
+          ${this.state?.matches(LoanStates.LOAN_REQUEST_DETAIL)
+    ? this.translator?.translate('loan.detail.header.title')
+    : this.translator?.translate('loan.root.header.title-default')}
+        </div>
         <div slot="subtitle">
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)
     ? this.translator?.translate('loan.overview.header.subtitle') : ''}
-              ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION)
+          ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION)
     ? this.translator?.translate('loan.creation.header.subtitle') : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL)
+    ? this.translator?.translate('loan.detail.header.subtitle')
+      .replace('{{institution}}', this.loanRequest?.from) : ''}
         </div>
       </nde-content-header>
       <div id="page">
@@ -104,7 +117,7 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.incoming-requests')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item"
-                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)}"
+                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) || this.state.matches(LoanStates.LOAN_REQUEST_DETAIL)}"
                 @click="${this.onLoanRequestOverview}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.all-incoming-requests')}</div>
