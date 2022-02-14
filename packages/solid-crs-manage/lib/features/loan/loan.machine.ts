@@ -60,7 +60,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.SENDING_LOAN_REQUEST]: {
       invoke: {
-        src: (context, event: ClickedSendLoanRequestEvent) => services.createRequest(event.loanRequest),
+        src: (context, event: ClickedSendLoanRequestEvent) => services.createRequest(event.loanRequestCreationArgs),
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },

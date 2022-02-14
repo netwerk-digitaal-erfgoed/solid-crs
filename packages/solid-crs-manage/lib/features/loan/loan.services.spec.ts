@@ -1,5 +1,6 @@
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import * as services from './loan.services';
+import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
 const mockLoanRequest: LoanRequest = {
   uri: 'https://loan.uri',
@@ -7,6 +8,12 @@ const mockLoanRequest: LoanRequest = {
   to: 'https://receiver.webid',
   createdAt: Date.now().toString(),
   collection: 'https://collection.uri',
+  description: 'desc',
+};
+
+const mockLoanRequestCreationArgs: LoanRequestCreationArgs = {
+  collection: mockLoanRequest.collection,
+  description: mockLoanRequest.description,
 };
 
 describe('LoanServices', () => {
@@ -15,7 +22,7 @@ describe('LoanServices', () => {
 
     it('should return the original request on success', async () => {
 
-      await expect(services.createRequest(mockLoanRequest)).resolves.toEqual(mockLoanRequest);
+      await expect(services.createRequest(mockLoanRequestCreationArgs)).resolves.toEqual(mockLoanRequestCreationArgs);
 
     });
 

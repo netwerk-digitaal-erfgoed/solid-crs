@@ -1,5 +1,6 @@
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
+import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
 export enum LoanEvents {
   CLICKED_LOAN_REQUEST_OVERVIEW = '[LoanEvent: Clicked Loan Request Overview]',
@@ -64,7 +65,7 @@ export class ClickedNewLoanRequestEvent implements EventObject {
 export class ClickedSendLoanRequestEvent implements EventObject {
 
   public type: LoanEvents.CLICKED_SEND_LOAN_REQUEST = LoanEvents.CLICKED_SEND_LOAN_REQUEST;
-  constructor(public loanRequest: LoanRequest) {}
+  constructor(public loanRequestCreationArgs: LoanRequestCreationArgs) {}
 
 }
 

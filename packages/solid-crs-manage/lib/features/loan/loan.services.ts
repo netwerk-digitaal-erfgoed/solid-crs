@@ -1,4 +1,5 @@
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
 /**
  * Sends a new LoanRequest as LDN to a heritage institution
@@ -6,12 +7,14 @@ import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
  * @param loanRequest the loanRequest to create / send
  * @returns the given loanRequest when creation was successful
  */
-export const createRequest = async (loanRequest: LoanRequest): Promise<LoanRequest> => {
+export const createRequest = async (loanRequestCreationArgs: LoanRequestCreationArgs): Promise<LoanRequest> => {
 
   // eslint-disable-next-line no-console
   console.log('Creating Request');
 
-  return loanRequest;
+  return {
+    ...loanRequestCreationArgs,
+  } as any;
 
 };
 
@@ -23,7 +26,30 @@ export const loadRequests = async (): Promise<LoanRequest[]> => {
   // eslint-disable-next-line no-console
   console.log('Loading Requests');
 
-  return [];
+  const mockLoanRequest1: LoanRequest = {
+    uri: 'https://loan.uri.one',
+    from: 'https://send.webid.one',
+    to: 'https://receiver.webid.one',
+    createdAt: Date.now().toString(),
+    collection: 'https://collection.uri.one',
+    description: 'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
+  };
+
+  const mockLoanRequest2: LoanRequest = {
+    uri: 'https://loan.uri.two',
+    from: 'https://send.webid.two',
+    to: 'https://receiver.webid.two',
+    createdAt: Date.now().toString(),
+    collection: 'https://collection.uri.two',
+  };
+
+  return [ mockLoanRequest1,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest2,
+    mockLoanRequest1 ];
 
 };
 
