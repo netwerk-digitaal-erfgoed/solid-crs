@@ -11,13 +11,13 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
   states: {
     [LoanStates.LOADING_LOAN_REQUESTS]: {
       invoke: {
-        src: () => services.loadRequests(),
+        src: services.loadRequests,
         onDone: {
           actions: assign({ loanRequests: (context, event: DoneInvokeEvent<LoanRequest[]>) => event.data }),
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         onError: {
-          actions: log('Error Loading Requests'),
+          actions: log((c, e) => `Error Loading Request: ${e.data}`),
         },
       },
     },
@@ -65,7 +65,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         onError: {
-          actions: log('Error Creating Request'),
+          actions: log((c, e) => `Error Creating Request: ${e.data}`),
         },
       },
     },

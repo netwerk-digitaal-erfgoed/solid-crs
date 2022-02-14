@@ -1,4 +1,5 @@
-import { asUrl, getSolidDataset, getThingAll, getUrl, Thing } from '@digita-ai/inrupt-solid-client';
+import { asUrl, getSolidDataset, getThing, getUrl, Thing } from '@digita-ai/inrupt-solid-client';
+import { getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { LoanContext } from './loan.context';
@@ -26,13 +27,13 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
     uri: collectionUri,
     inbox: targetInbox,
     publisher: target,
-  } = await context.collectionStore.get(event.loanRequest.collection);
+  } = await context.collectionStore.get(event.loanRequestCreationArgs.collection);
 
-  //
+  const notificationId = v4();
 
   const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
 
-<${targetInbox}>
+<${targetInbox}${notificationId}>
   a as:Offer ;
   as:summary "Bruikleen aanvraag" ;
   as:actor <${context.solidService.getDefaultSession().info.webId}> ;
@@ -45,13 +46,16 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
     method: 'POST',
     headers: {
       'Content-Type': 'text/turtle',
-      'Slug': v4(),
+      'Slug': notificationId,
     },
     body,
   });
 
   return {
-    ...event.loanRequest,
+    collection: collectionUri,
+    createdAt: '',
+    from: context.solidService.getDefaultSession().info.webId,
+    to: target,
     uri: response.headers.get('Location'),
   };
 
@@ -77,7 +81,24 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
 
     // get content of inbox
     const dataset = await getSolidDataset(uri);
-    const notificationThings = getThingAll(dataset);
+    const inboxThing = getThing(dataset, uri);
+
+    const notificationUris = getUrlAll(inboxThing, 'http://www.w3.org/ns/ldp#contains');
+
+    const notificationThings: Thing[] = [];
+
+    for (const notificationUri of notificationUris) {
+
+      const notificationDataset = await getSolidDataset(
+        notificationUri,
+        { fetch: context.solidService.getDefaultSession().fetch }
+      );
+
+      const notificationThing = getThing(notificationDataset, notificationUri,);
+
+      notificationThings.push(notificationThing);
+
+    }
 
     const loanRequestTypes: string[] = [
       'https://www.w3.org/ns/activitystreams#Offer',
@@ -85,7 +106,7 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
 
     // filter for loan requests
     const loanRequestThings: Thing[] = notificationThings.filter((thing) =>
-      getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#') in loanRequestTypes);
+      !!thing && loanRequestTypes.includes(getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type')));
 
     const parsedLoanRequests: LoanRequest[] = loanRequestThings.map((thing) => ({
       uri: asUrl(thing) ?? undefined,

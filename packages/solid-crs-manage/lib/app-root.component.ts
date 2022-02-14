@@ -89,10 +89,10 @@ export class AppRootComponent extends RxLitElement {
   inboxService = new InboxService(this.solidService);
 
   @internalProperty()
-  collectionStore = CollectionSolidStore(this.solidService, this.inboxService);
+  collectionStore = new CollectionSolidStore(this.solidService, this.inboxService);
 
   @internalProperty()
-  collectionObjectStore = CollectionObjectSolidStore(this.solidService);
+  collectionObjectStore = new CollectionObjectSolidStore(this.solidService);
 
   constructor(
     private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
@@ -166,6 +166,8 @@ export class AppRootComponent extends RxLitElement {
           description: this.translator.translate('collections.new-collection-description'),
           objectsUri: undefined,
           distribution: undefined,
+          inbox: undefined,
+          publisher: undefined,
         },
         {
           uri: undefined,

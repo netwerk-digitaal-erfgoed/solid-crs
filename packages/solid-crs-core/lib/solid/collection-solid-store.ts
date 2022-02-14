@@ -309,8 +309,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = getUrl(distributionThing, 'http://schema.org/contentUrl');
     const name = getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl');
     const description = getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl');
-    const inbox = getUrl(distributionThing, 'http://www.w3.org/ns/ldp#inbox') ?? '';
-    const publisher = getUrl(distributionThing, 'http://schema.org/publisher') ?? '';
+    const inbox = getUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox') ?? '';
+    const publisher = getUrl(collectionThing, 'http://schema.org/publisher') ?? '';
 
     if (!objectsUri || !name || !description) {
 
