@@ -4,6 +4,10 @@ export interface LoanRequest {
    */
   uri: string;
   /**
+   *
+   */
+  type: 'https://www.w3.org/ns/activitystreams#Reject' | 'https://www.w3.org/ns/activitystreams#Offer';
+  /**
    * The uri of the requested collection
    */
   collection: string;

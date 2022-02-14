@@ -49,7 +49,7 @@ export class LoanOverviewComponent extends RxLitElement {
           @click="${ () => this.onLoanRequestClicked(loanRequest) }"
           title="${ this.translator?.translate('loan.overview.card.hover-title')}"
         >
-            <div slot="title">${ this.translator?.translate('loan.overview.card.title')}</div>
+            <div slot="title">${ this.translator?.translate(`loan.overview.card.title-${loanRequest.type.split('#')[1].toLowerCase()}`) }</div>
             <div slot="subtitle">${loanRequest.from}</div>
             <div slot="actions">${unsafeSVG(Caret)}</div>
           </nde-large-card>

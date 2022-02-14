@@ -54,7 +54,7 @@ export class LoanDetailComponent extends RxLitElement {
       <nde-large-card .showImage="${false}" .showHeader="${false}">
         <div slot="content">
           <p>
-            ${ this.translator?.translate('loan.detail.card.title')
+            ${ this.translator?.translate(`loan.detail.card.title-${this.loanRequest.type.split('#')[1].toLowerCase()}`)
     .replace('{{institution}}', this.loanRequest?.from)}
           </p>
           

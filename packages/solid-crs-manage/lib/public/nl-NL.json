@@ -301,17 +301,23 @@
                 "subtitle": "Goedkeuren van aanvragen tot bruikleen"
             },
             "card": {
-                "title": "Aanvraag tot bruikleen",
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
                 "hover-title": "Klik voor meer details ..."
             }
         },
         "detail": {
             "header": {
-                "title": "Aanvraag tot bruikleen",
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
                 "subtitle": "{{institution}}"
             },
             "card": {
-                "title": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "title-offer": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "title-reject": "{{institution}} weigerde je aanvraag tot bruikleen voor de volgende collectie",
+                "title-accept": "{{institution}} accepteerde je aanvraag tot bruikleen voor de volgende collectie",
                 "description": "Opmerkingen",
                 "accept": "Goedkeuren",
                 "reject": "Afwijzen"

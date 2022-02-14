@@ -76,7 +76,7 @@ export class LoanRootComponent extends RxLitElement {
         <div slot="icon"> ${unsafeSVG(Bruikleen)} </div>
         <div slot="title">
           ${this.state?.matches(LoanStates.LOAN_REQUEST_DETAIL)
-    ? this.translator?.translate('loan.detail.header.title')
+    ? this.translator?.translate(`loan.detail.header.title-${this.loanRequest.type.split('#')[1].toLowerCase()}`)
     : this.translator?.translate('loan.root.header.title-default')}
         </div>
         <div slot="subtitle">

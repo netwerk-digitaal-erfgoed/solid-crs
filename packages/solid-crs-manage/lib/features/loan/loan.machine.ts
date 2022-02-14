@@ -2,7 +2,7 @@ import { assign, DoneInvokeEvent, MachineConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanContext } from './loan.context';
-import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent, LoanEvents } from './loan.events';
+import { LoanEvent, LoanEvents } from './loan.events';
 import * as services from './loan.services';
 import { LoanStates, LoanStateSchema } from './loan.states';
 
@@ -71,23 +71,23 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.ACCEPTING_LOAN_REQUEST]: {
       invoke: {
-        src: (context, event: ClickedAcceptedLoanRequestEvent) => services.acceptRequest(event.loanRequest),
+        src: services.acceptRequest,
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         onError: {
-          actions: log('Error Accepting Request'),
+          actions: log((c, e) => `Error Accepting Request: ${e.data}`),
         },
       },
     },
     [LoanStates.REJECTING_LOAN_REQUEST]: {
       invoke: {
-        src: (context, event: ClickedRejectedLoanRequestEvent) => services.rejectRequest(event.loanRequest),
+        src: services.rejectRequest,
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         onError: {
-          actions: log('Error Rejecting Request'),
+          actions: log((c, e) => `Error Rejecting Request: ${e.data}`),
         },
       },
     },

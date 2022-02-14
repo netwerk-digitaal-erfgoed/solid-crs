@@ -3,7 +3,7 @@ import { getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { LoanContext } from './loan.context';
-import { ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 
 /**
  * Sends a new loan request LDN to a heritage institution
@@ -42,7 +42,7 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
   as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
 `;
 
-  const response = await context.solidService.getDefaultSession().fetch(targetInbox, {
+  const response = await fetch(targetInbox, {
     method: 'POST',
     headers: {
       'Content-Type': 'text/turtle',
@@ -102,6 +102,8 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
 
     const loanRequestTypes: string[] = [
       'https://www.w3.org/ns/activitystreams#Offer',
+      'https://www.w3.org/ns/activitystreams#Accept',
+      'https://www.w3.org/ns/activitystreams#Reject',
     ];
 
     // filter for loan requests
@@ -110,6 +112,7 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
 
     const parsedLoanRequests: LoanRequest[] = loanRequestThings.map((thing) => ({
       uri: asUrl(thing) ?? undefined,
+      type: getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') ?? undefined,
       collection: getUrl(thing, 'https://www.w3.org/ns/activitystreams#object') ?? undefined,
       to: getUrl(thing, 'https://www.w3.org/ns/activitystreams#target') ?? undefined,
       from: getUrl(thing, 'https://www.w3.org/ns/activitystreams#actor') ?? undefined,
@@ -132,12 +135,55 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
  * @param loanRequest the loanRequest to be accepted
  * @returns the original loan request on success
  */
-export const acceptRequest = async (loanRequest: LoanRequest): Promise<LoanRequest> => {
+export const acceptRequest = async (context: LoanContext, event: LoanEvent): Promise<LoanRequest> => {
 
   // eslint-disable-next-line no-console
   console.log('Accept Request');
 
-  return loanRequest;
+  if (!(event instanceof ClickedAcceptedLoanRequestEvent)) {
+
+    throw new Error('event is not of type ClickedAcceptedLoanRequestEvent');
+
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('Sending loan request rejection notif');
+
+  // retrieve necessary collection information
+  const {
+    uri: collectionUri,
+    inbox: targetInbox,
+  } = await context.collectionStore.get(event.loanRequest.collection);
+
+  const notificationId = v4();
+
+  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${targetInbox}${notificationId}>
+  a as:Accept ;
+  as:summary "Bruikleen aanvraag geaccepteerd" ;
+  as:actor <${context.loanRequest.to}> ;
+  as:target <${context.loanRequest.from}> ;
+  as:object <${collectionUri}> ;
+  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
+`;
+
+  const response = await fetch(targetInbox, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/turtle',
+      'Slug': notificationId,
+    },
+    body,
+  });
+
+  return {
+    collection: collectionUri,
+    createdAt: '',
+    from: context.loanRequest.to,
+    to: context.loanRequest.from,
+    uri: response.headers.get('Location'),
+  };
 
 };
 
@@ -149,11 +195,54 @@ export const acceptRequest = async (loanRequest: LoanRequest): Promise<LoanReque
  * @param loanRequest the loanRequest to be rejected
  * @returns the original loan request on success
  */
-export const rejectRequest = async (loanRequest: LoanRequest): Promise<LoanRequest> => {
+export const rejectRequest = async (context: LoanContext, event: LoanEvent): Promise<LoanRequest> => {
 
   // eslint-disable-next-line no-console
   console.log('Reject Request');
 
-  return loanRequest;
+  if (!(event instanceof ClickedRejectedLoanRequestEvent)) {
+
+    throw new Error('event is not of type ClickedRejectedLoanRequestEvent');
+
+  }
+
+  // eslint-disable-next-line no-console
+  console.log('Sending loan request rejection notif');
+
+  // retrieve necessary collection information
+  const {
+    uri: collectionUri,
+    inbox: targetInbox,
+  } = await context.collectionStore.get(event.loanRequest.collection);
+
+  const notificationId = v4();
+
+  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${targetInbox}${notificationId}>
+  a as:Reject ;
+  as:summary "Bruikleen aanvraag geweigerd" ;
+  as:actor <${context.loanRequest.to}> ;
+  as:target <${context.loanRequest.from}> ;
+  as:object <${collectionUri}> ;
+  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
+`;
+
+  const response = await context.solidService.getDefaultSession().fetch(targetInbox, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'text/turtle',
+      'Slug': notificationId,
+    },
+    body,
+  });
+
+  return {
+    collection: collectionUri,
+    createdAt: '',
+    from: context.loanRequest.to,
+    to: context.loanRequest.from,
+    uri: response.headers.get('Location'),
+  };
 
 };
