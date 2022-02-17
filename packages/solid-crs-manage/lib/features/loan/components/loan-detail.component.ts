@@ -83,7 +83,7 @@ export class LoanDetailComponent extends RxLitElement {
           
           <div id="collection-container">
             <div>${unsafeSVG(CollectionSvg)}</div>
-            <a href="${this.collection?.uri}">${this.collection?.name}</a>
+            <a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.collection.publisher)}/collection/${encodeURIComponent(this.collection.uri)}" target="_blank" rel="noopener noreferrer">${this.collection?.name}</a>
           </div>
 
           <nde-form-element .showLabel="${true}" .showValidation="${false}" field="description">
