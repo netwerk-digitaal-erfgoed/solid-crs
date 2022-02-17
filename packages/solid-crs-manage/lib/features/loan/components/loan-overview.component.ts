@@ -1,6 +1,6 @@
 import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Caret } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Theme, Caret, Empty } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { LoanRequest, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Interpreter } from 'xstate';
 import { from, map } from 'rxjs';
@@ -44,16 +44,23 @@ export class LoanOverviewComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      ${ this.loanRequests?.map((loanRequest: LoanRequest) => html`
-        <nde-large-card .showImage="${false}" .showContent="${false}"
-          @click="${ () => this.onLoanRequestClicked(loanRequest) }"
-          title="${ this.translator?.translate('loan.overview.card.hover-title')}"
-        >
-            <div slot="title">${ this.translator?.translate(`loan.overview.card.title-${loanRequest.type.split('#')[1].toLowerCase()}`) }</div>
-            <div slot="subtitle">${loanRequest.from}</div>
-            <div slot="actions">${unsafeSVG(Caret)}</div>
-          </nde-large-card>
-      `)}
+      ${ this.loanRequests?.length > 0 ? html`
+        ${ this.loanRequests?.map((loanRequest: LoanRequest) => html`
+          <nde-large-card .showImage="${false}" .showContent="${false}"
+            @click="${ () => this.onLoanRequestClicked(loanRequest) }"
+            title="${ this.translator?.translate('loan.overview.card.hover-title')}"
+          >
+              <div slot="title">${ this.translator?.translate(`loan.overview.card.title-${loanRequest.type.split('#')[1].toLowerCase()}`) }</div>
+              <div slot="subtitle">${loanRequest.from}</div>
+              <div slot="actions">${unsafeSVG(Caret)}</div>
+            </nde-large-card>
+        `)}
+      ` : html`
+        <div class="empty">
+          ${unsafeSVG(Empty)}
+          <span> ${ this.translator?.translate('loan.overview.empty.message')} </span>
+        </div>
+      `}
     `;
 
   }
@@ -72,12 +79,29 @@ export class LoanOverviewComponent extends RxLitElement {
           display: flex;
           flex-direction: column;
           gap: var(--gap-large);
+          height: calc(100% - var(--gap-large));
         }
         nde-large-card:hover {
           cursor: pointer;
         }
         .tooltip {
           background-color: red;
+        }
+        .empty svg {
+          width: 60%;
+          height: auto;
+        }
+        .empty span {
+          color: var(--colors-foreground-dark);
+          text-align: center;
+        }
+        .empty {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          gap: var(--gap-large);
+          justify-content: center;
+          align-items: center;
         }
       `,
     ];
