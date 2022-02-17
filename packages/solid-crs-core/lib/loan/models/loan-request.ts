@@ -27,9 +27,4 @@ export interface LoanRequest {
    * An optional note for the receiving institution
    */
   description?: string;
-  /**
-   * Indicates if the request is accepted or not
-   * Optional: when this parameter is undefined, the request is pending / neither accepted or rejected
-   */
-  accepted?: boolean;
 }

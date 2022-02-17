@@ -92,9 +92,13 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
   // eslint-disable-next-line no-console
   console.log('Loading Requests');
 
+  const webId = context.solidService.getDefaultSession().info.webId;
+
   // get all unique inboxes
   const inboxUris = [
-    ...new Set((await context.collectionStore.all()).map((collection) => collection.inbox)).values(),
+    ...new Set((await context.collectionStore.all())
+      .filter((collection) => collection.publisher === webId)
+      .map((collection) => collection.inbox)).values(),
   ];
 
   // retrieve notifications from all inboxes
@@ -135,7 +139,7 @@ export const loadRequests = async (context: LoanContext, event: LoanEvent): Prom
 
     const parsedLoanRequests: LoanRequest[] = loanRequestThings.map((thing) => ({
       uri: asUrl(thing) ?? undefined,
-      type: getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') ?? undefined,
+      type: getUrl(thing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') as any ?? undefined,
       collection: getUrl(thing, 'https://www.w3.org/ns/activitystreams#object') ?? undefined,
       to: getUrl(thing, 'https://www.w3.org/ns/activitystreams#target') ?? undefined,
       from: getUrl(thing, 'https://www.w3.org/ns/activitystreams#actor') ?? undefined,
@@ -188,7 +192,7 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
     summary: 'Bruikleen aanvraag geaccepteerd',
     actor: context.loanRequest.to,
     target: context.loanRequest.from,
-    object: collectionUri,
+    object: context.loanRequest.collection,
   });
 
   const response = await fetch(targetInbox, {
@@ -201,7 +205,7 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
   });
 
   return {
-    collection: collectionUri,
+    collection: context.loanRequest.collection,
     type: 'https://www.w3.org/ns/activitystreams#Accept',
     createdAt: '',
     from: context.loanRequest.to,
@@ -233,11 +237,12 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
   // eslint-disable-next-line no-console
   console.log('Sending loan request rejection notif');
 
-  // retrieve necessary collection information
-  const {
-    uri: collectionUri,
-    inbox: targetInbox,
-  } = await context.collectionStore.get(event.loanRequest.collection);
+  // retrieve response inbox location
+  // use the requester's catalog inbox as target for responses
+  const catalogUri = await context.collectionStore.getInstanceForClass(event.loanRequest.from, 'http://schema.org/DataCatalog');
+  const catalogDataset = await getSolidDataset(catalogUri);
+  const catalogThing = getThing(catalogDataset, catalogUri);
+  const targetInbox = getUrl(catalogThing, 'http://www.w3.org/ns/ldp#inbox');
 
   const notificationId = v4();
 
@@ -248,7 +253,7 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
     summary: 'Bruikleen aanvraag geweigerd',
     actor: context.loanRequest.to,
     target: context.loanRequest.from,
-    object: collectionUri,
+    object: context.loanRequest.collection,
   });
 
   const response = await context.solidService.getDefaultSession().fetch(targetInbox, {
@@ -261,7 +266,7 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
   });
 
   return {
-    collection: collectionUri,
+    collection: context.loanRequest.collection,
     type: 'https://www.w3.org/ns/activitystreams#Reject',
     createdAt: '',
     from: context.loanRequest.to,

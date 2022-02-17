@@ -180,8 +180,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = collection.objectsUri || new URL(`heritage-objects/data-${v4()}`, storage).toString();
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collectionUri, { fetch: this.getSession().fetch });
-    const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
+    const catalogDataset = await getSolidDataset(catalogUri, { fetch: this.getSession().fetch });
+    const catalogThing = getThing(catalogDataset, catalogUri);
 
     if (!catalogThing) {
 
@@ -201,40 +201,15 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
     collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', collection.publisher ?? webId);
 
-    try {
+    const inboxUri = getUrl(catalogThing, 'http://www.w3.org/ns/ldp#inbox');
 
-      let inboxUri = collection.inbox;
+    if (!inboxUri) {
 
-      // set inbox for collection
-      if (!inboxUri) {
-
-        // no inbox uri exists, create one in the same folder as the catalog
-        const catalogContainerUri = `${new URL(catalogUri).origin}${new URL(catalogUri).pathname.split('/').slice(0, -1).join('/')}/`;
-        inboxUri = `${catalogContainerUri}inbox/`;
-
-        // create the inbox if it doesn't exist
-        await this.getSession().fetch(inboxUri, {
-          method: 'HEAD',
-        }).then(async (res) => {
-
-          if (res.status === 404) {
-
-            inboxUri = await this.inboxService.createInbox(catalogContainerUri);
-
-          }
-
-        });
-
-      }
-
-      collectionThing = addUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox', inboxUri);
-
-    } catch (error) {
-
-      // eslint-disable-next-line no-console
-      console.error('Error while creating inbox', error);
+      throw new Error('Could not find inboxUri in catalog');
 
     }
+
+    collectionThing = addUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox', inboxUri);
 
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
@@ -247,11 +222,11 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     updatedDataset = setThing(updatedDataset, distributionThing);
 
     // replace existing dataset with updated
-    await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch: this.getSession().fetch });
+    await saveSolidDatasetAt(catalogUri, updatedDataset, { fetch: this.getSession().fetch });
     // set public read access for collection
-    await this.setPublicAccess(collectionUri);
+    await this.setPublicAccess(catalogUri);
     // set public read access for parent folder
-    await this.setPublicAccess(`${new URL(collectionUri).origin}${new URL(collectionUri).pathname.split('/').slice(0, -1).join('/')}/`);
+    await this.setPublicAccess(`${new URL(catalogUri).origin}${new URL(catalogUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     const result = await this.getSession().fetch(objectsUri, { method: 'head' });
 
@@ -259,6 +234,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
       // create an empty file at objectsUri, where the collection objects will be stored
       await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
+      // set public read access for this resource
+      await this.setPublicAccess(objectsUri);
 
     }
 
@@ -354,6 +331,32 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
+    // no inbox uri exists, create one in the same folder as the catalog
+    const catalogContainerUri = `${new URL(uri).origin}${new URL(uri).pathname.split('/').slice(0, -1).join('/')}/`;
+    let inboxUri = `${catalogContainerUri}inbox/`;
+
+    try {
+
+      // create the inbox if it doesn't exist
+      await this.getSession().fetch(inboxUri, {
+        method: 'HEAD',
+      }).then(async (res) => {
+
+        if (res.status === 404) {
+
+          inboxUri = await this.inboxService.createInbox(catalogContainerUri);
+
+        }
+
+      });
+
+    } catch (error) {
+
+      // eslint-disable-next-line no-console
+      console.error('Error while creating inbox', error);
+
+    }
+
     // fall back on foaf:name value if schema:name is missing
     const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl')
       || getStringNoLocale(profile, 'http://schema.org/name')
@@ -361,10 +364,12 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     await overwriteFile(`${uri}`, new Blob([ `
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+    @prefix ldp: <http://www.w3.org/ns/ldp#>.
     @prefix schema: <http://schema.org/>.
 
     <>
       rdf:type schema:DataCatalog ;
+      ldp:inbox <${inboxUri}> ;
       schema:name "Datacatalogus van ${name}"@nl ;
       schema:publisher <${webId}> .
     ` ], { type: 'text/turtle' }), { fetch: this.getSession().fetch });

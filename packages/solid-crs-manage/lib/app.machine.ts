@@ -565,6 +565,7 @@ export const appMachine = (
            * Creating a new collection.
            */
           [AppDataStates.CREATING]: {
+            entry: log('aids'),
             tags: [ 'loading' ],
             invoke: {
               /**
@@ -580,6 +581,7 @@ export const appMachine = (
                 ],
               },
               onError: {
+                target: AppDataStates.IDLE,
                 actions: [
                   send((context, event) => event),
                 ],
