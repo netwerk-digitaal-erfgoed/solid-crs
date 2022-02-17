@@ -1,10 +1,10 @@
 import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionStore, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine, interpret, Interpreter, StateMachine } from 'xstate';
 import { define, FormCleanlinessStates, FormContext, FormEvent, formMachine, FormRootStates, FormState, FormStateSchema, FormSubmissionStates, FormSubmittedEvent, FormUpdatedEvent, FormValidationStates, FormValidatorResult, hydrate } from '@digita-ai/dgt-components';
-import { FormElementComponent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { FormElementComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { from, map } from 'rxjs';
 import { LoanContext } from '../loan.context';
 import { LoanState, LoanStateSchema } from '../loan.states';
@@ -18,6 +18,7 @@ export class LoanCreationComponent extends RxLitElement {
   // eslint-disable-next-line max-len
   private formActor: Interpreter<FormContext<LoanRequestCreationArgs>, FormStateSchema<LoanRequestCreationArgs>, FormEvent, FormState<LoanRequestCreationArgs>>;
 
+  @state() collectionStore: CollectionStore;
   @state() validForm = false;
 
   constructor(
@@ -27,6 +28,11 @@ export class LoanCreationComponent extends RxLitElement {
   ) {
 
     super();
+
+    this.subscribe('collectionStore', from(this.actor).pipe(
+      map((actorState) => actorState.context.collectionStore),
+    ));
+
     this.initFormMachine();
     define('nde-form-element', hydrate(FormElementComponent)(this.formActor));
 
@@ -34,7 +40,9 @@ export class LoanCreationComponent extends RxLitElement {
 
   private initFormMachine(): void {
 
-    this.formMachine = createMachine(formMachine<LoanRequestCreationArgs>(this.formValidator) as any).withContext({
+    this.formMachine = createMachine(
+      formMachine<LoanRequestCreationArgs>(this.formValidator(this.collectionStore)) as any
+    ).withContext({
       data: { collection: '', description: '' },
       original: { collection: '', description: '' },
     }) as any;
@@ -58,47 +66,54 @@ export class LoanCreationComponent extends RxLitElement {
 
   }
 
-  async formValidator(
+  formValidator(collectionStore: CollectionStore): (
     context: FormContext<LoanRequestCreationArgs>,
     event: FormEvent,
-  ): Promise<FormValidatorResult[]> {
+  ) => Promise<FormValidatorResult[]> {
 
-    if (!context.data) return [];
+    return async (
+      context: FormContext<LoanRequestCreationArgs>,
+      event: FormEvent,
+    ) => {
 
-    const { collection, description } = context.data;
-    const updatedField = (event as FormUpdatedEvent).field;
+      if (!context.data) return [];
 
-    let results: FormValidatorResult[] = [ ... (context.validation ?? []) ];
+      const { collection, description } = context.data;
+      const updatedField = (event as FormUpdatedEvent).field;
 
-    // description checks
-    if (updatedField === 'description') {
+      let results: FormValidatorResult[] = [ ... (context.validation ?? []) ];
 
-      // clear existing validation results for description
-      results = results.filter((result) => result.field !== 'description');
+      // description checks
+      if (updatedField === 'description') {
 
-      if (description?.length > 500) {
+        // clear existing validation results for description
+        results = results.filter((result) => result.field !== 'description');
 
-        results.push({ message: 'loan.creation.card.form.description-too-long', field: 'description' });
+        if (description?.length > 500) {
+
+          results.push({ message: 'loan.creation.card.form.description-too-long', field: 'description' });
+
+        }
 
       }
 
-    }
+      // Always check collection as it is a required field
+      // clear existing validation results for collection
+      results = results.filter((result) => result.field !== 'collection');
 
-    // Always check collection as it is a required field
-    // clear existing validation results for collection
-    results = results.filter((result) => result.field !== 'collection');
+      try {
 
-    try {
+        await collectionStore.get(collection);
 
-      new URL(collection);
+      } catch (error: unknown) {
 
-    } catch {
+        results.push({ message: 'loan.creation.card.form.invalid-collection-url', field: 'collection' });
 
-      results.push({ message: 'loan.creation.card.form.invalid-url', field: 'collection' });
+      }
 
-    }
+      return results;
 
-    return results;
+    };
 
   }
 
