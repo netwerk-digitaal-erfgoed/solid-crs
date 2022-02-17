@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent } from '../loan.events';
+import { Collection, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewEvent, ClickedRejectedLoanRequestEvent } from '../loan.events';
 import { LoanDetailComponent } from './loan-detail.component';
 
 describe('LoanDetailComponent', () => {
@@ -18,7 +18,17 @@ describe('LoanDetailComponent', () => {
     to: 'https://receiver.webid',
     createdAt: Date.now().toString(),
     collection: 'https://collection.uri',
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
   };
+
+  const mockCollection: Collection = {
+    name: 'collection',
+    description: 'description',
+    inbox: 'inbox',
+    publisher: 'publisher',
+    uri: 'https://uri.uri',
+    distribution: 'distribution',
+  } as any;
 
   const actor = new Promise((resolve) => resolve({ context: { loanRequest: undefined } }));
 
@@ -33,6 +43,8 @@ describe('LoanDetailComponent', () => {
 
   it('should instantiate', async () => {
 
+    component.loanRequest = mockLoanRequest;
+    component.collection = mockCollection;
     window.document.body.appendChild(component);
     await component.updateComplete;
 
@@ -79,11 +91,50 @@ describe('LoanDetailComponent', () => {
 
   });
 
+  describe('onImportCollection', () => {
+
+    it('should send new CustomEvent', () => {
+
+      component.loanRequest = {
+        ...mockLoanRequest,
+        type: 'https://www.w3.org/ns/activitystreams#Accept',
+      };
+
+      component.collection = mockCollection;
+      component.dispatchEvent = jest.fn();
+      component['onImportCollection']();
+      const expectedEvent = new CustomEvent<Collection>('import-collection', { detail: mockCollection });
+      expect(component.dispatchEvent).toHaveBeenCalledWith(expectedEvent);
+
+    });
+
+    it('should not send CustomEvent when this.loanRequest is undefined', () => {
+
+      component['onImportCollection']();
+      component.dispatchEvent = jest.fn();
+      expect(component.dispatchEvent).not.toHaveBeenCalled();
+
+    });
+
+  });
+
+  describe('onCancelImport', () => {
+
+    it('should send ClickedLoanRequestOverviewEvent', () => {
+
+      component['onCancelImport']();
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewEvent());
+
+    });
+
+  });
+
   describe('HTML', () => {
 
     it(`should render an nde-large-card`, async () => {
 
-      component['loanRequest'] = mockLoanRequest;
+      component.loanRequest = mockLoanRequest;
+      component.collection = mockCollection;
       window.document.body.appendChild(component);
       await component.updateComplete;
 
@@ -91,31 +142,19 @@ describe('LoanDetailComponent', () => {
 
     });
 
-    it('should call this.onRejectLoanRequest() when the reject button is clicked', async () => {
+    it(`should render different buttons when loanRequest.type = Accept `, async () => {
 
-      component['loanRequest'] = mockLoanRequest;
+      component.loanRequest = {
+        ...mockLoanRequest,
+        type: 'https://www.w3.org/ns/activitystreams#Accept',
+      };
+
+      component.collection = mockCollection;
       window.document.body.appendChild(component);
       await component.updateComplete;
 
-      const spy = jest.spyOn(component, 'onRejectLoanRequest');
-      const button: HTMLElement = component.shadowRoot.querySelector('button.gray');
-      button.click();
-
-      expect(spy).toHaveBeenCalledTimes(1);
-
-    });
-
-    it('should call this.onAcceptLoanRequest() when the accept button is clicked', async () => {
-
-      component['loanRequest'] = mockLoanRequest;
-      window.document.body.appendChild(component);
-      await component.updateComplete;
-
-      const spy = jest.spyOn(component, 'onAcceptLoanRequest');
-      const button: HTMLElement = component.shadowRoot.querySelector('button.primary');
-      button.click();
-
-      expect(spy).toHaveBeenCalledTimes(1);
+      expect(component.shadowRoot.querySelector('#button-container button.primary').innerHTML)
+        .toContain('loan.detail.card.import');
 
     });
 
