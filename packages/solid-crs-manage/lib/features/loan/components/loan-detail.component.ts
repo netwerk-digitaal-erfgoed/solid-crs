@@ -1,7 +1,7 @@
 import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
-import { Theme, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { LoanRequest, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Theme, Collection as CollectionSvg } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { LoanRequest, Logger, Translator, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormElementComponent, LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { from, map } from 'rxjs';
 import { define } from '@digita-ai/dgt-components';
@@ -9,11 +9,12 @@ import { Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { LoanContext } from '../loan.context';
 import { LoanState, LoanStateSchema } from '../loan.states';
-import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
 
 export class LoanDetailComponent extends RxLitElement {
 
   @state() loanRequest?: LoanRequest;
+  @state() collection?: Collection;
 
   constructor(
     private actor: Interpreter<LoanContext, LoanStateSchema, LoanEvent, LoanState>,
@@ -29,19 +30,39 @@ export class LoanDetailComponent extends RxLitElement {
       map((machineState) => machineState.context.loanRequest),
     ));
 
-  }
-
-  onRejectLoanRequest(): void {
-
-    if (this.loanRequest) this.actor.send(new ClickedRejectedLoanRequestEvent(this.loanRequest));
+    this.subscribe('collection', from(this.actor).pipe(
+      map((machineState) => machineState.context.collection),
+    ));
 
   }
 
-  onAcceptLoanRequest(): void {
+  onRejectLoanRequest = (): void => {
 
-    if (this.loanRequest) this.actor.send(new ClickedAcceptedLoanRequestEvent(this.loanRequest));
+    if (this.loanRequest) { this.actor.send(new ClickedRejectedLoanRequestEvent(this.loanRequest)); }
 
-  }
+  };
+
+  onAcceptLoanRequest = (): void =>  {
+
+    if (this.loanRequest) { this.actor.send(new ClickedAcceptedLoanRequestEvent(this.loanRequest)); }
+
+  };
+
+  onImportCollection = (): void =>  {
+
+    if (this.loanRequest?.type === 'https://www.w3.org/ns/activitystreams#Accept' && this.collection) {
+
+      this.dispatchEvent(new CustomEvent<Collection>('import-collection', { detail: this.collection }));
+
+    }
+
+  };
+
+  onCancelImport = (): void =>  {
+
+    this.actor.send(new ClickedLoanRequestOverviewEvent());
+
+  };
 
   /**
    * Renders the component as HTML.
@@ -50,17 +71,19 @@ export class LoanDetailComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const loanRequestType = this.loanRequest.type.split('#')[1].toLowerCase();
+
     return html`
       <nde-large-card .showImage="${false}" .showHeader="${false}">
         <div slot="content">
           <p>
-            ${ this.translator?.translate(`loan.detail.card.title-${this.loanRequest.type.split('#')[1].toLowerCase()}`)
+            ${ this.translator?.translate(`loan.detail.card.title-${loanRequestType}`)
     .replace('{{institution}}', this.loanRequest?.from)}
           </p>
           
           <div id="collection-container">
-            <div>${unsafeSVG(Collection)}</div>
-            <a href="${this.loanRequest?.collection}">${this.loanRequest?.collection}</a>
+            <div>${unsafeSVG(CollectionSvg)}</div>
+            <a href="${this.collection?.uri}">${this.collection?.name}</a>
           </div>
 
           <nde-form-element .showLabel="${true}" .showValidation="${false}" field="description">
@@ -70,14 +93,27 @@ export class LoanDetailComponent extends RxLitElement {
             <textarea slot="input" readonly>${this.loanRequest?.description ?? ''}</textarea>
           </nde-form-element>
 
+          ${ this.loanRequest.type === 'https://www.w3.org/ns/activitystreams#Accept'? html`
           <div id="button-container">
-            <button class="gray" @click="${() => this.onRejectLoanRequest()}">
+            <button class="gray" @click="${this.onCancelImport}">
+              ${this.translator?.translate('loan.detail.card.cancel')}
+            </button>
+            <button class="primary" @click="${this.onImportCollection}">
+              ${this.translator?.translate('loan.detail.card.import')}
+            </button>
+          </div>
+          ` : html`
+          <div id="button-container">
+            <button class="gray" @click="${this.onRejectLoanRequest}">
               ${this.translator?.translate('loan.detail.card.reject')}
             </button>
-            <button class="primary" @click="${() => this.onAcceptLoanRequest()}">
+            <button class="primary" @click="${this.onAcceptLoanRequest}">
               ${this.translator?.translate('loan.detail.card.accept')}
             </button>
           </div>
+          `}
+
+          
         </div>
       </nde-large-card>
     `;

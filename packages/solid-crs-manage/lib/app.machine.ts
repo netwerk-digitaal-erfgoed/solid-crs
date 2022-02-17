@@ -3,7 +3,7 @@ import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, S
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
-import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession, ClickedCreateCollectionEvent } from './app.events';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
@@ -323,6 +323,7 @@ export const appMachine = (
           },
           [AppFeatureStates.LOAN]: {
             id: AppFeatureStates.LOAN,
+            entry: send(new NavigatedEvent(`/loan`)),
             on: {
               [CollectionEvents.SELECTED_COLLECTION]: {
                 target: AppFeatureStates.COLLECTION,
@@ -569,7 +570,8 @@ export const appMachine = (
               /**
                * Save collection to the store.
                */
-              src: () => collectionStore.save(collectionTemplate),
+              src: (c, event: ClickedCreateCollectionEvent) =>
+                collectionStore.save(event.collection ?? collectionTemplate),
               onDone: {
                 target: [ AppDataStates.IDLE ],
                 actions: [

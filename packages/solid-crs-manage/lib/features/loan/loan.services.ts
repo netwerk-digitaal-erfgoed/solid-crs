@@ -6,6 +6,29 @@ import { LoanContext } from './loan.context';
 import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 
 /**
+ * Creates a notification body in text/turtle
+ */
+const createNotificationBody = (notificationArgs: {
+  inbox: string;
+  notificationId: string;
+  type: string;
+  summary: string;
+  actor: string;
+  target: string;
+  object: string;
+  origin?: string;
+}): string => `@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${notificationArgs.inbox}${notificationArgs.notificationId}>
+  a <${notificationArgs.type}> ;
+  as:summary "${notificationArgs.summary}" ;
+  as:actor <${notificationArgs.actor}> ;
+  as:target <${notificationArgs.target}> ;
+  as:object <${notificationArgs.object}> ;
+  as:origin <${notificationArgs.origin ?? `${process.env.VITE_WEBID_URI}collectiebeheersysteem`}> .
+`;
+
+/**
  * Sends a new loan request LDN to a heritage institution
  *
  * @param loanRequest the loanRequest to create / send
@@ -31,16 +54,15 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
 
   const notificationId = v4();
 
-  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
-
-<${targetInbox}${notificationId}>
-  a as:Offer ;
-  as:summary "Bruikleen aanvraag" ;
-  as:actor <${context.solidService.getDefaultSession().info.webId}> ;
-  as:target <${target}> ;
-  as:object <${collectionUri}> ;
-  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
-`;
+  const body = createNotificationBody({
+    inbox: targetInbox,
+    notificationId,
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
+    summary: 'Bruikleen aanvraag',
+    actor: context.solidService.getDefaultSession().info.webId,
+    target,
+    object: collectionUri,
+  });
 
   const response = await fetch(targetInbox, {
     method: 'POST',
@@ -53,6 +75,7 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
 
   return {
     collection: collectionUri,
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
     createdAt: '',
     from: context.solidService.getDefaultSession().info.webId,
     to: target,
@@ -149,24 +172,24 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
   // eslint-disable-next-line no-console
   console.log('Sending loan request rejection notif');
 
-  // retrieve necessary collection information
-  const {
-    uri: collectionUri,
-    inbox: targetInbox,
-  } = await context.collectionStore.get(event.loanRequest.collection);
+  // retrieve response inbox location
+  // use the requester's catalog inbox as target for responses
+  const catalogUri = await context.collectionStore.getInstanceForClass(event.loanRequest.from, 'http://schema.org/DataCatalog');
+  const catalogDataset = await getSolidDataset(catalogUri);
+  const catalogThing = getThing(catalogDataset, catalogUri);
+  const targetInbox = getUrl(catalogThing, 'http://www.w3.org/ns/ldp#inbox');
 
   const notificationId = v4();
 
-  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
-
-<${targetInbox}${notificationId}>
-  a as:Accept ;
-  as:summary "Bruikleen aanvraag geaccepteerd" ;
-  as:actor <${context.loanRequest.to}> ;
-  as:target <${context.loanRequest.from}> ;
-  as:object <${collectionUri}> ;
-  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
-`;
+  const body = createNotificationBody({
+    inbox: targetInbox,
+    notificationId,
+    type: 'https://www.w3.org/ns/activitystreams#Accept',
+    summary: 'Bruikleen aanvraag geaccepteerd',
+    actor: context.loanRequest.to,
+    target: context.loanRequest.from,
+    object: collectionUri,
+  });
 
   const response = await fetch(targetInbox, {
     method: 'POST',
@@ -179,6 +202,7 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
 
   return {
     collection: collectionUri,
+    type: 'https://www.w3.org/ns/activitystreams#Accept',
     createdAt: '',
     from: context.loanRequest.to,
     to: context.loanRequest.from,
@@ -217,16 +241,15 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
 
   const notificationId = v4();
 
-  const body = `@prefix as: <https://www.w3.org/ns/activitystreams#> .
-
-<${targetInbox}${notificationId}>
-  a as:Reject ;
-  as:summary "Bruikleen aanvraag geweigerd" ;
-  as:actor <${context.loanRequest.to}> ;
-  as:target <${context.loanRequest.from}> ;
-  as:object <${collectionUri}> ;
-  as:origin <${process.env.VITE_WEBID_URI}collectiebeheersysteem> .
-`;
+  const body = createNotificationBody({
+    inbox: targetInbox,
+    notificationId,
+    type: 'https://www.w3.org/ns/activitystreams#Reject',
+    summary: 'Bruikleen aanvraag geweigerd',
+    actor: context.loanRequest.to,
+    target: context.loanRequest.from,
+    object: collectionUri,
+  });
 
   const response = await context.solidService.getDefaultSession().fetch(targetInbox, {
     method: 'POST',
@@ -239,6 +262,7 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
 
   return {
     collection: collectionUri,
+    type: 'https://www.w3.org/ns/activitystreams#Reject',
     createdAt: '',
     from: context.loanRequest.to,
     to: context.loanRequest.from,

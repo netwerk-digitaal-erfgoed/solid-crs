@@ -153,7 +153,7 @@ export class LoanCreationComponent extends RxLitElement {
           ${this.translator?.translate('loan.creation.card.cancel')}
         </button>
         <button class="primary"
-          @click="${() => this.onConfirmLoanRequestCreation()}"
+          @click="${this.onConfirmLoanRequestCreation}"
           ?disabled="${!this.validForm}"
         >
           ${this.translator?.translate('loan.creation.card.confirm')}

@@ -6,7 +6,7 @@ export interface LoanRequest {
   /**
    *
    */
-  type: 'https://www.w3.org/ns/activitystreams#Reject' | 'https://www.w3.org/ns/activitystreams#Offer';
+  type: 'https://www.w3.org/ns/activitystreams#Accept' | 'https://www.w3.org/ns/activitystreams#Reject' | 'https://www.w3.org/ns/activitystreams#Offer';
   /**
    * The uri of the requested collection
    */

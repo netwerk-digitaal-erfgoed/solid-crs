@@ -1,8 +1,8 @@
 import { assign, DoneInvokeEvent, MachineConfig } from 'xstate';
 import { log } from 'xstate/lib/actions';
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanContext } from './loan.context';
-import { LoanEvent, LoanEvents } from './loan.events';
+import { ClickedLoanRequestDetailEvent, LoanEvent, LoanEvents } from './loan.events';
 import * as services from './loan.services';
 import { LoanStates, LoanStateSchema } from './loan.states';
 
@@ -13,11 +13,24 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
       invoke: {
         src: services.loadRequests,
         onDone: {
-          actions: assign({ loanRequests: (context, event: DoneInvokeEvent<LoanRequest[]>) => event.data }),
+          actions: assign({ loanRequests: (c, event: DoneInvokeEvent<LoanRequest[]>) => event.data }),
           target: LoanStates.LOAN_REQUEST_OVERVIEW,
         },
         onError: {
           actions: log((c, e) => `Error Loading Request: ${e.data}`),
+        },
+      },
+    },
+    [LoanStates.LOADING_COLLECTION]: {
+      invoke: {
+        src: (context, event: ClickedLoanRequestDetailEvent) =>
+          context.collectionStore.get(event.loanRequest.collection),
+        onDone: {
+          actions: assign({ collection: (c, event: DoneInvokeEvent<Collection>) => event.data }),
+          target: LoanStates.LOAN_REQUEST_DETAIL,
+        },
+        onError: {
+          actions: log((c, e) => `Error Loading Collection: ${e.data}`),
         },
       },
     },
@@ -27,8 +40,8 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
           target: LoanStates.LOAN_REQUEST_CREATION,
         },
         [LoanEvents.CLICKED_LOAN_REQUEST_DETAIL]: {
-          actions: assign({ loanRequest: (context, event) => event.loanRequest }),
-          target: LoanStates.LOAN_REQUEST_DETAIL,
+          actions: assign({ loanRequest: (c, event) => event.loanRequest }),
+          target: LoanStates.LOADING_COLLECTION,
         },
       },
     },
@@ -38,7 +51,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
           target: LoanStates.LOAN_REQUEST_CREATION,
         },
         [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOADING_LOAN_REQUESTS,
         },
         [LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST]: {
           target: LoanStates.ACCEPTING_LOAN_REQUEST,
@@ -51,7 +64,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     [LoanStates.LOAN_REQUEST_CREATION]: {
       on: {
         [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOADING_LOAN_REQUESTS,
         },
         [LoanEvents.CLICKED_SEND_LOAN_REQUEST]: {
           target: LoanStates.SENDING_LOAN_REQUEST,

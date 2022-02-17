@@ -4,7 +4,7 @@ import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
 import { from, map } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator, CollectionStore, LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore, LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
@@ -63,6 +63,12 @@ export class LoanRootComponent extends RxLitElement {
     this.actor.send(new ClickedLoanRequestOverviewEvent());
 
   }
+
+  onImportCollection = (event: CustomEvent<Collection>): void =>  {
+
+    this.dispatchEvent(new CustomEvent('import-collection', { detail: event.detail }));
+
+  };
 
   /**
    * Renders the component as HTML.
@@ -129,7 +135,7 @@ export class LoanRootComponent extends RxLitElement {
         <div id="content">
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) ? html`<nde-loan-overview-component></nde-loan-overview-component>` : ''}
           ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
-          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component></nde-loan-detail-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component @import-collection="${this.onImportCollection}"></nde-loan-detail-component>` : ''}
         </div>
       </div>
     `;

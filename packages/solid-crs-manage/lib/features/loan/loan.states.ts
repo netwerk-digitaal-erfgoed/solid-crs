@@ -30,6 +30,10 @@ export enum LoanStates {
    * The user has rejected a request and the relevant code being executed
    */
   REJECTING_LOAN_REQUEST = '[LoanState: Rejecting Loan Request]',
+  /**
+   * Load the loan request collection
+   */
+  LOADING_COLLECTION = '[LoanState: Loading Collection]',
 }
 
 export type LoanState = {

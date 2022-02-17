@@ -319,6 +319,8 @@
                 "title-reject": "{{institution}} weigerde je aanvraag tot bruikleen voor de volgende collectie",
                 "title-accept": "{{institution}} accepteerde je aanvraag tot bruikleen voor de volgende collectie",
                 "description": "Opmerkingen",
+                "import": "Importeren",
+                "cancel": "Annuleren",
                 "accept": "Goedkeuren",
                 "reject": "Afwijzen"
             }

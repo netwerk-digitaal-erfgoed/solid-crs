@@ -93,6 +93,7 @@ export class LoggedInEvent implements EventObject {
 export class ClickedCreateCollectionEvent implements EventObject {
 
   public type: AppEvents.CLICKED_CREATE_COLLECTION = AppEvents.CLICKED_CREATE_COLLECTION;
+  constructor(public collection?: Collection) { }
 
 }
 
