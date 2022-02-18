@@ -1,19 +1,21 @@
-import { html, css, TemplateResult, CSSResult, unsafeCSS, state } from 'lit-element';
+import { html, css, TemplateResult, CSSResult, unsafeCSS, property, state } from 'lit-element';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Caret, Empty } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { LoanRequest, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Interpreter } from 'xstate';
-import { from, map } from 'rxjs';
+import { Interpreter, State } from 'xstate';
 import { define } from '@digita-ai/dgt-components';
 import { LargeCardComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { from } from 'rxjs';
 import { LoanContext } from '../loan.context';
-import { LoanState, LoanStateSchema } from '../loan.states';
+import { LoanState, LoanStates, LoanStateSchema } from '../loan.states';
 import { ClickedLoanRequestDetailEvent, LoanEvent } from '../loan.events';
 
 export class LoanOverviewComponent extends RxLitElement {
 
-  @state() loanRequests?: LoanRequest[];
+  @property() loanRequests?: LoanRequest[];
+
+  @state() state?: State<LoanContext, LoanEvent, LoanStateSchema, LoanState>;
 
   constructor(
     private actor: Interpreter<LoanContext, LoanStateSchema, LoanEvent, LoanState>,
@@ -24,9 +26,7 @@ export class LoanOverviewComponent extends RxLitElement {
     super();
     define('nde-large-card', LargeCardComponent);
 
-    this.subscribe('loanRequests', from(this.actor).pipe(
-      map((machineState) => machineState.context.loanRequests),
-    ));
+    this.subscribe('state', from(this.actor));
 
   }
 
@@ -58,7 +58,14 @@ export class LoanOverviewComponent extends RxLitElement {
       ` : html`
         <div class="empty">
           ${unsafeSVG(Empty)}
-          <span> ${ this.translator?.translate('loan.overview.empty.message')} </span>
+          <span>
+            ${ this.state?.matches(LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING) ? html`
+              ${ this.translator?.translate('loan.overview.empty.message-incoming')}
+            ` : ''}
+            ${ this.state?.matches(LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED) ? html`
+              ${ this.translator?.translate('loan.overview.empty.message-accepted')}
+            ` : ''}
+          </span>
         </div>
       `}
     `;

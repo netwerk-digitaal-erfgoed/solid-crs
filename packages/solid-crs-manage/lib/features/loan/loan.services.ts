@@ -89,6 +89,25 @@ export const createRequest = async (context: LoanContext, event: LoanEvent): Pro
  */
 export const loadRequests = async (context: LoanContext, event: LoanEvent): Promise<LoanRequest[]> => {
 
+  return [ {
+    uri: 'https://crs.crs',
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
+    collection: 'https://belgiannoise.solidcommunity.net/heritage-collections/catalog#collection-b922b0d8-ac42-4742-92da-a3e6706db07f',
+    createdAt: Date.now().toString(),
+    from: 'https://from.id',
+    to: 'https://belgiannoise.solidcommunity.net/profile/card#me',
+    description: 'test',
+  },
+  {
+    uri: 'https://crs.crs',
+    type: 'https://www.w3.org/ns/activitystreams#Accept',
+    collection: 'https://belgiannoise.solidcommunity.net/heritage-collections/catalog#collection-b922b0d8-ac42-4742-92da-a3e6706db07f',
+    createdAt: Date.now().toString(),
+    from: 'https://from.id',
+    to: 'https://belgiannoise.solidcommunity.net/profile/card#me',
+    description: 'test',
+  } ];
+
   // eslint-disable-next-line no-console
   console.log('Loading Requests');
 

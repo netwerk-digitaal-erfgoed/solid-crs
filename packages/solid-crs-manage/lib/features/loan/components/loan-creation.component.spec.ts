@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, FormSubmissionStates, FormSubmittedEvent, FormUpdatedEvent, hydrate } from '@digita-ai/dgt-components';
 import { CollectionStore, ConsoleLogger, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { ClickedLoanRequestOverviewEvent, ClickedSendLoanRequestEvent } from '../loan.events';
+import { ClickedLoanRequestOverviewIncomingEvent, ClickedSendLoanRequestEvent } from '../loan.events';
 import { LoanCreationComponent } from './loan-creation.component';
 
 describe('LoanCreationComponent', () => {
@@ -135,7 +135,7 @@ describe('LoanCreationComponent', () => {
     it('should send ClickedLoanRequestOverviewEvent', () => {
 
       component['onCancelLoanRequestCreation']();
-      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewEvent());
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewIncomingEvent());
 
     });
 

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
 import { Collection, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewEvent, ClickedRejectedLoanRequestEvent } from '../loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedRejectedLoanRequestEvent } from '../loan.events';
 import { LoanDetailComponent } from './loan-detail.component';
 
 describe('LoanDetailComponent', () => {
@@ -123,7 +123,7 @@ describe('LoanDetailComponent', () => {
     it('should send ClickedLoanRequestOverviewEvent', () => {
 
       component['onCancelImport']();
-      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewEvent());
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewAcceptedEvent());
 
     });
 

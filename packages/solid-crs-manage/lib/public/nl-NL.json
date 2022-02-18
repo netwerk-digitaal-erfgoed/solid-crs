@@ -307,7 +307,8 @@
                 "hover-title": "Klik voor meer details ..."
             },
             "empty": {
-                "message": "Er zijn op dit moment geen inkomende aanvragen."
+                "message-incoming": "Er zijn op dit moment geen inkomende aanvragen.",
+                "message-accepted": "Er zijn op dit moment geen goedgekeurde aanvragen."
             }
         },
         "detail": {

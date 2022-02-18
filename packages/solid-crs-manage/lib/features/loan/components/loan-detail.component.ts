@@ -9,7 +9,7 @@ import { Interpreter } from 'xstate';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { LoanContext } from '../loan.context';
 import { LoanState, LoanStateSchema } from '../loan.states';
-import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewAcceptedEvent, ClickedRejectedLoanRequestEvent, LoanEvent } from '../loan.events';
 
 export class LoanDetailComponent extends RxLitElement {
 
@@ -60,7 +60,7 @@ export class LoanDetailComponent extends RxLitElement {
 
   onCancelImport = (): void =>  {
 
-    this.actor.send(new ClickedLoanRequestOverviewEvent());
+    this.actor.send(new ClickedLoanRequestOverviewAcceptedEvent());
 
   };
 
