@@ -305,6 +305,9 @@
                 "title-reject": "Aanvraag tot bruikleen geweigerd",
                 "title-accept": "Aanvraag tot bruikleen geaccepteerd",
                 "hover-title": "Klik voor meer details ..."
+            },
+            "empty": {
+                "message": "Er zijn op dit moment geen inkomende aanvragen."
             }
         },
         "detail": {
@@ -336,7 +339,7 @@
                 "confirm": "Bevestigen",
                 "form": {
                     "description-too-long": "Uw opmerking mag maximaal 500 tekens bevatten",
-                    "invalid-url": "Geef een geldige URL in"
+                    "invalid-collection-url": "Geef een geldige URL in van een collectie"
                 }
             }
         },

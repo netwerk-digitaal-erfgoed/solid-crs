@@ -18,6 +18,7 @@ describe('LoanOverviewComponent', () => {
     to: 'https://receiver.webid',
     createdAt: Date.now().toString(),
     collection: 'https://collection.uri',
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
   };
 
   const actor = new Promise((resolve) => resolve({ context: { loanRequests: [] } }));
@@ -60,6 +61,18 @@ describe('LoanOverviewComponent', () => {
       window.document.body.appendChild(component);
       await component.updateComplete;
 
+      expect(component.shadowRoot.querySelectorAll('nde-large-card')).toHaveLength(component['loanRequests'].length);
+      expect(component.shadowRoot.querySelector('.empty')).toBe(null);
+
+    });
+
+    it('should render the .empty container when there are no requests', async () => {
+
+      component['loanRequests'] = [ ];
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(component.shadowRoot.querySelector('.empty')).toBeDefined();
       expect(component.shadowRoot.querySelectorAll('nde-large-card')).toHaveLength(component['loanRequests'].length);
 
     });

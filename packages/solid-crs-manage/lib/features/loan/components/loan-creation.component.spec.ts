@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
-import { define, FormCleanlinessStates, FormRootStates, FormSubmissionStates, FormSubmittedEvent, FormUpdatedEvent, FormValidationStates, hydrate } from '@digita-ai/dgt-components';
-import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestOverviewEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent } from '../loan.events';
+import { define, FormSubmissionStates, FormSubmittedEvent, FormUpdatedEvent, hydrate } from '@digita-ai/dgt-components';
+import { CollectionStore, ConsoleLogger, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ClickedLoanRequestOverviewEvent, ClickedSendLoanRequestEvent } from '../loan.events';
 import { LoanCreationComponent } from './loan-creation.component';
 
 describe('LoanCreationComponent', () => {
@@ -69,16 +69,20 @@ describe('LoanCreationComponent', () => {
 
     const ctx = { data: { collection: 'https://collection.co', description: 'description' } };
 
+    const collectionStoreMock: CollectionStore = {
+      get: jest.fn(),
+    } as any;
+
     it('should return an empty array when no errors occur', async () => {
 
-      const result = component['formValidator'](
+      const result = component.formValidator(collectionStoreMock)(
         ctx,
         { field: 'collection' } as any
       );
 
       await expect(result).resolves.toHaveLength(0);
 
-      const result2 = component['formValidator'](
+      const result2 = component.formValidator(collectionStoreMock)(
         ctx,
         { field: 'description' } as any
       );
@@ -89,7 +93,7 @@ describe('LoanCreationComponent', () => {
 
     it('should return an empty array when context.data is undefined', async () => {
 
-      const result = component['formValidator'](
+      const result = component.formValidator(collectionStoreMock)(
         { data: undefined },
         { field: 'collection' } as any
       );
@@ -100,7 +104,7 @@ describe('LoanCreationComponent', () => {
 
     it('should return an error message for the description field when the string is over 500 characters', async () => {
 
-      const result = component['formValidator'](
+      const result = component.formValidator(collectionStoreMock)(
         { data: { ...ctx.data, description: 'A'.repeat(501) } },
         { field: 'description' } as any
       );
@@ -110,9 +114,11 @@ describe('LoanCreationComponent', () => {
 
     });
 
-    it('should return an error message for the collection field when the string is not a valid URL', async () => {
+    it('should return an error message for collection when the collectionStore errors', async () => {
 
-      const result = component['formValidator'](
+      const result = component.formValidator({
+        get: jest.fn(() => { throw new Error(); }),
+      } as any)(
         { data: { ...ctx.data, collection: 'not-a-url' } },
         { field: 'collection' } as any
       );
@@ -151,41 +157,41 @@ describe('LoanCreationComponent', () => {
 
     it('should call this.onCancelLoanRequestCreation() when the cancel button is clicked', async () => {
 
+      component.onCancelLoanRequestCreation = jest.fn();
       window.document.body.appendChild(component);
       await component.updateComplete;
 
-      const spy = jest.spyOn(component, 'onCancelLoanRequestCreation');
       const button: HTMLElement = component.shadowRoot.querySelector('button.gray');
       button.click();
 
-      expect(spy).toHaveBeenCalledTimes(1);
+      expect(component.onCancelLoanRequestCreation).toHaveBeenCalledTimes(1);
 
     });
 
     it('should call this.onConfirmLoanRequestCreation() when the confirm button is clicked and the form in valid', async () => {
 
+      component.onConfirmLoanRequestCreation = jest.fn();
       window.document.body.appendChild(component);
       component.validForm = true;
       await component.updateComplete;
 
-      const spy = jest.spyOn(component, 'onConfirmLoanRequestCreation');
       const button: HTMLElement = component.shadowRoot.querySelector('button.primary');
       button.click();
 
-      expect(spy).toHaveBeenCalledTimes(1);
+      expect(component.onConfirmLoanRequestCreation).toHaveBeenCalledTimes(1);
 
     });
 
     it('should not call this.onConfirmLoanRequestCreation() when the confirm button is clicked and the form is invalid', async () => {
 
+      component.onConfirmLoanRequestCreation = jest.fn();
       window.document.body.appendChild(component);
       await component.updateComplete;
 
-      const spy = jest.spyOn(component, 'onConfirmLoanRequestCreation');
       const button: HTMLElement = component.shadowRoot.querySelector('button.primary');
       button.click();
 
-      expect(spy).toHaveBeenCalledTimes(0);
+      expect(component.onConfirmLoanRequestCreation).toHaveBeenCalledTimes(0);
 
     });
 
