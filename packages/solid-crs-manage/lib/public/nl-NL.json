@@ -285,7 +285,7 @@
     "loan": {
         "root": {
             "header": {
-                "title": "Bruikleen"
+                "title-default": "Bruikleen"
             },
             "sidebar": {
                 "send-request": "Aanvraag verzenden",
@@ -299,14 +299,37 @@
         "overview": {
             "header": {
                 "subtitle": "Goedkeuren van aanvragen tot bruikleen"
+            },
+            "card": {
+                "title": "Aanvraag tot bruikleen",
+                "hover-title": "Klik voor meer details ..."
             }
         },
         "detail": {
-
+            "header": {
+                "title": "Aanvraag tot bruikleen",
+                "subtitle": "{{institution}}"
+            },
+            "card": {
+                "title": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "description": "Opmerkingen",
+                "accept": "Goedkeuren",
+                "reject": "Afwijzen"
+            }
         },
         "creation": {
             "header": {
                 "subtitle": "Nieuwe aanvraag tot bruikleen"
+            },
+            "card": {
+                "description": "Opmerkingen",
+                "enter-collection": "Geef de url van een collectie in",
+                "cancel": "Annuleren",
+                "confirm": "Bevestigen",
+                "form": {
+                    "description-too-long": "Uw opmerking mag maximaal 500 tekens bevatten",
+                    "invalid-url": "Geef een geldige URL in"
+                }
             }
         },
         "accepted": {

@@ -43,7 +43,6 @@ describe('LoanRootComponent', () => {
 
       component['actor'].send = jest.fn();
       component['onNewLoanRequest']();
-
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedNewLoanRequestEvent());
 
     });
@@ -56,7 +55,6 @@ describe('LoanRootComponent', () => {
 
       component['actor'].send = jest.fn();
       component['onLoanRequestOverview']();
-
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewEvent());
 
     });

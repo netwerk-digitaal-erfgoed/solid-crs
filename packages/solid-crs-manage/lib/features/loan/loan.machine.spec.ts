@@ -196,7 +196,7 @@ describe('loanMachine', () => {
 
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) && initialOverviewLoaded) return resolve();
 
-          if(state.matches(LoanStates.LOAN_REQUEST_CREATION)) return machine.send(new ClickedSendLoanRequestEvent(mockLoanRequest));
+          if(state.matches(LoanStates.LOAN_REQUEST_CREATION)) return machine.send(new ClickedSendLoanRequestEvent({ collection: mockLoanRequest.collection, description: mockLoanRequest.description }));
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) initialOverviewLoaded = true;
           if(state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)) return machine.send(new ClickedNewLoanRequestEvent());
           if(state.matches(LoanStates.SENDING_LOAN_REQUEST)) return;
