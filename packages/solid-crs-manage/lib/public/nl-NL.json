@@ -57,7 +57,12 @@
             "representation": "Voorstelling",
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
-            "other": "Overige"
+            "other": "Overige",
+            "updates": "Updates"
+        },
+        "updates": {
+            "edited-this-object": "{{institution}} paste dit object aan",
+            "see-changes": "Bekijk de aanpassingen"
         },
         "card": {
             "image": {
