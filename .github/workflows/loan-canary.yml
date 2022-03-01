@@ -25,10 +25,10 @@ jobs:
       - name: Set variables
         id: vars
         run: |
-          echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-loans-manage"
-          echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-loans-presentation"
-          echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-loans-semcom-node"
-          echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-loans-semcom-components"
+          echo "::set-output name=image_manage::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-manage"
+          echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-presentation"
+          echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
+          echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
 
   perform-checks:
 
@@ -109,7 +109,7 @@ jobs:
           context: packages/solid-crs-manage/
           push: true
           tags: |
-            ${{ needs.variables.outputs.image_manage }}:latest
+            ${{ needs.variables.outputs.image_manage }}:loans
             ${{ needs.variables.outputs.image_manage }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
@@ -120,7 +120,7 @@ jobs:
           context: packages/solid-crs-presentation/
           push: true
           tags: |
-            ${{ needs.variables.outputs.image_presentation }}:latest
+            ${{ needs.variables.outputs.image_presentation }}:loans
             ${{ needs.variables.outputs.image_presentation }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
@@ -131,7 +131,7 @@ jobs:
           context: packages/solid-crs-semcom-node/
           push: true
           tags: |
-            ${{ needs.variables.outputs.image_semcom_node }}:latest
+            ${{ needs.variables.outputs.image_semcom_node }}:loans
             ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
@@ -142,7 +142,7 @@ jobs:
           context: packages/solid-crs-semcom-components/
           push: true
           tags: |
-            ${{ needs.variables.outputs.image_semcom_components }}:latest
+            ${{ needs.variables.outputs.image_semcom_components }}:loans
             ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.publish-npm.outputs.version }}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
@@ -157,10 +157,10 @@ jobs:
       # See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
       - name: Update deployment
         run: |
-          kubectl set image deployment/solid-crs-loans-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.publish-npm.outputs.version }} --record
-          kubectl set image deployment/solid-crs-loans-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.publish-npm.outputs.version }} --record
-          kubectl set image deployment/solid-crs-loans-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.publish-npm.outputs.version }} --record
-          kubectl set image deployment/solid-crs-loans-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.publish-npm.outputs.version }} --record
+          kubectl set image deployment/solid-crs-loans-manage app=${{ needs.variables.outputs.image_manage }}:loans --record
+          kubectl set image deployment/solid-crs-loans-presentation app=${{ needs.variables.outputs.image_presentation }}:loans --record
+          kubectl set image deployment/solid-crs-loans-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:loans --record
+          kubectl set image deployment/solid-crs-loans-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:loans --record
 
       - name: Verify deployment
         run: |
