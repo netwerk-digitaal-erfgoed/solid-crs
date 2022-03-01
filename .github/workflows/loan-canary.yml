@@ -164,7 +164,7 @@ jobs:
 
       - name: Verify deployment
         run: |
-          kubectl rollout status deployment/solid-crs-manage
-          kubectl rollout status deployment/solid-crs-presentation
-          kubectl rollout status deployment/solid-crs-semcom-node
-          kubectl rollout status deployment/solid-crs-semcom-components
+          kubectl rollout status deployment/solid-crs-loans-manage
+          kubectl rollout status deployment/solid-crs-loans-presentation
+          kubectl rollout status deployment/solid-crs-loans-semcom-node
+          kubectl rollout status deployment/solid-crs-loans-semcom-components
