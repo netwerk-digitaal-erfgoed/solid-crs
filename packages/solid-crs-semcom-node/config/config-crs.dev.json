@@ -69,6 +69,17 @@
             "ComponentMetadata:_tag": "nde-object-dimensions",
             "ComponentMetadata:_version": "0.1.0",
             "ComponentMetadata:_latest": true
+          },
+          {
+            "@type": "ComponentMetadata",
+            "ComponentMetadata:_description": "Digita SemCom component voor bruikleen informatie.",
+            "ComponentMetadata:_label": "Erfgoedobject bruikleen",
+            "ComponentMetadata:_uri": "http://localhost:3004/object-loan.component.js",
+            "ComponentMetadata:_shapes": "http://xmlns.com/foaf/0.1/PersonalProfileDocument",
+            "ComponentMetadata:_author": "https://digita.ai",
+            "ComponentMetadata:_tag": "nde-object-loan",
+            "ComponentMetadata:_version": "0.1.0",
+            "ComponentMetadata:_latest": true
           }
         ]
       }
