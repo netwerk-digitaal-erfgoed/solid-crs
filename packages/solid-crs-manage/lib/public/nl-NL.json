@@ -57,7 +57,8 @@
             "representation": "Voorstelling",
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
-            "other": "Overige"
+            "other": "Overige",
+            "loan": "Bruikleen"
         },
         "card": {
             "image": {
@@ -202,6 +203,17 @@
                     "unit": {
                         "title": "Eenheid"
                     }
+                }
+            },
+            "loan": {
+                "title": "Bruikleen",
+                "subtitle": {
+                    "owner": "Uitgeleend object.",
+                    "loanee": "Dit object wordt uitgeleend door <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>"
+                },
+                "content": {
+                    "loaned-to": "Dit object is uitgeleend aan erfgoedinstelling <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>",
+                    "see-changes": "Aangepast object bekijken"
                 }
             }
         }
