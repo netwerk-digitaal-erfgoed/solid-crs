@@ -2,7 +2,7 @@ import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import fetchMock from 'jest-fetch-mock';
-import { DismissAlertEvent } from './app.events';
+import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
 
@@ -92,6 +92,20 @@ describe('AppRootComponent', () => {
 
     expect(sidebar).toBeTruthy();
     expect(sidebar.length).toBe(1);
+
+  });
+
+  it('should send ClickedHomeEvent when about page is clicked', async () => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.actor.send = jest.fn();
+
+    const header = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelector<HTMLElement>('nde-content-header');
+    header.click();
+
+    expect(component.actor.send).toHaveBeenCalledWith(new ClickedHomeEvent());
 
   });
 

@@ -15,6 +15,8 @@ import { CollectionEvents } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
+import { LoanRootComponent } from './features/loan/loan-root.component';
+import { ClickedLoanRequestOverviewEvent } from './features/loan/loan.events';
 
 /**
  * The root page of the application.
@@ -91,6 +93,7 @@ export class AppRootComponent extends RxLitElement {
     super();
 
     define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
+    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger));
 
   }
 
@@ -254,6 +257,12 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
+  onLoanRequestOverview(): void {
+
+    this.actor.send(new ClickedLoanRequestOverviewEvent());
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -295,6 +304,16 @@ export class AppRootComponent extends RxLitElement {
           </nde-form-element>
         </div>
       </nde-sidebar-item>
+      <nde-sidebar-item .padding="${false}">
+        <nde-sidebar-list slot="content">
+          <nde-sidebar-list-item slot="item" inverse
+            ?selected="${this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN })}"
+            @click="${this.onLoanRequestOverview}"
+          >
+            <div slot="title">${this.translator?.translate('navigation.loan')}</div>
+          </nde-sidebar-list-item>
+        </nde-sidebar-list>
+      </nde-sidebar-item>
       <nde-sidebar-item .padding="${false}" .showBorder="${false}">
         <nde-sidebar-list slot="content">
           <nde-sidebar-list-item slot="title" isTitle inverse>
@@ -317,6 +336,7 @@ export class AppRootComponent extends RxLitElement {
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
+    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN }) ? html`<nde-loan-root></nde-loan-root>` : '' }  
     ` }  
   
     `;
