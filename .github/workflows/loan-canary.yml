@@ -16,7 +16,6 @@ jobs:
     name: Set variables
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.vars.outputs.tag }}
       image_manage: ${{ steps.vars.outputs.image_manage }}
       image_presentation: ${{ steps.vars.outputs.image_presentation }}
       image_semcom_node: ${{ steps.vars.outputs.image_semcom_node }}
@@ -84,7 +83,7 @@ jobs:
   publish-docker:
 
     name: Publish docker images
-    needs: publish-npm
+    needs: [variables, publish-npm]
     runs-on: ubuntu-latest
     
     steps:
