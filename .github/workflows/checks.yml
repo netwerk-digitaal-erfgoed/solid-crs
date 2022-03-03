@@ -15,7 +15,7 @@ on:
 
   workflow_call:
     secrets: 
-      GA_TOKEN:
+      DIGITA_PACKAGES:
         required: true
 
 jobs:
