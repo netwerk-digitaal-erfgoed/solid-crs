@@ -68,7 +68,7 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client)/)"
+      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client|@netwerk-digitaal-erfgoed/solid-crs-client)/)"
     ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
