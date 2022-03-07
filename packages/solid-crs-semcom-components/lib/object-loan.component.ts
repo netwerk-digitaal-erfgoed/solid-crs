@@ -25,7 +25,7 @@ export class ObjectLoanComponent extends RxLitElement {
         <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.owner')}</div>
         ` : html`
         <div slot="subtitle">
-          ${unsafeHTML(this.translator?.translate('object.card.loan.subtitle.loanee').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
+          ${unsafeHTML(this.translator?.translate('object.card.loan.subtitle.lender').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
         </div>
       `}
       <div slot="icon">
@@ -34,7 +34,7 @@ export class ObjectLoanComponent extends RxLitElement {
       ${ this.isOwner ? html` 
         <div slot="content">
           <p>
-            ${unsafeHTML(this.translator?.translate('object.card.loan.content.loaned-to').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
+            ${unsafeHTML(this.translator?.translate('object.card.loan.content.borrower').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
           </p>
           <a href="#" target="_blank"> ${this.translator?.translate('object.card.loan.content.see-changes')} </a>
         </div>
