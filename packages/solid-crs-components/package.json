@@ -30,8 +30,8 @@
   },
   "dependencies": {
     "@digita-ai/semcom-core": "0.3.4",
-    "@netwerk-digitaal-erfgoed/solid-crs-core": "loans",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "loans",
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.16.2",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.16.2",
     "debounce": "^1.2.1",
     "lit-element": "2.4.0",
     "rx-lit": "1.0.1",

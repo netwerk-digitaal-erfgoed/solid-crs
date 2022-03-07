@@ -54,6 +54,12 @@ jobs:
 
       - name: Fetch more tags
         run: git fetch --tags
+
+      - name: Configure git
+        run: | 
+          git config user.name ${{github.actor}}
+          git config user.email ${{github.actor}}@users.noreply.github.com
+          git remote set-url origin https://${{github.actor}}:${{secrets.GA_TOKEN}}@github.com/${{github.repository}}.git
       
       - name: Set up node
         uses: actions/setup-node@v2
@@ -73,12 +79,13 @@ jobs:
           
       - name: Publish packages
         id: publish-packages
-        run: |
-          npx lerna publish --canary minor --no-verify-access --preid loans --dist-tag loans --yes > .git/canary-release-output
-          cat .git/canary-release-output | grep '=>' | head -n 1 | cut -f 5 -d ' ' | cut -f 1 -d '+' | xargs echo name=version::v | tr -d '[:blank:]' | xargs echo ::set-output
+        run: npx lerna publish --no-verify-access --conventional-commits --conventional-prerelease --preid loans --dist-tag loans --yes --no-push
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Push changes
+        run: git -c "http.https://github.com/.extraheader=" push
 
   publish-docker:
 
