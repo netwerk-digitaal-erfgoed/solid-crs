@@ -111,7 +111,7 @@ jobs:
           
       - name: Discover version
         id: discover-version
-        uses: notiz-dev/github-action-json-property@0.1.0
+        uses: notiz-dev/github-action-json-property@release
         with: 
           path: 'lerna.json'
           prop_path: 'version'
