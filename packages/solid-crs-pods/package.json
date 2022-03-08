@@ -1,5 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-pods",
+  "private": true,
   "version": "0.16.2",
   "description": "Pods for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
