@@ -9,7 +9,8 @@
     "version": {
       "allowBranch": [
         "master",
-        "develop"
+        "develop",
+        "feat/loan"
       ],
       "conventionalCommits": true,
       "exact": true,
@@ -56,5 +57,5 @@
       }
     }
   },
-  "version": "0.16.2"
+  "version": "0.17.0-loans.12"
 }
