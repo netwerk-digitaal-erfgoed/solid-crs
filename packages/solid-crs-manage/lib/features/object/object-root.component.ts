@@ -5,8 +5,8 @@ import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent, ObjectLoanComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
 import { define } from '@digita-ai/dgt-components';
@@ -32,7 +32,8 @@ export class ObjectRootComponent extends RxLitElement {
   | ObjectCreationComponent
   | ObjectIdentificationComponent
   | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[];
+  | ObjectDimensionsComponent
+  | ObjectLoanComponent)[];
   /**
    * The id of the currently visible form card
    */
@@ -477,6 +478,11 @@ export class ObjectRootComponent extends RxLitElement {
 
         element = document.createElement(component.tag) as ObjectDimensionsComponent;
         element.id = 'object.sidebar.dimensions';
+
+      } else if (component.tag.includes('loan')) {
+
+        element = document.createElement(component.tag) as ObjectLoanComponent;
+        element.id = 'object.sidebar.loan';
 
       }
 

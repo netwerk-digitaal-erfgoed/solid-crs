@@ -19,6 +19,7 @@ import { ObjectDimensionsComponent } from '../lib/object-dimensions.component';
 import { ObjectRepresentationComponent } from '../lib/object-representation.component';
 import { ObjectCreationComponent } from '../lib/object-creation.component';
 import { ObjectImageryComponent } from '../lib/object-imagery.component';
+import { ObjectLoanComponent } from '../lib/object-loan.component';
 
 /**
  * Enable mocks for fetch.
@@ -36,3 +37,4 @@ customElements.define('nde-object-identification', ObjectIdentificationComponent
 customElements.define('nde-object-representation', ObjectRepresentationComponent);
 customElements.define('nde-object-creation', ObjectCreationComponent);
 customElements.define('nde-object-dimensions', ObjectDimensionsComponent);
+customElements.define('nde-object-loan', ObjectLoanComponent);

@@ -58,6 +58,7 @@
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
             "other": "Overige",
+            "loan": "Bruikleen",
             "updates": "Updates",
             "components": "Onderdelen"
         },
@@ -208,6 +209,17 @@
                     "unit": {
                         "title": "Eenheid"
                     }
+                }
+            },
+            "loan": {
+                "title": "Bruikleen",
+                "subtitle": {
+                    "owner": "Uitgeleend object.",
+                    "lender": "Dit object wordt uitgeleend door <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>"
+                },
+                "content": {
+                    "borrower": "Dit object is uitgeleend aan erfgoedinstelling <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>",
+                    "see-changes": "Aangepast object bekijken"
                 }
             }
         }
