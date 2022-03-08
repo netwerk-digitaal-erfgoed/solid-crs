@@ -587,6 +587,9 @@ export class ObjectRootComponent extends RxLitElement {
             ` : ''}
             <nde-sidebar-item .padding="${false}" .showBorder="${false}">
               <nde-sidebar-list slot="content">
+                <nde-sidebar-list-item slot="title" isTitle>
+                  <div slot="title">${this.translator?.translate('object.sidebar.components')}</div>
+                </nde-sidebar-list-item>
                 ${sidebarItems?.map((item) => html`
                 <nde-sidebar-list-item slot="item"
                 ?selected="${ item === this.visibleCard }"

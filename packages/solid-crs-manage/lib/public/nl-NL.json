@@ -58,7 +58,8 @@
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
             "other": "Overige",
-            "updates": "Updates"
+            "updates": "Updates",
+            "components": "Onderdelen"
         },
         "updates": {
             "edited-this-object": "{{institution}} paste dit object aan",

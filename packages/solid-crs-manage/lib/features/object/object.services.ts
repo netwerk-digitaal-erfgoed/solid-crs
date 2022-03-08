@@ -9,7 +9,7 @@ export const loadNotifications = async(
 
   const anUpdateAsConstToNotAutoRemoveTheFunctionBlockOnSave: ObjectUpdate = {
     uri: 'https://uri.com',
-    originalObject: 'https://pod.inrupt.com/arthur/heritage-objects/data-26802ad5-3c14-4f21-8ffc-373e36a3a327#object-48b7247b-2f2d-415a-a2f9-31459f572de7',
+    originalObject: 'http://localhost:3000/44964450-4057-57aa-8492-f998707d4d2f/heritage-objects/data-bf03e6ac-309d-43cf-8988-7cb6e76f740d#object-64f2c5fa-7fc1-4b3f-8b11-0fb42f033cb7',
     updatedObject: 'https://updated.object',
     from: 'https://from.uri',
     to: 'https://to.uri',
