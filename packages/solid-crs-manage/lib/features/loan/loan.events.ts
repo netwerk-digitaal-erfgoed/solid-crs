@@ -3,7 +3,8 @@ import { EventObject } from 'xstate';
 import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
 export enum LoanEvents {
-  CLICKED_LOAN_REQUEST_OVERVIEW = '[LoanEvent: Clicked Loan Request Overview]',
+  CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING = '[LoanEvent: Clicked Loan Request Overview Incoming]',
+  CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED = '[LoanEvent: Clicked Loan Request Overview Accepted]',
   CLICKED_LOAN_REQUEST_DETAIL = '[LoanEvent: Clicked Loan Request Detail]',
   CLICKED_ACCEPTED_LOAN_REQUEST = '[LoanEvent: Clicked Accepted Loan Request]',
   CLICKED_REJECTED_LOAN_REQUEST = '[LoanEvent: Clicked Rejected Loan Request]',
@@ -12,11 +13,20 @@ export enum LoanEvents {
 }
 
 /**
- * Fired when the user wants to view an overview of all requests
+ * Fired when the user wants to view an overview of all incoming requests
  */
-export class ClickedLoanRequestOverviewEvent implements EventObject {
+export class ClickedLoanRequestOverviewIncomingEvent implements EventObject {
 
-  public type: LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW = LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW;
+  public type: LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING = LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING;
+
+}
+
+/**
+ * Fired when the user wants to view an overview of all accepted requests
+ */
+export class ClickedLoanRequestOverviewAcceptedEvent implements EventObject {
+
+  public type: LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED = LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED;
 
 }
 
@@ -70,7 +80,8 @@ export class ClickedSendLoanRequestEvent implements EventObject {
 }
 
 export type LoanEvent =
-  | ClickedLoanRequestOverviewEvent
+  | ClickedLoanRequestOverviewIncomingEvent
+  | ClickedLoanRequestOverviewAcceptedEvent
   | ClickedLoanRequestDetailEvent
   | ClickedAcceptedLoanRequestEvent
   | ClickedRejectedLoanRequestEvent

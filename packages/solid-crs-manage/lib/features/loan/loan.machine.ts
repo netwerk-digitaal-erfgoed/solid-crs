@@ -14,7 +14,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         src: services.loadRequests,
         onDone: {
           actions: assign({ loanRequests: (c, event: DoneInvokeEvent<LoanRequest[]>) => event.data }),
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
         onError: {
           actions: log((c, e) => `Error Loading Request: ${e.data}`),
@@ -34,8 +34,25 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         },
       },
     },
-    [LoanStates.LOAN_REQUEST_OVERVIEW]: {
+    [LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING]: {
       on: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
+        },
+        [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
+          target: LoanStates.LOAN_REQUEST_CREATION,
+        },
+        [LoanEvents.CLICKED_LOAN_REQUEST_DETAIL]: {
+          actions: assign({ loanRequest: (c, event) => event.loanRequest }),
+          target: LoanStates.LOADING_COLLECTION,
+        },
+      },
+    },
+    [LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
+      on: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
+        },
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.LOAN_REQUEST_CREATION,
         },
@@ -50,8 +67,11 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.LOAN_REQUEST_CREATION,
         },
-        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
           target: LoanStates.LOADING_LOAN_REQUESTS,
+        },
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
         },
         [LoanEvents.CLICKED_ACCEPTED_LOAN_REQUEST]: {
           target: LoanStates.ACCEPTING_LOAN_REQUEST,
@@ -63,8 +83,11 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.LOAN_REQUEST_CREATION]: {
       on: {
-        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW]: {
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
           target: LoanStates.LOADING_LOAN_REQUESTS,
+        },
+        [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
         },
         [LoanEvents.CLICKED_SEND_LOAN_REQUEST]: {
           target: LoanStates.SENDING_LOAN_REQUEST,
@@ -75,7 +98,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
       invoke: {
         src: services.createRequest,
         onDone: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
         onError: {
           actions: log((c, e) => `Error Creating Request: ${e.data}`),
@@ -86,7 +109,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
       invoke: {
         src: services.acceptRequest,
         onDone: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
         onError: {
           actions: log((c, e) => `Error Accepting Request: ${e.data}`),
@@ -97,7 +120,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
       invoke: {
         src: services.rejectRequest,
         onDone: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW,
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
         onError: {
           actions: log((c, e) => `Error Rejecting Request: ${e.data}`),

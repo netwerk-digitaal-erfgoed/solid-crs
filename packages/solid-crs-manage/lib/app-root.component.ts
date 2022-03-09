@@ -16,7 +16,7 @@ import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events
 import { SearchContext } from './features/search/search.machine';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { LoanRootComponent } from './features/loan/loan-root.component';
-import { ClickedLoanRequestOverviewEvent } from './features/loan/loan.events';
+import { ClickedLoanRequestOverviewIncomingEvent } from './features/loan/loan.events';
 
 /**
  * The root page of the application.
@@ -272,7 +272,7 @@ export class AppRootComponent extends RxLitElement {
 
   onLoanRequestOverview(): void {
 
-    this.actor.send(new ClickedLoanRequestOverviewEvent());
+    this.actor.send(new ClickedLoanRequestOverviewIncomingEvent());
 
   }
 

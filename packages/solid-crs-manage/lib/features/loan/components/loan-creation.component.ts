@@ -8,7 +8,7 @@ import { FormElementComponent } from '@netwerk-digitaal-erfgoed/solid-crs-compon
 import { from, map } from 'rxjs';
 import { LoanContext } from '../loan.context';
 import { LoanState, LoanStateSchema } from '../loan.states';
-import { ClickedLoanRequestOverviewEvent, ClickedSendLoanRequestEvent, LoanEvent } from '../loan.events';
+import { ClickedLoanRequestOverviewIncomingEvent, ClickedSendLoanRequestEvent, LoanEvent } from '../loan.events';
 import { LoanRequestCreationArgs } from '../models/loan-request-creation-args';
 
 export class LoanCreationComponent extends RxLitElement {
@@ -119,7 +119,7 @@ export class LoanCreationComponent extends RxLitElement {
 
   onCancelLoanRequestCreation(): void {
 
-    this.actor.send(new ClickedLoanRequestOverviewEvent());
+    this.actor.send(new ClickedLoanRequestOverviewIncomingEvent());
 
   }
 
