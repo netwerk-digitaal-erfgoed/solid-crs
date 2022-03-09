@@ -1,7 +1,7 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-manage",
   "private": true,
-  "version": "0.17.0-loans.12",
+  "version": "0.17.0-loans.17",
   "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-manage.umd.js",
@@ -34,11 +34,11 @@
     "@digita-ai/inrupt-solid-service": "^0.11.0",
     "@digita-ai/semcom-core": "0.4.1",
     "@digita-ai/semcom-sdk": "0.4.1",
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "^0.17.0-loans.12",
-    "@netwerk-digitaal-erfgoed/solid-crs-components": "^0.17.0-loans.12",
-    "@netwerk-digitaal-erfgoed/solid-crs-core": "^0.17.0-loans.12",
-    "@netwerk-digitaal-erfgoed/solid-crs-semcom-components": "^0.17.0-loans.12",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "^0.17.0-loans.12",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.17.0-loans.17",
+    "@netwerk-digitaal-erfgoed/solid-crs-components": "0.17.0-loans.17",
+    "@netwerk-digitaal-erfgoed/solid-crs-core": "0.17.0-loans.17",
+    "@netwerk-digitaal-erfgoed/solid-crs-semcom-components": "0.17.0-loans.17",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.17.0-loans.17",
     "@xstate/inspect": "^0.4.1",
     "edtf": "^3.1.0",
     "lit-element": "2.5.1",
@@ -92,10 +92,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 88.58,
-        "branches": 87.96,
-        "lines": 89.78,
-        "functions": 74.14
+        "statements": 87.8,
+        "branches": 85.93,
+        "lines": 88.9,
+        "functions": 74.7
       }
     },
     "automock": false,
