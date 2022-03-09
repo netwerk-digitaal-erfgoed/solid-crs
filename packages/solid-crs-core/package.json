@@ -61,7 +61,7 @@
     "@digita-ai/inrupt-solid-client": "^0.11.0",
     "@digita-ai/inrupt-solid-service": "^0.11.0",
     "@netwerk-digitaal-erfgoed/solid-crs-client": "0.17.0-loans.15",
-    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.17.0-loans.15",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "^0.17.0-loans.15",
     "moment": "^2.29.1",
     "rxjs": "^7.4.0",
     "uuid": "8.3.2",
