@@ -1,7 +1,7 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-id-proxy",
   "private": true,
-  "version": "0.17.0-loans.16",
+  "version": "0.17.0-loans.17",
   "description": "Solid CRS identity proxy",
   "author": "digita.ai",
   "scripts": {
