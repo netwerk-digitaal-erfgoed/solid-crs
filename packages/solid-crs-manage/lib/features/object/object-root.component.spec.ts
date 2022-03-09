@@ -634,4 +634,26 @@ describe('ObjectRootComponent', () => {
 
   });
 
+  describe('createComponents()', () => {
+
+    it('should resolve', async () => {
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      const result = component.createComponents([
+        { tag: 'nde-object-imagery' } as any,
+        { tag: 'nde-object-loan' } as any,
+        { tag: 'nde-object-creation' } as any,
+        { tag: 'nde-object-identification' } as any,
+        { tag: 'nde-object-dimensions' } as any,
+        { tag: 'nde-object-representation' } as any,
+      ]);
+
+      await expect(result).resolves.toBeUndefined();
+
+    });
+
+  });
+
 });

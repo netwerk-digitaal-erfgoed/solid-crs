@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, Translator, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, Translator, TRANSLATIONS_LOADED, InboxService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -113,7 +113,7 @@ export class AppRootComponent extends RxLitElement {
     this.actor = interpret(
       appMachine(
         this.solidService,
-        new CollectionSolidStore(this.solidService),
+        new CollectionSolidStore(this.solidService, new InboxService(this.solidService)),
         new CollectionObjectSolidStore(this.solidService)
       ).withContext({ alerts: [] }),
       { devTools: process.env.MODE === 'DEV' }
