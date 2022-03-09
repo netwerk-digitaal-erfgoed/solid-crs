@@ -66,6 +66,7 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
         }
         div[slot="subtitle"] a {
           color: var(--colors-primary-light);
+          text-underline-offset: 2px;
         }
       `,
     ];
