@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.15](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.15) (2022-03-09)
+
+
+### **Features**
+
+* create loan feature components ([#568](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/568)) ([6b77955](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6b77955da099266ab7f10c3e3920e8f23451a6e0)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+* loan feature setup ([#564](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/564)) ([674e27c](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/674e27cc838f442e4e8c16444f7a6ba17d7f0bca)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+
+
+
 ### [0.16.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.1...v0.16.2) (2022-01-24)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-theme
