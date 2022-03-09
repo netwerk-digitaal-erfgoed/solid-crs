@@ -102,23 +102,13 @@
                 "field": {
                     "identifier": "Objectnummer",
                     "additionalType": "Type",
-                    "name": {
-                        "title": "Titel",
-                        "validation:": {
-                            "max-characters": "De beschrijving mag maximum 100 karakters lang zijn!"
-                        }
-                    },
+                    "name": "Titel",
                     "collection": "Collectie",
-                    "description": {
-                        "title": "Korte beschrijving",
-                        "validation:": {
-                            "max-characters": "De beschrijving mag maximum 10000 karakters lang zijn!"
-                        }
-                    }
-    
+                    "description": "Korte beschrijving"
                 }
             },
             "common": {
+                "removed": "< Verwijderd >",
                 "empty": "Dit veld is verplicht.",
                 "invalid-url": "De ingegeven URL is niet geldig.",
                 "invalid-number": "Het ingegeven getal is niet geldig."
@@ -130,12 +120,7 @@
                     "creator": "Vervaardiger",
                     "locationCreated": "Plaats",
                     "material": "Materiaal",
-                    "dateCreated": "Datum",
-                    "date": {
-                        "validation": {
-                            "invalid": "De ingegeven datum is niet geldig."
-                        }
-                    }
+                    "dateCreated": "Datum"
                 }
             },
             "representation": {

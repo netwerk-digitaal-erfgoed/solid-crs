@@ -10,7 +10,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
-import { CollectionEvents } from './features/collection/collection.events';
+import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
 
@@ -235,6 +235,12 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
+  onCollectionSelected(customEvent: CustomEvent<Collection>): void {
+
+    this.actor.send(new SelectedCollectionEvent(customEvent.detail));
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -297,7 +303,7 @@ export class AppRootComponent extends RxLitElement {
     </nde-sidebar> 
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
-    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
+    ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}' @dismiss="${this.dismiss}" @selected-collection="${this.onCollectionSelected}"></nde-object-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.FEATURE]: AppFeatureStates.ABOUT }) ? html`<nde-about-root .actor='${this.actor}' .logger='${this.logger}' .translator='${this.translator}'></nde-about-root>` : '' }
   
     `;
