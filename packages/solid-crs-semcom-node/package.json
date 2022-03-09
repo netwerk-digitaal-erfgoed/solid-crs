@@ -1,7 +1,7 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-semcom-node",
   "private": true,
-  "version": "0.17.0-loans.15",
+  "version": "0.17.0-loans.16",
   "description": "Semcom node for the demo environment of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",

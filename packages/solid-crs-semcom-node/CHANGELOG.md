@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.16) (2022-03-09)
+
+
+### **Features**
+
+* create semcom object-loan component ([#578](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/578)) ([a42dda2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a42dda278ec963da6103ec4d6bbdb4d017bbf7aa))
+
+
+
 ## [0.17.0-loans.15](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.15) (2022-03-09)
 
 
