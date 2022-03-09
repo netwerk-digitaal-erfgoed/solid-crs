@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.16) (2022-03-09)
+
+
+### **Bug Fixes**
+
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+### **Features**
+
+* create semcom object-loan component ([#578](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/578)) ([a42dda2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a42dda278ec963da6103ec4d6bbdb4d017bbf7aa))
+
+
+
+## [0.17.0-loans.15](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.15) (2022-03-09)
+
+
+### **Bug Fixes**
+
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+### **Features**
+
+* create semcom object-loan component ([#578](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/578)) ([a42dda2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/a42dda278ec963da6103ec4d6bbdb4d017bbf7aa))
+
+
+
 ### [0.16.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.1...v0.16.2) (2022-01-24)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-semcom-components

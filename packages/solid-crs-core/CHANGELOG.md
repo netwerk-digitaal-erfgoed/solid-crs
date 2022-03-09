@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.16](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.16) (2022-03-09)
+
+
+### **Features**
+
+* loan feature setup ([#564](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/564)) ([674e27c](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/674e27cc838f442e4e8c16444f7a6ba17d7f0bca)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+
+
+### **Bug Fixes**
+
+* package-locks for loans ([#586](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/586)) ([fe90a07](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fe90a072ca8bf61da35efe671d22fc8f5d13d51b))
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+
+## [0.17.0-loans.15](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.15) (2022-03-09)
+
+
+### **Features**
+
+* loan feature setup ([#564](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/564)) ([674e27c](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/674e27cc838f442e4e8c16444f7a6ba17d7f0bca)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+
+
+### **Bug Fixes**
+
+* package-locks for loans ([#586](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/586)) ([fe90a07](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fe90a072ca8bf61da35efe671d22fc8f5d13d51b))
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+
 ### [0.16.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.1...v0.16.2) (2022-01-24)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-core
