@@ -58,7 +58,13 @@
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
             "other": "Overige",
-            "loan": "Bruikleen"
+            "loan": "Bruikleen",
+            "updates": "Updates",
+            "components": "Onderdelen"
+        },
+        "updates": {
+            "edited-this-object": "{{institution}} paste dit object aan",
+            "see-changes": "Bekijk de aanpassingen"
         },
         "card": {
             "image": {
