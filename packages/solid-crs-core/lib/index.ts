@@ -36,3 +36,4 @@ export * from './solid/collection-object-solid-store';
 export * from './solid/collection-solid-store';
 export * from './solid/validate-webid';
 export * from './router/router';
+export * from './inbox/inbox.service';

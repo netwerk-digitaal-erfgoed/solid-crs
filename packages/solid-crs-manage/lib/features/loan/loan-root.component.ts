@@ -4,11 +4,12 @@ import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
 import { from, map } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { LoanRequest, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore, LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
 import { LoanState, LoanStates, LoanStateSchema } from './loan.states';
-import { ClickedLoanRequestOverviewEvent, ClickedNewLoanRequestEvent, LoanEvent } from './loan.events';
+import { ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, LoanEvent } from './loan.events';
 import { loanMachine } from './loan.machine';
 import { LoanOverviewComponent } from './components/loan-overview.component';
 import { LoanDetailComponent } from './components/loan-detail.component';
@@ -21,20 +22,31 @@ export class LoanRootComponent extends RxLitElement {
 
   @state() state?: State<LoanContext, LoanEvent, LoanStateSchema, LoanState>;
   @state() loanRequest: LoanRequest;
+  @state() loanRequests: LoanRequest[];
 
   constructor(
     public translator: Translator,
     public logger: Logger,
+    public solidService: SolidSDKService,
+    public collectionStore: CollectionStore,
   ) {
 
     super();
 
-    this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({});
+    this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({
+      solidService: this.solidService,
+      collectionStore: this.collectionStore,
+    });
+
     this.actor = interpret(this.machine, { devTools: true });
     this.subscribe('state', from(this.actor));
 
     this.subscribe('loanRequest', from(this.actor).pipe(
       map((stateMachine) => stateMachine.context.loanRequest),
+    ));
+
+    this.subscribe('loanRequests', from(this.actor).pipe(
+      map((stateMachine) => stateMachine.context.loanRequests),
     ));
 
     this.actor.start();
@@ -51,11 +63,23 @@ export class LoanRootComponent extends RxLitElement {
 
   }
 
-  onLoanRequestOverview(): void {
+  onLoanRequestOverviewIncoming(): void {
 
-    this.actor.send(new ClickedLoanRequestOverviewEvent());
+    this.actor.send(new ClickedLoanRequestOverviewIncomingEvent());
 
   }
+
+  onLoanRequestOverviewAccepted(): void {
+
+    this.actor.send(new ClickedLoanRequestOverviewAcceptedEvent());
+
+  }
+
+  onImportCollection = (event: CustomEvent<Collection>): void =>  {
+
+    this.dispatchEvent(new CustomEvent('import-collection', { detail: event.detail }));
+
+  };
 
   /**
    * Renders the component as HTML.
@@ -64,16 +88,18 @@ export class LoanRootComponent extends RxLitElement {
    */
   render(): TemplateResult {
 
+    const loanRequestType = this.loanRequest?.type?.split('#')[1].toLowerCase();
+
     return html`
       <nde-content-header inverse>
         <div slot="icon"> ${unsafeSVG(Bruikleen)} </div>
         <div slot="title">
           ${this.state?.matches(LoanStates.LOAN_REQUEST_DETAIL)
-    ? this.translator?.translate('loan.detail.header.title')
+    ? this.translator?.translate(`loan.detail.header.title-${loanRequestType}`)
     : this.translator?.translate('loan.root.header.title-default')}
         </div>
         <div slot="subtitle">
-          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW)
+          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING)
     ? this.translator?.translate('loan.overview.header.subtitle') : ''}
           ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION)
     ? this.translator?.translate('loan.creation.header.subtitle') : ''}
@@ -99,7 +125,11 @@ export class LoanRootComponent extends RxLitElement {
               <nde-sidebar-list-item slot="item">
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.pending-requests')}</div>
               </nde-sidebar-list-item>
-              <nde-sidebar-list-item slot="item">
+              <nde-sidebar-list-item slot="item"
+                ?selected="${this.state?.matches(LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED)
+                  || (loanRequestType === 'accept' && this.state?.matches(LoanStates.LOAN_REQUEST_DETAIL))}"
+                @click="${this.onLoanRequestOverviewAccepted}"
+              >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.approved-requests')}</div>
               </nde-sidebar-list-item>
             </nde-sidebar-list>
@@ -110,8 +140,9 @@ export class LoanRootComponent extends RxLitElement {
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.incoming-requests')}</div>
               </nde-sidebar-list-item>
               <nde-sidebar-list-item slot="item"
-                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) || this.state.matches(LoanStates.LOAN_REQUEST_DETAIL)}"
-                @click="${this.onLoanRequestOverview}"  
+                ?selected="${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING)
+                  || (loanRequestType === 'offer' && this.state.matches(LoanStates.LOAN_REQUEST_DETAIL))}"
+                @click="${this.onLoanRequestOverviewIncoming}"  
               >
                 <div slot="title">${this.translator?.translate('loan.root.sidebar.all-incoming-requests')}</div>
               </nde-sidebar-list-item>
@@ -120,9 +151,14 @@ export class LoanRootComponent extends RxLitElement {
         </nde-sidebar>
 
         <div id="content">
-          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW) ? html`<nde-loan-overview-component></nde-loan-overview-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING) ? html`
+            <nde-loan-overview-component .loanRequests="${this.loanRequests?.filter((req) => req.type === 'https://www.w3.org/ns/activitystreams#Offer')}"></nde-loan-overview-component>
+          ` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED) ? html`
+            <nde-loan-overview-component .loanRequests="${this.loanRequests?.filter((req) => req.type === 'https://www.w3.org/ns/activitystreams#Accept')}"></nde-loan-overview-component>
+          ` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component @import-collection="${this.onImportCollection}"></nde-loan-detail-component>` : ''}
           ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
-          ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component></nde-loan-detail-component>` : ''}
         </div>
       </div>
     `;

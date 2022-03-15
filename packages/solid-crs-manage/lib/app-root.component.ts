@@ -2,7 +2,7 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED, InboxService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
@@ -16,7 +16,7 @@ import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events
 import { SearchContext } from './features/search/search.machine';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { LoanRootComponent } from './features/loan/loan-root.component';
-import { ClickedLoanRequestOverviewEvent } from './features/loan/loan.events';
+import { ClickedLoanRequestOverviewIncomingEvent } from './features/loan/loan.events';
 
 /**
  * The root page of the application.
@@ -85,15 +85,26 @@ export class AppRootComponent extends RxLitElement {
   @internalProperty()
   searchActor: ActorRef<FormEvent>;
 
-  constructor(private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
-    clientName: 'Collectiebeheersysteem',
-    clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
-  } })) {
+  @internalProperty()
+  inboxService = new InboxService(this.solidService);
+
+  @internalProperty()
+  collectionStore = new CollectionSolidStore(this.solidService, this.inboxService);
+
+  @internalProperty()
+  collectionObjectStore = new CollectionObjectSolidStore(this.solidService);
+
+  constructor(
+    private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
+      clientName: 'Collectiebeheersysteem',
+      clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
+    } }),
+  ) {
 
     super();
 
     define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
-    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger));
+    define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger, this.solidService, this.collectionStore));
 
   }
 
@@ -147,14 +158,16 @@ export class AppRootComponent extends RxLitElement {
     this.actor = interpret(
       (appMachine(
         this.solidService,
-        new CollectionSolidStore(this.solidService),
-        new CollectionObjectSolidStore(this.solidService),
+        this.collectionStore,
+        this.collectionObjectStore,
         {
           uri: undefined,
           name: this.translator.translate('collections.new-collection-name'),
           description: this.translator.translate('collections.new-collection-description'),
           objectsUri: undefined,
           distribution: undefined,
+          inbox: undefined,
+          publisher: undefined,
         },
         {
           uri: undefined,
@@ -259,9 +272,19 @@ export class AppRootComponent extends RxLitElement {
 
   onLoanRequestOverview(): void {
 
-    this.actor.send(new ClickedLoanRequestOverviewEvent());
+    this.actor.send(new ClickedLoanRequestOverviewIncomingEvent());
 
   }
+
+  onImportCollection = (event: CustomEvent<Collection>): void =>  {
+
+    const collection = {
+      ... event.detail,
+    };
+
+    this.actor.send(new ClickedCreateCollectionEvent(collection));
+
+  };
 
   /**
    * Renders the component as HTML.
@@ -336,7 +359,7 @@ export class AppRootComponent extends RxLitElement {
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
-    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN }) ? html`<nde-loan-root></nde-loan-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN }) ? html`<nde-loan-root @import-collection="${this.onImportCollection}"></nde-loan-root>` : '' }  
     ` }  
   
     `;
