@@ -11,7 +11,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
   states: {
     [LoanStates.LOADING_LOAN_REQUESTS]: {
       invoke: {
-        src: services.loadRequests,
+        src: (c, e) => services.loadRequests(c, e),
         onDone: {
           actions: assign({ loanRequests: (c, event: DoneInvokeEvent<LoanRequest[]>) => event.data }),
           target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
@@ -96,7 +96,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.SENDING_LOAN_REQUEST]: {
       invoke: {
-        src: services.createRequest,
+        src: (c, e) => services.createRequest(c, e),
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
@@ -107,7 +107,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.ACCEPTING_LOAN_REQUEST]: {
       invoke: {
-        src: services.acceptRequest,
+        src: (c, e) => services.acceptRequest(c, e),
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },
@@ -118,7 +118,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     },
     [LoanStates.REJECTING_LOAN_REQUEST]: {
       invoke: {
-        src: services.rejectRequest,
+        src: (c, e) => services.rejectRequest(c, e),
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
         },

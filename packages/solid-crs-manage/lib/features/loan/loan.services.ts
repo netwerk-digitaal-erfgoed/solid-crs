@@ -1,5 +1,4 @@
-import { asUrl, getSolidDataset, getThing, getUrl, Thing } from '@digita-ai/inrupt-solid-client';
-import { getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { asUrl, getSolidDataset, getThing, getUrl, Thing, getUrlAll } from '@digita-ai/inrupt-solid-client';
 import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { LoanContext } from './loan.context';

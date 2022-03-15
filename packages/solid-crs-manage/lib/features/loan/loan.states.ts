@@ -51,6 +51,7 @@ export type LoanState = {
   | LoanStates.ACCEPTING_LOAN_REQUEST
   | LoanStates.REJECTING_LOAN_REQUEST
   | LoanStates.LOAN_REQUEST_CREATION
+  | LoanStates.LOADING_COLLECTION
   | LoanStates.SENDING_LOAN_REQUEST;
   context: LoanContext & WithRequests;
 } | {

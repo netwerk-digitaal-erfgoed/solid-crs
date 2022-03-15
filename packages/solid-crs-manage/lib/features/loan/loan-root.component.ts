@@ -157,8 +157,8 @@ export class LoanRootComponent extends RxLitElement {
           ${this.state.matches(LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED) ? html`
             <nde-loan-overview-component .loanRequests="${this.loanRequests?.filter((req) => req.type === 'https://www.w3.org/ns/activitystreams#Accept')}"></nde-loan-overview-component>
           ` : ''}
-          ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
           ${this.state.matches(LoanStates.LOAN_REQUEST_DETAIL) ? html`<nde-loan-detail-component @import-collection="${this.onImportCollection}"></nde-loan-detail-component>` : ''}
+          ${this.state.matches(LoanStates.LOAN_REQUEST_CREATION) ? html`<nde-loan-creation-component></nde-loan-creation-component>` : ''}
         </div>
       </div>
     `;

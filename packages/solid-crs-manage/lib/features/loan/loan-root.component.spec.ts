@@ -3,7 +3,7 @@
 import { define, hydrate } from '@digita-ai/dgt-components';
 import { CollectionStore, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanRootComponent } from './loan-root.component';
-import { ClickedLoanRequestDetailEvent, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent } from './loan.events';
+import { ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent } from './loan.events';
 import { LoanStates } from './loan.states';
 import * as services from './loan.services';
 
@@ -99,6 +99,10 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING}`, async () => {
 
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING),
+      };
+
       window.document.body.appendChild(component);
       await component.updateComplete;
 
@@ -110,7 +114,10 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED}`, async () => {
 
-      component['actor'].send(new ClickedLoanRequestOverviewAcceptedEvent());
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED),
+      };
+
       window.document.body.appendChild(component);
       await component.updateComplete;
 
@@ -122,7 +129,10 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-detail-component when ${LoanStates.LOAN_REQUEST_DETAIL}`, async () => {
 
-      component['actor'].send(new ClickedLoanRequestDetailEvent({ loanRequest: {} } as any));
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_DETAIL),
+      };
+
       window.document.body.appendChild(component);
       await component.updateComplete;
 
@@ -134,7 +144,10 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-creation-component when ${LoanStates.LOAN_REQUEST_CREATION}`, async () => {
 
-      component['actor'].send(new ClickedNewLoanRequestEvent());
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_CREATION),
+      };
+
       window.document.body.appendChild(component);
       await component.updateComplete;
 
