@@ -302,6 +302,8 @@ describe('CollectionSolidStore', () => {
         description: 'test-string',
         objectsUri: 'https://test.uri/',
         distribution: 'https://test.uri/',
+        inbox: 'https://test.uri/',
+        publisher: 'https://test.uri/',
       });
 
     });
@@ -327,7 +329,7 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
 
       (client.overwriteFile as any) = jest.fn(() => done(true));
-      service.createCatalog('test.uri');
+      service.createCatalog('https://test.uri');
 
     }));
 
@@ -341,7 +343,7 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
       (client.overwriteFile as any) = jest.fn(() => 'test-file');
 
-      await service.createCatalog('test.uri');
+      await service.createCatalog('https://test.uri');
       expect(client.getStringWithLocale).toHaveBeenCalledTimes(1);
       expect(client.getStringNoLocale).not.toHaveBeenCalled();
 
@@ -357,7 +359,14 @@ describe('CollectionSolidStore', () => {
       (client.getStringNoLocale as any) = jest.fn(() => done(true));
       (client.overwriteFile as any) = jest.fn(() => 'test-file');
 
-      service.createCatalog('test.uri');
+      (service.getSession as any) = jest.fn(() => ({
+        info: {
+          webId: 'https://example.com/profile/card#me',
+        },
+        fetch: jest.fn(async () => ({ statues: 200 })),
+      }));
+
+      service.createCatalog('https://test.uri');
 
     }));
 

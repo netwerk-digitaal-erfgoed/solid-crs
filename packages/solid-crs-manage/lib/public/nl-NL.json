@@ -319,18 +319,30 @@
                 "subtitle": "Goedkeuren van aanvragen tot bruikleen"
             },
             "card": {
-                "title": "Aanvraag tot bruikleen",
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
                 "hover-title": "Klik voor meer details ..."
+            },
+            "empty": {
+                "message-incoming": "Er zijn op dit moment geen inkomende aanvragen.",
+                "message-accepted": "Er zijn op dit moment geen goedgekeurde aanvragen."
             }
         },
         "detail": {
             "header": {
-                "title": "Aanvraag tot bruikleen",
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
                 "subtitle": "{{institution}}"
             },
             "card": {
-                "title": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "title-offer": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "title-reject": "{{institution}} weigerde je aanvraag tot bruikleen voor de volgende collectie",
+                "title-accept": "{{institution}} accepteerde je aanvraag tot bruikleen voor de volgende collectie",
                 "description": "Opmerkingen",
+                "import": "Importeren",
+                "cancel": "Annuleren",
                 "accept": "Goedkeuren",
                 "reject": "Afwijzen"
             }
@@ -346,7 +358,7 @@
                 "confirm": "Bevestigen",
                 "form": {
                     "description-too-long": "Uw opmerking mag maximaal 500 tekens bevatten",
-                    "invalid-url": "Geef een geldige URL in"
+                    "invalid-collection-url": "Geef een geldige URL in van een collectie"
                 }
             }
         },

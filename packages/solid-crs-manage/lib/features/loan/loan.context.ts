@@ -1,6 +1,14 @@
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { LoanRequest, CollectionStore, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 export interface LoanContext {
+  /**
+   * Service to interact with Solid pods
+   */
+  solidService: SolidSDKService;
+  /**
+   * Service to retrieve collections from pod
+   */
+  collectionStore: CollectionStore;
   /**
    * All `LoanRequest`s retrieved
    */
@@ -9,6 +17,10 @@ export interface LoanContext {
    * The loan request currently being viewed in the detail page
    */
   loanRequest?: LoanRequest;
+  /**
+   * The collection belonging to the loan request currently being viewed in the detail page
+   */
+  collection?: Collection;
 }
 
 export interface WithRequests {
@@ -17,4 +29,5 @@ export interface WithRequests {
 
 export interface WithRequest {
   loanRequest: LoanRequest;
+  collection: Collection;
 }

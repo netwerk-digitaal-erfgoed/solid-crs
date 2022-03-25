@@ -9,7 +9,11 @@ export enum LoanStates {
   /**
    * The user is viewing all incoming requests
    */
-  LOAN_REQUEST_OVERVIEW = '[LoanState: Loan Request Overview]',
+  LOAN_REQUEST_OVERVIEW_INCOMING = '[LoanState: Loan Request Overview Incoming]',
+  /**
+   * The user is viewing all accepted requests
+   */
+  LOAN_REQUEST_OVERVIEW_ACCEPTED = '[LoanState: Loan Request Overview Accepted]',
   /**
    * The user is viewing a single incoming request
    */
@@ -30,6 +34,10 @@ export enum LoanStates {
    * The user has rejected a request and the relevant code being executed
    */
   REJECTING_LOAN_REQUEST = '[LoanState: Rejecting Loan Request]',
+  /**
+   * Load the loan request collection
+   */
+  LOADING_COLLECTION = '[LoanState: Loading Collection]',
 }
 
 export type LoanState = {
@@ -38,10 +46,12 @@ export type LoanState = {
   context: LoanContext;
 } | {
   value:
-  | LoanStates.LOAN_REQUEST_OVERVIEW
+  | LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING
+  | LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED
   | LoanStates.ACCEPTING_LOAN_REQUEST
   | LoanStates.REJECTING_LOAN_REQUEST
   | LoanStates.LOAN_REQUEST_CREATION
+  | LoanStates.LOADING_COLLECTION
   | LoanStates.SENDING_LOAN_REQUEST;
   context: LoanContext & WithRequests;
 } | {

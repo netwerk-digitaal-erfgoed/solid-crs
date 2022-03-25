@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.19](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.19) (2022-03-15)
+
+
+### **Features**
+
+* create loan feature components ([#568](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/568)) ([6b77955](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6b77955da099266ab7f10c3e3920e8f23451a6e0)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+
+
+### **Bug Fixes**
+
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+
+## [0.17.0-loans.18](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.18) (2022-03-15)
+
+
+### **Features**
+
+* create loan feature components ([#568](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/568)) ([6b77955](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/6b77955da099266ab7f10c3e3920e8f23451a6e0)), closes [#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)
+
+
+### **Bug Fixes**
+
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+
 ## [0.17.0-loans.17](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.17) (2022-03-09)
 
 

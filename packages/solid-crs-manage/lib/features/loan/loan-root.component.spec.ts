@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { CollectionStore, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanRootComponent } from './loan-root.component';
-import { ClickedLoanRequestDetailEvent, ClickedLoanRequestOverviewEvent, ClickedNewLoanRequestEvent } from './loan.events';
+import { ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent } from './loan.events';
 import { LoanStates } from './loan.states';
 import * as services from './loan.services';
 
@@ -19,11 +19,21 @@ describe('LoanRootComponent', () => {
   const translator = { translate: (input: string) => input };
   const logger: Logger = new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly);
 
+  const mockCollectionStore: CollectionStore = {
+    get: jest.fn(async () => ({})),
+  } as any;
+
+  const mockLoanRequest: LoanRequest = {
+    uri: 'https://loan.request.com',
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
+  } as any;
+
   beforeEach(() => {
 
     jest.clearAllMocks();
-    define(tag, hydrate(LoanRootComponent)(translator, logger));
+    define(tag, hydrate(LoanRootComponent)(translator, logger, {}, mockCollectionStore));
     component = document.createElement(tag) as LoanRootComponent;
+    component.loanRequest = mockLoanRequest;
 
   });
 
@@ -42,20 +52,44 @@ describe('LoanRootComponent', () => {
     it('should send ClickedNewLoanRequestEvent', () => {
 
       component['actor'].send = jest.fn();
-      component['onNewLoanRequest']();
+      component.onNewLoanRequest();
       expect(component['actor'].send).toHaveBeenCalledWith(new ClickedNewLoanRequestEvent());
 
     });
 
   });
 
-  describe('onLoanRequestOverview', () => {
+  describe('onLoanRequestOverviewIncoming', () => {
 
-    it('should send ClickedLoanRequestOverviewEvent', () => {
+    it('should send ClickedLoanRequestOverviewIncomingEvent', () => {
 
       component['actor'].send = jest.fn();
-      component['onLoanRequestOverview']();
-      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewEvent());
+      component.onLoanRequestOverviewIncoming();
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewIncomingEvent());
+
+    });
+
+  });
+
+  describe('onLoanRequestOverviewAccepted', () => {
+
+    it('should send ClickedLoanRequestOverviewAcceptedEvent', () => {
+
+      component['actor'].send = jest.fn();
+      component.onLoanRequestOverviewAccepted();
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedLoanRequestOverviewAcceptedEvent());
+
+    });
+
+  });
+
+  describe('onImportCollection', () => {
+
+    it('should dispatch CustomEvent import-collection', () => {
+
+      component.dispatchEvent = jest.fn();
+      component.onImportCollection({ detail: 'detail' } as any);
+      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('import-collection'));
 
     });
 
@@ -63,7 +97,26 @@ describe('LoanRootComponent', () => {
 
   describe('HTML', () => {
 
-    it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW}`, async () => {
+    it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING}`, async () => {
+
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING),
+      };
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(component.shadowRoot.innerHTML).toContain('<nde-loan-overview-component');
+      expect(component.shadowRoot.innerHTML).not.toContain('<nde-loan-creation-component');
+      expect(component.shadowRoot.innerHTML).not.toContain('<nde-loan-detail-component');
+
+    });
+
+    it(`should render loan-overview-component when ${LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED}`, async () => {
+
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED),
+      };
 
       window.document.body.appendChild(component);
       await component.updateComplete;
@@ -76,7 +129,9 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-detail-component when ${LoanStates.LOAN_REQUEST_DETAIL}`, async () => {
 
-      component['actor'].send(new ClickedLoanRequestDetailEvent({} as any));
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_DETAIL),
+      };
 
       window.document.body.appendChild(component);
       await component.updateComplete;
@@ -89,7 +144,9 @@ describe('LoanRootComponent', () => {
 
     it(`should render loan-creation-component when ${LoanStates.LOAN_REQUEST_CREATION}`, async () => {
 
-      component['actor'].send(new ClickedNewLoanRequestEvent());
+      (component.state as any) = {
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_CREATION),
+      };
 
       window.document.body.appendChild(component);
       await component.updateComplete;

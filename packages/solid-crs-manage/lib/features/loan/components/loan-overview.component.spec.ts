@@ -3,6 +3,7 @@
 import { define, hydrate } from '@digita-ai/dgt-components';
 import { ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ClickedLoanRequestDetailEvent } from '../loan.events';
+import { LoanStates } from '../loan.states';
 import { LoanOverviewComponent } from './loan-overview.component';
 
 describe('LoanOverviewComponent', () => {
@@ -18,9 +19,13 @@ describe('LoanOverviewComponent', () => {
     to: 'https://receiver.webid',
     createdAt: Date.now().toString(),
     collection: 'https://collection.uri',
+    type: 'https://www.w3.org/ns/activitystreams#Offer',
   };
 
-  const actor = new Promise((resolve) => resolve({ context: { loanRequests: [] } }));
+  const actor = new Promise((resolve) => resolve({
+    context: { loanRequests: [] },
+    matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING),
+  }));
 
   beforeEach(() => {
 
@@ -61,6 +66,18 @@ describe('LoanOverviewComponent', () => {
       await component.updateComplete;
 
       expect(component.shadowRoot.querySelectorAll('nde-large-card')).toHaveLength(component['loanRequests'].length);
+      expect(component.shadowRoot.querySelector('.empty')).toBe(null);
+
+    });
+
+    it('should render the .empty container when there are no requests', async () => {
+
+      component.loanRequests = [ ];
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(component.shadowRoot.querySelector('.empty')).toBeDefined();
+      expect(component.shadowRoot.querySelectorAll('nde-large-card')).toHaveLength(component['loanRequests'].length);
 
     });
 
@@ -76,6 +93,27 @@ describe('LoanOverviewComponent', () => {
 
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(mockLoanRequest);
+
+    });
+
+    it('should show the right empty message', async () => {
+
+      component.loanRequests = [ ];
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      expect(component.shadowRoot.innerHTML).toContain('message-incoming');
+      expect(component.shadowRoot.innerHTML).not.toContain('message-accepted');
+
+      component.state = {
+        context: { loanRequests: [] },
+        matches: jest.fn((state) => state === LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED),
+      } as any;
+
+      await component.updateComplete;
+
+      expect(component.shadowRoot.innerHTML).not.toContain('message-incoming');
+      expect(component.shadowRoot.innerHTML).toContain('message-accepted');
 
     });
 
