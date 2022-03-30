@@ -5,6 +5,8 @@ import edtf from 'edtf';
 import { routes } from '../../app.machine';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
+import { ObjectUpdate } from './models/object-update.model';
+import { loadNotifications } from './object.services';
 
 /**
  * The context of the object feature.
@@ -31,6 +33,10 @@ export interface ObjectContext {
    * The WebID of the heritage institution
    */
   webId?: string;
+  /**
+   * A list of updates to an object. Derived from the notifications in the inbox.
+   */
+  notifications?: ObjectUpdate[];
 }
 
 /**
@@ -49,6 +55,8 @@ export enum ObjectStates {
   EDITING_FIELD   = '[ObjectsState: Editing Field]',
   DELETING  = '[ObjectsState: Deleting]',
   LOADING_OBJECT  = '[ObjectsState: Loading Object]',
+  LOADING_OBJECT_INBOX = '[ObjectState: Loading Object Inbox]',
+  OBJECT_UPDATES_OVERVIEW = '[ObjectState: Object Updates Overview]',
 }
 
 /**
@@ -218,7 +226,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
           object: (c, event) => event.object,
           original: (c, event) => event.object,
         }),
-        target: ObjectStates.IDLE,
+        target: ObjectStates.LOADING_OBJECT,
       },
     },
     states: {
@@ -238,15 +246,30 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
 
           },
           onDone: {
-            target: ObjectStates.IDLE,
+            target: ObjectStates.LOADING_OBJECT_INBOX,
             actions: assign({
               object: (c, event) => event.data,
               original: (c, event) => event.data,
             }),
           },
           onError: {
-            target: ObjectStates.IDLE,
+            target: ObjectStates.LOADING_OBJECT_INBOX,
             actions: sendParent((c, event) => event),
+          },
+        },
+      },
+      [ObjectStates.LOADING_OBJECT_INBOX]: {
+        invoke: {
+          src: loadNotifications,
+          onDone: {
+            actions: assign({
+              notifications: (c, event) => event.data,
+            }),
+            target: ObjectStates.IDLE,
+          },
+          onError: {
+            actions: sendParent((c, event) => event),
+            target: ObjectStates.IDLE,
           },
         },
       },
@@ -270,12 +293,18 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
             target: ObjectStates.SAVING,
             actions: assign({ object: (context, event) => event.object }),
           },
+          [ObjectEvents.CLICKED_OBJECT_UPDATES_OVERVIEW]: ObjectStates.OBJECT_UPDATES_OVERVIEW,
           [ObjectEvents.CLICKED_DELETE]: ObjectStates.DELETING,
           [ObjectEvents.CLICKED_RESET]: {
             target: ObjectStates.IDLE,
             actions: assign((context) => ({ object: context.original })),
           },
           [ObjectEvents.CLICKED_TERM_FIELD]: ObjectStates.EDITING_FIELD,
+        },
+      },
+      [ObjectStates.OBJECT_UPDATES_OVERVIEW]: {
+        on: {
+          [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
         },
       },
       [ObjectStates.EDITING_FIELD]: {

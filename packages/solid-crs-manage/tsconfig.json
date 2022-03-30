@@ -12,6 +12,7 @@
     "strict": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
+    "skipLibCheck": true,
   },
   "files": [ "node_modules/vite/client.d.ts" ],
   "include": [ "lib" ],

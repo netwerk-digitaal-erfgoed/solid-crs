@@ -16,6 +16,7 @@ export default defineConfig({
         imagery: resolve(__dirname, 'lib/object-imagery.component.ts'),
         identification: resolve(__dirname, 'lib/object-identification.component.ts'),
         representation: resolve(__dirname, 'lib/object-representation.component.ts'),
+        loan: resolve(__dirname, 'lib/object-loan.component.ts'),
       },
       output: [
         {

@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-core",
-  "version": "0.16.2",
+  "version": "0.17.0-loans.19",
   "description": "Core logic of the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-core.umd.js",
@@ -60,7 +60,8 @@
     "@appnest/lit-translate": "^1.1.18",
     "@digita-ai/inrupt-solid-client": "^0.11.0",
     "@digita-ai/inrupt-solid-service": "^0.11.0",
-    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.16.2",
+    "@netwerk-digitaal-erfgoed/solid-crs-client": "0.17.0-loans.19",
+    "@netwerk-digitaal-erfgoed/solid-crs-theme": "0.17.0-loans.19",
     "moment": "^2.29.1",
     "rxjs": "^7.4.0",
     "uuid": "8.3.2",
@@ -68,17 +69,17 @@
   },
   "jest": {
     "transformIgnorePatterns": [
-      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client)/)"
+      "node_modules/(?!(@appnest/lit-translate|lit-html|@digita-ai/inrupt-solid-client|@netwerk-digitaal-erfgoed/solid-crs-client)/)"
     ],
     "setupFiles": [
       "<rootDir>/tests/setup.ts"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 90.3,
-        "statements": 97.55,
-        "lines": 97.43,
-        "functions": 99.4
+        "statements": 96.58,
+        "branches": 89.11,
+        "lines": 96.42,
+        "functions": 98.83
       }
     },
     "automock": false,
