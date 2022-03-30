@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.0-loans.20](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.20) (2022-03-30)
+
+
+### **Bug Fixes**
+
+* package-locks for loans ([#586](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/586)) ([fe90a07](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/fe90a072ca8bf61da35efe671d22fc8f5d13d51b))
+* set package versions to loans WIP ([#583](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/583)) ([48edbf8](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/48edbf8fb7bd2f0bb601dbde49ee887d53695c4a))
+
+
+### **Features**
+
+* add copy collection uri in presentation ([#569](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/569)) ([bc13dd1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/bc13dd17c1648421b4dab4d92eca6770d7bc506a))
+* add copy object URI in presentation ([#559](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/559)) ([8a8c160](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/8a8c160d579beafb06ef8d2b0f27e0d716bccf6f))
+* create presentation compare page ([#596](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/596)) ([83ab8cc](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/83ab8cc725ad5bca0a995461f82c77644dc41409))
+* implement LDNs for loan requests ([#573](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/573)) ([90b25b9](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/90b25b96c21d86c9be8e494dbc60b3ad85c77418)), closes [#575](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/575)
+
+
+
 ## [0.17.0-loans.19](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.17.0-loans.19) (2022-03-15)
 
 
