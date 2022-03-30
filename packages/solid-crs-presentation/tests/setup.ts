@@ -22,6 +22,8 @@ import { AlertComponent, CardComponent, CollectionCardComponent, ContentHeaderCo
 import fetchMock from 'jest-fetch-mock';
 import { AboutRootComponent } from '../lib/features/about/about-root.component';
 import { ObjectRootComponent } from '../lib/features/object/object-root.component';
+import { ObjectOverviewComponent } from '../lib/features/object/overview/object-overview.component';
+import { ObjectCompareComponent } from '../lib/features/object/compare/object-compare.component';
 import { SearchRootComponent } from '../lib/features/search/search-root.component';
 import { CollectionRootComponent } from '../lib/features/collection/collection-root.component';
 import { AppRootComponent } from '../lib/app-root.component';
@@ -75,6 +77,8 @@ fetchMock.enableMocks();
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-object-root', ObjectRootComponent);
+customElements.define('nde-object-overview', ObjectOverviewComponent);
+customElements.define('nde-object-compare', ObjectCompareComponent);
 customElements.define('nde-about-root', AboutRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-alert', AlertComponent);

@@ -75,7 +75,7 @@ export const urlVariables = (route: Route): UrlVariables => {
   const searchParams = new URL(window.location.href).searchParams;
   const hash = new URL(window.location.href).hash;
 
-  const regex = new RegExp(`^${route.path.replace(/{{[^/]+}}/ig, '(.+)')}$`, 'i');
+  const regex = new RegExp(`^${route.path.replace(/{{.+?}}/ig, '([^/]+)')}$`, 'i');
 
   const parts = route.path.split('/')
     .filter((part) => part.startsWith('{{') && part.endsWith('}}'));

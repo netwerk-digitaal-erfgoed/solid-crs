@@ -2,9 +2,11 @@ import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import fetchMock from 'jest-fetch-mock';
+import { mockCollection1 } from '../tests/test-data';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
+import { SelectedCollectionEvent } from './features/collection/collection.events';
 
 const solidService = {
   getProfile: jest.fn(async () => ({
@@ -156,6 +158,21 @@ describe('AppRootComponent', () => {
       component.clearSearchTerm();
 
       expect(machine.send).toHaveBeenCalledWith(expect.objectContaining({ searchTerm: '' }));
+
+    });
+
+  });
+
+  describe('onCollectionSelected', () => {
+
+    it('should send a SelectedCollectionEvent to the actor', async () => {
+
+      const sendSpy = jest.spyOn(component.actor, 'send').mockReturnValueOnce(void 0);
+      const sendEvent = new CustomEvent('selected-collection', { detail: mockCollection1 });
+      component.onCollectionSelected(sendEvent);
+      const expectedEvent = new SelectedCollectionEvent(mockCollection1);
+      expect(sendSpy).toHaveBeenCalledWith(expectedEvent);
+      sendSpy.mockRestore();
 
     });
 
