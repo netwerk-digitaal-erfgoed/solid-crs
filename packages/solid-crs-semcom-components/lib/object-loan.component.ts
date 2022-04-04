@@ -17,16 +17,17 @@ export class ObjectLoanComponent extends RxLitElement {
   render(): TemplateResult {
 
     const isOwner = this.object && !this.object.original;
+    const hasLoanedObjects = this.object && this.object.loaned && this.object.loaned.length > 0;
 
     return this.object ? html`
 
-    <nde-large-card .showImage="${false}">
+    <nde-large-card .showImage="${false}" .showContent="${(isOwner && hasLoanedObjects) || !isOwner}">
       <div slot="title">${this.translator?.translate('object.card.loan.title')}</div>
       ${ isOwner ? html`
-        <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.owner')}</div>
+        <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.loaned-object')}</div>
         ` : html`
         <div slot="subtitle">
-          ${unsafeHTML(this.translator?.translate('object.card.loan.subtitle.lender').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
+        ${ this.object.original ? unsafeHTML(this.translator?.translate('object.card.loan.subtitle.lender').replace('{{href}}', this.object.original).replace('{{institution}}', 'Placeholder')) : ''}
         </div>
       `}
       <div slot="icon">

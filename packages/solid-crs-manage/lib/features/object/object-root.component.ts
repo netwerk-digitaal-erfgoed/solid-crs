@@ -483,6 +483,7 @@ export class ObjectRootComponent extends RxLitElement {
 
         element = document.createElement(component.tag) as ObjectLoanComponent;
         element.id = 'object.sidebar.loan';
+        element.hidden = this.object.loaned.length < 1 && !this.object.original;
 
       }
 

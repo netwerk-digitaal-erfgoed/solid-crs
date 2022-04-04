@@ -214,7 +214,7 @@
             "loan": {
                 "title": "Bruikleen",
                 "subtitle": {
-                    "owner": "Uitgeleend object.",
+                    "loaned-object": "Uitgeleend object.",
                     "lender": "Dit object wordt uitgeleend door <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>"
                 },
                 "content": {
