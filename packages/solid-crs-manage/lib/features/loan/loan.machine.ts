@@ -79,6 +79,9 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         [LoanEvents.CLICKED_REJECTED_LOAN_REQUEST]: {
           target: LoanStates.REJECTING_LOAN_REQUEST,
         },
+        [LoanEvents.CLICKED_IMPORT_COLLETION]: {
+          target: LoanStates.IMPORTING_COLLECTION,
+        },
       },
     },
     [LoanStates.LOAN_REQUEST_CREATION]: {
@@ -124,6 +127,17 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         },
         onError: {
           actions: log((c, e) => `Error Rejecting Request: ${e.data}`),
+        },
+      },
+    },
+    [LoanStates.IMPORTING_COLLECTION]: {
+      invoke: {
+        src: (c, e) => services.importCollection(c, e),
+        onDone: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
+        },
+        onError: {
+          actions: log((c, e) => `Error Importing Collection: ${e.data}`),
         },
       },
     },

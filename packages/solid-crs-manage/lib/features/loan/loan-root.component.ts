@@ -4,12 +4,12 @@ import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
 import { from, map } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator, CollectionStore, LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore, LoanRequest, Collection, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
 import { LoanState, LoanStates, LoanStateSchema } from './loan.states';
-import { ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, LoanEvent } from './loan.events';
+import { ClickedImportCollection, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, LoanEvent } from './loan.events';
 import { loanMachine } from './loan.machine';
 import { LoanOverviewComponent } from './components/loan-overview.component';
 import { LoanDetailComponent } from './components/loan-detail.component';
@@ -29,6 +29,7 @@ export class LoanRootComponent extends RxLitElement {
     public logger: Logger,
     public solidService: SolidSDKService,
     public collectionStore: CollectionStore,
+    public objectStore: CollectionObjectStore,
   ) {
 
     super();
@@ -36,6 +37,7 @@ export class LoanRootComponent extends RxLitElement {
     this.machine = createMachine<LoanContext, LoanEvent, LoanState>(loanMachine).withContext({
       solidService: this.solidService,
       collectionStore: this.collectionStore,
+      objectStore: this.objectStore,
     });
 
     this.actor = interpret(this.machine, { devTools: true });
@@ -77,7 +79,7 @@ export class LoanRootComponent extends RxLitElement {
 
   onImportCollection = (event: CustomEvent<Collection>): void =>  {
 
-    this.dispatchEvent(new CustomEvent('import-collection', { detail: event.detail }));
+    this.actor.send(new ClickedImportCollection(event.detail));
 
   };
 

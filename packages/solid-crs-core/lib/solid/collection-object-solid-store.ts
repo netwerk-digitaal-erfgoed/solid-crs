@@ -544,6 +544,15 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
 
+    // loan
+    objectThing =  object.original ? addUrl(objectThing, 'http://netwerdigitaalerfgoed.nl/voc/original', object.original) : objectThing;
+
+    object.loaned?.forEach((loaned) => {
+
+      objectThing =  loaned ? addUrl(objectThing, 'http://netwerdigitaalerfgoed.nl/voc/loaned', loaned) : objectThing;
+
+    });
+
     // digital object
     let digitalObjectThing = createThing({ url: digitalObjectUri });
 
@@ -666,6 +675,10 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
       // other
       mainEntityOfPage: asUrl(digitalObject) || undefined,
+
+      // loan
+      loaned: getUrlAll(object, 'http://netwerkdigitaalerfgoed.nl/voc/loaned'),
+      original: getUrl(object, 'http://netwerkdigitaalerfgoed.nl/voc/original') ?? undefined,
 
       // digital object
       image: getUrl(digitalObject, 'http://schema.org/contentUrl') || undefined,

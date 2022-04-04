@@ -13,15 +13,16 @@ export class ObjectLoanComponent extends RxLitElement {
   @property({ type: Object }) logger?: Logger;
   @property() object?: CollectionObject;
   @property() formActor?: ActorRef<FormEvent>;
-  @property() isOwner = true;
 
   render(): TemplateResult {
 
+    const isOwner = this.object && !this.object.original;
+
     return this.object ? html`
 
-    <nde-large-card .showImage="${false}" .showContent="${this.isOwner}">
+    <nde-large-card .showImage="${false}">
       <div slot="title">${this.translator?.translate('object.card.loan.title')}</div>
-      ${ this.isOwner ? html`
+      ${ isOwner ? html`
         <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.owner')}</div>
         ` : html`
         <div slot="subtitle">
@@ -31,12 +32,14 @@ export class ObjectLoanComponent extends RxLitElement {
       <div slot="icon">
         ${unsafeSVG(ObjectIcon)}
       </div>
-      ${ this.isOwner ? html` 
+      ${ isOwner ? html` 
         <div slot="content">
           <p>
             ${unsafeHTML(this.translator?.translate('object.card.loan.content.borrower').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
           </p>
-          <a href="#" target="_blank"> ${this.translator?.translate('object.card.loan.content.see-changes')} </a>
+          ${ this.object.loaned?.map((loaned) => html`
+            <a href="${loaned}" target="_blank"> ${this.translator?.translate('object.card.loan.content.see-changes')} </a>
+          `)}
         </div>
       ` : ''}
     </nde-large-card>

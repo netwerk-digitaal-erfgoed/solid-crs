@@ -1,4 +1,4 @@
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { EventObject } from 'xstate';
 import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
@@ -10,6 +10,7 @@ export enum LoanEvents {
   CLICKED_REJECTED_LOAN_REQUEST = '[LoanEvent: Clicked Rejected Loan Request]',
   CLICKED_NEW_LOAN_REQUEST = '[LoanEvent: Clicked New Loan Request]',
   CLICKED_SEND_LOAN_REQUEST = '[LoanEvent: Clicked Send Loan Request]',
+  CLICKED_IMPORT_COLLETION = '[LoanEvent: Clicked Import Collection]',
 }
 
 /**
@@ -79,6 +80,16 @@ export class ClickedSendLoanRequestEvent implements EventObject {
 
 }
 
+/**
+ * Fired when the user clicked the import collection button
+ */
+export class ClickedImportCollection implements EventObject {
+
+  public type: LoanEvents.CLICKED_IMPORT_COLLETION = LoanEvents.CLICKED_IMPORT_COLLETION;
+  constructor(public collection: Collection) {}
+
+}
+
 export type LoanEvent =
   | ClickedLoanRequestOverviewIncomingEvent
   | ClickedLoanRequestOverviewAcceptedEvent
@@ -86,4 +97,5 @@ export type LoanEvent =
   | ClickedAcceptedLoanRequestEvent
   | ClickedRejectedLoanRequestEvent
   | ClickedNewLoanRequestEvent
-  | ClickedSendLoanRequestEvent;
+  | ClickedSendLoanRequestEvent
+  | ClickedImportCollection;
