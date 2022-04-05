@@ -850,7 +850,8 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
       summary: 'Object metadata update',
       actor: this.getSession().info.webId ?? '',
       target: originalObject.maintainer ?? '',
-      object: updated.uri,
+      updatedObject: updated.uri,
+      originalObject: originalObject.uri,
     });
 
     const response = await fetch(originalObjectInbox, {
@@ -910,16 +911,20 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     summary: string;
     actor: string;
     target: string;
-    object: string;
+    updatedObject: string;
+    originalObject: string;
     origin?: string;
-  }): string => `@prefix as: <https://www.w3.org/ns/activitystreams#> .
+  }): string => `
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+@prefix nde: <https://netwerkdigitaalerfgoed.nl/voc/> .
 
 <${notificationArgs.inbox}${notificationArgs.notificationId}>
   a <${notificationArgs.type}> ;
   as:summary "${notificationArgs.summary}" ;  
   as:actor <${notificationArgs.actor}> ;
   as:target <${notificationArgs.target}> ;
-  as:object <${notificationArgs.object}> ;
+  as:object <${notificationArgs.originalObject}> ;
+  nde:updatedObject <${notificationArgs.updatedObject}> ;
   as:origin <${notificationArgs.origin ?? `https://webid.netwerkdigitaalerfgoed.nl/collectiebeheersysteem`}> .
 `;
 

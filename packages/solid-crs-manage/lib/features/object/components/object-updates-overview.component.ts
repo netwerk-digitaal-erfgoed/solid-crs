@@ -43,7 +43,9 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
       <nde-large-card .showImage="${false}" .showContent="${false}">
           <div slot="title">${ this.translator?.translate('object.updates.edited-this-object').replace('{{institution}}', notification.from) }</div>
           <div slot="subtitle">
-            <a href="#" target="_blank" rel="noopener noreferrer"> ${ this.translator?.translate('object.updates.see-changes') } </a>
+            <a href="${process.env.VITE_PRESENTATION_URI}object/${encodeURIComponent(notification.originalObject)}/compare/${encodeURIComponent(notification.updatedObject)}" target="_blank" rel="noopener noreferrer">
+              ${ this.translator?.translate('object.updates.see-changes') }
+            </a>
           </div>
           <div slot="icon"> ${unsafeSVG(Open)} </div>
           <div slot="actions" class="accept" @click="${this.onChangesAccepted}"> ${unsafeSVG(CheckCircle)} </div>
