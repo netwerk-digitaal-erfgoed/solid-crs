@@ -39,9 +39,9 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
   render(): TemplateResult {
 
     return html`
-      ${ this.notifications?.map((noti) => html`
+      ${ this.notifications?.map((notification) => html`
       <nde-large-card .showImage="${false}" .showContent="${false}">
-          <div slot="title">${ this.translator?.translate('object.updates.edited-this-object').replace('{{institution}}', noti.from) }</div>
+          <div slot="title">${ this.translator?.translate('object.updates.edited-this-object').replace('{{institution}}', notification.from) }</div>
           <div slot="subtitle">
             <a href="#" target="_blank" rel="noopener noreferrer"> ${ this.translator?.translate('object.updates.see-changes') } </a>
           </div>

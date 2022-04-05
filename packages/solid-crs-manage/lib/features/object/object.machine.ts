@@ -1,7 +1,8 @@
 import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, send, sendParent } from 'xstate';
-import { activeRoute, Collection, CollectionObject, CollectionObjectStore, TermService, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { activeRoute, Collection, CollectionObject, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { routes } from '../../app.machine';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
@@ -37,6 +38,14 @@ export interface ObjectContext {
    * A list of updates to an object. Derived from the notifications in the inbox.
    */
   notifications?: ObjectUpdate[];
+  /**
+   * Service to interact with Solid pods
+   */
+  solidService: SolidSDKService;
+  /**
+   * Service to retrieve object from pod
+   */
+  objectStore: CollectionObjectStore;
 }
 
 /**
@@ -260,7 +269,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.LOADING_OBJECT_INBOX]: {
         invoke: {
-          src: loadNotifications,
+          src: (c, e) => loadNotifications(c, e),
           onDone: {
             actions: assign({
               notifications: (c, event) => event.data,

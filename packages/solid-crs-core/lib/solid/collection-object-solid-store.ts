@@ -876,7 +876,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
   }
 
-  private async getInbox(object: CollectionObject): Promise<string> {
+  async getInbox(object: CollectionObject): Promise<string> {
 
     // retrieve collection
     const dataset = await getSolidDataset(object.collection, { fetch: this.getSession().fetch });

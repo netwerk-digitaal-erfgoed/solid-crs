@@ -1,5 +1,5 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query, state } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObject, CollectionObjectStore, Logger, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
@@ -39,18 +39,6 @@ export class ObjectRootComponent extends RxLitElement {
    */
   @internalProperty()
   visibleCard: string;
-  /**
-   * The component's logger.
-   */
-  @property({ type: Object })
-  public logger: Logger;
-
-  /**
-   * The component's translator.
-   */
-  @property({ type: Object })
-  public translator: Translator;
-
   /**
    * The actor controlling this component.
    */
@@ -169,9 +157,7 @@ export class ObjectRootComponent extends RxLitElement {
     super.firstUpdated(changed);
 
     this.subscribe('notifications', from(this.actor).pipe(
-      map((actorState) => actorState.context.notifications?.filter(
-        (update) => update.originalObject === this.object?.uri
-      )),
+      map((actorState) => actorState.context.notifications),
     ));
 
     this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
@@ -643,7 +629,12 @@ export class ObjectRootComponent extends RxLitElement {
 
   }
 
-  constructor() {
+  constructor(
+    public translator: Translator,
+    public logger: Logger,
+    public solidService: SolidSDKService,
+    public objectStore: CollectionObjectStore,
+  ) {
 
     super();
     define('object-updates-overview', ObjectUpdatesOverviewComponent);

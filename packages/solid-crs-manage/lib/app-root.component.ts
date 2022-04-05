@@ -17,6 +17,7 @@ import { SearchContext } from './features/search/search.machine';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
 import { LoanRootComponent } from './features/loan/loan-root.component';
 import { ClickedLoanRequestOverviewIncomingEvent } from './features/loan/loan.events';
+import { ObjectRootComponent } from './features/object/object-root.component';
 
 /**
  * The root page of the application.
@@ -105,6 +106,7 @@ export class AppRootComponent extends RxLitElement {
 
     define('nde-authenticate-root', hydrate(AuthenticateRootComponent)(this.solidService));
     define('nde-loan-root', hydrate(LoanRootComponent)(this.translator, this.logger, this.solidService, this.collectionStore, this.collectionObjectStore));
+    define('nde-object-root', hydrate(ObjectRootComponent)(this.translator, this.logger, this.solidService, this.collectionObjectStore));
 
   }
 
