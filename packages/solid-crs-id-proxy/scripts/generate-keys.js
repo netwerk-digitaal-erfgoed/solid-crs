@@ -1,15 +1,14 @@
 const fs = require('fs');
 const path = require('path');
-const { generateKeyPair } = require('jose/util/generate_key_pair');
-const { fromKeyLike } = require('jose/jwk/from_key_like');
+const jose = require('jose');
 const { v4: uuid } = require('uuid');
 const args = process.argv.slice(2);
 const filePath = args[0] ?? '../../assets/jwks.json';
 
 const generateKeys = async () => {
 
-  const rsaKey =  await generateKeyPair('RS256');
-  const rsaJwk = await fromKeyLike(rsaKey.privateKey);
+  const rsaKey =  await jose.generateKeyPair('RS256');
+  const rsaJwk = await jose.exportJWK(rsaKey.privateKey);
   rsaJwk.kid = uuid();
   rsaJwk.alg = 'RS256';
   rsaJwk.use = 'sig';
