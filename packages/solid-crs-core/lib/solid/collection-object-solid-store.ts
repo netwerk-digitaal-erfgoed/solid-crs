@@ -916,7 +916,6 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     origin?: string;
   }): string => `
 @prefix as: <https://www.w3.org/ns/activitystreams#> .
-@prefix nde: <https://netwerkdigitaalerfgoed.nl/voc/> .
 
 <${notificationArgs.inbox}${notificationArgs.notificationId}>
   a <${notificationArgs.type}> ;
@@ -924,7 +923,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
   as:actor <${notificationArgs.actor}> ;
   as:target <${notificationArgs.target}> ;
   as:object <${notificationArgs.originalObject}> ;
-  nde:updatedObject <${notificationArgs.updatedObject}> ;
+  as:context <${notificationArgs.updatedObject}> ;
   as:origin <${notificationArgs.origin ?? `https://webid.netwerkdigitaalerfgoed.nl/collectiebeheersysteem`}> .
 `;
 
