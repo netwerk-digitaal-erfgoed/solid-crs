@@ -173,7 +173,7 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
   }
 
   // eslint-disable-next-line no-console
-  console.log('Sending loan request rejection notif');
+  console.log('Sending loan request accepted notif');
 
   // retrieve response inbox location
   // use the requester's catalog inbox as target for responses
@@ -281,7 +281,7 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
  * @param context the context of the loan machine
  * @param event the ClickedImportCollection event
  */
-export const importCollection = async (context: LoanContext, event: LoanEvent): Promise<Collection | undefined> => {
+export const importCollection = async (context: LoanContext, event: LoanEvent): Promise<Collection> => {
 
   // eslint-disable-next-line no-console
   console.log('Importing collection');

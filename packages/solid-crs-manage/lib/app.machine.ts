@@ -567,7 +567,6 @@ export const appMachine = (
            * Creating a new collection.
            */
           [AppDataStates.CREATING]: {
-            entry: log('aids'),
             tags: [ 'loading' ],
             invoke: {
               /**

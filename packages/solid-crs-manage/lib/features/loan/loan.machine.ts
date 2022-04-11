@@ -1,8 +1,8 @@
 import { assign, DoneInvokeEvent, MachineConfig } from 'xstate';
-import { log } from 'xstate/lib/actions';
+import { log, send } from 'xstate/lib/actions';
 import { LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanContext } from './loan.context';
-import { ClickedLoanRequestDetailEvent, LoanEvent, LoanEvents } from './loan.events';
+import { ClickedLoanRequestDetailEvent, CollectionImported, LoanEvent, LoanEvents } from './loan.events';
 import * as services from './loan.services';
 import { LoanStates, LoanStateSchema } from './loan.states';
 
@@ -135,6 +135,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         src: (c, e) => services.importCollection(c, e),
         onDone: {
           target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
+          actions: send((c, event) => new CollectionImported(event.data)),
         },
         onError: {
           actions: log((c, e) => `Error Importing Collection: ${e.data}`),

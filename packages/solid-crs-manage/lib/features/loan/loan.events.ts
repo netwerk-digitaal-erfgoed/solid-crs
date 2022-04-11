@@ -11,6 +11,7 @@ export enum LoanEvents {
   CLICKED_NEW_LOAN_REQUEST = '[LoanEvent: Clicked New Loan Request]',
   CLICKED_SEND_LOAN_REQUEST = '[LoanEvent: Clicked Send Loan Request]',
   CLICKED_IMPORT_COLLETION = '[LoanEvent: Clicked Import Collection]',
+  COLLECTION_IMPORTED = '[LoanEvent: Collection Imported]',
 }
 
 /**
@@ -90,6 +91,16 @@ export class ClickedImportCollection implements EventObject {
 
 }
 
+/**
+ * Fired when importing collection was successful
+ */
+export class CollectionImported implements EventObject {
+
+  public type: LoanEvents.COLLECTION_IMPORTED = LoanEvents.COLLECTION_IMPORTED;
+  constructor(public collection: Collection) {}
+
+}
+
 export type LoanEvent =
   | ClickedLoanRequestOverviewIncomingEvent
   | ClickedLoanRequestOverviewAcceptedEvent
@@ -98,4 +109,5 @@ export type LoanEvent =
   | ClickedRejectedLoanRequestEvent
   | ClickedNewLoanRequestEvent
   | ClickedSendLoanRequestEvent
-  | ClickedImportCollection;
+  | ClickedImportCollection
+  | CollectionImported;

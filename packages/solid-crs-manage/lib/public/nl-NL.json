@@ -316,7 +316,8 @@
         },
         "overview": {
             "header": {
-                "subtitle": "Goedkeuren van aanvragen tot bruikleen"
+                "subtitle": "Goedkeuren van aanvragen tot bruikleen",
+                "subtitle-accepted": "Goedgekeurde aanvragen tot bruikleen"
             },
             "card": {
                 "title-offer": "Aanvraag tot bruikleen",

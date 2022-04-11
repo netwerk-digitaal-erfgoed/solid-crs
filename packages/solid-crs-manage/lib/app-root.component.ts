@@ -11,7 +11,7 @@ import { define, hydrate } from '@digita-ai/dgt-components';
 import { Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
-import { CollectionEvents } from './features/collection/collection.events';
+import { CollectionEvents, SavedCollectionEvent } from './features/collection/collection.events';
 import { SearchEvent, SearchUpdatedEvent } from './features/search/search.events';
 import { SearchContext } from './features/search/search.machine';
 import { AuthenticateRootComponent } from './features/authenticate/authenticate-root.component';
@@ -278,6 +278,12 @@ export class AppRootComponent extends RxLitElement {
 
   }
 
+  onCollectionImported(): void {
+
+    this.actor.send(new SavedCollectionEvent());
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -351,7 +357,7 @@ export class AppRootComponent extends RxLitElement {
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.COLLECTION }) ? html`<nde-collection-root .actor='${this.actor.children.get(AppActors.COLLECTION_MACHINE)}' .showDelete='${this.collections?.length > 1}' .logger='${this.logger}' .translator='${this.translator}'></nde-collection-root>` : '' }  
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.SEARCH }) ? html`<nde-search-root .actor='${this.actor.children.get(AppActors.SEARCH_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-search-root>` : '' }
     ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.OBJECT }) ? html`<nde-object-root .actor='${this.actor.children.get(AppActors.OBJECT_MACHINE)}' .logger='${this.logger}' .translator='${this.translator}'></nde-object-root>` : '' }
-    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN }) ? html`<nde-loan-root></nde-loan-root>` : '' }  
+    ${ this.state?.matches({ [AppRootStates.AUTHENTICATE]: AppAuthenticateStates.AUTHENTICATED, [AppRootStates.FEATURE]: AppFeatureStates.LOAN }) ? html`<nde-loan-root @collection-imported="${this.onCollectionImported}"></nde-loan-root>` : '' }  
     ` }  
   
     `;
