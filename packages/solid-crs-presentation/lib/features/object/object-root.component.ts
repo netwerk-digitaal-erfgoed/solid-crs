@@ -162,6 +162,9 @@ export class ObjectRootComponent extends RxLitElement {
         nde-content-header {
           z-index: 1;
         }
+        nde-alert {
+          z-index: unset;
+        }
         #info-popup {
           z-index: 110;
           height: auto;
