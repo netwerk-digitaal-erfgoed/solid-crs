@@ -51,7 +51,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     [LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
       on: {
         [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
+          target: LoanStates.LOADING_LOAN_REQUESTS,
         },
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.LOAN_REQUEST_CREATION,

@@ -11,8 +11,6 @@ export const loadNotifications = async (context: ObjectContext, event: ObjectEve
   // eslint-disable-next-line no-console
   console.log('Loading Notifications');
 
-  const webId = context.solidService.getDefaultSession().info.webId;
-
   // get all unique inboxes
   const inbox = await context.objectStore.getInbox(context.object);
   const dataset = await getSolidDataset(inbox);
@@ -41,8 +39,8 @@ export const loadNotifications = async (context: ObjectContext, event: ObjectEve
 
         const parsedObjectUpdate: ObjectUpdate = {
           uri: asUrl(notificationThing) ?? undefined,
-          originalObject: getUrl(notificationThing, 'https://www.w3.org/ns/activitystreams#object') ?? undefined,
-          updatedObject: getUrl(notificationThing, 'https://netwerkdigitaalerfgoed.nl/voc/updatedObject') ?? undefined,
+          originalObject: getUrl(notificationThing, 'https://www.w3.org/ns/activitystreams#context') ?? undefined,
+          updatedObject: getUrl(notificationThing, 'https://www.w3.org/ns/activitystreams#object') ?? undefined,
           to: getUrl(notificationThing, 'https://www.w3.org/ns/activitystreams#target') ?? undefined,
           from: getUrl(notificationThing, 'https://www.w3.org/ns/activitystreams#actor') ?? undefined,
         };

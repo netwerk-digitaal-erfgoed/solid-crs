@@ -263,12 +263,6 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
       }
 
-      if (!object.maintainer) {
-
-        object.maintainer = this.getSession().info.webId;
-
-      }
-
       const oldHeightThing = getThing(oldDataset, `${object.uri}-height`);
       const oldWidthThing = getThing(oldDataset, `${object.uri}-width`);
       const oldDepthThing = getThing(oldDataset, `${object.uri}-depth`);
@@ -336,10 +330,16 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     }
 
+    if (!object.maintainer) {
+
+      object.maintainer = this.getSession().info.webId;
+
+    }
+
     // send metadata update for loaned objects when saving
     if (object.original) {
 
-      await this.sendMetadataUpdate(object.original, object);
+      await this.sendMetadataUpdate(object.original, { ... object, uri: objectUri });
 
     }
 
@@ -836,7 +836,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
   private async sendMetadataUpdate(original: string, updated: CollectionObject): Promise<string> {
 
     // eslint-disable-next-line no-console
-    console.log('sending metadata update');
+    console.log('Sending metadata update');
 
     const originalObject = await this.get(original);
     const originalObjectInbox = await this.getInbox(originalObject);

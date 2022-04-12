@@ -1,7 +1,7 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query, state } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, CollectionObjectStore, Logger, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
