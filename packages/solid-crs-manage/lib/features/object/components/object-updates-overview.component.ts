@@ -8,6 +8,7 @@ import { define } from '@digita-ai/dgt-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ObjectUpdate } from '../models/object-update.model';
 import { ObjectContext } from '../object.machine';
+import { ClickedObjectSidebarItem } from '../object.events';
 
 export class ObjectUpdatesOverviewComponent extends RxLitElement {
 
@@ -25,14 +26,16 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
   onChangesAccepted = (): void => {
 
     // eslint-disable-next-line no-console
-    console.log('Accepted Changes (Placeholder log)');
+    console.debug('Accepted Changes (Placeholder log)');
 
   };
 
   onChangesRejected = (): void => {
 
     // eslint-disable-next-line no-console
-    console.log('Rejected Changes (Placeholder log)');
+    console.debug('Rejected Changes');
+
+    this.actor.send(new ClickedObjectSidebarItem('object.sidebar.identification'));
 
   };
 
