@@ -8,7 +8,7 @@ import { define } from '@digita-ai/dgt-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ObjectUpdate } from '../models/object-update.model';
 import { ObjectContext } from '../object.machine';
-import { ClickedObjectSidebarItem } from '../object.events';
+import { ClickedImportUpdates, ClickedObjectSidebarItem } from '../object.events';
 
 export class ObjectUpdatesOverviewComponent extends RxLitElement {
 
@@ -23,10 +23,10 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
 
   }
 
-  onChangesAccepted = (): void => {
+  onChangesAccepted = (collectionUri: string): void => {
 
     // eslint-disable-next-line no-console
-    console.debug('Accepted Changes (Placeholder log)');
+    this.actor.send(new ClickedImportUpdates(collectionUri));
 
   };
 
@@ -51,7 +51,7 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
             </a>
           </div>
           <div slot="icon"> ${unsafeSVG(Open)} </div>
-          <div slot="actions" class="accept" @click="${this.onChangesAccepted}"> ${unsafeSVG(CheckCircle)} </div>
+          <div slot="actions" class="accept" @click="${() => this.onChangesAccepted(notification.originalObject)}"> ${unsafeSVG(CheckCircle)} </div>
           <div slot="actions" class="reject" @click="${this.onChangesRejected}"> ${unsafeSVG(CrossCircle)} </div>
         </nde-large-card>
       `)}

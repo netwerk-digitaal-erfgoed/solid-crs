@@ -1,6 +1,7 @@
 import { asUrl, getSolidDataset, getThing, getUrl, getUrlAll } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectUpdate } from './models/object-update.model';
-import { ObjectEvent } from './object.events';
+import { ClickedImportUpdates, ObjectEvent } from './object.events';
 import { ObjectContext } from './object.machine';
 
 /**
@@ -54,5 +55,31 @@ export const loadNotifications = async (context: ObjectContext, event: ObjectEve
   }
 
   return objectUpdates;
+
+};
+
+export const importUpdates = async (context: ObjectContext, event: ObjectEvent): Promise<CollectionObject> => {
+
+  // eslint-disable-next-line no-console
+  console.log('Importing Updates');
+
+  if (!(event instanceof ClickedImportUpdates)) {
+
+    // eslint-disable-next-line no-console
+    console.error('Event:', event);
+    throw Error('Event is not of type ClickedImportUpdates');
+
+  }
+
+  // get updated object
+  const updatedObject = await context.objectStore.get(event.collectionUri);
+
+  // merge existing object with updated object
+  return {
+    ... updatedObject,
+    uri: context.object.uri,
+    maintainer: context.object.maintainer,
+    collection: context.object.collection,
+  };
 
 };
