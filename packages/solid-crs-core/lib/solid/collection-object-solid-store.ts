@@ -560,12 +560,6 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     // loan
     objectThing =  object.original ? addUrl(objectThing, 'http://schema.org/isBasedOn', object.original) : objectThing;
 
-    object.loaned?.forEach((loaned) => {
-
-      objectThing =  loaned ? addUrl(objectThing, 'http://netwerkdigitaalerfgoed.nl/voc/loaned', loaned) : objectThing;
-
-    });
-
     // digital object
     let digitalObjectThing = createThing({ url: digitalObjectUri });
 
@@ -869,7 +863,7 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
       // eslint-disable-next-line no-console
       console.error(response);
-      throw Error('error while sending metadata update notif');
+      throw Error('Error while sending metadata update notification');
 
     }
 
