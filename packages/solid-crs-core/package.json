@@ -82,7 +82,6 @@
         "functions": 99.42
       }
     },
-    "resetMocks": false,
     "automock": false,
     "coveragePathIgnorePatterns": [
       "<rootDir>/dist/",
