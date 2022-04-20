@@ -1,11 +1,11 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query, state } from 'lit-element';
+import { html, property, PropertyValues, state, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, CollectionObjectStore, Logger, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent, ObjectLoanComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
@@ -27,7 +27,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form cards in this component
    */
-  @internalProperty()
+  @state()
   formCards: (ObjectImageryComponent
   | ObjectCreationComponent
   | ObjectIdentificationComponent
@@ -37,7 +37,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The id of the currently visible form card
    */
-  @internalProperty()
+  @state()
   visibleCard: string;
   /**
    * The actor controlling this component.
@@ -54,13 +54,13 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The state of this component.
    */
-  @internalProperty()
+  @state()
   state?: State<ObjectContext>;
 
   /**
    * A list of all collections.
    */
-  @internalProperty()
+  @state()
   collections?: Collection[];
 
   /**
@@ -78,49 +78,49 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form machine used by the form actor
    */
-  @internalProperty()
+  @state()
   formMachine = formMachine<any>((context) => validateObjectForm(context));
 
   /**
    * The actor responsible for form validation in this component.
    */
-  @internalProperty()
+  @state()
   formActor = interpret(this.formMachine, { devTools: true });
 
   /**
    * The actor responsible for editing term fields.
    */
-  @internalProperty()
+  @state()
   termActor: ActorRef<TermEvent>;
 
   /**
    * Indicates if the form is being submitted.
    */
-  @internalProperty()
+  @state()
   isSubmitting? = false;
 
   /**
    * Indicates if if the form validation passed.
    */
-  @internalProperty()
+  @state()
   isValid? = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
-  @internalProperty()
+  @state()
   isDirty? = false;
 
   /**
    * Indicates whether the user is editing a field containing a Term.
    */
-  @internalProperty()
+  @state()
   isEditingTermField? = false;
 
   /**
    * The semcom service to use in this component
    */
-  @internalProperty()
+  @state()
   semComService? = new SemComService();
 
   /**
@@ -132,7 +132,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The ComponentMetadata of the SemComs
    */
-  @internalProperty()
+  @state()
   components: ComponentMetadata[];
 
   /**
@@ -144,7 +144,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The image file to be uploaded
    */
-  @internalProperty()
+  @state()
   imageFile?: File;
 
   @state() notifications?: ObjectUpdate[];
@@ -469,7 +469,7 @@ export class ObjectRootComponent extends RxLitElement {
 
         element = document.createElement(component.tag) as ObjectLoanComponent;
         element.id = 'object.sidebar.loan';
-        element.hidden = this.object.loaned.length < 1 && !this.object.original;
+        element.hidden = (this.object.loaned && this.object.loaned.length < 1) && !this.object.original;
 
       }
 

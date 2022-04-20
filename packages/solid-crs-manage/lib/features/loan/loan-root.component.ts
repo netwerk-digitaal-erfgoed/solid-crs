@@ -9,7 +9,7 @@ import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { LoanContext } from './loan.context';
 import { LoanState, LoanStates, LoanStateSchema } from './loan.states';
-import { ClickedImportCollection, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, CollectionImported, LoanEvent, LoanEvents } from './loan.events';
+import { ClickedImportCollection, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, CollectionImported, LoanEvent } from './loan.events';
 import { loanMachine } from './loan.machine';
 import { LoanOverviewComponent } from './components/loan-overview.component';
 import { LoanDetailComponent } from './components/loan-detail.component';
@@ -87,11 +87,11 @@ export class LoanRootComponent extends RxLitElement {
 
   }
 
-  onImportCollection = (event: CustomEvent<Collection>): void =>  {
+  onImportCollection(event: CustomEvent<Collection>): void {
 
     this.actor.send(new ClickedImportCollection(event.detail));
 
-  };
+  }
 
   /**
    * Renders the component as HTML.

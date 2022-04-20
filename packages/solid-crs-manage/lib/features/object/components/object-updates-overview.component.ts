@@ -52,7 +52,7 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
           </div>
           <div slot="icon"> ${unsafeSVG(Open)} </div>
           <div slot="actions" class="accept" @click="${() => this.onChangesAccepted(notification.originalObject)}"> ${unsafeSVG(CheckCircle)} </div>
-          <div slot="actions" class="reject" @click="${this.onChangesRejected}"> ${unsafeSVG(CrossCircle)} </div>
+          <div slot="actions" class="reject" @click="${() => this.onChangesRejected()}"> ${unsafeSVG(CrossCircle)} </div>
         </nde-large-card>
       `)}
     `;

@@ -288,7 +288,7 @@ export const importCollection = async (context: LoanContext, event: LoanEvent): 
 
   if (!(event instanceof ClickedImportCollection)) {
 
-    throw new Error('event is not of type ClickedImportCollection');
+    throw new Error('Event is not of type ClickedImportCollection');
 
   }
 

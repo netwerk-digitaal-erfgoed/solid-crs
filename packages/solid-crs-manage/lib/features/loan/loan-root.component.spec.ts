@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { CollectionStore, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionStore, ConsoleLogger, LoanRequest, Logger, LoggerLevel } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanRootComponent } from './loan-root.component';
-import { ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent } from './loan.events';
+import { ClickedImportCollection, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent } from './loan.events';
 import { LoanStates } from './loan.states';
 import * as services from './loan.services';
 
@@ -87,9 +87,18 @@ describe('LoanRootComponent', () => {
 
     it('should dispatch CustomEvent import-collection', () => {
 
-      component.dispatchEvent = jest.fn();
-      component.onImportCollection({ detail: 'detail' } as any);
-      expect(component.dispatchEvent).toHaveBeenCalledWith(new CustomEvent('import-collection'));
+      const mockCollection: Collection = {
+        name: 'collection',
+        description: 'description',
+        inbox: 'inbox',
+        publisher: 'publisher',
+        uri: 'https://uri.uri',
+        distribution: 'distribution',
+      } as any;
+
+      component['actor'].send = jest.fn();
+      component.onImportCollection({ detail: mockCollection } as any);
+      expect(component['actor'].send).toHaveBeenCalledWith(new ClickedImportCollection(mockCollection));
 
     });
 

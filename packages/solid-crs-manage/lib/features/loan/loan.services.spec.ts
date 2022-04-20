@@ -1,8 +1,8 @@
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import fetchMock from 'jest-fetch-mock';
 import * as sdk from '@digita-ai/inrupt-solid-client';
 import { LoanContext } from './loan.context';
-import { ClickedAcceptedLoanRequestEvent, ClickedLoanRequestDetailEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent } from './loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedImportCollection, ClickedLoanRequestDetailEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 import * as services from './loan.services';
 import { LoanRequestCreationArgs } from './models/loan-request-creation-args';
 
@@ -20,6 +20,15 @@ const mockCreationArgs: LoanRequestCreationArgs = {
   description: mockLoanRequest.description,
 };
 
+const mockCollection: Collection = {
+  name: 'mockCollection',
+  description: 'https://description.uri/',
+  inbox: 'https://publiinboxsher.uri/',
+  publisher: 'https://web.id/',
+  uri: 'https://collection.uri/',
+  distribution: 'https://distribution.uri/',
+} as any;
+
 const mockContext: LoanContext = {
   loanRequest: mockLoanRequest,
   solidService: {
@@ -32,19 +41,18 @@ const mockContext: LoanContext = {
     })),
   } as any,
   collectionStore: {
-    all: jest.fn(async () => ([
-      {
-        uri: 'https://collection.uri/',
-        inbox: 'https://inbox.uri/',
-        publisher: 'https://web.id/',
-      },
-    ])),
-    get: jest.fn(async () => ({
-      uri: 'https://collection.uri/',
-      inbox: 'https://inbox.uri/',
-      publisher: 'https://publisher.uri/',
-    })),
+    all: jest.fn(async () => ([ mockCollection ])),
+    get: jest.fn(async () => mockCollection),
     getInstanceForClass: jest.fn(async () => 'https://catalog.uri/'),
+    save: jest.fn(async () => (mockCollection)),
+  } as any,
+  objectStore: {
+    getObjectsForCollection: jest.fn(async () => [
+      {
+        uri: 'https://inbox.uri/',
+      },
+    ]),
+    save: jest.fn(async () => ({})),
   } as any,
 };
 
@@ -70,7 +78,7 @@ describe('LoanServices', () => {
           ... mockLoanRequest,
           uri: 'https://notification.uri/',
           from: 'https://web.id/',
-          to: 'https://publisher.uri/',
+          to: 'https://web.id/',
         });
 
     });
@@ -89,7 +97,7 @@ describe('LoanServices', () => {
     it('should load notifications', async () => {
 
       (sdk.getSolidDataset as any) = jest.fn(async () => ({}));
-      (sdk.getThing as any) = jest.fn(() => ({}));
+      (sdk.getThing as any) = jest.fn(() => 'thing');
 
       (sdk.getUrlAll as any) = jest.fn(() => [
         'https://notification.uri/',
@@ -182,6 +190,24 @@ describe('LoanServices', () => {
 
       await expect(services.rejectRequest(mockContext, new ClickedAcceptedLoanRequestEvent(mockLoanRequest)))
         .rejects.toThrow('event is not of type ClickedRejectedLoanRequestEvent');
+
+    });
+
+  });
+
+  describe('importCollection', () => {
+
+    it('should error when event not of ClickedImportCollection type', async () => {
+
+      await expect(services.importCollection(mockContext, {} as LoanEvent))
+        .rejects.toThrow('Event is not of type ClickedImportCollection');
+
+    });
+
+    it('should return imported Collection', async () => {
+
+      await expect(services.importCollection(mockContext, new ClickedImportCollection(mockCollection)))
+        .resolves.toEqual(mockCollection);
 
     });
 
