@@ -26,7 +26,7 @@ export default defineConfig( ({ command, mode }) => {
         server: {
           port: 3002,
         },
-        mode: 'production',
+        mode: 'development',
         define: envWithProcessPrefix,
       }
   } else if (command === 'build'){

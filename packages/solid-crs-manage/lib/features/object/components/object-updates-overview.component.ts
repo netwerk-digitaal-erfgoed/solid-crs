@@ -8,6 +8,7 @@ import { define } from '@digita-ai/dgt-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ObjectUpdate } from '../models/object-update.model';
 import { ObjectContext } from '../object.machine';
+import { ClickedImportUpdates, ClickedObjectSidebarItem } from '../object.events';
 
 export class ObjectUpdatesOverviewComponent extends RxLitElement {
 
@@ -22,32 +23,36 @@ export class ObjectUpdatesOverviewComponent extends RxLitElement {
 
   }
 
-  onChangesAccepted = (): void => {
+  onChangesAccepted = (collectionUri: string): void => {
 
     // eslint-disable-next-line no-console
-    console.log('Accepted Changes (Placeholder log)');
+    this.actor.send(new ClickedImportUpdates(collectionUri));
 
   };
 
   onChangesRejected = (): void => {
 
     // eslint-disable-next-line no-console
-    console.log('Rejected Changes (Placeholder log)');
+    console.debug('Rejected Changes');
+
+    this.actor.send(new ClickedObjectSidebarItem('object.sidebar.identification'));
 
   };
 
   render(): TemplateResult {
 
     return html`
-      ${ this.notifications?.map((noti) => html`
+      ${ this.notifications?.map((notification) => html`
       <nde-large-card .showImage="${false}" .showContent="${false}">
-          <div slot="title">${ this.translator?.translate('object.updates.edited-this-object').replace('{{institution}}', noti.from) }</div>
+          <div slot="title">${ this.translator?.translate('object.updates.edited-this-object').replace('{{institution}}', notification.from) }</div>
           <div slot="subtitle">
-            <a href="#" target="_blank" rel="noopener noreferrer"> ${ this.translator?.translate('object.updates.see-changes') } </a>
+            <a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(notification.from)}/object/${encodeURIComponent(notification.updatedObject)}/compare/${encodeURIComponent(notification.originalObject)}" target="_blank" rel="noopener noreferrer">
+              ${ this.translator?.translate('object.updates.see-changes') }
+            </a>
           </div>
           <div slot="icon"> ${unsafeSVG(Open)} </div>
-          <div slot="actions" class="accept" @click="${this.onChangesAccepted}"> ${unsafeSVG(CheckCircle)} </div>
-          <div slot="actions" class="reject" @click="${this.onChangesRejected}"> ${unsafeSVG(CrossCircle)} </div>
+          <div slot="actions" class="accept" @click="${() => this.onChangesAccepted(notification.originalObject)}"> ${unsafeSVG(CheckCircle)} </div>
+          <div slot="actions" class="reject" @click="${() => this.onChangesRejected()}"> ${unsafeSVG(CrossCircle)} </div>
         </nde-large-card>
       `)}
     `;

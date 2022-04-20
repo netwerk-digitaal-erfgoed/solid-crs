@@ -1,6 +1,7 @@
 import { define } from '@digita-ai/dgt-components';
 import { Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectUpdate } from '../models/object-update.model';
+import { ClickedImportUpdates } from '../object.events';
 import { ObjectUpdatesOverviewComponent } from './object-updates-overview.component';
 
 describe('ObjectUpdatesOverviewComponent', () => {
@@ -21,6 +22,10 @@ describe('ObjectUpdatesOverviewComponent', () => {
     component.translator = mockTranslator;
     component.notifications = [ mockNotification, mockNotification, mockNotification ];
 
+    (component.actor as any) = {
+      send: jest.fn(),
+    };
+
   });
 
   describe('HTML', () => {
@@ -38,14 +43,31 @@ describe('ObjectUpdatesOverviewComponent', () => {
 
     });
 
-    it('should cover temporary code when accept or reject is clicked is clicked', async () => {
+    it('should call functions when accept or reject is clicked is clicked', async () => {
 
-      let button: HTMLElement = component.shadowRoot.querySelector('.accept');
+      component.onChangesAccepted = jest.fn();
+      component.onChangesRejected = jest.fn();
+
+      let button: HTMLElement = component.shadowRoot.querySelector('div.accept');
       expect(button).toBeDefined();
       button.click();
-      button = component.shadowRoot.querySelector('.reject');
+      button = component.shadowRoot.querySelector('div.reject');
       expect(button).toBeDefined();
       button.click();
+
+      expect(component.onChangesAccepted).toHaveBeenCalledTimes(1);
+      expect(component.onChangesRejected).toHaveBeenCalledTimes(1);
+
+    });
+
+    describe('onChangesAccepted', () => {
+
+      it('should send ClickedImportUpdates event', async () => {
+
+        component.onChangesAccepted('https://collection.uri/');
+        expect(component.actor.send).toHaveBeenCalledWith(new ClickedImportUpdates('https://collection.uri/'));
+
+      });
 
     });
 

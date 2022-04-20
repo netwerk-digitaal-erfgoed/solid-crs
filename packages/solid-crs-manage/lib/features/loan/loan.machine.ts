@@ -1,8 +1,8 @@
 import { assign, DoneInvokeEvent, MachineConfig } from 'xstate';
-import { log } from 'xstate/lib/actions';
+import { log, send } from 'xstate/lib/actions';
 import { LoanRequest, Collection } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { LoanContext } from './loan.context';
-import { ClickedLoanRequestDetailEvent, LoanEvent, LoanEvents } from './loan.events';
+import { ClickedLoanRequestDetailEvent, CollectionImported, LoanEvent, LoanEvents } from './loan.events';
 import * as services from './loan.services';
 import { LoanStates, LoanStateSchema } from './loan.states';
 
@@ -51,7 +51,7 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
     [LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED]: {
       on: {
         [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
-          target: LoanStates.LOAN_REQUEST_OVERVIEW_INCOMING,
+          target: LoanStates.LOADING_LOAN_REQUESTS,
         },
         [LoanEvents.CLICKED_NEW_LOAN_REQUEST]: {
           target: LoanStates.LOAN_REQUEST_CREATION,
@@ -78,6 +78,9 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         },
         [LoanEvents.CLICKED_REJECTED_LOAN_REQUEST]: {
           target: LoanStates.REJECTING_LOAN_REQUEST,
+        },
+        [LoanEvents.CLICKED_IMPORT_COLLETION]: {
+          target: LoanStates.IMPORTING_COLLECTION,
         },
       },
     },
@@ -124,6 +127,18 @@ export const loanMachine: MachineConfig<LoanContext, LoanStateSchema, LoanEvent>
         },
         onError: {
           actions: log((c, e) => `Error Rejecting Request: ${e.data}`),
+        },
+      },
+    },
+    [LoanStates.IMPORTING_COLLECTION]: {
+      invoke: {
+        src: (c, e) => services.importCollection(c, e),
+        onDone: {
+          target: LoanStates.LOAN_REQUEST_OVERVIEW_ACCEPTED,
+          actions: send((c, event) => new CollectionImported(event.data)),
+        },
+        onError: {
+          actions: log((c, e) => `Error Importing Collection: ${e.data}`),
         },
       },
     },

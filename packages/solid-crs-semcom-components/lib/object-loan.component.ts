@@ -13,30 +13,34 @@ export class ObjectLoanComponent extends RxLitElement {
   @property({ type: Object }) logger?: Logger;
   @property() object?: CollectionObject;
   @property() formActor?: ActorRef<FormEvent>;
-  @property() isOwner = true;
 
   render(): TemplateResult {
 
+    const isOwner = this.object && !this.object.original;
+    const hasLoanedObjects = this.object && this.object.loaned && this.object.loaned.length > 0;
+
     return this.object ? html`
 
-    <nde-large-card .showImage="${false}" .showContent="${this.isOwner}">
+    <nde-large-card .showImage="${false}" .showContent="${(isOwner && hasLoanedObjects) || !isOwner}">
       <div slot="title">${this.translator?.translate('object.card.loan.title')}</div>
-      ${ this.isOwner ? html`
-        <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.owner')}</div>
+      ${ isOwner ? html`
+        <div slot="subtitle">${this.translator?.translate('object.card.loan.subtitle.loaned-object')}</div>
         ` : html`
         <div slot="subtitle">
-          ${unsafeHTML(this.translator?.translate('object.card.loan.subtitle.lender').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
+        ${ this.object.original ? unsafeHTML(this.translator?.translate('object.card.loan.subtitle.lender').replace('{{href}}', this.object.original).replace('{{institution}}', 'Placeholder')) : ''}
         </div>
       `}
       <div slot="icon">
         ${unsafeSVG(ObjectIcon)}
       </div>
-      ${ this.isOwner ? html` 
+      ${ isOwner ? html` 
         <div slot="content">
           <p>
             ${unsafeHTML(this.translator?.translate('object.card.loan.content.borrower').replace('{{href}}', '#').replace('{{institution}}', 'Placeholder'))}
           </p>
-          <a href="#" target="_blank"> ${this.translator?.translate('object.card.loan.content.see-changes')} </a>
+          ${ this.object.loaned?.map((loaned) => html`
+            <a href="${loaned}" target="_blank"> ${this.translator?.translate('object.card.loan.content.see-changes')} </a>
+          `)}
         </div>
       ` : ''}
     </nde-large-card>

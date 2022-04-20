@@ -38,6 +38,10 @@ export enum LoanStates {
    * Load the loan request collection
    */
   LOADING_COLLECTION = '[LoanState: Loading Collection]',
+  /**
+   * Import the loan request collection
+   */
+  IMPORTING_COLLECTION = '[LoanState: Importing Collection]',
 }
 
 export type LoanState = {
@@ -52,7 +56,8 @@ export type LoanState = {
   | LoanStates.REJECTING_LOAN_REQUEST
   | LoanStates.LOAN_REQUEST_CREATION
   | LoanStates.LOADING_COLLECTION
-  | LoanStates.SENDING_LOAN_REQUEST;
+  | LoanStates.SENDING_LOAN_REQUEST
+  | LoanStates.IMPORTING_COLLECTION;
   context: LoanContext & WithRequests;
 } | {
   value: LoanStates.LOAN_REQUEST_DETAIL;

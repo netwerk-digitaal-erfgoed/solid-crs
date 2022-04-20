@@ -314,9 +314,11 @@ export const appMachine = (
                 data: (context) => ({
                   collections: context.collections,
                   webId: context.session?.webId,
+                  solidService: solid,
+                  objectStore,
                 }),
                 onError: {
-                  actions: send((context, event) => event),
+                  actions: send((c, event) => event),
                 },
               },
             ],
@@ -565,7 +567,6 @@ export const appMachine = (
            * Creating a new collection.
            */
           [AppDataStates.CREATING]: {
-            entry: log('aids'),
             tags: [ 'loading' ],
             invoke: {
               /**

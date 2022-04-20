@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Alert, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator, CollectionObjectSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { ObjectRootComponent } from './object-root.component';
 import { ClickedResetEvent, ClickedTermFieldEvent, ObjectEvents } from './object.events';
@@ -48,9 +48,10 @@ describe('ObjectRootComponent', () => {
 
     const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    const objectStore = new CollectionObjectMemoryStore([
-      object1,
-    ]);
+    const objectStore = {
+      ... new CollectionObjectMemoryStore([ object1 ]) as any,
+      getInbox: jest.fn(async() => 'https://inbox.uri/'),
+    } as CollectionObjectSolidStore;
 
     const termService = {
       endpoint: 'https://endpoint.url/',
@@ -63,6 +64,8 @@ describe('ObjectRootComponent', () => {
         object: object1,
         collections: [ collection1, collection2 ],
         termService: termService as any,
+        objectStore,
+        solidService: new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       }));
 
     machine.parent = interpret(appMachine(
@@ -390,10 +393,11 @@ describe('ObjectRootComponent', () => {
 
   it(`should not show actions in the header when state matches ${ObjectStates.OBJECT_UPDATES_OVERVIEW}`, async () => {
 
-    machine.start();
+    (component.state as any) = {
+      matches: jest.fn((state: ObjectStates) => state === ObjectStates.OBJECT_UPDATES_OVERVIEW),
+    };
+
     window.document.body.appendChild(component);
-    await component.updateComplete;
-    component.onUpdatesOverviewClicked();
     await component.updateComplete;
 
     const actions = component.shadowRoot.querySelectorAll('nde-content-header div[slot="actions"]');
@@ -550,7 +554,7 @@ describe('ObjectRootComponent', () => {
 
       machine.send(new ClickedResetEvent());
 
-      expect(component.initFormMachine).toHaveBeenCalledTimes(6);
+      expect(component.initFormMachine).toHaveBeenCalledTimes(5);
       expect(component.createComponents).toHaveBeenCalledTimes(2);
 
     });

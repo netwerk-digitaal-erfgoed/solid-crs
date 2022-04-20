@@ -11,6 +11,7 @@ describe('InboxService', () => {
       info: {
         webId: 'https://web.id/profile/card#me',
       },
+      fetch: async () => 'created',
     }),
   } as any;
 
@@ -23,6 +24,28 @@ describe('InboxService', () => {
   it('should be defined', async () => {
 
     expect(service).toBeTruthy();
+
+  });
+
+  describe('createInbox', () => {
+
+    it('should error when containerUri is not a valid URI', async () => {
+
+      await expect(service.createInbox('invalidurl')).rejects.toThrow('Invalid container URI');
+
+    });
+
+    it('should add slash top containerURI when not present', async () => {
+
+      await expect(service.createInbox('https://container.uri')).resolves.toEqual('https://container.uri/inbox/');
+
+    });
+
+    it('should return inboxUri when successful', async () => {
+
+      await expect(service.createInbox('https://container.uri/')).resolves.toEqual('https://container.uri/inbox/');
+
+    });
 
   });
 

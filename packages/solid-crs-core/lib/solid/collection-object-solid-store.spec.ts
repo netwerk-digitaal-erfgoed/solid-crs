@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { getStringNoLocale, getStringWithLocale, getUrl, WithResourceInfo } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import fetchMock from 'jest-fetch-mock';
 import { Collection } from '../collections/collection';
 import { CollectionObject } from '../collections/collection-object';
 import { CollectionObjectSolidStore } from './collection-object-solid-store';
@@ -904,6 +905,145 @@ describe('CollectionObjectSolidStore', () => {
       );
 
       expect(service.setPublicAccess).toHaveBeenCalledTimes(1);
+
+    });
+
+  });
+
+  describe('sendMetadataUpdate', () => {
+
+    beforeEach(() => {
+
+      service.get = jest.fn(async () => mockObject);
+      service.getInbox = jest.fn(async () =>'https://notification.uri/inbox/');
+
+    });
+
+    it('should return metadata updates notification URI when successful', async () => {
+
+      fetchMock.mockOnce('created', {
+        headers: {
+          'Location': 'https://notification.uri/inbox/notif-id',
+        },
+      });
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      await expect(service['sendMetadataUpdate']('https://original.uri/', mockObject))
+        .resolves.toEqual('https://notification.uri/inbox/notif-id');
+
+    });
+
+    it('should error when no Location header returned', async () => {
+
+      fetchMock.mockOnce('created', {
+        headers: { },
+      });
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      await expect(service['sendMetadataUpdate']('https://original.uri/', mockObject))
+        .rejects.toThrow('Error while sending metadata update notification');
+
+    });
+
+  });
+
+  describe('getInbox', () => {
+
+    it('should error when no collection Thing could be found', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => undefined);
+
+      await expect(service.getInbox(mockObject)).rejects.toThrow('Could not find collectionThing in dataset');
+
+    });
+
+    it('should error when no inbox URI could be found in collection', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => 'test-thing');
+      (client.asUrl as any) = jest.fn(() => 'https://collection.uri/');
+      (client.getUrl as any) = jest.fn(() => undefined);
+
+      await expect(service.getInbox(mockObject)).rejects.toThrow('could not find inbox for https://collection.uri/');
+
+    });
+
+    it('should return inbox URI when successful', async () => {
+
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => 'test-thing');
+      (client.asUrl as any) = jest.fn(() => 'https://collection.uri/');
+      (client.getUrl as any) = jest.fn(() => 'https://inbox.uri/');
+
+      await expect(service.getInbox(mockObject)).resolves.toEqual('https://inbox.uri/');
+
+    });
+
+  });
+
+  describe('createNotificationBody', () => {
+
+    it('should set origin to solid-crs client id when not set', async () => {
+
+      const args = {
+        inbox: 'string',
+        notificationId: 'string',
+        type: 'string',
+        summary: 'string',
+        actor: 'string',
+        target: 'string',
+        updatedObject: 'string',
+        originalObject: 'string',
+      };
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const result = service['createNotificationBody'](args);
+
+      expect(result).toEqual(`
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${args.inbox}${args.notificationId}>
+  a <${args.type}> ;
+  as:summary "${args.summary}" ;  
+  as:actor <${args.actor}> ;
+  as:target <${args.target}> ;
+  as:object <${args.originalObject}> ;
+  as:context <${args.updatedObject}> ;
+  as:origin <https://webid.netwerkdigitaalerfgoed.nl/collectiebeheersysteem> .
+`);
+
+    });
+
+    it('should return valid notification body', async () => {
+
+      const args = {
+        inbox: 'string',
+        notificationId: 'string',
+        type: 'string',
+        summary: 'string',
+        actor: 'string',
+        target: 'string',
+        updatedObject: 'string',
+        originalObject: 'string',
+        origin: 'string',
+      };
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const result = service['createNotificationBody'](args);
+
+      expect(result).toEqual(`
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${args.inbox}${args.notificationId}>
+  a <${args.type}> ;
+  as:summary "${args.summary}" ;  
+  as:actor <${args.actor}> ;
+  as:target <${args.target}> ;
+  as:object <${args.originalObject}> ;
+  as:context <${args.updatedObject}> ;
+  as:origin <${args.origin}> .
+`);
 
     });
 

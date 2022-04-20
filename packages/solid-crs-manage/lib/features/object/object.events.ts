@@ -15,6 +15,7 @@ export enum ObjectEvents {
   CLICKED_OBJECT_UPDATES_OVERVIEW = '[ObjectEvent: Clicked Object Updates Overview]',
   SELECTED_OBJECT                 = '[ObjectEvent: Selected Object]',
   SELECTED_TERMS                  = '[ObjectEvent: Selected Terms]',
+  CLICKED_IMPORT_UPDATES          = '[ObjectEvent: Clicked Import Updates]',
 }
 
 /**
@@ -105,6 +106,16 @@ export class ClickedObjectUpdatesOverview implements EventObject {
 }
 
 /**
+ * Fired when the user accepts changes on metadata updates
+ */
+export class ClickedImportUpdates implements EventObject {
+
+  public type: ObjectEvents.CLICKED_IMPORT_UPDATES = ObjectEvents.CLICKED_IMPORT_UPDATES;
+  constructor(public collectionUri: string) { }
+
+}
+
+/**
  * Events for the object machine.
  */
 export type ObjectEvent = ClickedDeleteObjectEvent
@@ -116,4 +127,5 @@ export type ObjectEvent = ClickedDeleteObjectEvent
 | ClickedCancelTermEvent
 | ClickedObjectSidebarItem
 | ClickedSaveEvent
-| ClickedObjectUpdatesOverview;
+| ClickedObjectUpdatesOverview
+| ClickedImportUpdates;

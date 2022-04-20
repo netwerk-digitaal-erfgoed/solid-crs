@@ -1,8 +1,8 @@
 import { asUrl, getSolidDataset, getThing, getUrl, Thing, getUrlAll } from '@digita-ai/inrupt-solid-client';
-import { LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, LoanRequest } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { v4 } from 'uuid';
 import { LoanContext } from './loan.context';
-import { ClickedAcceptedLoanRequestEvent, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
+import { ClickedAcceptedLoanRequestEvent, ClickedImportCollection, ClickedRejectedLoanRequestEvent, ClickedSendLoanRequestEvent, LoanEvent } from './loan.events';
 
 /**
  * Creates a notification body in text/turtle
@@ -173,7 +173,7 @@ export const acceptRequest = async (context: LoanContext, event: LoanEvent): Pro
   }
 
   // eslint-disable-next-line no-console
-  console.log('Sending loan request rejection notif');
+  console.log('Sending loan request accepted notif');
 
   // retrieve response inbox location
   // use the requester's catalog inbox as target for responses
@@ -272,5 +272,54 @@ export const rejectRequest = async (context: LoanContext, event: LoanEvent): Pro
     to: context.loanRequest.from,
     uri: response.headers.get('Location'),
   };
+
+};
+
+/**
+ * Imports a collection when upon loan request acceptance.
+ *
+ * @param context the context of the loan machine
+ * @param event the ClickedImportCollection event
+ */
+export const importCollection = async (context: LoanContext, event: LoanEvent): Promise<Collection> => {
+
+  // eslint-disable-next-line no-console
+  console.log('Importing collection');
+
+  if (!(event instanceof ClickedImportCollection)) {
+
+    throw new Error('Event is not of type ClickedImportCollection');
+
+  }
+
+  // update and save collection with newly generated URIs
+
+  const updatedCollection =  await context.collectionStore.save({
+    ... event.collection,
+    uri: undefined,
+    distribution: undefined,
+    objectsUri: undefined,
+  });
+
+  // update objects with new URIs
+
+  const originalObjects = await context.objectStore.getObjectsForCollection(event.collection);
+
+  const loanedObjects = originalObjects.map((object) => ({
+    ... object,
+    uri: undefined,
+    collection: updatedCollection.uri,
+    original: object.uri,
+  }));
+
+  // save updated objects
+
+  for (const object of loanedObjects) {
+
+    await context.objectStore.save(object);
+
+  }
+
+  return updatedCollection;
 
 };

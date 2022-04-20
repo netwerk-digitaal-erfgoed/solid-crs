@@ -1,12 +1,13 @@
 import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, send, sendParent } from 'xstate';
-import { activeRoute, Collection, CollectionObject, CollectionObjectStore, TermService, urlVariables } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { activeRoute, Collection, CollectionObject, CollectionObjectSolidStore, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
+import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { routes } from '../../app.machine';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';
 import { ObjectUpdate } from './models/object-update.model';
-import { loadNotifications } from './object.services';
+import { importUpdates, loadNotifications } from './object.services';
 
 /**
  * The context of the object feature.
@@ -37,6 +38,14 @@ export interface ObjectContext {
    * A list of updates to an object. Derived from the notifications in the inbox.
    */
   notifications?: ObjectUpdate[];
+  /**
+   * Service to interact with Solid pods
+   */
+  solidService: SolidSDKService;
+  /**
+   * Service to retrieve object from pod
+   */
+  objectStore: CollectionObjectSolidStore;
 }
 
 /**
@@ -57,6 +66,7 @@ export enum ObjectStates {
   LOADING_OBJECT  = '[ObjectsState: Loading Object]',
   LOADING_OBJECT_INBOX = '[ObjectState: Loading Object Inbox]',
   OBJECT_UPDATES_OVERVIEW = '[ObjectState: Object Updates Overview]',
+  IMPORTING_UPDATES = '[ObjectState: Importing Updates]',
 }
 
 /**
@@ -218,7 +228,6 @@ export const validateObjectForm = async (context: FormContext<CollectionObject>)
 export const objectMachine = (objectStore: CollectionObjectStore) =>
   createMachine<ObjectContext, ObjectEvent, State<ObjectStates, ObjectContext>>({
     id: ObjectActors.OBJECT_MACHINE,
-    context: { },
     initial: ObjectStates.LOADING_OBJECT,
     on: {
       [ObjectEvents.SELECTED_OBJECT]: {
@@ -260,7 +269,7 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       },
       [ObjectStates.LOADING_OBJECT_INBOX]: {
         invoke: {
-          src: loadNotifications,
+          src: (c, e) => loadNotifications(c, e),
           onDone: {
             actions: assign({
               notifications: (c, event) => event.data,
@@ -305,6 +314,20 @@ export const objectMachine = (objectStore: CollectionObjectStore) =>
       [ObjectStates.OBJECT_UPDATES_OVERVIEW]: {
         on: {
           [ObjectEvents.CLICKED_SIDEBAR_ITEM]: ObjectStates.IDLE,
+          [ObjectEvents.CLICKED_IMPORT_UPDATES]: ObjectStates.IMPORTING_UPDATES,
+        },
+      },
+      [ObjectStates.IMPORTING_UPDATES]: {
+        invoke: {
+          src: (c, e) => importUpdates(c, e),
+          onDone: {
+            target: ObjectStates.SAVING,
+            actions: assign({ object: (c, event) => event.data }),
+          },
+          onError: {
+            target: ObjectStates.IDLE,
+            actions: sendParent((c, event) => event),
+          },
         },
       },
       [ObjectStates.EDITING_FIELD]: {

@@ -214,7 +214,7 @@
             "loan": {
                 "title": "Bruikleen",
                 "subtitle": {
-                    "owner": "Uitgeleend object.",
+                    "loaned-object": "Uitgeleend object.",
                     "lender": "Dit object wordt uitgeleend door <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>"
                 },
                 "content": {
@@ -316,7 +316,8 @@
         },
         "overview": {
             "header": {
-                "subtitle": "Goedkeuren van aanvragen tot bruikleen"
+                "subtitle": "Goedkeuren van aanvragen tot bruikleen",
+                "subtitle-accepted": "Goedgekeurde aanvragen tot bruikleen"
             },
             "card": {
                 "title-offer": "Aanvraag tot bruikleen",
