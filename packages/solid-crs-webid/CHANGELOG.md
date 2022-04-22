@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [0.16.3](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.2...v0.16.3) (2022-04-22)
+
+
+### **Bug Fixes**
+
+* add loan redirect URI ([#600](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/600)) ([141082a](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/141082a4ea30842534ae395708e2cd9087ef6fa7))
+
+
+
 ### [0.16.2](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v0.16.1...v0.16.2) (2022-01-24)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-webid
