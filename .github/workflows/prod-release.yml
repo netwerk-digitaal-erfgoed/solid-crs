@@ -38,7 +38,6 @@ jobs:
           echo "::set-output name=image_webid::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-webid"
 
   perform-checks:
-
     name: Perform checks
     uses: netwerk-digitaal-erfgoed/solid-crs/.github/workflows/checks.yml@master
     secrets:
@@ -47,7 +46,7 @@ jobs:
   publish-npm:
     name: Publish NPM packages
     runs-on: ubuntu-latest
-    needs: [variables, release]
+    needs: [variables, perform-checks]
     steps:
     
       - name: Checkout ref
