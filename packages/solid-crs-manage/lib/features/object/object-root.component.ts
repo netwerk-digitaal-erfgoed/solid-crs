@@ -1,21 +1,23 @@
-import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
-import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { html, property, PropertyValues, state, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
+import { ArgumentError, Collection, CollectionObject, CollectionObjectStore, Logger, SolidSDKService, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { FormSubmissionStates, FormEvents, Alert, FormRootStates, FormCleanlinessStates, FormValidationStates, FormUpdatedEvent, formMachine, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { ActorRef, interpret, Interpreter, InterpreterStatus, State, DoneInvokeEvent } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Cross, Object as ObjectIcon, Save, Theme, Trash, Connect, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
+import { Cross, Object as ObjectIcon, Save, Theme, Trash, Open } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { ObjectImageryComponent, ObjectCreationComponent, ObjectIdentificationComponent, ObjectRepresentationComponent, ObjectDimensionsComponent, ObjectLoanComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { ComponentMetadata } from '@digita-ai/semcom-core';
-import { v4 } from 'uuid';
+import { define } from '@digita-ai/dgt-components';
 import { DismissAlertEvent } from '../../app.events';
 import { SemComService } from '../../common/semcom/semcom.service';
 import { ObjectContext, ObjectStates, validateObjectForm } from './object.machine';
-import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, SelectedTermsEvent } from './object.events';
+import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedObjectUpdatesOverview, ClickedResetEvent, ClickedSaveEvent, ClickedTermFieldEvent, SelectedTermsEvent } from './object.events';
 import { TermActors } from './terms/term.machine';
 import { TermEvent } from './terms/term.events';
+import { ObjectUpdate } from './models/object-update.model';
+import { ObjectUpdatesOverviewComponent } from './components/object-updates-overview.component';
 
 /**
  * The root page of the object feature.
@@ -25,29 +27,18 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form cards in this component
    */
-  @internalProperty()
+  @state()
   formCards: (ObjectImageryComponent
   | ObjectCreationComponent
   | ObjectIdentificationComponent
   | ObjectRepresentationComponent
-  | ObjectDimensionsComponent)[];
+  | ObjectDimensionsComponent
+  | ObjectLoanComponent)[];
   /**
    * The id of the currently visible form card
    */
-  @internalProperty()
+  @state()
   visibleCard: string;
-  /**
-   * The component's logger.
-   */
-  @property({ type: Object })
-  public logger: Logger;
-
-  /**
-   * The component's translator.
-   */
-  @property({ type: Object })
-  public translator: Translator;
-
   /**
    * The actor controlling this component.
    */
@@ -63,13 +54,13 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The state of this component.
    */
-  @internalProperty()
+  @state()
   state?: State<ObjectContext>;
 
   /**
    * A list of all collections.
    */
-  @internalProperty()
+  @state()
   collections?: Collection[];
 
   /**
@@ -87,49 +78,49 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The form machine used by the form actor
    */
-  @internalProperty()
+  @state()
   formMachine = formMachine<any>((context) => validateObjectForm(context));
 
   /**
    * The actor responsible for form validation in this component.
    */
-  @internalProperty()
+  @state()
   formActor = interpret(this.formMachine, { devTools: true });
 
   /**
    * The actor responsible for editing term fields.
    */
-  @internalProperty()
+  @state()
   termActor: ActorRef<TermEvent>;
 
   /**
    * Indicates if the form is being submitted.
    */
-  @internalProperty()
+  @state()
   isSubmitting? = false;
 
   /**
    * Indicates if if the form validation passed.
    */
-  @internalProperty()
+  @state()
   isValid? = false;
 
   /**
    * Indicates if one the form fields has changed.
    */
-  @internalProperty()
+  @state()
   isDirty? = false;
 
   /**
    * Indicates whether the user is editing a field containing a Term.
    */
-  @internalProperty()
+  @state()
   isEditingTermField? = false;
 
   /**
    * The semcom service to use in this component
    */
-  @internalProperty()
+  @state()
   semComService? = new SemComService();
 
   /**
@@ -141,7 +132,7 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The ComponentMetadata of the SemComs
    */
-  @internalProperty()
+  @state()
   components: ComponentMetadata[];
 
   /**
@@ -153,8 +144,10 @@ export class ObjectRootComponent extends RxLitElement {
   /**
    * The image file to be uploaded
    */
-  @internalProperty()
+  @state()
   imageFile?: File;
+
+  @state() notifications?: ObjectUpdate[];
 
   /**
    * Hook called on first update after connection to the DOM.
@@ -162,6 +155,10 @@ export class ObjectRootComponent extends RxLitElement {
   async firstUpdated(changed: PropertyValues): Promise<void> {
 
     super.firstUpdated(changed);
+
+    this.subscribe('notifications', from(this.actor).pipe(
+      map((actorState) => actorState.context.notifications),
+    ));
 
     this.subscribe('components', from(this.semComService.queryComponents({ latest: true })));
 
@@ -234,34 +231,34 @@ export class ObjectRootComponent extends RxLitElement {
       if(this.actor.parent){
 
         this.subscribe('alerts', from(this.actor.parent)
-          .pipe(map((state) => state.context?.alerts)));
+          .pipe(map((actorState) => actorState.context?.alerts)));
 
       }
 
       this.subscribe('termActor', from(this.actor).pipe(
-        map((state) => state.children[TermActors.TERM_MACHINE]),
+        map((actorState) => actorState.children[TermActors.TERM_MACHINE]),
       ));
 
       this.subscribe('state', from(this.actor));
 
       this.subscribe('collections', from(this.actor).pipe(
-        map((state) => state.context.collections),
+        map((actorState) => actorState.context.collections),
       ));
 
       this.subscribe('original', from(this.actor).pipe(
-        map((state) => state.context.original),
+        map((actorState) => actorState.context.original),
       ));
 
       this.subscribe('object', from(this.actor).pipe(
-        map((state) => {
+        map((actorState) => {
 
-          if (state.context?.object && state.context?.original) {
+          if (actorState.context?.object && actorState.context?.original) {
 
-            this.formCards?.forEach((card) => card.object = state.context.object);
+            this.formCards?.forEach((card) => card.object = actorState.context.object);
 
-            this.initFormMachine(state.context.object, state.context.original);
+            this.initFormMachine(actorState.context.object, actorState.context.original);
 
-            return state.context?.object;
+            return actorState.context?.object;
 
           }
 
@@ -271,7 +268,7 @@ export class ObjectRootComponent extends RxLitElement {
       ));
 
       this.subscribe('isEditingTermField', from(this.actor)
-        .pipe(map((state) => state.matches(ObjectStates.EDITING_FIELD))));
+        .pipe(map((actorState) => actorState.matches(ObjectStates.EDITING_FIELD))));
 
     }
 
@@ -468,6 +465,12 @@ export class ObjectRootComponent extends RxLitElement {
         element = document.createElement(component.tag) as ObjectDimensionsComponent;
         element.id = 'object.sidebar.dimensions';
 
+      } else if (component.tag.includes('loan')) {
+
+        element = document.createElement(component.tag) as ObjectLoanComponent;
+        element.id = 'object.sidebar.loan';
+        element.hidden = (this.object.loaned && this.object.loaned.length < 1) && !this.object.original;
+
       }
 
       if (window.navigator.userAgent.includes('Macintosh') && window.navigator.userAgent.includes('Chrome/')) {
@@ -510,6 +513,12 @@ export class ObjectRootComponent extends RxLitElement {
 
   }
 
+  onUpdatesOverviewClicked = (): void => {
+
+    this.actor.send(new ClickedObjectUpdatesOverview());
+
+  };
+
   /**
    * Renders the component as HTML.
    *
@@ -526,81 +535,109 @@ export class ObjectRootComponent extends RxLitElement {
 
     const sidebarItems = this.formCards?.map((formCard) => formCard.id);
 
-    const showLoading = !(this.state?.matches(ObjectStates.IDLE) || this.state?.matches(ObjectStates.EDITING_FIELD));
+    const showLoading = !(
+      this.state?.matches(ObjectStates.IDLE) ||
+      this.state?.matches(ObjectStates.EDITING_FIELD) ||
+      this.state?.matches(ObjectStates.OBJECT_UPDATES_OVERVIEW)
+    );
 
     return this.object ? html`
 
-    ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
+      ${ showLoading || !this.formCards ? html`<nde-progress-bar></nde-progress-bar>` : html``}
 
-    <nde-content-header inverse>
-      <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
+      <nde-content-header inverse>
+        <div slot="icon">${ unsafeSVG(ObjectIcon) }</div>
 
-      <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
-        <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
-      </nde-form-element>
-      <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
-        <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
-      </nde-form-element>
+        <nde-form-element slot="title" class="title inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="name">
+          <input type="text" slot="input"  class="name" value="${this.object.name}" ?disabled="${this.isSubmitting}"/>
+        </nde-form-element>
+        <nde-form-element slot="subtitle" class="subtitle inverse" .showLabel="${false}" hideValidation debounceTimeout="0" .actor="${this.formActor}" .translator="${this.translator}" field="description">
+          <input type="text" slot="input" class="description" value="${this.object.description}" ?disabled="${this.isSubmitting}" placeholder="${this.translator.translate('common.form.description-placeholder')}"/>
+        </nde-form-element>
 
-      ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
-      ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
-      <div slot="actions"><a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Open)}</a></div>
-      <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
-    </nde-content-header>
+        ${ !this.state?.matches(ObjectStates.OBJECT_UPDATES_OVERVIEW) ? html`
+          ${ idle && this.isDirty && this.isValid ? html`<div slot="actions"><button class="no-padding inverse save" @click="${() => { if(this.isDirty && this.isValid) { this.formActor.send(FormEvents.FORM_SUBMITTED); } }}">${unsafeSVG(Save)}</button></div>` : '' }
+          ${ idle && this.isDirty ? html`<div slot="actions"><button class="no-padding inverse reset" @click="${() => { if(this.isDirty) { this.actor.send(new ClickedResetEvent()); } }}">${unsafeSVG(Cross)}</button></div>` : '' }
+          <div slot="actions"><a href="${process.env.VITE_PRESENTATION_URI}${encodeURIComponent(this.state?.context.webId)}/object/${encodeURIComponent(this.object.uri)}" target="_blank" rel="noopener noreferrer">${unsafeSVG(Open)}</a></div>
+          <div slot="actions"><button class="no-padding inverse delete" @click="${() => toggleDelete()}">${unsafeSVG(Trash)}</button></div>
+        ` : ''}
+      </nde-content-header>
 
-    <div class="content-and-sidebar">
+      <div class="content-and-sidebar">
+        ${ this.formCards ? html`
+          <nde-sidebar>
+            ${ this.notifications?.length > 0 ? html`
+              <nde-sidebar-item .padding="${false}">
+                <nde-sidebar-list slot="content">
+                  <nde-sidebar-list-item slot="item"
+                    @click="${this.onUpdatesOverviewClicked}"
+                    ?selected="${ this.state?.matches(ObjectStates.OBJECT_UPDATES_OVERVIEW)}"
+                  >
+                    <div slot="title">${this.translator?.translate('object.sidebar.updates')} (${this.notifications.length})</div>
+                  </nde-sidebar-list-item>
+                </nde-sidebar-list>
+              </nde-sidebar-item>
+            ` : ''}
+            <nde-sidebar-item .padding="${false}" .showBorder="${false}">
+              <nde-sidebar-list slot="content">
+                <nde-sidebar-list-item slot="title" isTitle>
+                  <div slot="title">${this.translator?.translate('object.sidebar.components')}</div>
+                </nde-sidebar-list-item>
+                ${sidebarItems?.map((item) => html`
+                <nde-sidebar-list-item slot="item"
+                ?selected="${ item === this.visibleCard }"
+                @click="${() => this.actor.send(new ClickedObjectSidebarItem(item))}">
+                  <div slot="title">${this.translator?.translate(item)}</div>
+                </nde-sidebar-list-item>
+                `)}
+              </nde-sidebar-list>
+            </nde-sidebar-item>
+          </nde-sidebar>
 
-      ${ this.formCards
-    ? html`<nde-sidebar>
-      <nde-sidebar-item .padding="${false}" .showBorder="${false}">
-        <nde-sidebar-list slot="content">
-          ${sidebarItems?.map((item) => html`
-          <nde-sidebar-list-item slot="item"
-          ?selected="${ item === this.visibleCard }"
-          @click="${() => this.actor.send(new ClickedObjectSidebarItem(item))}">
-            <div slot="title">${this.translator?.translate(item)}</div>
-          </nde-sidebar-list-item>
-          `)}
-        </nde-sidebar-list>
-      </nde-sidebar-item>
-    </nde-sidebar>
-
-    ${ this.isEditingTermField
-    ? html`
-      <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}" .object="${this.object}"></nde-term-search>
-    `
-    : this.formCards ? html`
-      <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
-
-        ${ alerts }
-        ${ this.formCards }
-
-        
-      </div>
-    ` : html`no formcards`}
-    `
-    : html``}
-      <nde-popup dark id="delete-popup">
-        <div slot="content">
-          <p>${this.translator?.translate('object.root.delete.title')}</p>
-          <div>
-            <button class='primary confirm-delete' @click="${() => { this.actor.send(new ClickedDeleteObjectEvent(this.object)); toggleDelete(); }}">
-                <span>${this.translator?.translate('object.root.delete.confirm')}</span>
-            </button>
-            <button class='light cancel-delete' @click="${() => toggleDelete()}">
-                <span>${this.translator?.translate('object.root.delete.cancel')}</span>
-            </button>
+          ${ this.isEditingTermField ? html`
+            <nde-term-search .logger='${this.logger}' .actor="${this.termActor}" .translator="${this.translator}" .object="${this.object}"></nde-term-search>
+          ` : this.formCards ? html`
+            <div class="content" @scroll="${ () => window.requestAnimationFrame(() => { this.updateSelected(); })}">
+              ${ alerts }
+              ${ !this.state?.matches(ObjectStates.OBJECT_UPDATES_OVERVIEW) ? html`
+                ${ this.formCards }
+              ` : html`
+                <object-updates-overview
+                  .notifications="${this.notifications}"
+                  .actor="${this.actor}"
+                  .translator="${this.translator}"
+                ></object-updates-overview>
+              `}
+            </div>
+          ` : html`no formcards`}
+        ` : html``}
+        <nde-popup dark id="delete-popup">
+          <div slot="content">
+            <p>${this.translator?.translate('object.root.delete.title')}</p>
+            <div>
+              <button class='primary confirm-delete' @click="${() => { this.actor.send(new ClickedDeleteObjectEvent(this.object)); toggleDelete(); }}">
+                  <span>${this.translator?.translate('object.root.delete.confirm')}</span>
+              </button>
+              <button class='light cancel-delete' @click="${() => toggleDelete()}">
+                  <span>${this.translator?.translate('object.root.delete.cancel')}</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </nde-popup>
-    </div>`
+        </nde-popup>
+      </div>`
       : html``;
 
   }
 
-  constructor() {
+  constructor(
+    public translator: Translator,
+    public logger: Logger,
+    public solidService: SolidSDKService,
+    public objectStore: CollectionObjectStore,
+  ) {
 
     super();
+    define('object-updates-overview', ObjectUpdatesOverviewComponent);
 
     if(!customElements.get('nde-popup')) {
 

@@ -73,9 +73,9 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
   }
 
   /**
-   * Retrieves a single Collection
+   * Retrieves a single Object
    *
-   * @param uri The URI of the Collection
+   * @param uri The URI of the Object
    */
   async get(uri: string): Promise<CollectionObject> {
 
@@ -330,6 +330,19 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
     }
 
+    if (!object.maintainer) {
+
+      object.maintainer = this.getSession().info.webId;
+
+    }
+
+    // send metadata update for loaned objects when saving
+    if (object.original) {
+
+      await this.sendMetadataUpdate(object.original, { ... object, uri: objectUri });
+
+    }
+
     const {
       object: objectThing,
       digitalObject: digitalObjectThing,
@@ -544,6 +557,9 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     // other
     objectThing =  addUrl(objectThing, 'http://schema.org/mainEntityOfPage', digitalObjectUri);
 
+    // loan
+    objectThing =  object.original ? addUrl(objectThing, 'http://schema.org/isBasedOn', object.original) : objectThing;
+
     // digital object
     let digitalObjectThing = createThing({ url: digitalObjectUri });
 
@@ -666,6 +682,10 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
 
       // other
       mainEntityOfPage: asUrl(digitalObject) || undefined,
+
+      // loan
+      loaned: getUrlAll(object, 'http://netwerkdigitaalerfgoed.nl/voc/loaned'),
+      original: getUrl(object, 'http://schema.org/isBasedOn') ?? undefined,
 
       // digital object
       image: getUrl(digitalObject, 'http://schema.org/contentUrl') || undefined,
@@ -800,5 +820,105 @@ export class CollectionObjectSolidStore extends SolidStore<CollectionObject> imp
     return { name, uri };
 
   }
+
+  /**
+   * Sends metadata update notification to the original object.
+   *
+   * @param original The original object's URI
+   * @param updated The updated object
+   */
+  private async sendMetadataUpdate(original: string, updated: CollectionObject): Promise<string> {
+
+    // eslint-disable-next-line no-console
+    console.log('Sending metadata update');
+
+    const originalObject = await this.get(original);
+    const originalObjectInbox = await this.getInbox(originalObject);
+
+    const notificationId = v4();
+
+    const body = this.createNotificationBody({
+      inbox: originalObjectInbox,
+      notificationId,
+      type: 'https://www.w3.org/ns/activitystreams#Update',
+      summary: 'Object metadata update',
+      actor: this.getSession().info.webId ?? '',
+      target: originalObject.maintainer ?? '',
+      updatedObject: updated.uri,
+      originalObject: originalObject.uri,
+    });
+
+    const response = await fetch(originalObjectInbox, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/turtle',
+        'Slug': notificationId,
+      },
+      body,
+    });
+
+    const notificationUri = response.headers.get('Location');
+
+    if (notificationUri === null) {
+
+      // eslint-disable-next-line no-console
+      console.error(response);
+      throw Error('Error while sending metadata update notification');
+
+    }
+
+    return notificationUri;
+
+  }
+
+  async getInbox(object: CollectionObject): Promise<string> {
+
+    // retrieve collection
+    const dataset = await getSolidDataset(object.collection, { fetch: this.getSession().fetch });
+    const collectionThing = getThing(dataset, object.collection);
+
+    if (!collectionThing) {
+
+      throw new ArgumentError('Could not find collectionThing in dataset', collectionThing);
+
+    }
+
+    const inbox = getUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox');
+
+    if (!inbox) {
+
+      throw Error(`could not find inbox for ${asUrl(collectionThing)}`);
+
+    }
+
+    return inbox;
+
+  }
+
+  /**
+   * Creates a notification body in text/turtle
+   */
+  private createNotificationBody = (notificationArgs: {
+    inbox: string;
+    notificationId: string;
+    type: string;
+    summary: string;
+    actor: string;
+    target: string;
+    updatedObject: string;
+    originalObject: string;
+    origin?: string;
+  }): string => `
+@prefix as: <https://www.w3.org/ns/activitystreams#> .
+
+<${notificationArgs.inbox}${notificationArgs.notificationId}>
+  a <${notificationArgs.type}> ;
+  as:summary "${notificationArgs.summary}" ;  
+  as:actor <${notificationArgs.actor}> ;
+  as:target <${notificationArgs.target}> ;
+  as:object <${notificationArgs.originalObject}> ;
+  as:context <${notificationArgs.updatedObject}> ;
+  as:origin <${notificationArgs.origin ?? `https://webid.netwerkdigitaalerfgoed.nl/collectiebeheersysteem`}> .
+`;
 
 }

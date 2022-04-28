@@ -1,6 +1,7 @@
-import { formMachine, FormActors, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine } from 'xstate';
-import { Collection, CollectionObject } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { activeRoute, ArgumentError, Collection, CollectionObject, CollectionObjectStore, createRoute, Route, routerEventsConfig, routerStateConfig } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { log } from 'xstate/lib/actions';
 import { ObjectEvent, ObjectEvents } from './object.events';
 
 /**
@@ -15,6 +16,10 @@ export interface ObjectContext {
    * A list of all collections.
    */
   collections?: Collection[];
+  /**
+   * The object containing updates for the original one
+   */
+  updatedObject?: CollectionObject;
 }
 
 /**
@@ -28,58 +33,75 @@ export enum ObjectActors {
  * State references for the object machine, with readable log format.
  */
 export enum ObjectStates {
-  IDLE      = '[ObjectsState: Idle]',
+  ENTRY     = '[ObjectsState: Entry]',
+  OVERVIEW  = '[ObjectsState: Overview]',
+  COMPARE   = '[ObjectsState: Compare]',
+  LOADING_COMPARE = '[ObjectsState: Loading Compare]',
 }
+
+const routes: Route[] = [
+  createRoute(
+    '/{{webId}}/object/{{originalObject}}/compare/{{updatedObject}}',
+    [ `#${ObjectStates.COMPARE}` ],
+  ),
+  createRoute(
+    '/{{webId}}/object/{{objectUri}}',
+    [ `#${ObjectStates.OVERVIEW}` ],
+  ),
+];
 
 /**
  * The object machine.
  */
-export const objectMachine = () =>
+export const objectMachine = (objectStore: CollectionObjectStore) =>
   createMachine<ObjectContext, ObjectEvent, State<ObjectStates, ObjectContext>>({
     id: ObjectActors.OBJECT_MACHINE,
+    initial: ObjectStates.ENTRY,
     context: { },
-    initial: ObjectStates.IDLE,
     on: {
       [ObjectEvents.SELECTED_OBJECT]: {
-        actions: assign({
-          object: (context, event) => event.object,
-        }),
-        target: ObjectStates.IDLE,
+        actions: [
+          assign({ object: (context, event) => event.object }),
+        ],
+        target: ObjectStates.LOADING_COMPARE,
       },
     },
     states: {
-      [ObjectStates.IDLE]: {
-        invoke: [
-          {
-            id: FormActors.FORM_MACHINE,
-            src: formMachine<CollectionObject>(),
-            data: (context) => {
+      [ObjectStates.ENTRY]: {
+        id: ObjectStates.ENTRY,
+      },
+      [ObjectStates.OVERVIEW]: {
+        id: ObjectStates.OVERVIEW,
+        entry: log(`Entered ${ObjectStates.OVERVIEW}`),
+        exit: log(`Entered ${ObjectStates.OVERVIEW}`),
+      },
+      [ObjectStates.COMPARE]: {
+        id: ObjectStates.COMPARE,
+        entry: log(`Entered ${ObjectStates.COMPARE}`),
+        exit: log(`Entered ${ObjectStates.COMPARE}`),
+      },
+      [ObjectStates.LOADING_COMPARE]: {
+        entry: log(`Entered ${ObjectStates.LOADING_COMPARE}`),
+        id: ObjectStates.LOADING_COMPARE,
+        invoke: {
+          src: async () => {
 
-              // replace Terms with lists of uri
-              // form machine can only handle (lists of) strings, not objects (Terms)
-              const parseObject = (object: CollectionObject) => ({
-                ...object,
-                additionalType: object?.additionalType
-                  ? object.additionalType.map((term) => term.uri) : undefined,
-                creator: object?.creator ? object.creator.map((term) => term.uri) : undefined,
-                locationCreated: object?.locationCreated
-                  ? object.locationCreated.map((term) => term.uri) : undefined,
-                material: object?.material ? object.material.map((term) => term.uri) : undefined,
-                subject: object?.subject ? object.subject.map((term) => term.uri) : undefined,
-                location: object?.location ? object.location.map((term) => term.uri) : undefined,
-                person: object?.person ? object.person.map((term) => term.uri) : undefined,
-                organization: object?.organization ? object.organization.map((term) => term.uri) : undefined,
-                event: object?.event ? object.event.map((term) => term.uri) : undefined,
-              });
+            if (window.location.pathname?.match(/^\/.+\/object\/.+?\/compare\/.+\/?$/)) {
 
-              return {
-                data: { ... parseObject(context.object) },
-                original: { ... parseObject(context.object) },
-              };
+              return objectStore.get(decodeURIComponent(activeRoute(routes).pathParams.get('updatedObject')));
 
-            },
+            } else throw new ArgumentError('invalid URL for this state', window.location.pathname);
+
           },
-        ],
+          onDone: {
+            actions: assign({ updatedObject: (c, e) => e.data }),
+            target: ObjectStates.COMPARE,
+          },
+          onError: {
+            actions: log((c, event) => event.data.message),
+            target: ObjectStates.OVERVIEW,
+          },
+        },
       },
     },
   });

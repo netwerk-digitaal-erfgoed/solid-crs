@@ -28,6 +28,10 @@ export { default as Info } from './icons/Info.svg?raw';
 export { default as Download } from './icons/Download.svg?raw';
 export { default as Open } from './icons/Open.svg?raw';
 export { default as Expand } from './icons/Expand.svg?raw';
+export { default as Bruikleen } from './icons/Bruikleen.svg?raw';
+export { default as Caret } from './icons/Caret.svg?raw';
+export { default as CheckCircle } from './icons/CheckCircle.svg?raw';
+export { default as CrossCircle } from './icons/CrossCircle.svg?raw';
 
 /**
  * Export theme

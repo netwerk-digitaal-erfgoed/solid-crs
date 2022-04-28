@@ -6,6 +6,8 @@ import { CollectionRootComponent } from './features/collection/collection-root.c
 import { ObjectRootComponent } from './features/object/object-root.component';
 import './index';
 import { AboutRootComponent } from './features/about/about-root.component';
+import { ObjectCompareComponent } from './features/object/compare/object-compare.component';
+import { ObjectOverviewComponent } from './features/object/overview/object-overview.component';
 
 /**
  * Starts the xstate devtools
@@ -26,6 +28,8 @@ if (process.env.MODE === 'DEV') {
 customElements.define('nde-search-root', SearchRootComponent);
 customElements.define('nde-collection-root', CollectionRootComponent);
 customElements.define('nde-object-root', ObjectRootComponent);
+customElements.define('nde-object-overview', ObjectOverviewComponent);
+customElements.define('nde-object-compare', ObjectCompareComponent);
 customElements.define('nde-about-root', AboutRootComponent);
 customElements.define('nde-sidebar', SidebarComponent);
 customElements.define('nde-app-root', AppRootComponent);

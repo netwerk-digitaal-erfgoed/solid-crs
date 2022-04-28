@@ -8,6 +8,7 @@ describe.each([
   [ 'ObjectIdentificationComponent', 'nde-object-identification' ],
   [ 'ObjectImageryComponent', 'nde-object-imagery' ],
   [ 'ObjectRepresentationComponent', 'nde-object-representation' ],
+  [ 'ObjectLoanComponent', 'nde-object-loan' ],
 ])('%s', (name, tag) => {
 
   let component: RxLitElement;

@@ -159,4 +159,16 @@ export interface CollectionObject extends Resource {
    * The license of this object
    */
   license?: string;
+
+  // LOAN
+
+  /**
+   * For original objects, the loaned version(s) of the object.
+   */
+  loaned?: string[];
+
+  /**
+   * For loaned objects, a reference to the original object.
+   */
+  original?: string;
 }

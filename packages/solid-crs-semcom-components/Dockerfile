@@ -1,11 +1,12 @@
 FROM node:14-alpine AS build
 ARG NPM_TOKEN
 WORKDIR /usr/src/app
-COPY package*.json ./
-COPY .npmrc ./
-RUN echo "//npm.pkg.github.com/:_authToken=$NPM_TOKEN" >> .npmrc && \
-    npm install && \
-    rm -f .npmrc
+
+# Install app dependencies
+COPY . .
+RUN npm set //npm.pkg.github.com/:_authToken $NPM_TOKEN
+RUN npm i
+RUN rm -f .npmrc
 COPY . .
 RUN npm run build
 

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { Alert, FormUpdatedEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, CollectionObjectMemoryStore, ConsoleLogger, LoggerLevel, Collection, CollectionObject, CollectionMemoryStore, Term, SolidMockService, MockTranslator, CollectionObjectSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { ObjectImageryComponent } from '@netwerk-digitaal-erfgoed/solid-crs-semcom-components';
 import { interpret, Interpreter } from 'xstate';
-import { AppEvents, DismissAlertEvent } from '../../app.events';
+import { DismissAlertEvent } from '../../app.events';
 import { appMachine } from '../../app.machine';
 import { ObjectRootComponent } from './object-root.component';
 import { ClickedResetEvent, ClickedTermFieldEvent, ObjectEvents } from './object.events';
@@ -48,9 +48,10 @@ describe('ObjectRootComponent', () => {
 
     const collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
 
-    const objectStore = new CollectionObjectMemoryStore([
-      object1,
-    ]);
+    const objectStore = {
+      ... new CollectionObjectMemoryStore([ object1 ]) as any,
+      getInbox: jest.fn(async() => 'https://inbox.uri/'),
+    } as CollectionObjectSolidStore;
 
     const termService = {
       endpoint: 'https://endpoint.url/',
@@ -63,6 +64,8 @@ describe('ObjectRootComponent', () => {
         object: object1,
         collections: [ collection1, collection2 ],
         termService: termService as any,
+        objectStore,
+        solidService: new SolidMockService(new ConsoleLogger(LoggerLevel.silly, LoggerLevel.silly)),
       }));
 
     machine.parent = interpret(appMachine(
@@ -388,6 +391,20 @@ describe('ObjectRootComponent', () => {
 
   });
 
+  it(`should not show actions in the header when state matches ${ObjectStates.OBJECT_UPDATES_OVERVIEW}`, async () => {
+
+    (component.state as any) = {
+      matches: jest.fn((state: ObjectStates) => state === ObjectStates.OBJECT_UPDATES_OVERVIEW),
+    };
+
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+
+    const actions = component.shadowRoot.querySelectorAll('nde-content-header div[slot="actions"]');
+    expect(actions).toHaveLength(0);
+
+  });
+
   describe('registerComponents()', () => {
 
     it('should create customElements for this.components', async () => {
@@ -629,6 +646,28 @@ describe('ObjectRootComponent', () => {
       component.formActor.send = jest.fn();
       component['onImageSelected'](new CustomEvent('image-selected', { detail: imageFile }));
       expect(component.formActor.send).toHaveBeenCalledWith(new FormUpdatedEvent('image', expect.any(String)));
+
+    });
+
+  });
+
+  describe('createComponents()', () => {
+
+    it('should resolve', async () => {
+
+      window.document.body.appendChild(component);
+      await component.updateComplete;
+
+      const result = component.createComponents([
+        { tag: 'nde-object-imagery' } as any,
+        { tag: 'nde-object-loan' } as any,
+        { tag: 'nde-object-creation' } as any,
+        { tag: 'nde-object-identification' } as any,
+        { tag: 'nde-object-dimensions' } as any,
+        { tag: 'nde-object-representation' } as any,
+      ]);
+
+      await expect(result).resolves.toBeUndefined();
 
     });
 
