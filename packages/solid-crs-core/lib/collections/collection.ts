@@ -23,4 +23,14 @@ export interface Collection extends Resource {
    * The distribution URI of this collection
    */
   distribution: string;
+
+  /**
+   * The inbox URI of this collection
+   */
+  inbox: string;
+
+  /**
+   * The WebID of the publisher of this collection
+   */
+  publisher: string;
 }

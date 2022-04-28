@@ -2,9 +2,11 @@ import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { ArgumentError, Collection, CollectionObjectMemoryStore, CollectionObject, CollectionMemoryStore, MockTranslator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import fetchMock from 'jest-fetch-mock';
-import { DismissAlertEvent } from './app.events';
+import { mockCollection1 } from '../tests/test-data';
+import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { AppContext, appMachine } from './app.machine';
 import { AppRootComponent } from './app-root.component';
+import { SelectedCollectionEvent } from './features/collection/collection.events';
 
 const solidService = {
   getProfile: jest.fn(async () => ({
@@ -95,6 +97,20 @@ describe('AppRootComponent', () => {
 
   });
 
+  it('should send ClickedHomeEvent when about page is clicked', async () => {
+
+    machine.start();
+    window.document.body.appendChild(component);
+    await component.updateComplete;
+    component.actor.send = jest.fn();
+
+    const header = window.document.body.getElementsByTagName('nde-app-root')[0].shadowRoot.querySelector<HTMLElement>('nde-content-header');
+    header.click();
+
+    expect(component.actor.send).toHaveBeenCalledWith(new ClickedHomeEvent());
+
+  });
+
   it('should send event when dismissing', () => {
 
     const alert: Alert = { message: 'foo', type: 'success' };
@@ -142,6 +158,21 @@ describe('AppRootComponent', () => {
       component.clearSearchTerm();
 
       expect(machine.send).toHaveBeenCalledWith(expect.objectContaining({ searchTerm: '' }));
+
+    });
+
+  });
+
+  describe('onCollectionSelected', () => {
+
+    it('should send a SelectedCollectionEvent to the actor', async () => {
+
+      const sendSpy = jest.spyOn(component.actor, 'send').mockReturnValueOnce(void 0);
+      const sendEvent = new CustomEvent('selected-collection', { detail: mockCollection1 });
+      component.onCollectionSelected(sendEvent);
+      const expectedEvent = new SelectedCollectionEvent(mockCollection1);
+      expect(sendSpy).toHaveBeenCalledWith(expectedEvent);
+      sendSpy.mockRestore();
 
     });
 

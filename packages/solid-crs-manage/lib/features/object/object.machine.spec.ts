@@ -6,6 +6,7 @@ import { ClickedDeleteObjectEvent, ClickedObjectSidebarItem, ClickedResetEvent, 
 import { ObjectContext, objectMachine, ObjectStates, validateObjectForm } from './object.machine';
 import { ClickedSubmitEvent } from './terms/term.events';
 import { TermActors, TermContext, TermStates } from './terms/term.machine';
+import * as objectServices from './object.services';
 
 describe('ObjectMachine', () => {
 
@@ -65,8 +66,8 @@ describe('ObjectMachine', () => {
 
   beforeEach(() => {
 
+    (objectServices as any).loadNotifications = jest.fn(async() => []);
     collectionStore = new CollectionMemoryStore([ collection1, collection2 ]);
-
     objectStore = new CollectionObjectMemoryStore([ object1, object2 ]);
 
     machine = interpret(objectMachine(objectStore)
@@ -82,6 +83,12 @@ describe('ObjectMachine', () => {
       collection1,
       object1,
     ));
+
+  });
+
+  afterEach(() => {
+
+    jest.restoreAllMocks();
 
   });
 
@@ -375,21 +382,22 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should assign when selected object', (done) => {
+  it('should assign when selected object', async () => {
 
-    machine.onChange((context) => {
+    const contextCheck = new Promise<void>((resolve) => {
 
-      if(context.object?.uri === object2.uri) {
+      machine.onChange((context) => {
 
-        done();
+        if(context.object?.uri === object2.uri) return resolve();
 
-      }
+      });
 
     });
 
     machine.start();
-
     machine.send(new SelectedObjectEvent(object2));
+
+    await expect(contextCheck).resolves.toBeUndefined();
 
   });
 

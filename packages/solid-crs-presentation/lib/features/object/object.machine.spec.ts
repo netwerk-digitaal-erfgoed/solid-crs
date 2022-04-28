@@ -80,21 +80,25 @@ describe('ObjectMachine', () => {
 
   });
 
-  it('should assign when selected object', (done) => {
+  it('should assign when selected object', async () => {
 
-    machine.onChange((context) => {
+    const onChangeCheck = new Promise<void>((resolve) => {
 
-      if(context.object?.uri === object2.uri) {
+      machine.onChange((context) => {
 
-        done();
+        if(context.object?.uri === object2.uri) {
 
-      }
+          return resolve();
+
+        }
+
+      });
 
     });
 
     machine.start();
-
     machine.send(new SelectedObjectEvent(object2));
+    await expect(onChangeCheck).resolves.toBeUndefined();
 
   });
 

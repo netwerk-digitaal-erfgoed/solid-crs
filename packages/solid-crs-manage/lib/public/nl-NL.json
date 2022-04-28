@@ -13,7 +13,8 @@
         },
         "collections":{
             "title": "Collecties"
-        }
+        },
+        "loan": "Bruikleen"
     },
     "collections": {
         "new-collection-name": "Nieuwe collectie",
@@ -56,7 +57,14 @@
             "representation": "Voorstelling",
             "creation": "Vervaardiging",
             "dimensions": "Afmetingen",
-            "other": "Overige"
+            "other": "Overige",
+            "loan": "Bruikleen",
+            "updates": "Updates",
+            "components": "Onderdelen"
+        },
+        "updates": {
+            "edited-this-object": "{{institution}} paste dit object aan",
+            "see-changes": "Bekijk de aanpassingen"
         },
         "card": {
             "image": {
@@ -202,6 +210,17 @@
                         "title": "Eenheid"
                     }
                 }
+            },
+            "loan": {
+                "title": "Bruikleen",
+                "subtitle": {
+                    "loaned-object": "Uitgeleend object.",
+                    "lender": "Dit object wordt uitgeleend door <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>"
+                },
+                "content": {
+                    "borrower": "Dit object is uitgeleend aan erfgoedinstelling <a href=\"{{href}}\" target=\"_blank\"> {{institution}} </a>",
+                    "see-changes": "Aangepast object bekijken"
+                }
             }
         }
     },
@@ -279,6 +298,75 @@
         "header": {
             "search-results-for": "Zoekresultaten voor",
             "subtitle": "We hebben dit gevonden"
+        }
+    },
+    "loan": {
+        "root": {
+            "header": {
+                "title-default": "Bruikleen"
+            },
+            "sidebar": {
+                "send-request": "Aanvraag verzenden",
+                "new-request": "Nieuwe aanvraag",
+                "pending-requests": "In behandeling",
+                "approved-requests": "Goedgekeurd",
+                "incoming-requests": "Inkomende aanvragen",
+                "all-incoming-requests": "Alle"
+            }
+        },
+        "overview": {
+            "header": {
+                "subtitle": "Goedkeuren van aanvragen tot bruikleen",
+                "subtitle-accepted": "Goedgekeurde aanvragen tot bruikleen"
+            },
+            "card": {
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
+                "hover-title": "Klik voor meer details ..."
+            },
+            "empty": {
+                "message-incoming": "Er zijn op dit moment geen inkomende aanvragen.",
+                "message-accepted": "Er zijn op dit moment geen goedgekeurde aanvragen."
+            }
+        },
+        "detail": {
+            "header": {
+                "title-offer": "Aanvraag tot bruikleen",
+                "title-reject": "Aanvraag tot bruikleen geweigerd",
+                "title-accept": "Aanvraag tot bruikleen geaccepteerd",
+                "subtitle": "{{institution}}"
+            },
+            "card": {
+                "title-offer": "{{institution}} vraagt toestemming tot de volgende collectie",
+                "title-reject": "{{institution}} weigerde je aanvraag tot bruikleen voor de volgende collectie",
+                "title-accept": "{{institution}} accepteerde je aanvraag tot bruikleen voor de volgende collectie",
+                "description": "Opmerkingen",
+                "import": "Importeren",
+                "cancel": "Annuleren",
+                "accept": "Goedkeuren",
+                "reject": "Afwijzen"
+            }
+        },
+        "creation": {
+            "header": {
+                "subtitle": "Nieuwe aanvraag tot bruikleen"
+            },
+            "card": {
+                "description": "Opmerkingen",
+                "enter-collection": "Geef de url van een collectie in",
+                "cancel": "Annuleren",
+                "confirm": "Bevestigen",
+                "form": {
+                    "description-too-long": "Uw opmerking mag maximaal 500 tekens bevatten",
+                    "invalid-collection-url": "Geef een geldige URL in van een collectie"
+                }
+            }
+        },
+        "accepted": {
+            "header": {
+                "subtitle": "Overzicht van goedgekeurde aanvragen"
+            }
         }
     },
     "term": {

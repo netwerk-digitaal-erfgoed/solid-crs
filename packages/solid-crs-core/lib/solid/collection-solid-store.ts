@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
 import { CollectionStore } from '../collections/collection-store';
 import { ArgumentError } from '../errors/argument-error';
+import { InboxService } from '../inbox/inbox.service';
 import { fulltextMatch } from '../utils/fulltext-match';
 import { SolidStore } from './solid-store';
 
@@ -12,7 +13,11 @@ import { SolidStore } from './solid-store';
  */
 export class CollectionSolidStore extends SolidStore<Collection> implements CollectionStore {
 
-  constructor(protected solidService: SolidSDKService, public webId?: string) {
+  constructor(
+    protected solidService: SolidSDKService,
+    private inboxService: InboxService,
+    public webId?: string,
+  ) {
 
     super(solidService);
 
@@ -175,8 +180,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = collection.objectsUri || new URL(`heritage-objects/data-${v4()}`, storage).toString();
 
     // retrieve the catalog
-    const catalogDataset = await getSolidDataset(collectionUri, { fetch: this.getSession().fetch });
-    const catalogThing = getThing(catalogDataset, collectionUri.split('#')[0]);
+    const catalogDataset = await getSolidDataset(catalogUri, { fetch: this.getSession().fetch });
+    const catalogThing = getThing(catalogDataset, catalogUri);
 
     if (!catalogThing) {
 
@@ -192,9 +197,19 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     collectionThing = addUrl(collectionThing, 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://schema.org/Dataset');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/name', collection.name, 'nl');
     collectionThing = addStringWithLocale(collectionThing, 'http://schema.org/description', collection.description, 'nl');
-    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', webId);
     collectionThing = addUrl(collectionThing, 'http://schema.org/distribution', distributionUri);
     collectionThing = addUrl(collectionThing, 'http://schema.org/license', 'https://creativecommons.org/publicdomain/zero/1.0/deed.nl');
+    collectionThing = addUrl(collectionThing, 'http://schema.org/publisher', collection.publisher ?? webId);
+
+    const inboxUri = getUrl(catalogThing, 'http://www.w3.org/ns/ldp#inbox');
+
+    if (!inboxUri) {
+
+      throw new Error('Could not find inboxUri in catalog');
+
+    }
+
+    collectionThing = addUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox', inboxUri);
 
     // create empty distribution
     let distributionThing = createThing({ url: distributionUri });
@@ -207,11 +222,11 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     updatedDataset = setThing(updatedDataset, distributionThing);
 
     // replace existing dataset with updated
-    await saveSolidDatasetAt(collectionUri, updatedDataset, { fetch: this.getSession().fetch });
+    await saveSolidDatasetAt(catalogUri, updatedDataset, { fetch: this.getSession().fetch });
     // set public read access for collection
-    await this.setPublicAccess(collectionUri);
+    await this.setPublicAccess(catalogUri);
     // set public read access for parent folder
-    await this.setPublicAccess(`${new URL(collectionUri).origin}${new URL(collectionUri).pathname.split('/').slice(0, -1).join('/')}/`);
+    await this.setPublicAccess(`${new URL(catalogUri).origin}${new URL(catalogUri).pathname.split('/').slice(0, -1).join('/')}/`);
 
     const result = await this.getSession().fetch(objectsUri, { method: 'head' });
 
@@ -219,6 +234,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
       // create an empty file at objectsUri, where the collection objects will be stored
       await overwriteFile(`${objectsUri}`, new Blob([], { type: 'text/turtle' }), { fetch: this.getSession().fetch });
+      // set public read access for this resource
+      await this.setPublicAccess(objectsUri);
 
     }
 
@@ -269,6 +286,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
     const objectsUri = getUrl(distributionThing, 'http://schema.org/contentUrl');
     const name = getStringWithLocale(collectionThing, 'http://schema.org/name', 'nl');
     const description = getStringWithLocale(collectionThing, 'http://schema.org/description', 'nl');
+    const inbox = getUrl(collectionThing, 'http://www.w3.org/ns/ldp#inbox') ?? '';
+    const publisher = getUrl(collectionThing, 'http://schema.org/publisher') ?? '';
 
     if (!objectsUri || !name || !description) {
 
@@ -282,6 +301,8 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
       description,
       objectsUri,
       distribution: distributionUri,
+      inbox,
+      publisher,
     };
 
   }
@@ -310,6 +331,32 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     }
 
+    // no inbox uri exists, create one in the same folder as the catalog
+    const catalogContainerUri = `${new URL(uri).origin}${new URL(uri).pathname.split('/').slice(0, -1).join('/')}/`;
+    let inboxUri = `${catalogContainerUri}inbox/`;
+
+    try {
+
+      // create the inbox if it doesn't exist
+      await this.getSession().fetch(inboxUri, {
+        method: 'HEAD',
+      }).then(async (res) => {
+
+        if (res.status === 404) {
+
+          inboxUri = await this.inboxService.createInbox(catalogContainerUri);
+
+        }
+
+      });
+
+    } catch (error) {
+
+      // eslint-disable-next-line no-console
+      console.error('Error while creating inbox', error);
+
+    }
+
     // fall back on foaf:name value if schema:name is missing
     const name = getStringWithLocale(profile, 'http://schema.org/name', 'nl')
       || getStringNoLocale(profile, 'http://schema.org/name')
@@ -317,10 +364,12 @@ export class CollectionSolidStore extends SolidStore<Collection> implements Coll
 
     await overwriteFile(`${uri}`, new Blob([ `
     @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+    @prefix ldp: <http://www.w3.org/ns/ldp#>.
     @prefix schema: <http://schema.org/>.
 
     <>
       rdf:type schema:DataCatalog ;
+      ldp:inbox <${inboxUri}> ;
       schema:name "Datacatalogus van ${name}"@nl ;
       schema:publisher <${webId}> .
     ` ], { type: 'text/turtle' }), { fetch: this.getSession().fetch });

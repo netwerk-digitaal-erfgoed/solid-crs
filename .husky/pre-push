@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 . "$(dirname $0)/_/husky.sh"
 
@@ -12,7 +12,7 @@ do
 
     BRANCH=$(git rev-parse --abbrev-ref "$L_REF")
 
-    if [[ "$R_SHA" = "$(printf "%040d")" ]] ; then
+    if [ "$R_SHA" = "$(printf "%040d")" ] ; then
 
         # Check branch name convention
         if ! (echo "$BRANCH" | grep -qE "$REGEX") ; then

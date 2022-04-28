@@ -3,7 +3,7 @@ import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, S
 import { createMachine } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
 import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
-import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession } from './app.events';
+import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession, ClickedCreateCollectionEvent } from './app.events';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';
@@ -11,6 +11,7 @@ import { SearchEvents, SearchUpdatedEvent } from './features/search/search.event
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
 import { createPod } from './app.services';
+import { LoanEvents } from './features/loan/loan.events';
 
 /**
  * The root context of the application.
@@ -82,6 +83,7 @@ export enum AppFeatureStates {
   SEARCH  = '[AppFeatureState: Search]',
   OBJECT = '[AppFeatureState: Object]',
   IDLE = '[AppFeatureState: Idle]',
+  LOAN = '[AppFeatureState: Loan]',
 }
 
 /**
@@ -187,6 +189,10 @@ export const appMachine = (
             ],
             target: `#${AppFeatureStates.SEARCH}`,
             cond: (_, event: SearchUpdatedEvent) => event.searchTerm !== undefined && event.searchTerm !== '',
+          },
+          [LoanEvents.CLICKED_LOAN_REQUEST_OVERVIEW_INCOMING]: {
+            actions: assign({ selected: (context, event) => undefined }),
+            target: `#${AppFeatureStates.LOAN}`,
           },
           [RouterEvents.NAVIGATED]: {
             // this overwrites default behavior as defined in the routerStateConfig
@@ -308,12 +314,24 @@ export const appMachine = (
                 data: (context) => ({
                   collections: context.collections,
                   webId: context.session?.webId,
+                  solidService: solid,
+                  objectStore,
                 }),
                 onError: {
-                  actions: send((context, event) => event),
+                  actions: send((c, event) => event),
                 },
               },
             ],
+          },
+          [AppFeatureStates.LOAN]: {
+            id: AppFeatureStates.LOAN,
+            entry: send(new NavigatedEvent(`/loan`)),
+            on: {
+              [CollectionEvents.SELECTED_COLLECTION]: {
+                target: AppFeatureStates.COLLECTION,
+                actions: send((c, event) => event),
+              },
+            },
           },
         },
       },
@@ -554,7 +572,8 @@ export const appMachine = (
               /**
                * Save collection to the store.
                */
-              src: () => collectionStore.save(collectionTemplate),
+              src: (c, event: ClickedCreateCollectionEvent) =>
+                collectionStore.save(event.collection ?? collectionTemplate),
               onDone: {
                 target: [ AppDataStates.IDLE ],
                 actions: [
@@ -563,6 +582,7 @@ export const appMachine = (
                 ],
               },
               onError: {
+                target: AppDataStates.IDLE,
                 actions: [
                   send((context, event) => event),
                 ],
