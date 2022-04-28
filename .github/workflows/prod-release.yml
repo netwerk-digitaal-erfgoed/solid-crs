@@ -128,7 +128,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_manage }}:latest
-            ${{ needs.variables.outputs.image_manage }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_manage }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -139,7 +139,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_presentation }}:latest
-            ${{ needs.variables.outputs.image_presentation }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_presentation }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -150,7 +150,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_node }}:latest
-            ${{ needs.variables.outputs.image_semcom_node }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_semcom_node }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -161,7 +161,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_components }}:latest
-            ${{ needs.variables.outputs.image_semcom_components }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_semcom_components }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -172,7 +172,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_pods }}:latest
-            ${{ needs.variables.outputs.image_pods }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_pods }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -183,7 +183,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_id_proxy }}:latest
-            ${{ needs.variables.outputs.image_id_proxy }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_id_proxy }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -194,7 +194,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_webid }}:latest
-            ${{ needs.variables.outputs.image_webid }}:${{needs.publish-npm.outputs.version}}
+            ${{ needs.variables.outputs.image_webid }}:v${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -208,13 +208,13 @@ jobs:
       # See https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment
       - name: Update deployment
         run: |
-          kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image deployment/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image statefulset/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }} --record
-          kubectl set image statefulset/solid-crs-webid app=${{ needs.variables.outputs.image_webid }}:${{ needs.variables.outputs.tag }} --record
+          kubectl set image deployment/solid-crs-manage app=${{ needs.variables.outputs.image_manage }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image deployment/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image statefulset/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:v${{needs.publish-npm.outputs.version}} --record
+          kubectl set image statefulset/solid-crs-webid app=${{ needs.variables.outputs.image_webid }}:v${{needs.publish-npm.outputs.version}} --record
 
       - name: Verify deployment
         run: |
