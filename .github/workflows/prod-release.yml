@@ -47,6 +47,9 @@ jobs:
     name: Publish NPM packages
     runs-on: ubuntu-latest
     needs: [variables, perform-checks]
+    outputs:
+      version: ${{steps.discover-version.outputs.prop}}
+
     steps:
     
       - name: Checkout ref
@@ -81,6 +84,16 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Git reset
+        run: git reset HEAD --hard && git status
+
+      - name: Discover version
+        id: discover-version
+        uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: 'lerna.json'
+          prop_path: 'version'
           
       - name: Push changes
         run: git -c "http.https://github.com/.extraheader=" push
@@ -115,7 +128,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_manage }}:latest
-            ${{ needs.variables.outputs.image_manage }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_manage }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -126,7 +139,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_presentation }}:latest
-            ${{ needs.variables.outputs.image_presentation }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_presentation }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -137,7 +150,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_node }}:latest
-            ${{ needs.variables.outputs.image_semcom_node }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_semcom_node }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -148,7 +161,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_semcom_components }}:latest
-            ${{ needs.variables.outputs.image_semcom_components }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_semcom_components }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -159,7 +172,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_pods }}:latest
-            ${{ needs.variables.outputs.image_pods }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_pods }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -170,7 +183,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_id_proxy }}:latest
-            ${{ needs.variables.outputs.image_id_proxy }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_id_proxy }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
@@ -181,7 +194,7 @@ jobs:
           push: true
           tags: |
             ${{ needs.variables.outputs.image_webid }}:latest
-            ${{ needs.variables.outputs.image_webid }}:${{ needs.variables.outputs.tag }}
+            ${{ needs.variables.outputs.image_webid }}:${{needs.publish-npm.outputs.version}}
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
