@@ -1,6 +1,6 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-theme",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Theme for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-theme.umd.js",

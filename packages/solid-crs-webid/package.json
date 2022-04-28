@@ -1,7 +1,7 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-webid",
   "private": true,
-  "version": "0.18.0",
+  "version": "0.19.0",
   "description": "Community Solid Server as host for NDE WebID documents",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "license": "EUPL-1.2",
