@@ -1,0 +1,34 @@
+= Scope Erfgoedpod
+:description: A description of the enhancement for Solid CRS: the Erfgoedpod project.
+:sectanchors:
+:url-repo: https://github.com/netwerk-digitaal-erfgoed/solid-crs
+:page-tags: nde-erfgoed
+:imagesdir: ../images
+:sectnums:
+
+*Solid CRS - Erfgoedpod*
+In het scenario van deze use case geeft een erfgoedinstelling een collectie in bruikleen aan een andere erfgoedinstelling. De overdracht van de digitale erfgoedobjecten gebeurt via Solid CRS, met behulp van Linked Data Notifications. Digita realiseert deze use case door volgende functionaliteiten toe te voegen aan de bestaande Solid CRS applicatie.
+
+== Functionaliteiten rond bruikleen
+=== Toevoegen van knop waarmee URI van object/collectie wordt gekopieerd
+In de presentatiemodule wordt er op niveau van zowel collecties als objecten een knop voorzien om de URI van de collectie/het object te kopiëren. Deze URI kan vervolgens in de beheermodule gebruikt worden in een bruikleenaanvraag. 
+
+=== Registreren van een inbox 
+Zowel op niveau van de erfgoedinstelling als op niveau van de objecten zal er een inbox worden geregistreerd. Momenteel wordt bij het aanmaken van een erfgoedobject, geen inbox geregistreerd. Digita zal deze functionaliteit aanpassen zodat een inbox wordt geregistreerd, bij het aanmaken van een erfgoedobject.
+
+=== Aanvragen van bruikleen
+Digita ontwerpt en implementeert een nieuwe pagina ‘bruikleen’ die wordt toegevoegd in de primaire navigatie waar beheerders een bruikleen kunnen aanvragen. Bij de aanvraag krijgt de beheerder een formulier te zien, waarbij gevraagd wordt de URI’s in te geven van de collectie die hij wenst te lenen. Digita implementeert Linked Data Notifications voor de communicatie tussen erfgoedinstellingen. De aanvraag van de vragende erfgoedinstelling zal als Linked Data Notification worden verstuurd naar de inbox van de ontvangende erfgoedinstelling.
+
+=== Goedkeuren van aanvragen tot bruikleen
+Op de nieuwe ‘bruikleen’-pagina zal er ook een onderdeel worden toegevoegd waar de beheerder inkomende bruikleenaanvragen kan goedkeuren. De goed te keuren aanvragen krijgt de beheerder te zien in een overzicht. 
+
+== Functionaliteiten rond metadata
+=== Aanvullen van metadata van een geleend object
+Wanneer een ontvangende erfgoedinstelling een object in bruikleen heeft, kan de beheerder de oorspronkelijke waarden enkel lezen (read-only) maar kan hij er een annotatie bij plaatsen. De annotaties zullen dan worden opgeslagen in de Pod van de ontvangende erfgoedinstelling. Wanneer de annotaties zijn opgeslagen, wordt er een Linked Data Notification verstuurd naar de inbox van de uitgevende erfgoedinstelling 1. Zo krijgt erfgoedinstelling 1 de annotaties te zien die erfgoedinstelling 2 doorvoerde en kan erfgoedinstelling 1 deze updates verwerken indien gewenst. 
+In de UI van de ontvangende erfgoedinstelling zullen er form inputs te zien zijn waar correcties/annotaties kunnen worden ingevuld. Zo worden de oorspronkelijke metadata en de annotaties duidelijk van elkaar gescheiden. In de presentatiemodule van de ontvangende erfgoedinstelling wordt de annotatie getoond indien ingevuld. In het geval dat er geen annotatie werd ingevuld, wordt de oorspronkelijke waarde getoond. 
+
+=== Verwerken van metadata updates
+Indien erfgoedinstelling 2 (die het object leent), metadata heeft aangepast, krijgt erfgoedinstelling 1 een aanvraag voor de metadata update via een Linked Data Notification. Het verwerken van de metadata update gebeurt op de objectdetailpagina in een nieuw onderdeel ‘updates’. Op de objectdetailpagina bij erfgoedinstelling 1 (die het originele object bezit) wordt een link getoond naar de presentatiepagina van het object bij erfgoedinstelling 2. Erfgoedinstelling 1 krijgt de keuze om de metadata update goed of af te keuren die door erfgoedinstelling 2 wordt voorgesteld. Bij goedkeuring zullen de aanpassingen ook in de Pod van erfgoedinstelling 1 worden opgeslagen. 
+
+=== Extra informatie op objectdetailpagina bij bruikleen
+In de beheer- en presentatiemodule wordt er per uitgeleend object/collectie informatie weergegeven met een link naar de originele instelling bij een uitgeleend object, of naar de uitlenende instelling bij een origineel object. 

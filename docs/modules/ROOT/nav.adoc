@@ -1,5 +1,8 @@
 ifdef::env-github,env-browser[:relfilesuffix: .adoc]
 ifdef::env-github,env-browser[:relfileprefix: pages/]
 
-* xref:scope.adoc[Scope]
-* xref:architecture.adoc[Architecture]
+* xref:scope.adoc[Scope Solid CRS]
+* xref:architecture.adoc[Architecture Solid CRS]
+
+* xref:scope-EP.adoc[Scope Solid CRS-EP]
+* xref:userstories-EP.adoc[User stories Solid CRS-EP]
