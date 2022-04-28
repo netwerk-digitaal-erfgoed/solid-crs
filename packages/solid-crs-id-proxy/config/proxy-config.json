@@ -108,6 +108,30 @@
         }
       },
       {
+        "@id": "urn:dgt-id-proxy:default:CookieStore",
+        "@type": "InMemoryStore"
+      },
+      {
+        "@id": "urn:dgt-id-proxy:default:SafariCookieSaveHandler",
+              "@type": "SafariCookieSaveHandler",
+              "httpHandler": {
+                "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+              },
+              "cookieStore": {
+                "@id": "urn:dgt-id-proxy:default:CookieStore"
+              }
+      },
+      {
+        "@id": "urn:dgt-id-proxy:default:SafariCookieRestoreHandler",
+          "@type": "SafariCookieRestoreHandler",
+          "httpHandler": {
+            "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+          },
+          "cookieStore": {
+             "@id": "urn:dgt-id-proxy:default:CookieStore"
+          }
+      },
+      {
         "@id": "urn:dgt-id-proxy:default:SingleClaimWebIdFactory",
         "@type": "SingleClaimWebIdFactory",
         "webIdPattern": "https://webid.netwerkdigitaalerfgoed.nl/:customclaim",
@@ -269,7 +293,7 @@
               "@id": "urn:dgt-id-proxy:default:ClientIdStaticAuthRequestHandler"
             },
             {
-              "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+              "@id": "urn:dgt-id-proxy:default:SafariCookieSaveHandler"
             },
             {
               "@id": "urn:dgt-id-proxy:default:ClientIdStaticAuthResponseHandler"
@@ -293,7 +317,7 @@
           "@type": "PipeThroughHandler",
           "handlers": [
             {
-              "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+              "@id": "urn:dgt-id-proxy:default:SafariCookieRestoreHandler"
             },
             {
               "@id": "urn:dgt-id-proxy:default:ClientIdStaticAuthResponseHandler"
@@ -317,7 +341,7 @@
           }
         ],
         "handler": {
-          "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+          "@id": "urn:dgt-id-proxy:default:SafariCookieRestoreHandler"
         },
         "path": "/u/login"
       },
@@ -333,7 +357,7 @@
           }
         ],
         "handler": {
-          "@id": "urn:dgt-id-proxy:default:PassThroughHandler"
+          "@id": "urn:dgt-id-proxy:default:SafariCookieRestoreHandler"
         },
         "path": "/u/consent"
       },
@@ -411,10 +435,10 @@
         ],
         "handler": {
           "@type": "HttpHandlerStaticAssetService",
-          "logger": {
+          "HttpHandlerStaticAssetService:_logger": {
             "@type": "ConsoleLogger",
-            "minimumLevel": 1,
-            "minimumLevelPrintData": 1
+            "ConsoleLogger:_minimumLevel": 1,
+            "ConsoleLogger:_minimumLevelPrintData": 1
           },
           "path": {
             "@id": "urn:dgt-id-proxy:variables:openidConfigurationFilePath"
