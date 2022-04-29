@@ -96,7 +96,7 @@ jobs:
           prop_path: 'version'
           
       - name: Push changes
-        run: git -c "http.https://github.com/.extraheader=" push
+        run: git -c "http.https://github.com/.extraheader=" push && git push origin v${{steps.discover-version.outputs.prop}}
 
       
 
