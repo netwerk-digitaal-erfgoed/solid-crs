@@ -559,7 +559,9 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((c, event) => event),
+                actions: [
+                  log((c, event) => event),
+                ],
               },
             },
           },

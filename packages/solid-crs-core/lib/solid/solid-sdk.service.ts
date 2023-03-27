@@ -1,6 +1,6 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, getUrl, logout, getStringNoLocale, getStringWithLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
-import { ArgumentError } from '../errors/argument-error';
-import { Logger } from '../logging/logger';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, logout, getStringNoLocale, addUrl, getDefaultSession, getUrlAll, saveSolidDatasetAt, setThing, SolidDataset, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { Session } from '@digita-ai/inrupt-solid-client';
+import { Client, Issuer, Source, Profile } from '@digita-ai/inrupt-solid-service';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 import { SolidProfile } from './solid-profile';
@@ -8,19 +8,38 @@ import { SolidProfile } from './solid-profile';
 /**
  * An implementation of the Solid service which uses Solid Client.
  */
-export class SolidSDKService extends SolidService {
+export class SolidSDKService implements SolidService {
+
+  public restorePreviousSession = true;
 
   /**
    * Instantiates a solid sdk service.
-   *
-   * @param logger The logger used in the service.
    */
-  constructor(
-    private logger: Logger,
-    private clientName = 'Solid CRS',
-  ) {
+  constructor (private client: Client) {
 
-    super();
+    if (client.clientSecret && !client.clientId) throw new Error('clientId must be set if clientSecret is set');
+
+  }
+
+  async validateIssuer(issuer: string): Promise<boolean> {
+
+    let openidConfig;
+    let poweredByHeader;
+
+    try {
+
+      const openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+      openidConfig = await openidConfigResponse.json();
+      poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
+
+    } catch(e) { return false; }
+
+    if (
+    // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
+      !openidConfig && (poweredByHeader?.includes('solid') || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
+    ) return false;
+
+    return true;
 
   }
 
@@ -30,100 +49,118 @@ export class SolidSDKService extends SolidService {
    *
    * @param webId The WebID for which to retrieve the OIDC issuer
    */
-  async getIssuer(webId: string): Promise<string> {
+  async getIssuer(webId: string): Promise<string> { return this.getIssuers(webId).then((issuers) => issuers[0].uri); }
 
-    this.logger.debug(SolidSDKService.name, 'Retrieving issuer', webId);
+  /**
+   * Retrieves the value of the oidcIssuer triple from a profile document
+   * for a given WebID
+   *
+   * @param webId The WebID for which to retrieve the OIDC issuers
+   */
+  async getIssuers(webId: string): Promise<Issuer[]> {
 
-    if (!webId) {
+    const responseHead = await fetch(webId, { method: 'HEAD' });
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
+    const poweredByHeader = responseHead.headers.get('X-Powered-By');
 
-    }
+    const profile = await this.getProfileThing(webId);
 
-    // Parse the user's WebID as a url.
-    let webIdUrl: string;
+    // Gets the issuers from the user's profile.
+    const issuers: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
 
-    try {
+    const host = new URL(webId).origin;
 
-      const hasProtocol = webId.startsWith('http://') || webId.startsWith('https://');
+    if (poweredByHeader?.includes('solid') && !issuers.includes(host)) {
 
-      webIdUrl = new URL(hasProtocol ? webId : `https://${webId}`).toString();
-
-      await fetch(webIdUrl, { method: 'head' })
-        .catch(async () => await fetch(webIdUrl.toString().replace('https://', 'http://'), { method: 'head' }));
-
-    } catch {
-
-      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
-
-    }
-
-    let profileDataset;
-
-    // Dereference the user's WebID to get the user's profile document.
-    try {
-
-      profileDataset = await getSolidDataset(webIdUrl);
-
-    } catch(e) {
-
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
+      issuers.push(host);
 
     }
 
-    if(!profileDataset) {
+    // Check if the issuers are valid OIDC providers.
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
+    const validationResults = await Promise.all(issuers.map(this.validateIssuer));
 
-    }
+    const validIssuers = issuers.filter((issuer, index) => validationResults[index]);
 
-    // Parses the profile document.
-    const profile = getThing(profileDataset, webIdUrl);
+    if (!validIssuers || validIssuers.length === 0) { throw new Error(`No valid OIDC issuers for WebID: ${webId}`); }
 
-    if(!profile) {
+    return Promise.all(validIssuers.map((iss) => {
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webIdUrl);
+      const url = new URL(iss).host.split('.');
+      let description = (url.length > 2 ? url[1] : url[0]).split(':')[0];
+      description = description.charAt(0).toUpperCase() + description.slice(1);
 
-    }
+      const favicon = iss.endsWith('/') ? `${iss}favicon.ico` : `${iss}/favicon.ico`;
 
-    // Gets the issuer from the user's profile.
-    const issuer = getUrl(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
+      return fetch(favicon).then((response) => {
 
-    // Throw an error if there's no OIDC Issuer registered in the user's profile.
-    if(!issuer) {
+        const icon = response.status === 200 ? favicon : 'https://www.donkey.bike/wp-content/uploads/2020/12/user-member-avatar-face-profile-icon-vector-22965342-300x300.jpg';
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-oidc-registration', issuer);
+        return { uri: iss, icon, description };
 
-    }
+      });
 
-    // Check if the issuer is a valid OIDC provider.
-    let openidConfigResponse;
-    let openidConfig;
-    let poweredByHeader;
+    }));
 
-    try{
+  }
 
-      openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
-      openidConfig = await openidConfigResponse.json();
-      poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
+  /**
+   * Adds a new oidcIssuer to the given WebID profile
+   *
+   * @param webId The WebID for which to retrieve the OIDC issuers
+   * @param issuers The issuers to add
+   */
+  async addIssuers(webId: string, issuers: Issuer[]): Promise<Issuer[]> {
 
-    } catch(e) {
+    // update the profile with new issuers
+    let profile = await this.getProfileThing(webId);
+    let profileDataset = await this.getProfileDataset(webId);
 
-      throw new ArgumentError('authenticate.error.invalid-webid.invalid-oidc-registration', issuer);
+    issuers.forEach((issuer) => {
 
-    }
+      profile = addUrl(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer', issuer.uri);
 
-    // Throw an error if the issuer is an invalid OIDC provider.
-    if (
-      // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
-      (openidConfig && openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc') && !poweredByHeader?.includes('solid')
-    ) {
+    });
 
-      throw new ArgumentError('authenticate.error.invalid-webid.invalid-oidc-registration', openidConfig);
+    // update and save the dataset
+    profileDataset = setThing(profileDataset, profile);
+    await saveSolidDatasetAt(webId, profileDataset);
 
-    }
+    return issuers;
 
-    return issuer;
+  }
+
+  async getSources(webId: string): Promise<Source[]> {
+
+    const profile = await this.getProfileThing(webId);
+
+    // Gets the sources from the user's profile.
+    const sources: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#account');
+
+    if (!sources || sources.length === 0) { throw new Error(`No sources for WebID: ${webId}`); }
+
+    return Promise.all(sources.map((source) => {
+
+      const url = new URL(source);
+
+      const origin = url.origin;
+
+      const host = url.host.split('.');
+
+      let description = (host.length > 2 ? host[1] : host[0]).split(':')[0];
+      description = description.charAt(0).toUpperCase() + description.slice(1);
+
+      const favicon = origin.endsWith('/') ? `${origin}favicon.ico` : `${origin}/favicon.ico`;
+
+      return fetch(favicon).then((response) => {
+
+        const icon = response.status === 200 ? favicon : 'https://www.donkey.bike/wp-content/uploads/2020/12/user-member-avatar-face-profile-icon-vector-22965342-300x300.jpg';
+
+        return { uri: source, icon, description, type: 'solid', configuration: {} };
+
+      });
+
+    }));
 
   }
 
@@ -131,13 +168,12 @@ export class SolidSDKService extends SolidService {
    * Handles the post-login logic, as well as the restoration
    * of sessions on page refreshes
    */
-  async getSession(): Promise<SolidSession | undefined> {
+  async getSession(): Promise<SolidSession> {
 
-    this.logger.debug(SolidSDKService.name, 'Trying to retrieve session');
+    const session = await handleIncomingRedirect({ restorePreviousSession: this.restorePreviousSession });
 
-    const session = await handleIncomingRedirect({ restorePreviousSession: true });
-
-    return session && session.isLoggedIn && session.webId ? { webId: session.webId } : undefined;
+    return session && session.isLoggedIn && session.webId
+      ? { webId: session.webId } : Promise.reject();
 
   }
 
@@ -146,11 +182,9 @@ export class SolidSDKService extends SolidService {
    */
   async login(webId: string): Promise<void> {
 
-    this.logger.debug(SolidSDKService.name, 'Logging in user');
-
     if (!webId) {
 
-      throw new ArgumentError('Argument webId should be set.', webId);
+      throw new Error(`WebId should be set.: ${webId}`);
 
     }
 
@@ -158,14 +192,37 @@ export class SolidSDKService extends SolidService {
 
     if (!issuer) {
 
-      throw new ArgumentError('Argument issuer should be set.', issuer);
+      throw new Error(`Issuer should be set.: ${issuer}`);
 
     }
 
     await login({
       oidcIssuer: issuer,
       redirectUrl: window.location.href,
-      clientName: this.clientName,
+      clientName: this.client.clientName,
+      clientId: this.client.clientId,
+      clientSecret: this.client.clientSecret,
+    });
+
+  }
+
+  /**
+   * Redirects the user to their OIDC provider
+   */
+  async loginWithIssuer(issuer: Issuer): Promise<void> {
+
+    if (!issuer) {
+
+      throw new Error(`Issuer should be set.: ${issuer}`);
+
+    }
+
+    await login({
+      oidcIssuer: issuer.uri,
+      redirectUrl: window.location.href,
+      clientName: this.client.clientName,
+      clientId: this.client.clientId,
+      clientSecret: this.client.clientSecret,
     });
 
   }
@@ -174,8 +231,6 @@ export class SolidSDKService extends SolidService {
    * Deauthenticates the user from their OIDC issuer
    */
   async logout(): Promise<void> {
-
-    this.logger.debug(SolidSDKService.name, 'Logging out user');
 
     return await logout();
 
@@ -188,22 +243,34 @@ export class SolidSDKService extends SolidService {
    */
   async getProfile(webId: string): Promise<SolidProfile> {
 
-    if (!webId) {
+    const profile = await this.getProfileThing(webId);
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
+    const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ?? '';
 
-    }
+    return { uri: webId, name };
 
-    // Parse the user's WebID as a url.
-    try {
+  }
 
-      new URL(webId);
+  /**
+   * Retrieves values for the http://www.w3.org/ns/pim/space#storage predicate for a given WebID.
+   *
+   * @param webId The WebID for which to retrieve the profile.
+   */
+  async getStorages(webId: string): Promise<string[]> {
 
-    } catch {
+    const profile = await this.getProfileThing(webId);
 
-      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
+    return getUrlAll(profile, 'http://www.w3.org/ns/pim/space#storage');
 
-    }
+  }
+
+  getDefaultSession(): SolidSession {
+
+    return getDefaultSession() as unknown as SolidSession;
+
+  }
+
+  private async getProfileDataset(webId: string): Promise<SolidDataset> {
 
     let profileDataset;
 
@@ -214,51 +281,51 @@ export class SolidSDKService extends SolidService {
 
     } catch(e) {
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+      throw new Error(`No profile for WebId: ${webId}`);
 
     }
 
     if(!profileDataset) {
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+      throw new Error(`Could not read profile for WebId: ${webId}`);
 
     }
+
+    return profileDataset;
+
+  }
+
+  private async getProfileThing(webId: string): Promise<Thing> {
+
+    if (!webId) {
+
+      throw new Error(`WebId must be defined.`);
+
+    }
+
+    // Parse the user's WebID as a url.
+    try {
+
+      new URL(webId);
+
+    } catch {
+
+      throw new Error(`Invalid WebId: ${webId}`);
+
+    }
+
+    const profileDataset = await this.getProfileDataset(webId);
 
     // Parses the profile document.
     const profile = getThing(profileDataset, webId);
 
     if(!profile) {
 
-      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+      throw new Error(`No profile info for WebId: ${webId}`);
 
     }
 
-    const name = getStringNoLocale(profile, 'http://schema.org/name') || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') || '';
-    const alternateName = getStringNoLocale(profile, 'http://schema.org/alternateName') || undefined;
-    const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description') || undefined;
-    const website = getUrl(profile, 'http://schema.org/url') || undefined;
-    const logo = getUrl(profile, 'http://schema.org/logo') || undefined;
-    const contactPoint = getUrl(profile, 'http://schema.org/contactPoint');
-
-    let email;
-    let telephone;
-
-    if (contactPoint) {
-
-      const contactPointThing = getThing(profileDataset, contactPoint);
-
-      if (!contactPointThing) {
-
-        throw new ArgumentError('Could not find contactPointThing in dataset', contactPointThing);
-
-      }
-
-      email = getStringNoLocale(contactPointThing, 'http://schema.org/email') || undefined;
-      telephone = getStringNoLocale(contactPointThing, 'http://schema.org/telephone') || undefined;
-
-    }
-
-    return { uri: webId, name, alternateName, description, website, logo, email, telephone };
+    return profile;
 
   }
 
