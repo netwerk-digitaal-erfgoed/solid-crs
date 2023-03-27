@@ -108,7 +108,7 @@ const routes: Route[] = [
     [ `#${AppFeatureStates.COLLECTION}` ],
   ),
   createRoute(
-    '/{{webId}}/object/{{objectUri}}',
+    '/{{webId}}/object/{{objectUri}}/?.*',
     [ `#${AppDataStates.LOADING_OBJECT}` ],
   ),
   createRoute(
@@ -141,7 +141,7 @@ export const appMachine = (
     ...(routerEventsConfig as any)(),
     [ObjectEvents.SELECTED_OBJECT]: {
       actions: [
-        send((context, event) => new NavigatedEvent(`/${encodeURIComponent(context.profile?.uri)}/object/${encodeURIComponent(event.object.uri)}`)),
+        send(new NavigatedEvent(window.location.pathname)),
         forwardTo(AppActors.OBJECT_MACHINE),
       ],
     },
@@ -430,7 +430,7 @@ export const appMachine = (
           invoke: [
             {
               id: AppActors.OBJECT_MACHINE,
-              src: objectMachine(),
+              src: objectMachine(objectStore),
               data: (context) => ({
                 collections: context.collections,
               }),

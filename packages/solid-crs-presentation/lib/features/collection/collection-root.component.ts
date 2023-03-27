@@ -1,13 +1,13 @@
 import { html, property, PropertyValues, internalProperty, unsafeCSS, css, TemplateResult, CSSResult, query } from 'lit-element';
 import { ArgumentError, Collection, CollectionObject, Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
-import { Alert } from '@netwerk-digitaal-erfgoed/solid-crs-components';
+import { Alert, PopupComponent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { map } from 'rxjs/operators';
 import { from } from 'rxjs';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
-import { Collection as CollectionIcon, Empty, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
+import { Collection as CollectionIcon, Dots, Empty, Theme } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { DismissAlertEvent } from '../../app.events';
+import { AddAlertEvent, DismissAlertEvent } from '../../app.events';
 import { ObjectEvents } from '../object/object.events';
 import { CollectionContext, CollectionStates } from './collection.machine';
 
@@ -77,6 +77,12 @@ export class CollectionRootComponent extends RxLitElement {
   pageContent: HTMLElement;
 
   /**
+   * The popup component shown when the info menu is clicked
+   */
+  @query('nde-popup#info-popup')
+  infoPopup: PopupComponent;
+
+  /**
    * Hook called on at every update after connection to the DOM.
    */
   updated(changed: PropertyValues): void {
@@ -127,6 +133,12 @@ export class CollectionRootComponent extends RxLitElement {
 
   }
 
+  onClickedCopy(value: string): Promise<void> {
+
+    return navigator.clipboard.writeText(value);
+
+  }
+
   /**
    * Renders the component as HTML.
    *
@@ -139,6 +151,8 @@ export class CollectionRootComponent extends RxLitElement {
 
     const showLoading = !this.state?.matches(CollectionStates.IDLE);
 
+    const toggleInfo = () => { this.infoPopup.toggle(); };
+
     return !!this.actor && !!this.collection ? html`
     
     ${ showLoading ? html`<nde-progress-bar></nde-progress-bar>` : html``}
@@ -150,6 +164,18 @@ export class CollectionRootComponent extends RxLitElement {
       </div>
       <div slot="subtitle" class="subtitle">
         ${ this.collection.description && this.collection.description.length > 0 ? this.collection.description : this.translator.translate('common.form.description-placeholder') }
+      </div>
+      <div slot="actions">
+        <div @click="${() => toggleInfo()}">
+          ${ unsafeSVG(Dots) }
+          <nde-popup id="info-popup">
+            <div slot="content">
+              <a @click="${() => this.onClickedCopy(this.collection?.uri).then(() => this.actor.parent.send(new AddAlertEvent({ type: 'success', message: 'common.copied-uri' })))}">
+                ${this.translator.translate('collections.root.menu.copy-uri')}
+              </a>
+            </div>
+          </nde-popup>
+        </div>
       </div>
     </nde-content-header>
 
@@ -294,6 +320,33 @@ export class CollectionRootComponent extends RxLitElement {
         }
         .description {
           margin-top: var(--gap-tiny);
+        }
+        #info-popup {
+          z-index: 110;
+          height: auto;
+          width: auto;
+          position: absolute;
+          left: unset;
+          right: var(--gap-normal);
+          top: var(--gap-huge);
+          background-color: var(--colors-background-light);
+          /* box-shadow: 0 0 5px grey; */
+          border: 1px var(--colors-foreground-normal) solid;
+        }
+        #info-popup div {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        #info-popup a {
+          padding: var(--gap-small);
+          color: var(--colors-primary-normal);
+          text-decoration: none;
+          /* text-align: center; */
+        }
+        #info-popup a:hover {
+          background-color: var(--colors-primary-normal);
+          color: var(--colors-background-light);
         }
       `,
     ];

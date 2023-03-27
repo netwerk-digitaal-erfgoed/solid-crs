@@ -7,4 +7,4 @@ Solid CRS is a system for managing collections of digital objects for small heri
 * xref:docs/modules/ROOT/nav.adoc[Project documentation]
 * xref:docs/modules/manual/nav.adoc[User manual]
 
-The test environment can be found at https://solid-crs.netwerkdigitaalerfgoed.nl. This always runs the most recent release of the application. Alternatively, you can install and run the demo environment locally by following the xref:docs/modules/ROOT/pages/install.adoc[installation instructions].
+The test environment can be found at https://solid-crs.netwerkdigitaalerfgoed.nl. This always runs the most recent release of the application. Alternatively, you can install and run the demo environment locally by following the xref:docs/modules/manual/pages/install.adoc[installation instructions].

@@ -74,12 +74,14 @@ export const validateWebId = async (webId: string): Promise<string[]> => {
   let openidConfigResponse;
   let openidConfig;
   let poweredByHeader;
+  let requestUrl;
 
   try{
 
     openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
     openidConfig = await openidConfigResponse.json();
     poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
+    requestUrl = openidConfigResponse.url;
 
   } catch(e) {
 
@@ -89,8 +91,9 @@ export const validateWebId = async (webId: string): Promise<string[]> => {
 
   // Throw an error if the issuer is an invalid OIDC provider.
   // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
+  // Also, the solid_oidc_supported seems to missing from broker.pod.inrupt.com
   if ((openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
-    && !poweredByHeader?.includes('solid')) {
+    && !poweredByHeader?.includes('solid') && !requestUrl.includes('broker.pod.inrupt.com')) {
 
     return [ 'authenticate.error.invalid-webid.invalid-oidc-registration' ];
 

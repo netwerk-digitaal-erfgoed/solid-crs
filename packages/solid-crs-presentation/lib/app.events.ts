@@ -54,15 +54,6 @@ export class ErrorEvent implements EventObject {
 }
 
 /**
- * An event which is dispatched when this pod should be set up as an instition pod
- */
-export class SetProfileEvent implements EventObject {
-
-  public type: AppEvents.SET_PROFILE = AppEvents.SET_PROFILE;
-
-}
-
-/**
  * An event which is dispatched when the user navigates
  */
 export class ClickedHomeEvent implements EventObject {
@@ -81,7 +72,6 @@ export type AppEvent =
   | AddAlertEvent
   | SelectedCollectionEvent
   | SelectedObjectEvent
-  | SetProfileEvent
   | SearchUpdatedEvent
   | ClickedHomeEvent;
 

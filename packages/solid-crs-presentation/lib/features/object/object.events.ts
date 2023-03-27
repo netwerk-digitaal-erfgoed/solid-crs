@@ -21,19 +21,8 @@ export class SelectedObjectEvent implements EventObject {
 }
 
 /**
- * Fired when the user clicks a sidebar item.
- */
-export class ClickedObjectSidebarItem implements EventObject {
-
-  public type: ObjectEvents.CLICKED_SIDEBAR_ITEM = ObjectEvents.CLICKED_SIDEBAR_ITEM;
-  constructor(public itemId: string) { }
-
-}
-
-/**
  * Events for the object machine.
  */
 export type ObjectEvent =
 | SelectedObjectEvent
-| FormSubmittedEvent
-| ClickedObjectSidebarItem;
+| FormSubmittedEvent;
