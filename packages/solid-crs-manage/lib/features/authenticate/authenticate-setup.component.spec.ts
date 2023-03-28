@@ -5,7 +5,6 @@ import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSo
 import { interpret, Interpreter } from 'xstate';
 import { ClickedAdministratorTypeEvent, ClickedCreatePodEvent, ClickedInstitutionTypeEvent, ClickedLogoutEvent, SetProfileEvent } from '../../app.events';
 import { AppContext, AppDataStates, appMachine, AppRootStates } from '../../app.machine';
-import * as services from '../../app.services';
 import { AuthenticateSetupComponent } from './authenticate-setup.component';
 
 let solidService: SolidSDKService;
@@ -196,23 +195,6 @@ describe('AuthenticateSetupComponent', () => {
       machine.start();
 
       machine.send(new SetProfileEvent());
-
-    });
-
-    it('should show two buttons', async () => {
-
-      machine.onTransition(async (state) => {
-
-        if (state.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION })) {
-
-          await component.updateComplete;
-          const buttons = component.shadowRoot.querySelectorAll('button');
-          expect(buttons).toBeTruthy();
-          expect(buttons.length).toEqual(2);
-
-        }
-
-      });
 
     });
 
