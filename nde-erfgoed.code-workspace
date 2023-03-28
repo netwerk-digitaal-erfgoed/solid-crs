@@ -29,10 +29,6 @@
       "path": "packages/solid-crs-theme"
     },
     {
-      "name": "id-proxy",
-      "path": "packages/solid-crs-id-proxy"
-    },
-    {
       "name": "webid",
       "path": "packages/solid-crs-webid"
     },
