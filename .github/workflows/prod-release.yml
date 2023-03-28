@@ -41,7 +41,7 @@ jobs:
     name: Perform checks
     uses: netwerk-digitaal-erfgoed/solid-crs/.github/workflows/checks.yml@master
     secrets:
-      DIGITA_PACKAGES: ${{ secrets.DIGITA_PACKAGES }}
+      GA_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
   publish-npm:
     name: Publish NPM packages
