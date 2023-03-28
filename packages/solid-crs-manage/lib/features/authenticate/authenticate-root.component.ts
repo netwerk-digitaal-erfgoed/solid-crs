@@ -126,6 +126,7 @@ export class AuthenticateRootComponent extends RxLitElement {
       
       <authenticate-component
       hideCreateNewWebId
+      hideIssuers
       @authenticated="${this.onAuthenticated}"
       .textSeparator="${ this.translator?.translate('authenticate.pages.login.separator') }"
       .textWebIdLabel="${ this.translator?.translate('authenticate.pages.login.webid-label') }"
