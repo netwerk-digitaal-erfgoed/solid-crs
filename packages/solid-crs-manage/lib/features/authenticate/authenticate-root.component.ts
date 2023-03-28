@@ -41,16 +41,6 @@ export class AuthenticateRootComponent extends RxLitElement {
   @internalProperty()
   alerts: Alert[];
 
-  /**
-   * List of predefined issuers.
-   */
-  @internalProperty()
-  issuers: Issuer[] = [ {
-    uri: process.env.VITE_ID_PROXY_URI,
-    description: 'Log in met je NDE account',
-    icon: '',
-  } ];
-
   constructor(private solidService: SolidService) {
 
     super();
@@ -137,7 +127,6 @@ export class AuthenticateRootComponent extends RxLitElement {
       <authenticate-component
       hideCreateNewWebId
       @authenticated="${this.onAuthenticated}"
-      .predefinedIssuers="${this.issuers}"
       .textSeparator="${ this.translator?.translate('authenticate.pages.login.separator') }"
       .textWebIdLabel="${ this.translator?.translate('authenticate.pages.login.webid-label') }"
       .textWebIdPlaceholder="${ this.translator?.translate('authenticate.pages.login.webid-placeholder') }"

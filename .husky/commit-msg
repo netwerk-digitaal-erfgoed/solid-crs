@@ -64,7 +64,7 @@ else
     echo "$PACKAGES" | sed 's/.*"name": "\(.*\)".*/--scope "\1"/g') | xargs ./node_modules/.bin/lerna bootstrap --since HEAD
 
     ## Run tests related to staged files
-    echo "$RELEVANT" | xargs ./node_modules/.bin/jest --bail --coverage --silent --passWithNoTests --findRelatedTests
+    echo "$RELEVANT" | xargs ./node_modules/.bin/jest --bail --coverage --silent --passWithNoTests --findRelatedTests -w 2
 
     if [[ $? -ne 0 ]] ; then
         echo "[COMMIT-MSG Hook] You tried to commit changes without a WIP mention,"
