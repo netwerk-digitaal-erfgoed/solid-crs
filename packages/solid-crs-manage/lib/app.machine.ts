@@ -10,7 +10,6 @@ import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
-import { createPod } from './app.services';
 import { LoanEvents } from './features/loan/loan.events';
 
 /**
@@ -96,8 +95,6 @@ export enum AppDataStates {
   CHECKING_TYPE_REGISTRATIONS = '[AppDataStates: Checking Type Registrations]',
   DETERMINING_POD_TYPE = '[AppDataStates: Determining Pod Type]',
   CHECKING_STORAGE= '[AppDataStates: Checking Storage]',
-  AWAITING_POD_CREATION= '[AppDataStates: Awaiting Pod Creation]',
-  CREATING_POD= '[AppDataStates: Creating Pod]',
 }
 
 /**
@@ -450,36 +447,6 @@ export const appMachine = (
               onError: send((c, event) => event),
             },
 
-          },
-          /**
-           * No storage triple present in the WebID, waiting for user input
-           */
-          [AppDataStates.AWAITING_POD_CREATION]: {
-            tags: [ 'setup' ],
-            on: {
-              [AppEvents.CLICKED_LOGOUT]: {
-                target: AppDataStates.IDLE,
-                actions: send((c, event) => event),
-              },
-              [AppEvents.CLICKED_CREATE_POD]: {
-                target: AppDataStates.CREATING_POD,
-              },
-            },
-          },
-          /**
-           * Creates a Solid pod at pods.netwerkdigitaalerfgoed.nl.
-           */
-          [AppDataStates.CREATING_POD]: {
-            tags: [ 'setup', 'loading' ],
-            invoke: {
-              src: () => createPod(solid),
-              onDone: {
-                target: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
-              },
-              onError: {
-                actions: send((c, event) => event),
-              },
-            },
           },
           /**
            * Checks existance of DataCatalog type registration

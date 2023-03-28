@@ -45,8 +45,6 @@ describe('AuthenticateSetupComponent', () => {
       getInstanceForClass: jest.fn(async () => undefined),
     } as any;
 
-    (services.createPod as any) = jest.fn(async () => ({}));
-
     machine = interpret(appMachine(
       solidService,
       collectionStore,
