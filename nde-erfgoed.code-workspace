@@ -29,10 +29,6 @@
       "path": "packages/solid-crs-theme"
     },
     {
-      "name": "webid",
-      "path": "packages/solid-crs-webid"
-    },
-    {
       "name": "semcom-node",
       "path": "packages/solid-crs-semcom-node"
     },
