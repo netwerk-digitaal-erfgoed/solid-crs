@@ -33,10 +33,6 @@
       "path": "packages/solid-crs-id-proxy"
     },
     {
-      "name": "pods",
-      "path": "packages/solid-crs-pods"
-    },
-    {
       "name": "webid",
       "path": "packages/solid-crs-webid"
     },

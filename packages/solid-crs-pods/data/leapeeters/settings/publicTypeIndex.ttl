@@ -1,5 +1,0 @@
-@prefix solid: <http://www.w3.org/ns/solid/terms#>.
-@prefix schema: <http://schema.org/> .
-
-<>
-    a solid:ListedDocument, solid:TypeIndex.
