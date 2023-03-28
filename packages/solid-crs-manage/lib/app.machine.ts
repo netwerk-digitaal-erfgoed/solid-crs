@@ -1,8 +1,8 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
 import { assign, escalate, forwardTo, log, send } from 'xstate/lib/actions';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession, ClickedCreateCollectionEvent } from './app.events';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';

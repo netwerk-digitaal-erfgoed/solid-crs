@@ -1,4 +1,3 @@
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { getUrl, getSolidDataset, getStringWithLocale, getThing, getUrlAll, removeThing, saveSolidDatasetAt, setThing, removeUrl, addUrl, addStringWithLocale, createThing, overwriteFile, deleteFile, getStringNoLocale, addStringNoLocale } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { Collection } from '../collections/collection';
@@ -6,6 +5,7 @@ import { CollectionStore } from '../collections/collection-store';
 import { ArgumentError } from '../errors/argument-error';
 import { InboxService } from '../inbox/inbox.service';
 import { fulltextMatch } from '../utils/fulltext-match';
+import { SolidSDKService } from './solid-sdk.service';
 import { SolidStore } from './solid-store';
 
 /**

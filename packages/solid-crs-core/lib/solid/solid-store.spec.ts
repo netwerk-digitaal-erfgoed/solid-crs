@@ -41,7 +41,7 @@ describe('SolidStore', () => {
 
     it.each([ null, undefined ])('should error when forClass is %s', async (value) => {
 
-      await expect(service.getInstanceForClass('test-string', value)).rejects.toThrow('Argument forClass should be set');
+      await expect(service.getInstanceForClass('test-string', value as unknown as any)).rejects.toThrow('Argument forClass should be set');
 
     });
 
@@ -130,19 +130,19 @@ describe('SolidStore', () => {
 
     it.each([ null, undefined ])('should error when webId is %s', async (value) => {
 
-      await expect(service.saveInstanceForClass(value, 'test-string', 'test-string')).rejects.toThrow('Argument webId should be set');
+      await expect(service.saveInstanceForClass(value as unknown as any, 'test-string', 'test-string')).rejects.toThrow('Argument webId should be set');
 
     });
 
     it.each([ null, undefined ])('should error when forClass is %s', async (value) => {
 
-      await expect(service.saveInstanceForClass('test-string', value, 'test-string')).rejects.toThrow('Argument forClass should be set');
+      await expect(service.saveInstanceForClass('test-string', value as unknown as any, 'test-string')).rejects.toThrow('Argument forClass should be set');
 
     });
 
     it.each([ null, undefined ])('should error when location is %s', async (value) => {
 
-      await expect(service.saveInstanceForClass('test-string', 'test-string', value)).rejects.toThrow('Argument location should be set');
+      await expect(service.saveInstanceForClass('test-string', 'test-string', value as unknown as any)).rejects.toThrow('Argument location should be set');
 
     });
 
@@ -269,7 +269,7 @@ describe('SolidStore', () => {
 
     it('should throw', async () => {
 
-      await expect(service.delete(undefined)).rejects.toThrow();
+      await expect(service.delete(undefined as unknown as any)).rejects.toThrow();
 
     });
 
@@ -279,7 +279,7 @@ describe('SolidStore', () => {
 
     it('should throw', async () => {
 
-      await expect(service.save(undefined)).rejects.toThrow();
+      await expect(service.save(undefined as unknown as any)).rejects.toThrow();
 
     });
 
@@ -289,7 +289,7 @@ describe('SolidStore', () => {
 
     it('should throw', async () => {
 
-      await expect(service.get(undefined)).rejects.toThrow();
+      await expect(service.get(undefined as unknown as any)).rejects.toThrow();
 
     });
 
@@ -297,12 +297,15 @@ describe('SolidStore', () => {
 
   describe('createTypeIndexes()', () => {
 
+    const storageUri = 'https://pods.test.url/test-storage/';
+
     beforeEach(() => {
 
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => 'test-thing');
       (client.overwriteFile as any) = jest.fn(async () => 'test-result');
       (client.addUrl as any) = jest.fn(() => 'test-thing');
+      (client.getUrl as any) = jest.fn(() => storageUri);
       (client.setThing as any) = jest.fn(() => 'test-dataset');
       (client.saveSolidDatasetAt as any) = jest.fn(async () => 'test-result');
       (service.setPublicAccess as any) = jest.fn(async () => true);
@@ -315,7 +318,7 @@ describe('SolidStore', () => {
 
     it.each([ null, undefined ])('should error when webId is %s', async (value) => {
 
-      await expect(service.createTypeIndexes(value)).rejects.toThrow('Argument webId should be set');
+      await expect(service.createTypeIndexes(value as unknown as any)).rejects.toThrow('Argument webId should be set');
 
     });
 
@@ -326,9 +329,11 @@ describe('SolidStore', () => {
 
     });
 
-    it('should throw when webId does not ends with "profile/card#me"', async () => {
+    it('should throw when no storage triple found and webid does not end with "profile/card#me"', async () => {
 
-      await expect(service.createTypeIndexes('http://test')).rejects.toThrow('Could not create type indexes for webId');
+      (client.getUrl as any) = jest.fn(() => undefined);
+
+      await expect(service.createTypeIndexes('http://test.url/ellivmaerd')).rejects.toThrow('Could not create type indexes for webId');
 
     });
 
@@ -336,8 +341,8 @@ describe('SolidStore', () => {
 
       const result = await service.createTypeIndexes('http://test.url/profile/card#me');
 
-      expect(result.privateTypeIndex).toEqual('http://test.url/settings/privateTypeIndex.ttl');
-      expect(result.publicTypeIndex).toEqual('http://test.url/settings/publicTypeIndex.ttl');
+      expect(result.privateTypeIndex).toEqual(`${storageUri}settings/privateTypeIndex.ttl`);
+      expect(result.publicTypeIndex).toEqual(`${storageUri}settings/publicTypeIndex.ttl`);
 
       expect((client.saveSolidDatasetAt as any)).toHaveBeenCalled();
       // expect((client.access as any).setPublicAccess).toHaveBeenCalled();

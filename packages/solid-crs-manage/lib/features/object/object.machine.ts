@@ -1,8 +1,8 @@
 import { FormValidatorResult, FormContext, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { assign, createMachine, send, sendParent } from 'xstate';
-import { activeRoute, Collection, CollectionObject, CollectionObjectSolidStore, CollectionObjectStore, TermService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { activeRoute, Collection, CollectionObject, CollectionObjectSolidStore, CollectionObjectStore, TermService, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import edtf from 'edtf';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+
 import { routes } from '../../app.machine';
 import { ClickedTermFieldEvent, ObjectEvent, ObjectEvents, SelectedTermsEvent } from './object.events';
 import { TermActors, termMachine } from './terms/term.machine';

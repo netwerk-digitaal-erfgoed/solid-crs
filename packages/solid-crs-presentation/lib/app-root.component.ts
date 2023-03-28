@@ -2,12 +2,12 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, Translator, TRANSLATIONS_LOADED, InboxService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectSolidStore, CollectionSolidStore, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, SolidProfile, Translator, TRANSLATIONS_LOADED, InboxService, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Cross, Search, Dropdown, Info, Logo } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+
 import { AppActors, AppContext, AppDataStates, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { ClickedHomeEvent, DismissAlertEvent } from './app.events';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';

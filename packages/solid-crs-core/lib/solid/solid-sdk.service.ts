@@ -1,6 +1,7 @@
-import { login, getSolidDataset, handleIncomingRedirect, getThing, logout, getStringNoLocale, addUrl, getDefaultSession, getUrlAll, saveSolidDatasetAt, setThing, SolidDataset, Thing } from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import { login, getSolidDataset, handleIncomingRedirect, getThing, logout, getStringNoLocale, addUrl, getDefaultSession, getUrlAll, saveSolidDatasetAt, setThing, SolidDataset, Thing, getStringWithLocale, getUrl } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { Session } from '@digita-ai/inrupt-solid-client';
 import { Client, Issuer, Source, Profile } from '@digita-ai/inrupt-solid-service';
+import { ArgumentError } from '../errors/argument-error';
 import { SolidService } from './solid.service';
 import { SolidSession } from './solid-session';
 import { SolidProfile } from './solid-profile';
@@ -49,7 +50,15 @@ export class SolidSDKService implements SolidService {
    *
    * @param webId The WebID for which to retrieve the OIDC issuer
    */
-  async getIssuer(webId: string): Promise<string> { return this.getIssuers(webId).then((issuers) => issuers[0].uri); }
+  async getIssuer(webId: string): Promise<string> {
+
+    const issuers = await this.getIssuers(webId);
+
+    if (!issuers || issuers.length === 0) throw new Error(`No OIDC issuers found for ${webId}`);
+
+    return issuers[0].uri;
+
+  }
 
   /**
    * Retrieves the value of the oidcIssuer triple from a profile document
@@ -58,6 +67,18 @@ export class SolidSDKService implements SolidService {
    * @param webId The WebID for which to retrieve the OIDC issuers
    */
   async getIssuers(webId: string): Promise<Issuer[]> {
+
+    if (!webId) throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
+
+    try {
+
+      new URL(webId);
+
+    } catch (e) {
+
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
+
+    }
 
     const responseHead = await fetch(webId, { method: 'HEAD' });
 
@@ -243,11 +264,77 @@ export class SolidSDKService implements SolidService {
    */
   async getProfile(webId: string): Promise<SolidProfile> {
 
-    const profile = await this.getProfileThing(webId);
+    if (!webId) {
 
-    const name = getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') ?? '';
+      throw new ArgumentError('authenticate.error.invalid-webid.no-webid', webId);
 
-    return { uri: webId, name };
+    }
+
+    // Parse the user's WebID as a url.
+    try {
+
+      new URL(webId);
+
+    } catch {
+
+      throw new ArgumentError('authenticate.error.invalid-webid.invalid-url', webId);
+
+    }
+
+    let profileDataset;
+
+    // Dereference the user's WebID to get the user's profile document.
+    try {
+
+      profileDataset = await getSolidDataset(webId);
+
+    } catch(e) {
+
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    if(!profileDataset) {
+
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    // Parses the profile document.
+    const profile = getThing(profileDataset, webId);
+
+    if(!profile) {
+
+      throw new ArgumentError('authenticate.error.invalid-webid.no-profile', webId);
+
+    }
+
+    const name = getStringNoLocale(profile, 'http://schema.org/name') || getStringNoLocale(profile, 'http://xmlns.com/foaf/0.1/name') || '';
+    const alternateName = getStringNoLocale(profile, 'http://schema.org/alternateName') || undefined;
+    const description = getStringWithLocale(profile, 'http://schema.org/description', 'nl') || getStringNoLocale(profile, 'http://schema.org/description') || undefined;
+    const website = getUrl(profile, 'http://schema.org/url') || undefined;
+    const logo = getUrl(profile, 'http://schema.org/logo') || undefined;
+    const contactPoint = getUrl(profile, 'http://schema.org/contactPoint');
+
+    let email;
+    let telephone;
+
+    if (contactPoint) {
+
+      const contactPointThing = getThing(profileDataset, contactPoint);
+
+      if (!contactPointThing) {
+
+        throw new ArgumentError('Could not find contactPointThing in dataset', contactPointThing);
+
+      }
+
+      email = getStringNoLocale(contactPointThing, 'http://schema.org/email') || undefined;
+      telephone = getStringNoLocale(contactPointThing, 'http://schema.org/telephone') || undefined;
+
+    }
+
+    return { uri: webId, name, alternateName, description, website, logo, email, telephone };
 
   }
 

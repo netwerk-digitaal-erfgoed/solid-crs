@@ -4,9 +4,9 @@ import { RxLitElement } from 'rx-lit';
 import { createMachine, interpret, Interpreter, State, StateMachine } from 'xstate';
 import { from, map } from 'rxjs';
 import { Theme, Bruikleen } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
-import { Logger, Translator, CollectionStore, LoanRequest, Collection, CollectionObjectStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Logger, Translator, CollectionStore, LoanRequest, Collection, CollectionObjectStore, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+
 import { LoanContext } from './loan.context';
 import { LoanState, LoanStates, LoanStateSchema } from './loan.states';
 import { ClickedImportCollection, ClickedLoanRequestOverviewAcceptedEvent, ClickedLoanRequestOverviewIncomingEvent, ClickedNewLoanRequestEvent, CollectionImported, LoanEvent } from './loan.events';

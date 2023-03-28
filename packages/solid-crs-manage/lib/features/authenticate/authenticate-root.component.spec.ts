@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Alert, define, hydrate } from '@digita-ai/dgt-components';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
-import { ArgumentError, Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { SolidSDKService, ArgumentError, Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+
 import { interpret, Interpreter } from 'xstate';
 import { DismissAlertEvent } from '../../app.events';
 import { AppContext, appMachine } from '../../app.machine';

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { ClickedAdministratorTypeEvent, ClickedCreatePodEvent, ClickedInstitutionTypeEvent, ClickedLogoutEvent, SetProfileEvent } from '../../app.events';
 import { AppContext, AppDataStates, appMachine, AppRootStates } from '../../app.machine';
+import { SolidSDKService } from './solid-sdk.service';
 import { AuthenticateSetupComponent } from './authenticate-setup.component';
 
 let solidService: SolidSDKService;

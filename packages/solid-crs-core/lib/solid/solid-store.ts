@@ -1,10 +1,10 @@
 import { getDefaultSession } from '@digita-ai/inrupt-solid-client';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
 import { Store } from '../stores/store';
+import { SolidSDKService } from './solid-sdk.service';
 
 export class SolidStore<T extends Resource> implements Store<T> {
 
@@ -70,7 +70,9 @@ export class SolidStore<T extends Resource> implements Store<T> {
     // use value from profile if present
     // try storage + settings/publicTypeIndex.ttl as default
     const publicTypeIndexUrl = getUrl(profile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex')
-    ?? getUrl(profile, 'http://www.w3.org/ns/pim/space#storage') + 'settings/publicTypeIndex.ttl';
+    ?? getUrl(profile, 'http://www.w3.org/ns/pim/space#storage')
+      ? getUrl(profile, 'http://www.w3.org/ns/pim/space#storage') + 'settings/publicTypeIndex.ttl'
+      : undefined;
 
     if (!publicTypeIndexUrl) {
 
@@ -193,12 +195,14 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const storageRoot = getUrl(profile, 'http://www.w3.org/ns/pim/space#storage') ?? undefined;
 
-    // assuming profile does not include the
+    // if no storage root is set in the profile doc
+    // and if profile doc does not include the
     // http://www.w3.org/ns/pim/space#storage triple ->
     // guess the root of the user's pod from the webId
+    // and try to create the type index files there
     const webIdSplit = webId.split('profile/card#me');
 
-    if (!storageRoot && (!webId.endsWith('profile/card#me') || webIdSplit.length < 2)) {
+    if (!storageRoot && !webId.endsWith('profile/card#me')) {
 
       throw new ArgumentError('Could not create type indexes for webId', webId);
 
