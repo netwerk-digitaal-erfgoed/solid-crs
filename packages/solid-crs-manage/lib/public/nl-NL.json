@@ -241,7 +241,7 @@
                 "webid-placeholder": "bv. https://profile.janjanssens.nl/",
                 "webid-label": "WebID",
                 "separator": "of",
-                "create-webid": "Nog geen WebID? Klik <a href=\"https://signup.pod.inrupt.com\">hier</a>."
+                "create-webid": "Nog geen WebID? Klik <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://get.use.id/\">hier</a>."
             },
             "no-pod": {
                 "title": "Je hebt nog geen pod.",
