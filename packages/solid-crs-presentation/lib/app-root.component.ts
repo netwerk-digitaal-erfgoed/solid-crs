@@ -101,7 +101,10 @@ export class AppRootComponent extends RxLitElement {
   /**
    * The solid service used throughout the application
    */
-  private solidService = new SolidSDKService('Presentatiemodule');
+  private solidService = new SolidSDKService({
+    clientName: 'Collectiebeheersysteem',
+    clientId: `https://webid.netwerkdigitaalerfgoed.nl/.well-known/oauth-client`,
+  });
 
   async connectedCallback(): Promise<void> {
 

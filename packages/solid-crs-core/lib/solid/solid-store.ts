@@ -5,6 +5,7 @@ import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
 import { Store } from '../stores/store';
 import { SolidSDKService } from './solid-sdk.service';
+import { SolidService } from './solid.service';
 
 export class SolidStore<T extends Resource> implements Store<T> {
 
@@ -315,7 +316,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
   /**
    * @returns The current session
    */
-  getSession(): ReturnType<typeof getDefaultSession> {
+  getSession() {
 
     return this.solidService.getDefaultSession();
 

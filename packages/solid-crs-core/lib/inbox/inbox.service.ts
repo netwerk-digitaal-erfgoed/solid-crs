@@ -1,4 +1,4 @@
-import { SolidSDKService } from './solid-sdk.service';
+import { SolidSDKService } from '../solid/solid-sdk.service';
 
 /**
  * Manage creation and reading of inboxes

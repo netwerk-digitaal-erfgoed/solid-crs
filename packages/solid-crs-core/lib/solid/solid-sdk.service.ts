@@ -338,9 +338,9 @@ export class SolidSDKService implements SolidService {
 
   }
 
-  getDefaultSession(): SolidSession {
+  getDefaultSession(): SolidSession & { info: { webId: string }; fetch: typeof fetch } {
 
-    return getDefaultSession() as unknown as SolidSession;
+    return getDefaultSession() as unknown as SolidSession & { info: { webId: string }; fetch: typeof fetch };
 
   }
 
