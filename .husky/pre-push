@@ -2,7 +2,7 @@
 
 . "$(dirname $0)/_/husky.sh"
 
-REGEX="^(master|develop|release|(release|feat|fix|docs|test|chore|build|docs)\/[a-zA-Z0-9\-]+|v[0-9\.\-]+)$"
+REGEX="^(master|develop|release|(release|feat|fix|docs|test|chore|build|docs)\/[a-zA-Z0-9\.\-]+|v[0-9\.\-]+)$"
 
 REMOTE="$1"
 URL="$2"
