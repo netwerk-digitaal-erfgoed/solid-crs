@@ -89,9 +89,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
 
-      - run: |
-          unzstd -f build-outputs.tar.zst
-          tar -xf build-outputs.tar
-          rm build-outputs.*
-
       - run: npm run test:ci
