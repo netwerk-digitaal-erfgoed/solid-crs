@@ -1,7 +1,7 @@
 {
   "name": "@netwerk-digitaal-erfgoed/solid-crs-manage",
   "private": true,
-  "version": "1.16.4",
+  "version": "1.16.5",
   "description": "App for the NDE-project.",
   "author": "Wouter Janssens <wouter@digita.ai>",
   "main": "./dist/solid-crs-manage.umd.js",
