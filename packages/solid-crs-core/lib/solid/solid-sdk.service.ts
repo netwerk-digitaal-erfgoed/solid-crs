@@ -25,20 +25,19 @@ export class SolidSDKService implements SolidService {
   async validateIssuer(issuer: string): Promise<boolean> {
 
     let openidConfig;
-    let poweredByHeader;
 
     try {
 
       const openidConfigResponse = await fetch(new URL('/.well-known/openid-configuration', issuer).toString());
+      if (!openidConfigResponse.ok) return false;
       openidConfig = await openidConfigResponse.json();
-      poweredByHeader = openidConfigResponse.headers.get('X-Powered-By');
+      if (!openidConfig) return false;
 
-    } catch(e) { return false; }
+    } catch(e) {
 
-    if (
-    // Inrupt.net isn't (fully) Solid OIDC-compliant, therefore we check its X-Powered-By header
-      !openidConfig && (poweredByHeader?.includes('solid') || openidConfig.solid_oidc_supported !== 'https://solidproject.org/TR/solid-oidc')
-    ) return false;
+      return false;
+
+    }
 
     return true;
 
@@ -80,22 +79,10 @@ export class SolidSDKService implements SolidService {
 
     }
 
-    const responseHead = await fetch(webId, { method: 'HEAD' });
-
-    const poweredByHeader = responseHead.headers.get('X-Powered-By');
-
     const profile = await this.getProfileThing(webId);
 
     // Gets the issuers from the user's profile.
     const issuers: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#oidcIssuer');
-
-    const host = new URL(webId).origin;
-
-    if (poweredByHeader?.includes('solid') && !issuers.includes(host)) {
-
-      issuers.push(host);
-
-    }
 
     // Check if the issuers are valid OIDC providers.
 
@@ -103,7 +90,7 @@ export class SolidSDKService implements SolidService {
 
     const validIssuers = issuers.filter((issuer, index) => validationResults[index]);
 
-    if (!validIssuers || validIssuers.length === 0) { throw new Error(`No valid OIDC issuers for WebID: ${webId}`); }
+    if (validIssuers.length === 0) { throw new Error(`No valid OIDC issuers for WebID: ${webId}`); }
 
     return Promise.all(validIssuers.map((iss) => {
 
@@ -158,7 +145,7 @@ export class SolidSDKService implements SolidService {
     // Gets the sources from the user's profile.
     const sources: string[] = getUrlAll(profile, 'http://www.w3.org/ns/solid/terms#account');
 
-    if (!sources || sources.length === 0) { throw new Error(`No sources for WebID: ${webId}`); }
+    if (sources.length === 0) { throw new Error(`No sources for WebID: ${webId}`); }
 
     return Promise.all(sources.map((source) => {
 
