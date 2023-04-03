@@ -166,40 +166,6 @@ describe('AuthenticateSetupComponent', () => {
 
   });
 
-  describe('pod creation', () => {
-
-    beforeEach(async () => {
-
-      solidService.getStorages = jest.fn(async () => [ ]);
-
-      machine = interpret(appMachine(
-        solidService,
-        collectionStore,
-        new CollectionObjectMemoryStore([
-          object1,
-        ]),
-        collection1,
-        object1
-      )
-        .withContext({
-          alerts: [],
-          session: { webId: 'lorem' },
-          profile: {
-            name: 'Lea Peeters',
-            uri: 'https://web.id/',
-          },
-        }));
-
-      component.actor = machine;
-
-      machine.start();
-
-      machine.send(new SetProfileEvent());
-
-    });
-
-  });
-
   describe('onClickedCreatePod', () => {
 
     it('should send ClickedCreatePodEvent to machine', async () => {

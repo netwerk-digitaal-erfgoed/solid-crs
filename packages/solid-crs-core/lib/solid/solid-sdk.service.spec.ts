@@ -378,7 +378,6 @@ describe('SolidService', () => {
       type: 'solid',
       configuration: {},
     };
-  
 
     it('should throw when no sources in WebID', async () => {
 
@@ -388,8 +387,6 @@ describe('SolidService', () => {
       await expect(service.getSources(webId)).rejects.toThrow('No sources for WebID:');
 
     });
-    
-
 
     it('should return list of sources', async () => {
 
@@ -430,199 +427,201 @@ describe('SolidService', () => {
         },
       ]);
 
-  });
+    });
 
-  describe('getProfile', () => {
+    describe('getProfile', () => {
 
-    const validProfileDataset = {};
-    const validProfileThing = {};
-    const validName = 'mockString';
+      const validProfileDataset = {};
+      const validProfileThing = {};
+      const validName = 'mockString';
 
-    it('should error when WebID is null', async () => {
+      it('should error when WebID is null', async () => {
 
-      await expect(service.getProfile(null as unknown as any)).rejects.toThrow();
+        await expect(service.getProfile(null as unknown as any)).rejects.toThrow();
+
+      });
+
+      it('should error when WebID is not a valid url', async () => {
+
+        await expect(service.getProfile('noURL')).rejects.toThrow();
+
+      });
+
+      it('should error when unable to set dataset', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () => { throw Error(); });
+
+        await expect(service.getProfile(webId)).rejects.toThrow();
+
+      });
+
+      it('should error when no dataset is found', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () =>  null);
+
+        await expect(service.getProfile(webId)).rejects.toThrow();
+
+      });
+
+      it('should error when no profile is found', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+        (client.getThing as any) = jest.fn(() => null);
+
+        await expect(service.getProfile(webId)).rejects.toThrow();
+
+      });
+
+      it('should error when no contactPointThing could be found', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+
+        (client.getThing as any) = jest.fn((d, url) =>
+          url === validName ? undefined : validProfileThing);
+
+        (client.getStringNoLocale as any) = jest.fn(() => validName);
+        (client.getStringWithLocale as any) = jest.fn(() => validName);
+        (client.getUrl as any) = jest.fn(() => validName);
+
+        await expect(service.getProfile(webId)).rejects.toThrow('Could not find contactPointThing in dataset');
+
+      });
+
+      it('should return valid profile when found', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+        (client.getThing as any) = jest.fn(() => validProfileThing);
+        (client.getStringNoLocale as any) = jest.fn(() => validName);
+        (client.getStringWithLocale as any) = jest.fn(() => validName);
+        (client.getUrl as any) = jest.fn(() => validName);
+
+        const profile = await service.getProfile(webId);
+
+        expect(profile).toEqual(expect.objectContaining({
+          name: validName,
+          uri: webId,
+          alternateName: validName,
+          description: validName,
+          website: validName,
+          logo: validName,
+          email: validName,
+          telephone: validName,
+        }));
+
+      });
+
+      it('should return valid profile when found (document does not contain all triples)', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
+        (client.getThing as any) = jest.fn(() => validProfileThing);
+        (client.getStringNoLocale as any) = jest.fn(() => null);
+        (client.getStringWithLocale as any) = jest.fn(() => null);
+        (client.getUrl as any) = jest.fn(() => null);
+
+        const profile = await service.getProfile(webId);
+
+        expect(profile).toEqual(expect.objectContaining({
+          name: '',
+          uri: webId,
+          alternateName: undefined,
+          description: undefined,
+          website: undefined,
+          logo: undefined,
+          email: undefined,
+          telephone: undefined,
+        }));
+
+      });
 
     });
 
-    it('should error when WebID is not a valid url', async () => {
+    describe('getStorages', () => {
 
-      await expect(service.getProfile('noURL')).rejects.toThrow();
+      it('should return correct values', async () => {
 
-    });
+        // eslint-disable-next-line @typescript-eslint/dot-notation
+        service['getProfileThing'] = jest.fn(async () => profileThing);
+        (client.getUrlAll as any) = jest.fn().mockResolvedValue([  storage ]);
 
-    it('should error when unable to set dataset', async () => {
+        const result = await service.getStorages(webId);
+        expect(result.length).toEqual(1);
+        expect(result).toContain(storage);
 
-      (client.getSolidDataset as any) = jest.fn(async () => { throw Error(); });
-
-      await expect(service.getProfile(webId)).rejects.toThrow();
-
-    });
-
-    it('should error when no dataset is found', async () => {
-
-      (client.getSolidDataset as any) = jest.fn(async () =>  null);
-
-      await expect(service.getProfile(webId)).rejects.toThrow();
+      });
 
     });
 
-    it('should error when no profile is found', async () => {
+    describe('getDefaultSession', () => {
 
-      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
-      (client.getThing as any) = jest.fn(() => null);
+      it('should call getDefaultSession from SDK', () => {
 
-      await expect(service.getProfile(webId)).rejects.toThrow();
+        (getDefaultSession as any) = jest.fn(async () => ({}));
+        service.getDefaultSession();
+        expect(client.getDefaultSession).toHaveBeenCalledTimes(1);
 
-    });
-
-    it('should error when no contactPointThing could be found', async () => {
-
-      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
-
-      (client.getThing as any) = jest.fn((d, url) =>
-        url === validName ? undefined : validProfileThing);
-
-      (client.getStringNoLocale as any) = jest.fn(() => validName);
-      (client.getStringWithLocale as any) = jest.fn(() => validName);
-      (client.getUrl as any) = jest.fn(() => validName);
-
-      await expect(service.getProfile(webId)).rejects.toThrow('Could not find contactPointThing in dataset');
+      });
 
     });
 
-    it('should return valid profile when found', async () => {
+    describe('getProfileDataset', () => {
 
-      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
-      (client.getThing as any) = jest.fn(() => validProfileThing);
-      (client.getStringNoLocale as any) = jest.fn(() => validName);
-      (client.getStringWithLocale as any) = jest.fn(() => validName);
-      (client.getUrl as any) = jest.fn(() => validName);
+      it('should error when fetching dataset fails', async () => {
 
-      const profile = await service.getProfile(webId);
+        (client.getSolidDataset as any) = jest.fn(() => { throw new Error(); });
 
-      expect(profile).toEqual(expect.objectContaining({
-        name: validName,
-        uri: webId,
-        alternateName: validName,
-        description: validName,
-        website: validName,
-        logo: validName,
-        email: validName,
-        telephone: validName,
-      }));
+        await expect(service['getProfileDataset']('https://web.id/alice')).rejects.toThrow(`No profile for WebId: `);
 
-    });
+      });
 
-    it('should return valid profile when found (document does not contain all triples)', async () => {
+      it('should error when no dataset was found', async () => {
 
-      (client.getSolidDataset as any) = jest.fn(async () => validProfileDataset);
-      (client.getThing as any) = jest.fn(() => validProfileThing);
-      (client.getStringNoLocale as any) = jest.fn(() => null);
-      (client.getStringWithLocale as any) = jest.fn(() => null);
-      (client.getUrl as any) = jest.fn(() => null);
+        (client.getSolidDataset as any) = jest.fn(() => undefined);
 
-      const profile = await service.getProfile(webId);
+        await expect(service['getProfileDataset']('https://web.id/alice')).rejects.toThrow(`Could not read profile for WebId: `);
 
-      expect(profile).toEqual(expect.objectContaining({
-        name: '',
-        uri: webId,
-        alternateName: undefined,
-        description: undefined,
-        website: undefined,
-        logo: undefined,
-        email: undefined,
-        telephone: undefined,
-      }));
+      });
+
+      it('should return profile dataset when successful', async () => {
+
+        (client.getSolidDataset as any) = jest.fn(() => 'profile dataset');
+
+        await expect(service['getProfileDataset']('https://web.id/alice')).resolves.toEqual('profile dataset');
+
+      });
 
     });
 
-  });
+    describe('getProfileThing', () => {
 
-  describe('getStorages', () => {
+      it('should error when webid is undefined', async () => {
 
-    it('should return correct values', async () => {
+        await expect(service['getProfileThing'](undefined as unknown as any)).rejects.toThrow(`WebId must be defined.`);
 
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      service['getProfileThing'] = jest.fn(async () => profileThing);
-      (client.getUrlAll as any) = jest.fn().mockResolvedValue([  storage ]);
+      });
 
-      const result = await service.getStorages(webId);
-      expect(result.length).toEqual(1);
-      expect(result).toContain(storage);
+      it('should error when webid is an invalid URL', async () => {
 
-    });
+        await expect(service['getProfileThing']('invalid.url')).rejects.toThrow(`Invalid WebId: `);
 
-  });
+      });
 
-  describe('getDefaultSession', () => {
+      it('should throw when no profile thing was found', async () => {
 
-    it('should call getDefaultSession from SDK', () => {
+        (service['getProfileDataset'] as any) = jest.fn(async () => 'profile dataset');
+        (client.getThing as any) = jest.fn(() => undefined);
 
-      (getDefaultSession as any) = jest.fn(async () => ({}));
-      service.getDefaultSession();
-      expect(client.getDefaultSession).toHaveBeenCalledTimes(1);
+        await expect(service['getProfileThing']('https://web.id/alice')).rejects.toThrow(`No profile info for WebId: `);
 
-    });
+      });
 
-  });
+      it('should return the profile Thing when successful', async () => {
 
-  describe('getProfileDataset', () => {
+        (service['getProfileDataset'] as any) = jest.fn(async () => 'profile dataset');
+        (client.getThing as any) = jest.fn(() => 'profile thing');
 
-    it('should error when fetching dataset fails', async () => {
+        await expect(service['getProfileThing']('https://web.id/alice')).resolves.toEqual('profile thing');
 
-      (client.getSolidDataset as any) = jest.fn(() => { throw new Error(); });
-
-      await expect(service['getProfileDataset']('https://web.id/alice')).rejects.toThrow(`No profile for WebId: `);
-
-    });
-
-    it('should error when no dataset was found', async () => {
-
-      (client.getSolidDataset as any) = jest.fn(() => undefined);
-
-      await expect(service['getProfileDataset']('https://web.id/alice')).rejects.toThrow(`Could not read profile for WebId: `);
-
-    });
-
-    it('should return profile dataset when successful', async () => {
-
-      (client.getSolidDataset as any) = jest.fn(() => 'profile dataset');
-
-      await expect(service['getProfileDataset']('https://web.id/alice')).resolves.toEqual('profile dataset');
-
-    });
-
-  });
-
-  describe('getProfileThing', () => {
-
-    it('should error when webid is undefined', async () => {
-
-      await expect(service['getProfileThing'](undefined as unknown as any)).rejects.toThrow(`WebId must be defined.`);
-
-    });
-
-    it('should error when webid is an invalid URL', async () => {
-
-      await expect(service['getProfileThing']('invalid.url')).rejects.toThrow(`Invalid WebId: `);
-
-    });
-
-    it('should throw when no profile thing was found', async () => {
-
-      (service['getProfileDataset'] as any) = jest.fn(async () => 'profile dataset');
-      (client.getThing as any) = jest.fn(() => undefined);
-
-      await expect(service['getProfileThing']('https://web.id/alice')).rejects.toThrow(`No profile info for WebId: `);
-
-    });
-
-    it('should return the profile Thing when successful', async () => {
-
-      (service['getProfileDataset'] as any) = jest.fn(async () => 'profile dataset');
-      (client.getThing as any) = jest.fn(() => 'profile thing');
-
-      await expect(service['getProfileThing']('https://web.id/alice')).resolves.toEqual('profile thing');
+      });
 
     });
 
