@@ -444,6 +444,8 @@ export const appMachine = (
                   target: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
                 },
               ],
+              target: AppDataStates.IDLE,
+              actions: log((c, event) => event),
               onError: send((c, event) => event),
             },
 
@@ -459,14 +461,19 @@ export const appMachine = (
               onDone: [
                 {
                   target: AppDataStates.DETERMINING_POD_TYPE,
-                  cond: (context, event) => !event.data,
+                  actions: [
+                    log(() => 'Could not find a valid type registration, creating one'),
+                  ],
+                  cond: (c, event) => !event.data,
                 },
                 {
                   target: AppDataStates.REFRESHING,
                 },
               ],
               onError: {
+                target: AppDataStates.IDLE,
                 actions:  [
+                  log((c, event) => event, 'Retrieving type registration failed'),
                   send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                   send(new ClickedLogoutEvent()),
                 ],
@@ -486,6 +493,7 @@ export const appMachine = (
                   // The user is an admin, but no (valid) type registration was found
                   target: AppDataStates.IDLE,
                   actions: [
+                    log((c, event) => event),
                     send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                     send(new ClickedLogoutEvent()),
                   ],
@@ -526,6 +534,7 @@ export const appMachine = (
                 },
               ],
               onError: {
+                target: AppDataStates.IDLE,
                 actions: [
                   log((c, event) => event),
                 ],

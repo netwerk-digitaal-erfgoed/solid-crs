@@ -1,11 +1,9 @@
-import { getDefaultSession } from '@digita-ai/inrupt-solid-client';
 import { Thing, getUrl, getSolidDataset, getThing, getThingAll, createThing, addUrl, setThing, saveSolidDatasetAt, overwriteFile, access } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4 } from 'uuid';
 import { ArgumentError } from '../errors/argument-error';
 import { Resource } from '../stores/resource';
 import { Store } from '../stores/store';
 import { SolidSDKService } from './solid-sdk.service';
-import { SolidService } from './solid.service';
 
 export class SolidStore<T extends Resource> implements Store<T> {
 
@@ -81,7 +79,17 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     }
 
-    const publicTypeIndexDataset = await getSolidDataset(publicTypeIndexUrl, { fetch: this.getSession().fetch });
+    let publicTypeIndexDataset;
+
+    try {
+
+      publicTypeIndexDataset = await getSolidDataset(publicTypeIndexUrl, { fetch: this.getSession().fetch });
+
+    } catch (e) {
+
+      return undefined;
+
+    }
 
     const typeRegistration = getThingAll(publicTypeIndexDataset).find((typeIndex: Thing) =>
       getUrl(typeIndex, 'http://www.w3.org/ns/solid/terms#forClass') === forClass);
@@ -196,21 +204,14 @@ export class SolidStore<T extends Resource> implements Store<T> {
 
     const storageRoot = getUrl(profile, 'http://www.w3.org/ns/pim/space#storage') ?? undefined;
 
-    // if no storage root is set in the profile doc
-    // and if profile doc does not include the
-    // http://www.w3.org/ns/pim/space#storage triple ->
-    // guess the root of the user's pod from the webId
-    // and try to create the type index files there
-    const webIdSplit = webId.split('profile/card#me');
-
-    if (!storageRoot && !webId.endsWith('profile/card#me')) {
+    if (!storageRoot) {
 
       throw new ArgumentError('Could not create type indexes for webId', webId);
 
     }
 
-    const privateTypeIndex = `${storageRoot ?? webIdSplit[0]}settings/privateTypeIndex.ttl`;
-    const publicTypeIndex = `${storageRoot ?? webIdSplit[0]}settings/publicTypeIndex.ttl`;
+    const privateTypeIndex = `${storageRoot}settings/privateTypeIndex.ttl`;
+    const publicTypeIndex = `${storageRoot}settings/publicTypeIndex.ttl`;
 
     // create an empty type index files
     await overwriteFile(`${privateTypeIndex}`, new Blob([
@@ -230,7 +231,7 @@ export class SolidStore<T extends Resource> implements Store<T> {
     // add type index references to user profile
     let updatedProfile = addUrl(profile, 'http://www.w3.org/ns/solid/terms#privateTypeIndex', privateTypeIndex);
     updatedProfile = addUrl(updatedProfile, 'http://www.w3.org/ns/solid/terms#publicTypeIndex', publicTypeIndex);
-    updatedProfile = addUrl(updatedProfile, 'http://www.w3.org/ns/pim/space#storage', webIdSplit[0]);
+    updatedProfile = addUrl(updatedProfile, 'http://www.w3.org/ns/pim/space#storage', storageRoot);
 
     const updatedDataset = setThing(profileDataset, updatedProfile);
     await saveSolidDatasetAt(webId, updatedDataset, { fetch: this.getSession().fetch });
