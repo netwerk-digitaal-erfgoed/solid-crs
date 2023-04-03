@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SolidSDKService } from './solid-sdk.service';
+import { SolidSDKService } from '../solid/solid-sdk.service';
 import { InboxService } from './inbox.service';
 
 describe('InboxService', () => {

@@ -11,6 +11,8 @@ describe('CollectionMemoryStore', () => {
       description: 'This is collection 1',
       objectsUri: '',
       distribution: '',
+      inbox: '',
+      publisher: '',
     },
     {
       uri: 'collection-uri-2',
@@ -18,6 +20,8 @@ describe('CollectionMemoryStore', () => {
       description: 'This is collection 2 testing',
       objectsUri: '',
       distribution: '',
+      inbox: '',
+      publisher: '',
     },
     {
       uri: 'collection-uri-3',
@@ -25,6 +29,8 @@ describe('CollectionMemoryStore', () => {
       description: 'This is collection 3 testing nachos',
       objectsUri: '',
       distribution: '',
+      inbox: '',
+      publisher: '',
     },
   ];
 
@@ -74,13 +80,13 @@ describe('CollectionMemoryStore', () => {
 
     it('should error when searchTerm is undefined', async () => {
 
-      await expect(service.search(undefined, resources)).rejects.toThrow(ArgumentError);
+      await expect(service.search(undefined as unknown as string, resources)).rejects.toThrow(ArgumentError);
 
     });
 
     it('should error when collections is undefined', async () => {
 
-      await expect(service.search('test', undefined)).rejects.toThrow(ArgumentError);
+      await expect(service.search('test', undefined as unknown as Collection[])).rejects.toThrow(ArgumentError);
 
     });
 
@@ -90,13 +96,13 @@ describe('CollectionMemoryStore', () => {
 
     it('should error when webId is undefined', async () => {
 
-      await expect(service.getInstanceForClass('test', undefined)).rejects.toThrow(ArgumentError);
+      await expect(service.getInstanceForClass('test', undefined as unknown as string)).rejects.toThrow(ArgumentError);
 
     });
 
     it('should error when forClass is undefined', async () => {
 
-      await expect(service.getInstanceForClass(undefined, 'test')).rejects.toThrow(ArgumentError);
+      await expect(service.getInstanceForClass(undefined as unknown as string, 'test')).rejects.toThrow(ArgumentError);
 
     });
 

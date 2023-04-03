@@ -1,12 +1,13 @@
 import moment from 'moment';
 import { ArgumentError } from '../errors/argument-error';
+import { Translator } from '../i8n/translator';
 import { getFormattedTimeAgo } from './date-parser';
 
 describe('getFormattedTimeAgo()', () => {
 
   const mockedTranslator = {
     translate: (key: string) => key.split('.')[key.split('.').length - 1],
-  };
+  } as unknown as Translator;
 
   it('just now', () => {
 
@@ -17,7 +18,7 @@ describe('getFormattedTimeAgo()', () => {
 
   it('should throw error when no translator is given', () => {
 
-    expect(() => getFormattedTimeAgo(+moment(new Date()), null)).toThrow(ArgumentError);
+    expect(() => getFormattedTimeAgo(+moment(new Date()), null as unknown as Translator)).toThrow(ArgumentError);
 
   });
 
