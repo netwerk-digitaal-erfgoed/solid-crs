@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [1.16.6](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v1.16.5...v1.16.6) (2023-04-06)
+
+
+### **Bug Fixes**
+
+* make login compatible with use.id ([#609](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/609)) ([14c7bf0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/14c7bf0f947a0d9a723c6c03fa26564f4f7125af))
+
+
+
 ### [1.16.5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v1.16.4...v1.16.5) (2023-03-29)
 
 
