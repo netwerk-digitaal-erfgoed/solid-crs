@@ -5,7 +5,7 @@ describe('fulltextMatch()', () => {
 
   it('should throw error when no term is given', () => {
 
-    expect(() => fulltextMatch({ foo: 'bar' }, null)).toThrow(ArgumentError);
+    expect(() => fulltextMatch({ foo: 'bar' }, null as unknown as string)).toThrow(ArgumentError);
 
   });
 

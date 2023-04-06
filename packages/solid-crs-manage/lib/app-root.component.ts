@@ -2,13 +2,13 @@ import { html, property, PropertyValues, internalProperty, unsafeCSS, css, CSSRe
 import { ActorRef, EventObject, interpret, Interpreter, State } from 'xstate';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED, InboxService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, ConsoleLogger, Logger, LoggerLevel, MemoryTranslator, Translator, CollectionSolidStore, CollectionObjectSolidStore, SolidProfile, TRANSLATIONS_LOADED, InboxService, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Alert, FormActors, FormEvent } from '@netwerk-digitaal-erfgoed/solid-crs-components';
 import { RxLitElement } from 'rx-lit';
 import { Theme, Logout, Plus, Cross, Search } from '@netwerk-digitaal-erfgoed/solid-crs-theme';
 import { unsafeSVG } from 'lit-html/directives/unsafe-svg';
 import { define, hydrate } from '@digita-ai/dgt-components';
-import { Session, SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { Session } from '@digita-ai/inrupt-solid-service';
 import { AppActors, AppAuthenticateStates, AppContext, AppFeatureStates, appMachine, AppRootStates } from './app.machine';
 import { AppEvents, ClickedCreateCollectionEvent, DismissAlertEvent, LoggedInEvent } from './app.events';
 import { CollectionEvents, SavedCollectionEvent } from './features/collection/collection.events';
@@ -96,10 +96,10 @@ export class AppRootComponent extends RxLitElement {
   collectionObjectStore = new CollectionObjectSolidStore(this.solidService);
 
   constructor(
-    private solidService = new SolidSDKService('Collectieregistratiesysteem', { [process.env.VITE_ID_PROXY_URI]: {
+    private solidService = new SolidSDKService({
       clientName: 'Collectiebeheersysteem',
-      clientId: `${process.env.VITE_WEBID_URI}collectiebeheersysteem`,
-    } }),
+      clientId: `https://webid.netwerkdigitaalerfgoed.nl/.well-known/oauth-client`,
+    }),
   ) {
 
     super();

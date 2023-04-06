@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { Collection, CollectionObject, CollectionObjectMemoryStore, CollectionSolidStore } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { interpret, Interpreter } from 'xstate';
 import { ClickedAdministratorTypeEvent, ClickedCreatePodEvent, ClickedInstitutionTypeEvent, ClickedLogoutEvent, SetProfileEvent } from '../../app.events';
 import { AppContext, AppDataStates, appMachine, AppRootStates } from '../../app.machine';
-import * as services from '../../app.services';
+import { SolidSDKService } from './solid-sdk.service';
 import { AuthenticateSetupComponent } from './authenticate-setup.component';
 
 let solidService: SolidSDKService;
@@ -44,8 +43,6 @@ describe('AuthenticateSetupComponent', () => {
     collectionStore = {
       getInstanceForClass: jest.fn(async () => undefined),
     } as any;
-
-    (services.createPod as any) = jest.fn(async () => ({}));
 
     machine = interpret(appMachine(
       solidService,
@@ -160,57 +157,6 @@ describe('AuthenticateSetupComponent', () => {
 
           button.click();
           expect(component.actor.send).toHaveBeenCalledWith(new ClickedInstitutionTypeEvent());
-
-        }
-
-      });
-
-    });
-
-  });
-
-  describe('pod creation', () => {
-
-    beforeEach(async () => {
-
-      solidService.getStorages = jest.fn(async () => [ ]);
-
-      machine = interpret(appMachine(
-        solidService,
-        collectionStore,
-        new CollectionObjectMemoryStore([
-          object1,
-        ]),
-        collection1,
-        object1
-      )
-        .withContext({
-          alerts: [],
-          session: { webId: 'lorem' },
-          profile: {
-            name: 'Lea Peeters',
-            uri: 'https://web.id/',
-          },
-        }));
-
-      component.actor = machine;
-
-      machine.start();
-
-      machine.send(new SetProfileEvent());
-
-    });
-
-    it('should show two buttons', async () => {
-
-      machine.onTransition(async (state) => {
-
-        if (state.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION })) {
-
-          await component.updateComplete;
-          const buttons = component.shadowRoot.querySelectorAll('button');
-          expect(buttons).toBeTruthy();
-          expect(buttons.length).toEqual(2);
 
         }
 

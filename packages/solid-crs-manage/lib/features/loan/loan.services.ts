@@ -24,7 +24,7 @@ const createNotificationBody = (notificationArgs: {
   as:actor <${notificationArgs.actor}> ;
   as:target <${notificationArgs.target}> ;
   as:object <${notificationArgs.object}> ;
-  as:origin <${notificationArgs.origin ?? `${process.env.VITE_WEBID_URI}collectiebeheersysteem`}> .
+  as:origin <${notificationArgs.origin ?? process.env.VITE_CLIENT_ID_URI }> .
 `;
 
 /**

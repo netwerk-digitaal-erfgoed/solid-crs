@@ -1,8 +1,8 @@
 import { Alert, FormActors, formMachine, FormValidatorResult, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { Collection, CollectionObjectStore, CollectionObject, CollectionStore, SolidProfile, SolidSession, Route, routerStateConfig, NavigatedEvent, RouterStates, createRoute, activeRoute, routerEventsConfig, RouterEvents, updateHistory, SolidSDKService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine } from 'xstate';
-import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { assign, escalate, forwardTo, log, send } from 'xstate/lib/actions';
+
 import { addAlert, AddAlertEvent, addCollection, AppEvent, AppEvents, dismissAlert, LoggedOutEvent, ClickedLogoutEvent, removeSession, setCollections, setProfile, SetProfileEvent, setSession, ClickedCreateCollectionEvent } from './app.events';
 import { collectionMachine } from './features/collection/collection.machine';
 import { CollectionEvents, SelectedCollectionEvent } from './features/collection/collection.events';
@@ -10,7 +10,6 @@ import { searchMachine } from './features/search/search.machine';
 import { SearchEvents, SearchUpdatedEvent } from './features/search/search.events';
 import { objectMachine } from './features/object/object.machine';
 import { ObjectEvents } from './features/object/object.events';
-import { createPod } from './app.services';
 import { LoanEvents } from './features/loan/loan.events';
 
 /**
@@ -96,8 +95,6 @@ export enum AppDataStates {
   CHECKING_TYPE_REGISTRATIONS = '[AppDataStates: Checking Type Registrations]',
   DETERMINING_POD_TYPE = '[AppDataStates: Determining Pod Type]',
   CHECKING_STORAGE= '[AppDataStates: Checking Storage]',
-  AWAITING_POD_CREATION= '[AppDataStates: Awaiting Pod Creation]',
-  CREATING_POD= '[AppDataStates: Creating Pod]',
 }
 
 /**
@@ -440,46 +437,18 @@ export const appMachine = (
               src: (context) => solid.getStorages(context.session.webId),
               onDone: [
                 {
-                  target: AppDataStates.AWAITING_POD_CREATION,
+                  actions: escalate({ message: 'no pim:storage triple present in WebID' }),
                   cond: (c: AppContext, event) => event?.data && event.data.length === 0,
                 },
                 {
                   target: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
                 },
               ],
+              target: AppDataStates.IDLE,
+              actions: log((c, event) => event),
               onError: send((c, event) => event),
             },
 
-          },
-          /**
-           * No storage triple present in the WebID, waiting for user input
-           */
-          [AppDataStates.AWAITING_POD_CREATION]: {
-            tags: [ 'setup' ],
-            on: {
-              [AppEvents.CLICKED_LOGOUT]: {
-                target: AppDataStates.IDLE,
-                actions: send((c, event) => event),
-              },
-              [AppEvents.CLICKED_CREATE_POD]: {
-                target: AppDataStates.CREATING_POD,
-              },
-            },
-          },
-          /**
-           * Creates a Solid pod at pods.netwerkdigitaalerfgoed.nl.
-           */
-          [AppDataStates.CREATING_POD]: {
-            tags: [ 'setup', 'loading' ],
-            invoke: {
-              src: () => createPod(solid),
-              onDone: {
-                target: AppDataStates.CHECKING_TYPE_REGISTRATIONS,
-              },
-              onError: {
-                actions: send((c, event) => event),
-              },
-            },
           },
           /**
            * Checks existance of DataCatalog type registration
@@ -492,14 +461,19 @@ export const appMachine = (
               onDone: [
                 {
                   target: AppDataStates.DETERMINING_POD_TYPE,
-                  cond: (context, event) => !event.data,
+                  actions: [
+                    log(() => 'Could not find a valid type registration, creating one'),
+                  ],
+                  cond: (c, event) => !event.data,
                 },
                 {
                   target: AppDataStates.REFRESHING,
                 },
               ],
               onError: {
+                target: AppDataStates.IDLE,
                 actions:  [
+                  log((c, event) => event, 'Retrieving type registration failed'),
                   send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                   send(new ClickedLogoutEvent()),
                 ],
@@ -519,6 +493,7 @@ export const appMachine = (
                   // The user is an admin, but no (valid) type registration was found
                   target: AppDataStates.IDLE,
                   actions: [
+                    log((c, event) => event),
                     send(new AddAlertEvent({ message: 'authenticate.error.no-valid-type-registration', type: 'warning' })),
                     send(new ClickedLogoutEvent()),
                   ],
@@ -559,7 +534,10 @@ export const appMachine = (
                 },
               ],
               onError: {
-                actions: send((c, event) => event),
+                target: AppDataStates.IDLE,
+                actions: [
+                  log((c, event) => event),
+                ],
               },
             },
           },

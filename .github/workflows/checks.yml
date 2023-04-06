@@ -1,10 +1,13 @@
 
-name: Perform checks
+name: checks
+
+# Cancel previous runs of this workflow on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
-
   push:
-
     branches:
       - feat/*
       - fix/*
@@ -20,31 +23,18 @@ on:
 
 jobs:
 
-  test:
+  build:
 
-    name: Run tests
-
+    name: Build project
+    if: "!endsWith(github.event.commits[0].message, 'wip')"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - name: Extract tag
-        id: extract-tag
-        run: echo "::set-output name=tag::${GITHUB_REF/refs\/tags\//}"
-
-      - name: Check tag
-        run: echo ${{ steps.extract-tag.outputs.tag }}
-
-      - name: Extract branch
-        id: extract-branch
-        run: echo "::set-output name=branch::${GITHUB_REF/refs\/heads\//}"
-
-      - name: Check branch
-        run: echo ${{ steps.extract-branch.outputs.branch }}
-
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v3
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com
@@ -55,6 +45,76 @@ jobs:
 
       - run: npm run build:all
 
+      - run: tar -c packages/*/dist/ | zstd -12 > build-outputs.tar.zst
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-outputs
+          path: build-outputs.tar.zst
+          if-no-files-found: error
+          retention-days: 1
+
+
+  lint:
+
+    name: Run linter
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15 
+
+    steps:
+    
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com
+
+      - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-outputs
+
+      - run: |
+          unzstd -f build-outputs.tar.zst
+          tar -xf build-outputs.tar
+          rm build-outputs.*
+
       - run: npm run lint:all
+
+
+  unit-tests:
+
+    name: Run unit tests
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15 
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+          registry-url: https://npm.pkg.github.com
+
+      - run: npm run bootstrap
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-outputs
+
+      - run: |
+          unzstd -f build-outputs.tar.zst
+          tar -xf build-outputs.tar
+          rm build-outputs.*
 
       - run: npm run test:ci

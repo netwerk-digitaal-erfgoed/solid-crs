@@ -33,9 +33,6 @@ jobs:
           echo "::set-output name=image_presentation::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-presentation"
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
-          echo "::set-output name=image_pods::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-pods"
-          echo "::set-output name=image_id_proxy::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-id-proxy"
-          echo "::set-output name=image_webid::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-webid"
 
   perform-checks:
     name: Perform checks
@@ -173,39 +170,6 @@ jobs:
           build-args: |
             NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
 
-      - name: Build and push pods
-        uses: docker/build-push-action@v2
-        with:
-          context: packages/solid-crs-pods/
-          push: true
-          tags: |
-            ${{ needs.variables.outputs.image_pods }}:latest
-            ${{ needs.variables.outputs.image_pods }}:v${{needs.publish-npm.outputs.version}}
-          build-args: |
-            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
-
-      - name: Build and push id proxy
-        uses: docker/build-push-action@v2
-        with:
-          context: packages/solid-crs-id-proxy/
-          push: true
-          tags: |
-            ${{ needs.variables.outputs.image_id_proxy }}:latest
-            ${{ needs.variables.outputs.image_id_proxy }}:v${{needs.publish-npm.outputs.version}}
-          build-args: |
-            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
-
-      - name: Build and push webid
-        uses: docker/build-push-action@v2
-        with:
-          context: packages/solid-crs-webid/
-          push: true
-          tags: |
-            ${{ needs.variables.outputs.image_webid }}:latest
-            ${{ needs.variables.outputs.image_webid }}:v${{needs.publish-npm.outputs.version}}
-          build-args: |
-            NPM_TOKEN=${{secrets.DIGITA_PACKAGES}}
-
       - uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
@@ -220,9 +184,6 @@ jobs:
           kubectl set image deployment/solid-crs-presentation app=${{ needs.variables.outputs.image_presentation }}:v${{needs.publish-npm.outputs.version}} --record
           kubectl set image deployment/solid-crs-semcom-node app=${{ needs.variables.outputs.image_semcom_node }}:v${{needs.publish-npm.outputs.version}} --record
           kubectl set image deployment/solid-crs-semcom-components app=${{ needs.variables.outputs.image_semcom_components }}:v${{needs.publish-npm.outputs.version}} --record
-          kubectl set image deployment/solid-crs-id-proxy app=${{ needs.variables.outputs.image_id_proxy }}:v${{needs.publish-npm.outputs.version}} --record
-          kubectl set image statefulset/solid-crs-pods app=${{ needs.variables.outputs.image_pods }}:v${{needs.publish-npm.outputs.version}} --record
-          kubectl set image statefulset/solid-crs-webid app=${{ needs.variables.outputs.image_webid }}:v${{needs.publish-npm.outputs.version}} --record
 
       - name: Verify deployment
         run: |
@@ -230,6 +191,3 @@ jobs:
           kubectl rollout status deployment/solid-crs-presentation
           kubectl rollout status deployment/solid-crs-semcom-node
           kubectl rollout status deployment/solid-crs-semcom-components
-          kubectl rollout status deployment/solid-crs-id-proxy
-          kubectl rollout status statefulset/solid-crs-pods
-          kubectl rollout status statefulset/solid-crs-webid

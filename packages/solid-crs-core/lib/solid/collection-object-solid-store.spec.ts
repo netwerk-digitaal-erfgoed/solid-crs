@@ -36,7 +36,9 @@ describe('CollectionObjectSolidStore', () => {
       name: 'test-name',
       description: 'test-description',
       objectsUri: 'http://test.url',
-      distribution: undefined,
+      inbox: '',
+      publisher: '',
+      distribution: '',
     };
 
     mockObject = {
@@ -180,7 +182,7 @@ describe('CollectionObjectSolidStore', () => {
 
     it.each([ null, undefined ])('should error when uri is %s', async (value) => {
 
-      await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
+      await expect(service.get(value as unknown as string)).rejects.toThrow('Argument uri should be set');
 
     });
 
@@ -272,7 +274,7 @@ describe('CollectionObjectSolidStore', () => {
 
     it.each([ null, undefined ])('should error when object is %s', async (value) => {
 
-      await expect(service.delete(value)).rejects.toThrow('Argument object should be set');
+      await expect(service.delete(value as unknown as CollectionObject)).rejects.toThrow('Argument object should be set');
 
     });
 
@@ -304,7 +306,7 @@ describe('CollectionObjectSolidStore', () => {
 
     it.each([ null, undefined ])('should error when object is %s', async (value) => {
 
-      await expect(service.save(value)).rejects.toThrow('Argument object should be set');
+      await expect(service.save(value as unknown as CollectionObject)).rejects.toThrow('Argument object should be set');
 
     });
 
@@ -776,7 +778,7 @@ describe('CollectionObjectSolidStore', () => {
 
     it('should error when object is null', () => {
 
-      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(null)).toThrow();
+      expect(() => CollectionObjectSolidStore.getDigitalObjectUri(null as unknown as string)).toThrow();
 
     });
 
@@ -810,13 +812,13 @@ describe('CollectionObjectSolidStore', () => {
 
     it.each([ null, undefined ])('should error when dataset is %s', (value) => {
 
-      expect(() => CollectionObjectSolidStore.getTerm('uri', value)).toThrow('Argument dataset should be set');
+      expect(() => CollectionObjectSolidStore.getTerm('uri', value as unknown as any)).toThrow('Argument dataset should be set');
 
     });
 
     it.each([ null, undefined ])('should error when uri is %s', (value) => {
 
-      expect(() => CollectionObjectSolidStore.getTerm(value, client.createSolidDataset())).toThrow('Argument uri should be set');
+      expect(() => CollectionObjectSolidStore.getTerm(value as unknown as string, client.createSolidDataset())).toThrow('Argument uri should be set');
 
     });
 
@@ -881,13 +883,13 @@ describe('CollectionObjectSolidStore', () => {
 
     it.each([ null, undefined ])('should error when objectUri is %s', async (value) => {
 
-      await expect(() => service.uploadImage(imageFile, value)).rejects.toThrow('Argument objectUri should be set');
+      await expect(() => service.uploadImage(imageFile, value as unknown as string)).rejects.toThrow('Argument objectUri should be set');
 
     });
 
     it.each([ null, undefined ])('should error when imageFile is %s', async (value) => {
 
-      await expect(() => service.uploadImage(value, objectUri)).rejects.toThrow('Argument imageFile should be set');
+      await expect(() => service.uploadImage(value as unknown as File, objectUri)).rejects.toThrow('Argument imageFile should be set');
 
     });
 

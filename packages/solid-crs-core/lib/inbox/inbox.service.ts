@@ -1,4 +1,4 @@
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { SolidSDKService } from '../solid/solid-sdk.service';
 
 /**
  * Manage creation and reading of inboxes

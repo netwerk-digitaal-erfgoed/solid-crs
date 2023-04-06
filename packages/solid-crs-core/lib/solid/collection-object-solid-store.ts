@@ -1,4 +1,3 @@
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
 import { getUrl, getSolidDataset, getThing, getStringWithLocale, getThingAll, asUrl, ThingPersisted, createThing, addStringNoLocale, addUrl, addStringWithLocale, getStringNoLocale, saveSolidDatasetAt, setThing, removeThing, getDecimal, addDecimal, SolidDataset, getUrlAll, saveFileInContainer } from '@netwerk-digitaal-erfgoed/solid-crs-client';
 import { v4, v5 } from 'uuid';
 import { Collection } from '../collections/collection';
@@ -7,6 +6,7 @@ import { CollectionObjectStore } from '../collections/collection-object-store';
 import { ArgumentError } from '../errors/argument-error';
 import { Term } from '../terms/term';
 import { fulltextMatch } from '../utils/fulltext-match';
+import { SolidSDKService } from './solid-sdk.service';
 import { SolidStore } from './solid-store';
 
 export class CollectionObjectSolidStore extends SolidStore<CollectionObject> implements CollectionObjectStore {

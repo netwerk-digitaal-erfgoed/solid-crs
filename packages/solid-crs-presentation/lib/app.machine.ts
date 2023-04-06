@@ -1,8 +1,7 @@
 import { Alert, State } from '@netwerk-digitaal-erfgoed/solid-crs-components';
-import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidSession, Route, activeRoute, routerEventsConfig, RouterStates, routerStateConfig, NavigatedEvent, NavigateEvent, updateTitle, createRoute, RouterEvents, updateHistory } from '@netwerk-digitaal-erfgoed/solid-crs-core';
+import { ArgumentError, Collection, CollectionObjectStore, CollectionSolidStore, CollectionStore, SolidProfile, SolidSession, Route, activeRoute, routerEventsConfig, RouterStates, routerStateConfig, NavigatedEvent, NavigateEvent, updateTitle, createRoute, RouterEvents, updateHistory, SolidService } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { createMachine, DoneInvokeEvent } from 'xstate';
 import { assign, forwardTo, log, send } from 'xstate/lib/actions';
-import { SolidService } from '@digita-ai/inrupt-solid-service';
 import { addAlert, AddAlertEvent, AppEvent, AppEvents, dismissAlert, setCollections, setProfile } from './app.events';
 import { CollectionEvents } from './features/collection/collection.events';
 import { searchMachine } from './features/search/search.machine';

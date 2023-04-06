@@ -125,6 +125,24 @@ describe('CollectionMachine', () => {
 
   });
 
+  it('should transition to IDLE when LOADING errors', (done) => {
+
+    objectStore.getObjectsForCollection = jest.fn().mockRejectedValue('error');
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+  });
+
   it('should save collection when saving', (done) => {
 
     collectionStore.save = jest.fn().mockResolvedValueOnce(collection1);

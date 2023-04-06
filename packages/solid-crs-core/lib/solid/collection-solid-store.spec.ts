@@ -1,40 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as client from '@netwerk-digitaal-erfgoed/solid-crs-client';
+import fetchMock from 'jest-fetch-mock';
 import { Collection } from '../collections/collection';
 import { ArgumentError } from '../errors/argument-error';
+import { InboxService } from '../inbox/inbox.service';
 import { CollectionSolidStore } from './collection-solid-store';
+import { SolidSDKService } from './solid-sdk.service';
 
 describe('CollectionSolidStore', () => {
 
   let service: CollectionSolidStore;
 
+  let mockCollection: Collection;
+  let solidService: SolidSDKService;
+  let inboxService: InboxService;
+
   const mockSession = {
     info: {
-      webId: 'test-webid',
+      webId: 'https://example.com/profile/card#me',
     },
+    fetch,
   };
 
-  let mockCollection;
-
-  const solidService = {
-    getDefaultSession: jest.fn(() => ({
-      info: {
-        webId: 'https://example.com/profile/card#me',
-      },
-      fetch,
-    })),
-  } as any;
+  fetchMock.enableMocks();
 
   beforeEach(() => {
 
-    service = new CollectionSolidStore(solidService);
+    solidService = {
+      getDefaultSession: jest.fn(() => mockSession),
+    } as unknown as SolidSDKService;
 
-    (service.getSession as any) = jest.fn(() => ({
-      info: {
-        webId: 'https://example.com/profile/card#me',
-      },
-      fetch,
-    }));
+    inboxService = {
+      getInbox: jest.fn(async () => 'https://inbox.uri/'),
+    } as unknown as InboxService;
+
+    service = new CollectionSolidStore(solidService, inboxService);
+
+    (service.getSession as any) = jest.fn(() => mockSession);
 
     jest.clearAllMocks();
 
@@ -124,7 +126,7 @@ describe('CollectionSolidStore', () => {
 
     it.each([ null, undefined ])('should error when collection is %s', async (value) => {
 
-      await expect(service.delete(value)).rejects.toThrow('Argument collection should be set');
+      await expect(service.delete(value as unknown as Collection)).rejects.toThrow('Argument collection should be set');
 
     });
 
@@ -155,7 +157,7 @@ describe('CollectionSolidStore', () => {
 
     it.each([ null, undefined ])('should error when collection is %s', async (value) => {
 
-      await expect(service.save(value)).rejects.toThrow('Argument collection should be set');
+      await expect(service.save(value as unknown as Collection)).rejects.toThrow('Argument collection should be set');
 
     });
 
@@ -276,7 +278,7 @@ describe('CollectionSolidStore', () => {
       (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
       (client.getThing as any) = jest.fn(() => null);
 
-      await expect(service.get(value)).rejects.toThrow('Argument uri should be set');
+      await expect(service.get(value as unknown as string)).rejects.toThrow('Argument uri should be set');
 
     });
 
@@ -333,6 +335,29 @@ describe('CollectionSolidStore', () => {
 
     }));
 
+    it('should call inboxService.createInbox when inboxUri returns 404', () => new Promise((done) => {
+
+      (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
+      (client.getSolidDataset as any) = jest.fn(async () => 'test-dataset');
+      (client.getThing as any) = jest.fn(() => 'test-thing');
+      (client.getStringWithLocale as any) = jest.fn(() => 'test-string');
+      (client.getStringNoLocale as any) = jest.fn(() => 'test-string');
+
+      fetchMock.once('not found', { status: 404 });
+
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      (service['inboxService'].createInbox as any) = jest.fn(() => {
+
+        done(true);
+
+        return Promise.resolve('test-inbox');
+
+      });
+
+      service.createCatalog('https://test.uri');
+
+    }));
+
     it('should use schema:name by default', async () => {
 
       (solidService.getDefaultSession as any) = jest.fn(() => mockSession);
@@ -376,13 +401,13 @@ describe('CollectionSolidStore', () => {
 
     it.each([ null, undefined ])('should error when collections is %s', async (value) => {
 
-      await expect(service.search('searchterm', value)).rejects.toThrow(ArgumentError);
+      await expect(service.search('searchterm', value as unknown as Collection[])).rejects.toThrow(ArgumentError);
 
     });
 
     it.each([ null, undefined ])('should error when searchTerm is %s', async (value) => {
 
-      await expect(service.search(value, [ mockCollection ])).rejects.toThrow(ArgumentError);
+      await expect(service.search(value as unknown as string, [ mockCollection ])).rejects.toThrow(ArgumentError);
 
     });
 
@@ -390,7 +415,7 @@ describe('CollectionSolidStore', () => {
 
       const collections = [ mockCollection, mockCollection, { ...mockCollection, name: undefined } ];
 
-      const result = await service.search(mockCollection.name, collections);
+      const result = await service.search(mockCollection.name, collections as unknown as Collection[]);
       expect(result).toBeTruthy();
       expect(result.length).toEqual(2);
 

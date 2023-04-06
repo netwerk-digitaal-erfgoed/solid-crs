@@ -41,16 +41,6 @@ export class AuthenticateRootComponent extends RxLitElement {
   @internalProperty()
   alerts: Alert[];
 
-  /**
-   * List of predefined issuers.
-   */
-  @internalProperty()
-  issuers: Issuer[] = [ {
-    uri: process.env.VITE_ID_PROXY_URI,
-    description: 'Log in met je NDE account',
-    icon: '',
-  } ];
-
   constructor(private solidService: SolidService) {
 
     super();

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SolidSDKService } from '@digita-ai/inrupt-solid-service';
+import { SolidSDKService } from '../solid/solid-sdk.service';
 import { InboxService } from './inbox.service';
 
 describe('InboxService', () => {

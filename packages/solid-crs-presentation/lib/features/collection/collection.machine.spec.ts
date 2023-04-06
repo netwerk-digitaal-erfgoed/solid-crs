@@ -123,6 +123,24 @@ describe('CollectionMachine', () => {
 
   });
 
+  it('should transition to IDLE when LOADING errors', (done) => {
+
+    objectStore.getObjectsForCollection = jest.fn().mockRejectedValue('error');
+
+    machine.onTransition((state) => {
+
+      if(state.matches(CollectionStates.IDLE)) {
+
+        done();
+
+      }
+
+    });
+
+    machine.start();
+
+  });
+
   it('should assign when selected collection', (done) => {
 
     machine.onChange((context) => {

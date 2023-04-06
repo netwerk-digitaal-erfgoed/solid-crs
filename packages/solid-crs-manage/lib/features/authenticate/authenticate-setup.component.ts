@@ -1,5 +1,4 @@
 import { html, property, unsafeCSS, css, TemplateResult, CSSResult, internalProperty } from 'lit-element';
-import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { Logger, Translator } from '@netwerk-digitaal-erfgoed/solid-crs-core';
 import { Interpreter, State } from 'xstate';
 import { RxLitElement } from 'rx-lit';
@@ -100,23 +99,7 @@ export class AuthenticateSetupComponent extends RxLitElement {
       
       </div>
     `
-    // create pod buttons
-      : this.state?.matches({ [AppRootStates.DATA]: AppDataStates.AWAITING_POD_CREATION }) ? html`
-      
-      <div class="title-container">
-        <h1>${this.translator?.translate('authenticate.pages.no-pod.title')}</h1>
-      </div>
-
-      <div class="form-container">
-        <p>${this.translator?.translate('authenticate.pages.no-pod.subtitle.no-storage')}</p>
-        <p>${unsafeHTML(this.translator?.translate('authenticate.pages.no-pod.subtitle.add-storage'))}</p>
-      </div>
-
-      <div class="button-container">
-        <button class="primary" @click="${this.onClickedCreatePod}">${this.translator?.translate('authenticate.pages.no-pod.button-create-pod')}</button>
-        <button class="gray" @click="${this.onClickedCancel}">${this.translator?.translate('authenticate.pages.no-pod.button-cancel')}</button>
-      </div>
-    ` : html``;
+      : html``;
 
   }
 
