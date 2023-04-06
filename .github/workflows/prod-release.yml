@@ -34,16 +34,10 @@ jobs:
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
 
-  perform-checks:
-    name: Perform checks
-    uses: netwerk-digitaal-erfgoed/solid-crs/.github/workflows/checks.yml@master
-    secrets:
-      DIGITA_PACKAGES: ${{ secrets.DIGITA_PACKAGES }}
-
   publish-npm:
     name: Publish NPM packages
     runs-on: ubuntu-latest
-    needs: [variables, perform-checks]
+    needs: [variables]
     outputs:
       version: ${{steps.discover-version.outputs.prop}}
 
