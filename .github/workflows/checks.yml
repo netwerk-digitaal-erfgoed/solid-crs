@@ -45,6 +45,16 @@ jobs:
 
       - run: npm run build:all
 
+      - run: tar -c packages/*/dist/ | zstd -12 > build-outputs.tar.zst
+
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-outputs
+          path: build-outputs.tar.zst
+          if-no-files-found: error
+          retention-days: 1
+
 
   lint:
 
@@ -65,6 +75,15 @@ jobs:
       - run: npm run bootstrap
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-outputs
+
+      - run: |
+          unzstd -f build-outputs.tar.zst
+          tar -xf build-outputs.tar
+          rm build-outputs.*
 
       - run: npm run lint:all
 
@@ -88,5 +107,14 @@ jobs:
       - run: npm run bootstrap
         env:
           NODE_AUTH_TOKEN: ${{ secrets.DIGITA_PACKAGES }}
+          
+      - uses: actions/download-artifact@v3
+        with:
+          name: build-outputs
+
+      - run: |
+          unzstd -f build-outputs.tar.zst
+          tar -xf build-outputs.tar
+          rm build-outputs.*
 
       - run: npm run test:ci
