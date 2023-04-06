@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+### [1.17.1](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v1.16.6...v1.17.1) (2023-04-06)
+
+
+### **Bug Fixes**
+
+* invalid/unused env variables ([#612](https://github.com/netwerk-digitaal-erfgoed/solid-crs/issues/612)) ([effd1f5](https://github.com/netwerk-digitaal-erfgoed/solid-crs/commit/effd1f52ad4bef596b0291a5569edf992cb1be86))
+
+
+
 ## [1.17.0](https://github.com/netwerk-digitaal-erfgoed/solid-crs/compare/v1.16.6...v1.17.0) (2023-04-06)
 
 **Note:** Version bump only for package @netwerk-digitaal-erfgoed/solid-crs-presentation
