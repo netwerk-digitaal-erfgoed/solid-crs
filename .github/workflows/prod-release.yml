@@ -34,16 +34,10 @@ jobs:
           echo "::set-output name=image_semcom_node::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-node"
           echo "::set-output name=image_semcom_components::ghcr.io/netwerk-digitaal-erfgoed/solid-crs-semcom-components"
 
-  perform-checks:
-    name: Perform checks
-    uses: netwerk-digitaal-erfgoed/solid-crs/.github/workflows/checks.yml@master
-    secrets:
-      DIGITA_PACKAGES: ${{ secrets.DIGITA_PACKAGES }}
-
   publish-npm:
     name: Publish NPM packages
     runs-on: ubuntu-latest
-    needs: [variables, perform-checks]
+    needs: [variables]
     outputs:
       version: ${{steps.discover-version.outputs.prop}}
 
@@ -91,13 +85,10 @@ jobs:
         with: 
           path: 'lerna.json'
           prop_path: 'version'
-          
-      - name: Push changes
-        run: git -c "http.https://github.com/.extraheader=" push && git push origin v${{steps.discover-version.outputs.prop}}
 
-      - name: Bump package version on master
-        if: github.ref == 'refs/heads/master'
+      - name: Push changes to master
         run: |
+          git -c "http.https://github.com/.extraheader=" push && git push origin v${{steps.discover-version.outputs.prop}}
           git checkout master && git reset origin/master --hard
           npx lerna version minor --no-push -m "chore: bump version after release" --yes
           git reset HEAD --hard && git status
