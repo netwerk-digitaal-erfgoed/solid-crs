@@ -99,14 +99,23 @@ export class SolidSDKService implements SolidService {
       description = description.charAt(0).toUpperCase() + description.slice(1);
 
       const favicon = iss.endsWith('/') ? `${iss}favicon.ico` : `${iss}/favicon.ico`;
+      const defaultIcon = 'https://www.donkey.bike/wp-content/uploads/2020/12/user-member-avatar-face-profile-icon-vector-22965342-300x300.jpg';
 
-      return fetch(favicon).then((response) => {
+      try {
 
-        const icon = response.status === 200 ? favicon : 'https://www.donkey.bike/wp-content/uploads/2020/12/user-member-avatar-face-profile-icon-vector-22965342-300x300.jpg';
+        return fetch(favicon).then((response) => {
 
-        return { uri: iss, icon, description };
+          if (response.status === 200) return { uri: iss, icon: favicon, description };
 
-      });
+          return { uri: iss, icon: defaultIcon, description };
+
+        });
+
+      } catch {
+
+        return { uri: iss, icon: defaultIcon, description };
+
+      }
 
     }));
 
